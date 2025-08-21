@@ -8,7 +8,6 @@ import java.util.TreeSet;
 
 public class PadawanMain {
     public static void main(String[] args) {
-        TreeSet<Integer> ts = new TreeSet<>(List.of(3, 8, 10));
 
     }
 }

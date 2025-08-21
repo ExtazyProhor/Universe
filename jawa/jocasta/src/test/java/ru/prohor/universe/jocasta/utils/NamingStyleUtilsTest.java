@@ -1,6 +1,12 @@
 package ru.prohor.universe.jocasta.utils;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class NamingStyleUtilsTest {
     private static final List<List<String>> TEST_ENTRIES = List.of(
@@ -127,22 +133,32 @@ public class NamingStyleUtilsTest {
             )
     );
 
-    private static void test() {
+    @Test
+    public void testChangeNamingStyles() {
         NamingStyleUtils.NamingStyle[] styles = NamingStyleUtils.NamingStyle.values();
+        Stream<Executable> stream = TEST_ENTRIES.stream().flatMap(
+                testEntry -> IntStream.range(0, styles.length).boxed().flatMap(
+                        i -> IntStream.range(0, styles.length).mapToObj(
+                                j -> {
+                                    String from = testEntry.get(i);
+                                    String should = testEntry.get(j);
+                                    String became = NamingStyleUtils.changeStyle(
+                                            styles[i],
+                                            styles[j],
+                                            from
+                                    );
+                                    String message = "string '%s' became '%s' (should be '%s')"
+                                            .formatted(from, became, should);
 
-        for (List<String> testEntry : TEST_ENTRIES) {
-            for (int i = 0; i < styles.length; ++i) {
-                for (int j = 0; j < styles.length; ++j) {
-                    if (i == j)
-                        continue;
-                    String from = testEntry.get(i);
-                    String should = testEntry.get(j);
-                    String became = NamingStyleUtils.changeStyle(styles[i], styles[j], from);
-
-                    if (!became.equals(should))
-                        System.out.printf("'%s' -> '%s' ('%s')", from, became, should);
-                }
-            }
-        }
+                                    return () -> Assertions.assertEquals(
+                                            should,
+                                            became,
+                                            message
+                                    );
+                                }
+                        )
+                )
+        );
+        Assertions.assertAll(stream);
     }
 }

@@ -1,6 +1,7 @@
-package ru.prohor.universe.jocasta.utils;
+package ru.prohor.universe.jocasta.string;
 
-import ru.prohor.universe.jocasta.string.SimpleTemplateEngine;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +16,10 @@ public class SimpleTemplateEngineTest {
             Map<String, String> values)
     {}
 
-    private record SimpleTemplateEngineExceptionalTestData(String template, int errorCode) {}
+    private record SimpleTemplateEngineExceptionalTestData(
+            String template,
+            int errorCode)
+    {}
 
     private static final String MAIN_CLASS_TEMPLATE = """
             package $$package$$
@@ -195,7 +199,7 @@ public class SimpleTemplateEngineTest {
             new SimpleTemplateEngineExceptionalTestData(
                     "??key????key??text $$key text",
                     SimpleTemplateEngine.TemplateParsingException.NO_CLOSING_SYMBOLS_ERROR_CODE
-            ),new SimpleTemplateEngineExceptionalTestData(
+            ), new SimpleTemplateEngineExceptionalTestData(
                     "??key?? text",
                     SimpleTemplateEngine.TemplateParsingException.NO_CLOSING_CONDITION_KEY_ERROR_CODE
             ),
@@ -245,29 +249,32 @@ public class SimpleTemplateEngineTest {
             )
     );
 
-    private static void test() {
+    @Test
+    public void testCommonTemplates() {
         for (SimpleTemplateEngineTestData pair : TEST_PAIRS) {
-            boolean b = pair.processed.equals(
+            Assertions.assertEquals(
+                    pair.processed,
                     new SimpleTemplateEngine(pair.retained, pair.values).process(pair.template)
             );
-            System.out.println(b);
-        }
-
-        SimpleTemplateEngine engine = new SimpleTemplateEngine(Collections.emptySet(), Collections.emptyMap());
-        for (SimpleTemplateEngineExceptionalTestData data : EXCEPTIONAL_PAIRS) {
-            try {
-                engine.process(data.template);
-            } catch (SimpleTemplateEngine.TemplateParsingException e) {
-                if (e.errorCode() == data.errorCode) {
-                    System.out.println(true);
-                    continue;
-                }
-            }
-            System.out.println(false);
         }
     }
 
-    public static void main(String[] args) {
-        test();
+    @Test
+    public void testIllegalTemplates() {
+        SimpleTemplateEngine engine = new SimpleTemplateEngine(Collections.emptySet(), Collections.emptyMap());
+        int i = 0;
+        for (SimpleTemplateEngineExceptionalTestData data : EXCEPTIONAL_PAIRS) {
+            SimpleTemplateEngine.TemplateParsingException exception = Assertions.assertThrows(
+                    SimpleTemplateEngine.TemplateParsingException.class,
+                    () -> engine.process(data.template),
+                    "Expected TemplateParsingException for template " + i
+            );
+            Assertions.assertEquals(
+                    data.errorCode,
+                    exception.errorCode(),
+                    "Wrong error code for template " + i
+            );
+            ++i;
+        }
     }
 }

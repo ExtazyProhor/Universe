@@ -44,7 +44,7 @@ public final class NamingStyleUtils {
     };
 
     public static String changeStyle(NamingStyle from, NamingStyle to, String str) {
-        return to.fromWords.apply(from.toWords.apply(str));
+        return from == to ? str : to.fromWords.apply(from.toWords.apply(str));
     }
 
     public enum NamingStyle {
