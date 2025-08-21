@@ -8,9 +8,11 @@
         <artifactId>jawa</artifactId>
         <version>final</version>
     </parent>
+
     <artifactId>venator</artifactId>
     <version>0.0.1</version>
     <name>venator</name>
+
     <properties>
         <maven.compiler.source>23</maven.compiler.source>
         <maven.compiler.target>23</maven.compiler.target>

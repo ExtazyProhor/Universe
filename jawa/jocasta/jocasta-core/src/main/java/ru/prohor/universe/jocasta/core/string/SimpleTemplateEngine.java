@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.string;
+package ru.prohor.universe.jocasta.core.string;
 
 import java.util.HashMap;
 import java.util.HashSet;

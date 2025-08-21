@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.string;
+package ru.prohor.universe.jocasta.core.string;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,13 +13,13 @@ public class SimpleTemplateEngineTest {
             String template,
             String processed,
             Set<String> retained,
-            Map<String, String> values)
-    {}
+            Map<String, String> values
+    ) {}
 
     private record SimpleTemplateEngineExceptionalTestData(
             String template,
-            int errorCode)
-    {}
+            int errorCode
+    ) {}
 
     private static final String MAIN_CLASS_TEMPLATE = """
             package $$package$$
@@ -27,7 +27,7 @@ public class SimpleTemplateEngineTest {
             import org.springframework.boot.SpringApplication;
             import org.springframework.boot.autoconfigure.SpringBootApplication;
             import org.springframework.scheduling.annotation.EnableScheduling;
-                        
+            
             @EnableScheduling
             @SpringBootApplication??spring??
             public class $$main$$ {
@@ -39,7 +39,7 @@ public class SimpleTemplateEngineTest {
 
     private static final String EMPTY_MAIN_CLASS = """
             package\s
-                        
+            
             public class  {
                 public static void main(String[] args) {
             \s\s\s\s\s\s\s\s
@@ -49,11 +49,11 @@ public class SimpleTemplateEngineTest {
 
     private static final String MAIN_CLASS_WITH_SPRING = """
             package com.example
-                        
+            
             import org.springframework.boot.SpringApplication;
             import org.springframework.boot.autoconfigure.SpringBootApplication;
             import org.springframework.scheduling.annotation.EnableScheduling;
-                        
+            
             @EnableScheduling
             @SpringBootApplication
             public class ExampleMain {
@@ -65,7 +65,7 @@ public class SimpleTemplateEngineTest {
 
     private static final String MAIN_CLASS_WITHOUT_SPRING = """
             package com.example
-                        
+            
             public class ExampleMain {
                 public static void main(String[] args) {
             \s\s\s\s\s\s\s\s

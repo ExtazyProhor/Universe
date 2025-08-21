@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.utils;
+package ru.prohor.universe.jocasta.core.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,25 +48,33 @@ public final class NamingStyleUtils {
     }
 
     public enum NamingStyle {
-        // EXAMPLE LINE
+        /**
+         * EXAMPLE LINE
+         */
         UPPER_CASE(
                 bySpace,
                 mapAndJoin(String::toUpperCase, SPACE)
         ),
 
-        // example line
+        /**
+         * example line
+         */
         LOWER_CASE(
                 bySpace,
                 mapAndJoin(String::toLowerCase, SPACE)
         ),
 
-        // Example Line
+        /**
+         * Example Line
+         */
         TITLE_CASE(
                 bySpace,
                 mapAndJoin(NamingStyleUtils::firstCharUpperWord, SPACE)
         ),
 
-        // Example line
+        /**
+         * Example line
+         */
         SENTENCE_CASE(
                 bySpace,
                 words -> {
@@ -76,13 +84,17 @@ public final class NamingStyleUtils {
                 }
         ),
 
-        // example_line
+        /**
+         * example_line
+         */
         SNAKE_CASE(
                 byUnderscore,
                 mapAndJoin(String::toLowerCase, UNDERSCORE)
         ),
 
-        // exampleLine
+        /**
+         * exampleLine
+         */
         CAMEL_CASE(
                 upperCharParser,
                 words -> {
@@ -92,19 +104,25 @@ public final class NamingStyleUtils {
                 }
         ),
 
-        // ExampleLine
+        /**
+         * ExampleLine
+         */
         PASCAL_CASE(
                 upperCharParser,
                 words -> words.stream().map(NamingStyleUtils::firstCharUpperWord).collect(Collectors.joining())
         ),
 
-        // example-line
+        /**
+         * example-line
+         */
         KEBAB_CASE(
                 byDash,
                 mapAndJoin(String::toLowerCase, DASH)
         ),
 
-        // EXAMPLE_LINE
+        /**
+         * EXAMPLE_LINE
+         */
         SCREAMING_SNAKE_CASE(
                 byUnderscore,
                 mapAndJoin(String::toUpperCase, UNDERSCORE)
@@ -115,8 +133,8 @@ public final class NamingStyleUtils {
 
         NamingStyle(
                 Function<String, List<String>> toWords,
-                Function<List<String>, String> fromWords)
-        {
+                Function<List<String>, String> fromWords
+        ) {
             this.toWords = toWords;
             this.fromWords = fromWords;
         }

@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.utils;
+package ru.prohor.universe.jocasta.core.utils;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
