@@ -8,21 +8,11 @@
         <artifactId>jawa</artifactId>
         <version>final</version>
     </parent>
+
     <artifactId>padawan</artifactId>
-    <version>1.0.0</version>
+    <version>final</version>
     <name>padawan</name>
-    <properties>
-        <maven.compiler.source>23</maven.compiler.source>
-        <maven.compiler.target>23</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    <dependencies>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-    </dependencies>
+
     <build>
         <plugins>
             <!--plugin>
@@ -74,7 +64,7 @@
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
-                            <finalName>${project.artifactId}-${project.version}</finalName>
+                            <finalName>${project.artifactId}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>

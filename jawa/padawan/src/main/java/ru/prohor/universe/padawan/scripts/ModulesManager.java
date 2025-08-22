@@ -1,3 +1,4 @@
+/*
 package ru.prohor.universe.padawan.scripts;
 
 
@@ -308,3 +309,4 @@ public class ModulesManager {
 
     }
 }
+*/
