@@ -13,14 +13,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import ru.prohor.universe.jocasta.core.collections.Opt;
-import ru.prohor.universe.jocasta.security.rsa.PublicKeyFromStringProvider;
+import ru.prohor.universe.jocasta.security.rsa.PublicKeyProvider;
 
 public class JwtVerifier {
-    private final PublicKeyFromStringProvider keyProvider;
+    private final PublicKeyProvider keyProvider;
     private final ObjectMapper objectMapper;
 
     public JwtVerifier(
-            PublicKeyFromStringProvider keyProvider,
+            PublicKeyProvider keyProvider,
             ObjectMapper objectMapper
     ) {
         this.keyProvider = keyProvider;
