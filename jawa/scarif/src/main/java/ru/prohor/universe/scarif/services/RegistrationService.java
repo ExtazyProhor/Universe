@@ -55,21 +55,11 @@ public class RegistrationService {
         }
     }
 
-    public interface RegistrationError {
-    }
+    public interface RegistrationError {}
 
-    public record RegistrationNonUniqueEmailError(
-            boolean emailInNotUnique
-    ) implements RegistrationError {
-    }
+    public record RegistrationNonUniqueEmailError(boolean emailInNotUnique) implements RegistrationError {}
 
-    public record RegistrationNonUniqueUsernameError(
-            boolean usernameInNotUnique
-    ) implements RegistrationError {
-    }
+    public record RegistrationNonUniqueUsernameError(boolean usernameInNotUnique) implements RegistrationError {}
 
-    public record RegistrationClientError(
-            String errorMessage
-    ) implements RegistrationError {
-    }
+    public record RegistrationClientError(String errorMessage) implements RegistrationError {}
 }

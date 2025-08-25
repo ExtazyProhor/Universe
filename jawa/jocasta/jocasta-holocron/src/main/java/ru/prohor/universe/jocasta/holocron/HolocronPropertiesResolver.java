@@ -18,8 +18,7 @@ import java.util.regex.Pattern;
 public class HolocronPropertiesResolver implements BeanFactoryPostProcessor {
     // TODO уметь загружать только один сервис и одно его окружение + default / common / share <-
     // TODO искать сначала в текущем окружении, затем в share, иначе null
-    private static final TypeReference<Map<String, String>> MAP_TYPE_REFERENCE = new TypeReference<>() {
-    };
+    private static final TypeReference<Map<String, String>> MAP_TYPE_REFERENCE = new TypeReference<>() {};
     private static final Pattern HOLOCRON_PATTERN = Pattern.compile(
             "holocron:\\{([a-zA-Z\\-_.0-9<>,;:|*&^%$#@!]+)}"
     );

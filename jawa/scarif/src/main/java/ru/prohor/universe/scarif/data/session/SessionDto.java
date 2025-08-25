@@ -37,8 +37,7 @@ public class SessionDto {
     private Instant closedAt;
 
     @SuppressWarnings("unused")
-    public SessionDto() {
-    }
+    public SessionDto() {}
 
     public SessionDto(
             long id,

@@ -54,12 +54,9 @@ public class LoginService {
         }
     }
 
-    public interface LoginError {
-    }
+    public interface LoginError {}
 
-    public record LoginInvalidLoginOrPasswordError(boolean invalidLoginOrPassword) implements LoginError {
-    }
+    public record LoginInvalidLoginOrPasswordError(boolean invalidLoginOrPassword) implements LoginError {}
 
-    public record LoginClientError(String errorMessage) implements LoginError {
-    }
+    public record LoginClientError(String errorMessage) implements LoginError {}
 }

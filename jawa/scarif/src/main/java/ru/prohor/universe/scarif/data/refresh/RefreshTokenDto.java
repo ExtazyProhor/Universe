@@ -36,8 +36,7 @@ public class RefreshTokenDto {
     private Instant revokedAt;
 
     @SuppressWarnings("unused")
-    public RefreshTokenDto() {
-    }
+    public RefreshTokenDto() {}
 
     public RefreshTokenDto(
             long id,

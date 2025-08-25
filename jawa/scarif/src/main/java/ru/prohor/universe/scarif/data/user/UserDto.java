@@ -37,8 +37,7 @@ public class UserDto {
     private Instant createdAt;
 
     @SuppressWarnings("unused")
-    public UserDto() {
-    }
+    public UserDto() {}
 
     public UserDto(
             Long id,

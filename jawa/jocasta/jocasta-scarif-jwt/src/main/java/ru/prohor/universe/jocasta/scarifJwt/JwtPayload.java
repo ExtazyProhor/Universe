@@ -18,5 +18,4 @@ public record JwtPayload(
         Instant expires,
         @JsonProperty("jti")
         long jwtId
-) {
-}
+) {}

@@ -86,8 +86,7 @@ public class AuthController {
             String username,
             String email,
             String password
-    ) {
-    } // TODO OpenAPI
+    ) {} // TODO OpenAPI
 
     @PostMapping("/login") // TODO Уведомления пользователя о новых сессиях, или о попытках входа
     public ResponseEntity<?> login(
@@ -119,8 +118,7 @@ public class AuthController {
     public record LoginRequestBody(
             String login,
             String password
-    ) {
-    } // TODO OpenAPI
+    ) {} // TODO OpenAPI
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(
@@ -189,8 +187,7 @@ public class AuthController {
         );
     }
 
-    public record SessionResponseBody(String ip, String userAgent, long id, String start, boolean current) {
-    }
+    public record SessionResponseBody(String ip, String userAgent, long id, String start, boolean current) {}
 
     @PostMapping("/close_session")
     public ResponseEntity<?> closeSession(
@@ -221,8 +218,7 @@ public class AuthController {
         ));
     }
 
-    public record CloseSessionRequestBody(long id) {
-    }
+    public record CloseSessionRequestBody(long id) {}
 
     private ResponseEntity<?> newSession(User user, UserData userData) {
         String token = sessionsService.createNewSession(
