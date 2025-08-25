@@ -12,6 +12,14 @@ import ru.prohor.universe.jocasta.security.rsa.KeysFromStringProvider;
 @Configuration
 public class JwtConfiguration {
     @Bean
+    public KeysFromStringProvider keysFromStringProvider(
+            @Value("${universe.scarif.private-key}") String privateKey,
+            @Value("${universe.scarif.public-key}") String publicKey
+    ) {
+        return new KeysFromStringProvider(privateKey, publicKey);
+    }
+
+    @Bean
     public JwtVerifier jwtVerifier(
             KeysFromStringProvider keysFromStringProvider,
             ObjectMapper objectMapper
