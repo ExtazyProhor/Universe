@@ -10,6 +10,8 @@
     </parent>
 
     <artifactId>scarif</artifactId>
+    <name>scarif</name>
+    <description>Universe auth service</description>
 
     <dependencies>
         <dependency>
