@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>jocasta</artifactId>
-    <version>final</version>
     <packaging>pom</packaging>
     <name>jocasta</name>
 
@@ -19,5 +18,9 @@
         <module>jocasta-core</module>
         <module>jocasta-tests</module>
         <module>jocasta-joda-time</module>
+        <module>jocasta-security</module>
+        <module>jocasta-scarif-jwt</module>
+        <module>jocasta-holocron</module>
+        <module>jocasta-core-configurations</module>
     </modules>
 </project>
