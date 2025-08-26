@@ -21,6 +21,7 @@
         <module>padawan</module>
         <module>scarif</module>
         <module>venator</module>
+        <module>sabacc</module>
     </modules>
 
     <dependencyManagement>
