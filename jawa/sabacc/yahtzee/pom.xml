@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>ru.prohor.universe</groupId>
+        <artifactId>sabacc</artifactId>
+        <version>final</version>
+    </parent>
+
+    <artifactId>yahtzee</artifactId>
+    <name>yahtzee</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-spring</artifactId>
+            <version>final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-scarif-jwt</artifactId>
+            <version>final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-holocron</artifactId>
+            <version>final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.morphia.morphia</groupId>
+            <artifactId>morphia-core</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.19.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+            <version>2.19.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>scarif</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.5.4</version> <!-- TODO научиться автоматически подставлять версию -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--<mainClass>ru.prohor.universe.yahtzee.</mainClass>-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
