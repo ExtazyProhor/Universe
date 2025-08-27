@@ -1,6 +1,6 @@
 # Scarif
 
-![](pages/images/scarif.jpg)
+![](content/files/images/scarif.jpg)
 
 Сервис аутентификации, позволяющий пользователям
 авторизоваться в других сервисах Universe единым образом
