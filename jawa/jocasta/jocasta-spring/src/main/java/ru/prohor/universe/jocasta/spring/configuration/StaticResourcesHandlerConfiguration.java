@@ -9,7 +9,7 @@ import ru.prohor.universe.jocasta.spring.StaticResourcesHandler;
 public class StaticResourcesHandlerConfiguration {
     @Bean
     public StaticResourcesHandler staticResourcesHandler(
-            @Value("${universe.scarif.filesCacheMaxAgeDays}") int filesCacheMaxAgeDays
+            @Value("${universe.jocasta.spring.filesCacheMaxAgeDays}") int filesCacheMaxAgeDays
     ) {
         return new StaticResourcesHandler(filesCacheMaxAgeDays);
     }

@@ -11,8 +11,8 @@ public class FilesControllerConfiguration {
     @Bean
     public FilesController filesController(
             StaticResourcesHandler staticResourcesHandler,
-            @Value("${universe.spring.root}") String root,
-            @Value("${universe.spring.redefinedRoot:#{null}}") String redefinedRoot
+            @Value("${universe.jocasta.spring.root}") String root,
+            @Value("${universe.jocasta.spring.redefinedRoot:#{null}}") String redefinedRoot
     ) {
         return new FilesController(
                 staticResourcesHandler,

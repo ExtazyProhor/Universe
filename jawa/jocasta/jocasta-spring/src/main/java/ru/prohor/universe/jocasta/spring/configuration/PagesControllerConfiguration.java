@@ -20,8 +20,8 @@ public class PagesControllerConfiguration {
     public PagesControllerConfiguration(
             RequestMappingHandlerMapping requestMappingHandlerMapping,
             StaticResourcesHandler staticResourcesHandler,
-            @Value("${universe.spring.pages-dir}") String pagesDirectory,
-            @Value("${universe.spring.pages-list}") String paths
+            @Value("${universe.jocasta.spring.pages-dir}") String pagesDirectory,
+            @Value("${universe.jocasta.spring.pages-list}") String paths
     ) {
         this.requestMappingHandlerMapping = requestMappingHandlerMapping;
         this.pagesController = new PagesController(staticResourcesHandler, pagesDirectory);

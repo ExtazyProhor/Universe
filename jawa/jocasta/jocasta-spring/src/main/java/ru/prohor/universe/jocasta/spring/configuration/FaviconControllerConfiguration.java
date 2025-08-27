@@ -11,7 +11,7 @@ public class FaviconControllerConfiguration {
     @Bean
     public FaviconController faviconController(
             StaticResourcesHandler staticResourcesHandler,
-            @Value("${universe.spring.favicons-path}") String pathToFaviconsDirectory
+            @Value("${universe.jocasta.spring.favicons-path}") String pathToFaviconsDirectory
     ) {
         return new FaviconController(
                 staticResourcesHandler,
