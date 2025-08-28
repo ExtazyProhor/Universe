@@ -10,7 +10,8 @@ public record YahtzeeAuthorizedUser(
         ObjectId objectId,
         String username,
         String name,
-        ObjectId imageId
+        ObjectId imageId,
+        String color
 ) {
     public static final String ATTRIBUTE_KEY = "universe.yahtzee-authorized-user";
 }
