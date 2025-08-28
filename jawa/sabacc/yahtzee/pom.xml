@@ -65,7 +65,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!--<mainClass>ru.prohor.universe.yahtzee.</mainClass>-->
+                    <mainClass>ru.prohor.universe.yahtzee.YahtzeeMain</mainClass>
                 </configuration>
             </plugin>
         </plugins>
