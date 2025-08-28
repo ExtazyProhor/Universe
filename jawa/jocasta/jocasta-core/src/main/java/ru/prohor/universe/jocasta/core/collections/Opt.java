@@ -150,6 +150,20 @@ public abstract class Opt<T> implements Serializable {
         return (Opt<A>) o;
     }
 
+    @SuppressWarnings(UNCHECKED_WARNING)
+    public <F> Opt<F> cast() {
+        return (Opt<F>) this;
+    }
+
+    @SuppressWarnings(UNCHECKED_WARNING)
+    public <F> Opt<F> castOrEmpty() {
+        try {
+            return (Opt<F>) this;
+        } catch (ClassCastException e) {
+            return empty();
+        }
+    }
+
     public void ifPresent(Consumer<? super T> consumer) {
         if (isPresent())
             consumer.accept(get());

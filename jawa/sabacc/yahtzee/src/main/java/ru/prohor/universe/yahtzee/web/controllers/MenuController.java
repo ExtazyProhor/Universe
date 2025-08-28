@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.controllers;
+package ru.prohor.universe.yahtzee.web.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
