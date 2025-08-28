@@ -21,7 +21,7 @@ public class CookieProvider {
     public CookieProvider(
             @Value("${universe.scarif.refreshTokenCookieName}") String refreshTokenCookieName,
             @Value("${universe.scarif.refreshTokenTtlDays}") long refreshTokenTtlDays,
-            @Value("${universe.scarif.accessTokenCookieName}") String accessTokenCookieName,
+            @Value("${universe.jocasta.scarif-jwt.accessTokenCookieName}") String accessTokenCookieName,
             @Value("${universe.scarif.accessTokenTtlMinutes}") long accessTokenTtlMinutes,
             @Value("${universe.domain}") String universeDomain
     ) {

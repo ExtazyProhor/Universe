@@ -10,9 +10,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.coreConfigurations.SnowflakeConfiguration;
+import ru.prohor.universe.jocasta.holocron.HolocronConfiguration;
+import ru.prohor.universe.jocasta.scarifJwt.ScarifJwtConfiguration;
 
 @Configuration
 @EnableAutoConfiguration(exclude = {
@@ -26,6 +30,11 @@ import ru.prohor.universe.jocasta.core.collections.Opt;
                 type = FilterType.ANNOTATION,
                 classes = {Controller.class, RestController.class}
         )
+})
+@Import({
+        SnowflakeConfiguration.class,
+        HolocronConfiguration.class,
+        ScarifJwtConfiguration.class,
 })
 public class ScarifMain {
     public static void main(String[] args) {

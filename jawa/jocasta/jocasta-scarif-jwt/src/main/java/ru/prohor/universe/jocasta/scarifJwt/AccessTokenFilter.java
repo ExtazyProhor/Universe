@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class AccessTokenFilter extends OncePerRequestFilter {
+    public static final int ACCESS_TOKEN_FILTER_ORDER = 5;
+
     private final String accessTokenCookieName;
     private final JwtVerifier jwtVerifier;
 
