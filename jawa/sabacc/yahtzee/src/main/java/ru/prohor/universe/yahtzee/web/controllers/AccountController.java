@@ -30,7 +30,7 @@ public class AccountController {
             String imageId
     ) {}
 
-    @PostMapping("/changeName")
+    @PostMapping("/change_name")
     public ResponseEntity<?> changeName(
             @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
             Opt<YahtzeeAuthorizedUser> user,
@@ -44,7 +44,7 @@ public class AccountController {
             String name
     ) {}
 
-    @PostMapping("/changePreferredColor")
+    @PostMapping("/change_preferred_color")
     public ResponseEntity<?> changePreferredColor(
             @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
             Opt<YahtzeeAuthorizedUser> user,
@@ -58,7 +58,7 @@ public class AccountController {
             String color
     ) {}
 
-    @PostMapping("/findUsers")
+    @PostMapping("/find_users")
     public ResponseEntity<FindUsersResponse> findUser(
             @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
             Opt<YahtzeeAuthorizedUser> user,
@@ -87,7 +87,7 @@ public class AccountController {
             boolean isFriend
     ) {}
 
-    @PostMapping("/addFriend")
+    @PostMapping("/add_friend")
     public ResponseEntity<?> addFriend(
             @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
             Opt<YahtzeeAuthorizedUser> user,
@@ -101,7 +101,7 @@ public class AccountController {
             String id
     ) {}
 
-    @PostMapping("/deleteFriend")
+    @PostMapping("/delete_friend")
     public ResponseEntity<?> deleteFriend(
             @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
             Opt<YahtzeeAuthorizedUser> user,
