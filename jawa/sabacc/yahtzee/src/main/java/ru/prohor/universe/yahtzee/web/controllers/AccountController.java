@@ -3,11 +3,13 @@ package ru.prohor.universe.yahtzee.web.controllers;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.yahtzee.services.GameColorsService;
 import ru.prohor.universe.yahtzee.services.UserService;
 import ru.prohor.universe.yahtzee.web.YahtzeeAuthorizedUser;
 
@@ -15,13 +17,18 @@ import java.util.List;
 
 @RestController("/api/account")
 public class AccountController {
+    private final GameColorsService gameColorsService;
     private final UserService userService;
 
-    public AccountController(UserService userService) {
+    public AccountController(
+            GameColorsService gameColorsService,
+            UserService userService
+    ) {
+        this.gameColorsService = gameColorsService;
         this.userService = userService;
     }
 
-    @PostMapping("/info")
+    @GetMapping("/info")
     public ResponseEntity<InfoResponse> info(
             @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
             Opt<YahtzeeAuthorizedUser> user
@@ -55,6 +62,16 @@ public class AccountController {
 
     public record ChangeNameRequest(
             String name
+    ) {}
+
+    @GetMapping("/get_available_colors")
+    public ResponseEntity<AvailableColorsResponse> getAvailableColors() {
+        return ResponseEntity.ok(gameColorsService.getAvailableColors());
+    }
+
+    public record AvailableColorsResponse(
+            // format: "ff0000", hex, without alpha
+            List<String> colors
     ) {}
 
     @PostMapping("/change_preferred_color")
