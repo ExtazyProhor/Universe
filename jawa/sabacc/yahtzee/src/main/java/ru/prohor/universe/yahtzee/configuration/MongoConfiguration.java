@@ -51,7 +51,7 @@ public class MongoConfiguration {
     }
 
     @Bean
-    @SuppressWarnings("all")
+    @SuppressWarnings("all") // TODO upgrade ubuntu, opt(postgres), mongo, morphia (cfg file)
     public Datastore datastore(
             @Value("${universe.yahtzee.mongo.database}") String database,
             MongoClient mongoClient
