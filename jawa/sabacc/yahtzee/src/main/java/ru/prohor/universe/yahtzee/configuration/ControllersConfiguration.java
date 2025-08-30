@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.prohor.universe.jocasta.spring.configuration.AllControllersConfiguration;
+import ru.prohor.universe.yahtzee.services.GameColorsService;
 import ru.prohor.universe.yahtzee.services.UserService;
 import ru.prohor.universe.yahtzee.web.controllers.AccountController;
 import ru.prohor.universe.yahtzee.web.controllers.GameIrlController;
@@ -15,9 +16,10 @@ import ru.prohor.universe.yahtzee.web.controllers.GameIrlController;
 public class ControllersConfiguration {
     @Bean
     public AccountController accountController(
+            GameColorsService gameColorsService,
             UserService userService
     ) {
-        return new AccountController(userService);
+        return new AccountController(gameColorsService, userService);
     }
 
     @Bean
