@@ -39,6 +39,10 @@ public class MongoRepository<T> {
         return Opt.ofNullable(datastore.find(type).filter(dev.morphia.query.filters.Filters.eq(ID, id)).first());
     }
 
+    public List<T> find(Filter filter) {
+        return datastore.find(type).filter(filter).stream().toList();
+    }
+
     public void save(T entity) {
         datastore.save(entity);
     }
@@ -47,15 +51,15 @@ public class MongoRepository<T> {
         datastore.save(entities);
     }
 
-    public List<T> find(Filter filter) {
-        return datastore.find(type).filter(filter).stream().toList();
-    }
-
     @SuppressWarnings("all")
     public void update(Filter filter, UpdateOperator updateOperator) {
         datastore.find(type)
                 .filter(filter)
                 .update(updateOperator).execute();
+    }
+
+    public void deleteById(ObjectId id) {
+        collection.deleteOne(Filters.eq(ID, id));
     }
 
     public List<T> findByText(String text) {
