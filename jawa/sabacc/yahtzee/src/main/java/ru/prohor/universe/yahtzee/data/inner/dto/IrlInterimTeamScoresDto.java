@@ -6,13 +6,13 @@ import org.bson.types.ObjectId;
 import java.util.List;
 
 @Entity
-public class IrlInterimTeamScores {
+public class IrlInterimTeamScoresDto {
     private List<ObjectId> players;
     private List<IrlScoreDto> scores;
 
-    public IrlInterimTeamScores() {}
+    public IrlInterimTeamScoresDto() {}
 
-    public IrlInterimTeamScores(
+    public IrlInterimTeamScoresDto(
             List<ObjectId> players,
             List<IrlScoreDto> scores
     ) {
