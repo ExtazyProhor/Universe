@@ -11,8 +11,8 @@ import java.util.List;
 public final class MongoRepository<T> {
     private final BaseMongoRepository<T> base;
 
-    public MongoRepository(Datastore datastore, Class<T> type, String collection) {
-        this.base = new BaseMongoRepository<>(datastore, type, collection);
+    public MongoRepository(Datastore datastore, Class<T> type) {
+        this.base = new BaseMongoRepository<>(datastore, type);
     }
 
     public Opt<T> findById(ObjectId id) {

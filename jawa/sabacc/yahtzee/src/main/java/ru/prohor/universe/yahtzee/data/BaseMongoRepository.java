@@ -6,6 +6,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import dev.morphia.Datastore;
+import dev.morphia.annotations.Entity;
 import dev.morphia.query.filters.Filter;
 import dev.morphia.query.updates.UpdateOperator;
 import org.bson.Document;
@@ -27,8 +28,8 @@ public class BaseMongoRepository<T> {
     private final Datastore datastore;
     private final Class<T> type;
 
-    BaseMongoRepository(Datastore datastore, Class<T> type, String collection) {
-        this.collection = datastore.getDatabase().getCollection(collection);
+    BaseMongoRepository(Datastore datastore, Class<T> type) {
+        this.collection = datastore.getDatabase().getCollection(getCollectionName(type));
         this.datastore = datastore;
         this.type = type;
     }
@@ -71,6 +72,15 @@ public class BaseMongoRepository<T> {
                 findEntities(text, found -> found.skip((page - 1) * pageSize).limit(pageSize)),
                 collection.countDocuments(Filters.text(text))
         );
+    }
+
+    private String getCollectionName(Class<T> type) {
+        Entity annotation = type.getAnnotation(Entity.class);
+        if (annotation == null)
+            throw new IllegalArgumentException(
+                    "Entity class " + type.getSimpleName() + " must have @Entity annotation"
+            );
+        return annotation.value();
     }
 
     private List<T> findEntities(String text, UnaryOperator<FindIterable<Document>> paging) {

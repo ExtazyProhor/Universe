@@ -2,7 +2,7 @@
 
 ### User and Database
 
-```
+```js
 use ${database}
 
 db.createUser({
@@ -23,8 +23,11 @@ exit
 
 ### Collections and Indexes
 
-```
+```js
 db.createCollection("users")
+db.createCollection("images")
+db.createCollection("irl_games")
+db.createCollection("irl_rooms")
 
 db.users.createIndex(
     {

@@ -16,10 +16,9 @@ public final class MongoRepositoryWithWrapper<T, W extends MongoEntityPojo<T>> {
     public MongoRepositoryWithWrapper(
             Function<T, W> wrapFunction,
             Datastore datastore,
-            Class<T> type,
-            String collection
+            Class<T> type
     ) {
-        this.base = new BaseMongoRepository<>(datastore, type, collection);
+        this.base = new BaseMongoRepository<>(datastore, type);
         this.wrapFunction = wrapFunction;
     }
 

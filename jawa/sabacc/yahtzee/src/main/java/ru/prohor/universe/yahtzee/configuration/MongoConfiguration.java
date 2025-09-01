@@ -10,6 +10,15 @@ import dev.morphia.Morphia;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.prohor.universe.yahtzee.data.MongoRepositoryWithWrapper;
+import ru.prohor.universe.yahtzee.data.entities.dto.ImageDto;
+import ru.prohor.universe.yahtzee.data.entities.dto.IrlGameDto;
+import ru.prohor.universe.yahtzee.data.entities.dto.IrlRoomDto;
+import ru.prohor.universe.yahtzee.data.entities.dto.PlayerDto;
+import ru.prohor.universe.yahtzee.data.entities.pojo.Image;
+import ru.prohor.universe.yahtzee.data.entities.pojo.IrlGame;
+import ru.prohor.universe.yahtzee.data.entities.pojo.IrlRoom;
+import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -60,5 +69,25 @@ public class MongoConfiguration {
         Datastore datastore = Morphia.createDatastore(mongoClient, database);
         datastore.getMapper().mapPackage("ru.prohor.universe.yahtzee.data.entities.dto");
         return datastore;
+    }
+
+    @Bean
+    public MongoRepositoryWithWrapper<ImageDto, Image> imageRepository(Datastore datastore) {
+        return new MongoRepositoryWithWrapper<>(Image::fromDto, datastore, ImageDto.class);
+    }
+
+    @Bean
+    public MongoRepositoryWithWrapper<IrlGameDto, IrlGame> irlGameRepository(Datastore datastore) {
+        return new MongoRepositoryWithWrapper<>(IrlGame::fromDto, datastore, IrlGameDto.class);
+    }
+
+    @Bean
+    public MongoRepositoryWithWrapper<IrlRoomDto, IrlRoom> irlRoomRepository(Datastore datastore) {
+        return new MongoRepositoryWithWrapper<>(IrlRoom::fromDto, datastore, IrlRoomDto.class);
+    }
+
+    @Bean
+    public MongoRepositoryWithWrapper<PlayerDto, Player> playerRepository(Datastore datastore) {
+        return new MongoRepositoryWithWrapper<>(Player::fromDto, datastore, PlayerDto.class);
     }
 }

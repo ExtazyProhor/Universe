@@ -26,7 +26,6 @@ import ru.prohor.universe.jocasta.scarifJwt.ScarifJwtConfiguration;
         ScarifJwtConfiguration.class,
 })
 public class YahtzeeMain {
-    // TODO change to MongoEntityPojo
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(YahtzeeMain.class, args);
         Opt<String> environment = Opt.ofNullable(context.getEnvironment().getProperty("universe.yahtzee.environment"));
