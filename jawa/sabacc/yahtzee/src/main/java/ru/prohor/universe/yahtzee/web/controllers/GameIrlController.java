@@ -14,43 +14,89 @@ import java.util.List;
 @RestController("/api/game/irl")
 public class GameIrlController {
 
-    @PostMapping("/players_info")
-    public ResponseEntity<PlayersInfoResponse> getPlayersInfo(
+    @PostMapping("/current_room")
+    public ResponseEntity<CurrentRoomResponse> currentRoom(
             @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user,
-            @RequestBody
-            PlayersInfoRequest body
+            Opt<YahtzeeAuthorizedUser> user
     ) {
         return ResponseEntity.badRequest().build(); // TODO
     }
 
-    public record PlayersInfoRequest(
-            @JsonProperty("player_ids")
-            List<String> playerIds
+    public record CurrentRoomResponse(
+            String id,
+            String creation, // datetime
+            int teams
     ) {}
 
-    public record PlayersInfoResponse(
+    @PostMapping("/room_info")
+    public ResponseEntity<RoomInfoResponse> getRoomInfo(
+            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
+            Opt<YahtzeeAuthorizedUser> user,
+            @RequestBody
+            RoomInfoRequest body
+    ) {
+        return ResponseEntity.badRequest().build(); // TODO
+    }
+
+    public record RoomInfoRequest(
+            @JsonProperty("room_id")
+            String roomId
+    ) {}
+
+    public record RoomInfoResponse(
+            List<TeamInfo> teams
+    ) {}
+
+    public record TeamInfo(
+            @JsonProperty("team_id")
+            int teamId,
+            String color,
+            boolean moving, // next move is up to this team
             List<PlayerInfo> players
     ) {}
 
     public record PlayerInfo(
             String id,
             String name,
-            String color
+            boolean moving // next move of his team is up to this player
     ) {}
 
-    @PostMapping("/save")
-    public ResponseEntity<?> saveGame(
+    @PostMapping("/create_room")
+    public ResponseEntity<?> createRoom(
             @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
             Opt<YahtzeeAuthorizedUser> user,
             @RequestBody
-            SaveGameRequest body
+            CreateRoomRequest body
     ) {
         return ResponseEntity.badRequest().build(); // TODO
     }
 
-    public record SaveGameRequest(
+    public record CreateRoomRequest(
+            List<TeamPlayers> teams
+    ) {}
+
+    public record TeamPlayers(
+            @JsonProperty("players_ids")
+            List<String> playersIds
+    ) {}
+
+    @PostMapping("/save_move")
+    public ResponseEntity<SaveMoveResponse> saveMove(
+            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
+            Opt<YahtzeeAuthorizedUser> user,
+            @RequestBody
+            SaveMoveRequest body
+    ) {
+        return ResponseEntity.badRequest().build(); // TODO
+    }
+
+    public record SaveMoveRequest(
             List<Team> teams
+    ) {}
+
+    public record SaveMoveResponse(
+            @JsonProperty("next_move_player_id")
+            String nextMovePlayerId
     ) {}
 
     public record Team(

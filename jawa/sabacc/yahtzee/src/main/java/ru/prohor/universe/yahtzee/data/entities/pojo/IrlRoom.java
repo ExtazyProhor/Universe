@@ -13,6 +13,7 @@ public record IrlRoom(
         ObjectId id,
         Instant createdAt,
         ObjectId initiator,
+        int movingTeamIndex,
         List<IrlInterimTeamScores> teams
 ) implements MongoEntityPojo<IrlRoomDto> {
     @Override
@@ -21,6 +22,7 @@ public record IrlRoom(
                 id,
                 DateTimeUtil.unwrap(createdAt),
                 initiator,
+                movingTeamIndex,
                 teams.stream().map(IrlInterimTeamScores::toDto).toList()
         );
     }
@@ -30,6 +32,7 @@ public record IrlRoom(
                 room.getId(),
                 DateTimeUtil.wrap(room.getCreatedAt()),
                 room.getInitiator(),
+                room.getMovingTeamIndex(),
                 room.getTeams().stream().map(IrlInterimTeamScores::fromDto).toList()
         );
     }

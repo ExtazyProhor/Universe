@@ -16,6 +16,8 @@ public class IrlRoomDto {
     @Property("created_at")
     private Instant createdAt;
     private ObjectId initiator;
+    @Property("moving_team_index")
+    private int movingTeamIndex;
     private List<IrlInterimTeamScoresDto> teams;
 
     public IrlRoomDto() {}
@@ -24,11 +26,13 @@ public class IrlRoomDto {
             ObjectId id,
             Instant createdAt,
             ObjectId initiator,
+            int movingTeamIndex,
             List<IrlInterimTeamScoresDto> teams
     ) {
         this.id = id;
         this.createdAt = createdAt;
         this.initiator = initiator;
+        this.movingTeamIndex = movingTeamIndex;
         this.teams = teams;
     }
 
@@ -42,6 +46,10 @@ public class IrlRoomDto {
 
     public ObjectId getInitiator() {
         return initiator;
+    }
+
+    public int getMovingTeamIndex() {
+        return movingTeamIndex;
     }
 
     public List<IrlInterimTeamScoresDto> getTeams() {
