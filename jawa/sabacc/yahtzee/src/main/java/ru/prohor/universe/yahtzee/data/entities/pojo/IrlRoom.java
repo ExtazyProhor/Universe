@@ -1,5 +1,6 @@
 package ru.prohor.universe.yahtzee.data.entities.pojo;
 
+import lombok.Builder;
 import org.bson.types.ObjectId;
 import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
@@ -9,6 +10,7 @@ import ru.prohor.universe.yahtzee.data.inner.pojo.IrlInterimTeamScores;
 
 import java.util.List;
 
+@Builder(toBuilder = true)
 public record IrlRoom(
         ObjectId id,
         Instant createdAt,

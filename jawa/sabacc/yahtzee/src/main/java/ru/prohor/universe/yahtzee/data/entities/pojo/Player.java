@@ -1,5 +1,6 @@
 package ru.prohor.universe.yahtzee.data.entities.pojo;
 
+import lombok.Builder;
 import org.bson.types.ObjectId;
 import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.core.collections.Opt;
@@ -10,6 +11,7 @@ import ru.prohor.universe.yahtzee.data.entities.dto.PlayerDto;
 import java.util.List;
 import java.util.UUID;
 
+@Builder(toBuilder = true)
 public record Player(
         ObjectId id,
         UUID uuid,
@@ -19,9 +21,12 @@ public record Player(
         String displayName,
         List<ObjectId> friends,
         Opt<ObjectId> currentRoom,
+        ObjectId imageId,
         Instant createdAt,
         boolean trusted
 ) implements MongoEntityPojo<PlayerDto> {
+    public static final String ATTRIBUTE_KEY = "universe.yahtzee-player";
+
     @Override
     public PlayerDto toDto() {
         return new PlayerDto(
@@ -33,6 +38,7 @@ public record Player(
                 displayName,
                 friends,
                 currentRoom.orElseNull(),
+                imageId,
                 DateTimeUtil.unwrap(createdAt),
                 trusted
         );
@@ -48,6 +54,7 @@ public record Player(
                 player.getDisplayName(),
                 player.getFriends(),
                 Opt.ofNullable(player.getCurrentRoom()),
+                player.getImageId(),
                 DateTimeUtil.wrap(player.getCreatedAt()),
                 player.isTrusted()
         );

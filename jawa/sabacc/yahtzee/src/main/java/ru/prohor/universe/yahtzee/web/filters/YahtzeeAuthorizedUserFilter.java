@@ -8,8 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.prohor.universe.jocasta.core.collections.Opt;
 import ru.prohor.universe.jocasta.scarifJwt.AuthorizedUser;
+import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.services.UserService;
-import ru.prohor.universe.yahtzee.web.YahtzeeAuthorizedUser;
 
 import java.io.IOException;
 
@@ -35,7 +35,7 @@ public class YahtzeeAuthorizedUserFilter extends OncePerRequestFilter {
         ).cast();
 
         request.setAttribute(
-                YahtzeeAuthorizedUser.ATTRIBUTE_KEY,
+                Player.ATTRIBUTE_KEY,
                 authorizedUser.map(userService::wrap)
         );
         filterChain.doFilter(request, response);

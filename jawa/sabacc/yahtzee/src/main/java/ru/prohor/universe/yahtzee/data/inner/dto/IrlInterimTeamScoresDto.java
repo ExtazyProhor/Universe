@@ -12,6 +12,8 @@ public class IrlInterimTeamScoresDto {
     private int teamId;
     @Property("moving_player_index")
     private int movingPlayerIndex;
+    private String title;
+    private String color;
     private List<ObjectId> players;
     private List<IrlScoreDto> scores;
 
@@ -20,11 +22,15 @@ public class IrlInterimTeamScoresDto {
     public IrlInterimTeamScoresDto(
             int teamId,
             int movingPlayerIndex,
+            String title,
+            String color,
             List<ObjectId> players,
             List<IrlScoreDto> scores
     ) {
         this.teamId = teamId;
         this.movingPlayerIndex = movingPlayerIndex;
+        this.title = title;
+        this.color = color;
         this.players = players;
         this.scores = scores;
     }
@@ -35,6 +41,14 @@ public class IrlInterimTeamScoresDto {
 
     public int getMovingPlayerIndex() {
         return movingPlayerIndex;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public List<ObjectId> getPlayers() {

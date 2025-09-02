@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.Opt;
-import ru.prohor.universe.yahtzee.services.GameColorsService;
+import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.services.color.GameColorsService;
 import ru.prohor.universe.yahtzee.services.UserService;
-import ru.prohor.universe.yahtzee.web.YahtzeeAuthorizedUser;
 
 import java.util.List;
 
@@ -30,12 +30,12 @@ public class AccountController {
 
     @GetMapping("/info")
     public ResponseEntity<InfoResponse> info(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player
     ) {
-        if (user.isEmpty())
+        if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return ResponseEntity.ok(userService.getUserInfo(user.get()));
+        return ResponseEntity.ok(userService.getUserInfo(player.get()));
     }
 
     public record InfoResponse(
@@ -48,14 +48,14 @@ public class AccountController {
 
     @PostMapping("/change_name")
     public ResponseEntity<?> changeName(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user,
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
             @RequestBody
             ChangeNameRequest body
     ) {
-        if (user.isEmpty())
+        if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (userService.changeName(user.get(), body.name()))
+        if (userService.changeName(player.get(), body.name()))
             return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
@@ -76,14 +76,14 @@ public class AccountController {
 
     @PostMapping("/change_preferred_color")
     public ResponseEntity<?> changePreferredColor(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user,
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
             @RequestBody
             ChangePreferredColorRequest body
     ) {
-        if (user.isEmpty())
+        if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (userService.changeColor(user.get(), body.color()))
+        if (userService.changeColor(player.get(), body.color()))
             return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
@@ -94,14 +94,14 @@ public class AccountController {
 
     @PostMapping("/find_users")
     public ResponseEntity<FindUsersResponse> findUser(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user,
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
             @RequestBody
             FindUsersRequest body
     ) {
-        if (user.isEmpty())
+        if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return ResponseEntity.ok(userService.findUsers(user.get(), body.name(), body.page()));
+        return ResponseEntity.ok(userService.findUsers(player.get(), body.name(), body.page()));
     }
 
     public record FindUsersRequest(
@@ -127,14 +127,14 @@ public class AccountController {
 
     @PostMapping("/add_friend")
     public ResponseEntity<?> addFriend(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user,
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
             @RequestBody
             AddFriendRequest body
     ) {
-        if (user.isEmpty())
+        if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (userService.addFriend(user.get(), body.id()))
+        if (userService.addFriend(player.get(), body.id()))
             return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
@@ -145,14 +145,14 @@ public class AccountController {
 
     @PostMapping("/delete_friend")
     public ResponseEntity<?> deleteFriend(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user,
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
             @RequestBody
             DeleteFriendRequest body
     ) {
-        if (user.isEmpty())
+        if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (userService.deleteFriend(user.get(), body.id()))
+        if (userService.deleteFriend(player.get(), body.id()))
             return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
@@ -163,14 +163,14 @@ public class AccountController {
 
     @PostMapping("/friends")
     public ResponseEntity<FriendsResponse> friends(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user,
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
             @RequestBody
             FriendsRequest body
     ) {
-        if (user.isEmpty())
+        if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return ResponseEntity.ok(userService.getFriends(user.get(), body.page()));
+        return ResponseEntity.ok(userService.getFriends(player.get(), body.page()));
     }
 
     public record FriendsRequest(
@@ -187,6 +187,7 @@ public class AccountController {
             String username,
             String name,
             @JsonProperty("image_id")
-            String imageId
+            String imageId,
+            boolean inGame // if true - can not invite in room
     ) {}
 }

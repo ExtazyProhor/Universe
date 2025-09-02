@@ -24,6 +24,8 @@ public class PlayerDto {
     private List<ObjectId> friends;
     @Property("current_room")
     private ObjectId currentRoom;
+    @Property("image_id")
+    private ObjectId imageId;
     @Property("created_at")
     private Instant createdAt;
     private boolean trusted;
@@ -39,6 +41,7 @@ public class PlayerDto {
             String displayName,
             List<ObjectId> friends,
             ObjectId currentRoom,
+            ObjectId imageId,
             Instant createdAt,
             boolean trusted
     ) {
@@ -50,6 +53,7 @@ public class PlayerDto {
         this.displayName = displayName;
         this.friends = friends;
         this.currentRoom = currentRoom;
+        this.imageId = imageId;
         this.createdAt = createdAt;
         this.trusted = trusted;
     }
@@ -84,6 +88,10 @@ public class PlayerDto {
 
     public ObjectId getCurrentRoom() {
         return currentRoom;
+    }
+
+    public ObjectId getImageId() {
+        return imageId;
     }
 
     public Instant getCreatedAt() {

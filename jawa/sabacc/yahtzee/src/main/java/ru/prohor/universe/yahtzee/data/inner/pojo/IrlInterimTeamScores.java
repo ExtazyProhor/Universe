@@ -1,14 +1,18 @@
 package ru.prohor.universe.yahtzee.data.inner.pojo;
 
+import lombok.Builder;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.yahtzee.data.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.data.inner.dto.IrlInterimTeamScoresDto;
 
 import java.util.List;
 
+@Builder(toBuilder = true)
 public record IrlInterimTeamScores(
         int teamId,
         int movingPlayerIndex,
+        String title,
+        String color,
         List<ObjectId> players,
         List<IrlScore> scores
 ) implements MongoEntityPojo<IrlInterimTeamScoresDto> {
@@ -17,6 +21,8 @@ public record IrlInterimTeamScores(
         return new IrlInterimTeamScoresDto(
                 teamId,
                 movingPlayerIndex,
+                title,
+                color,
                 players,
                 scores.stream().map(IrlScore::toDto).toList()
         );
@@ -26,6 +32,8 @@ public record IrlInterimTeamScores(
         return new IrlInterimTeamScores(
                 team.getTeamId(),
                 team.getMovingPlayerIndex(),
+                team.getTitle(),
+                team.getColor(),
                 team.getPlayers(),
                 team.getScores().stream().map(IrlScore::fromDto).toList()
         );

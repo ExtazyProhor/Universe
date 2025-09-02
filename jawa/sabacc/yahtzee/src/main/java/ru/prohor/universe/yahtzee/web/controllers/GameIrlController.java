@@ -1,25 +1,39 @@
 package ru.prohor.universe.yahtzee.web.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.Opt;
-import ru.prohor.universe.yahtzee.web.YahtzeeAuthorizedUser;
+import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.services.game.irl.IrlGameService;
 
 import java.util.List;
 
 @RestController("/api/game/irl")
 public class GameIrlController {
+    private final IrlGameService irlGameService;
+
+    public GameIrlController(IrlGameService irlGameService) {
+        this.irlGameService = irlGameService;
+    }
 
     @PostMapping("/current_room")
     public ResponseEntity<CurrentRoomResponse> currentRoom(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player
     ) {
-        return ResponseEntity.badRequest().build(); // TODO
+        if (player.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return irlGameService.getCurrentRoom(player.get()).map(
+                ResponseEntity::ok
+        ).orElseGet(
+                () -> ResponseEntity.notFound().build()
+        );
     }
 
     public record CurrentRoomResponse(
@@ -28,20 +42,19 @@ public class GameIrlController {
             int teams
     ) {}
 
-    @PostMapping("/room_info")
+    @GetMapping("/room_info")
     public ResponseEntity<RoomInfoResponse> getRoomInfo(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user,
-            @RequestBody
-            RoomInfoRequest body
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player
     ) {
-        return ResponseEntity.badRequest().build(); // TODO
+        if (player.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return irlGameService.getRoomInfo(player.get()).map(
+                ResponseEntity::ok
+        ).orElseGet(
+                () -> ResponseEntity.notFound().build()
+        );
     }
-
-    public record RoomInfoRequest(
-            @JsonProperty("room_id")
-            String roomId
-    ) {}
 
     public record RoomInfoResponse(
             List<TeamInfo> teams
@@ -50,6 +63,7 @@ public class GameIrlController {
     public record TeamInfo(
             @JsonProperty("team_id")
             int teamId,
+            String title,
             String color,
             boolean moving, // next move is up to this team
             List<PlayerInfo> players
@@ -63,12 +77,18 @@ public class GameIrlController {
 
     @PostMapping("/create_room")
     public ResponseEntity<?> createRoom(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user,
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
             @RequestBody
             CreateRoomRequest body
     ) {
-        return ResponseEntity.badRequest().build(); // TODO
+        if (player.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return irlGameService.createRoom(player.get(), body).map(
+                error -> ResponseEntity.badRequest().body(new CreateRoomResponse(error))
+        ).orElseGet(
+                () -> ResponseEntity.ok().build()
+        );
     }
 
     public record CreateRoomRequest(
@@ -76,37 +96,48 @@ public class GameIrlController {
     ) {}
 
     public record TeamPlayers(
+            String title,
             @JsonProperty("players_ids")
             List<String> playersIds
     ) {}
 
+    public record CreateRoomResponse(
+            String error // optional error message
+    ) {}
+
     @PostMapping("/save_move")
-    public ResponseEntity<SaveMoveResponse> saveMove(
-            @RequestAttribute(YahtzeeAuthorizedUser.ATTRIBUTE_KEY)
-            Opt<YahtzeeAuthorizedUser> user,
+    public ResponseEntity<?> saveMove(
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
             @RequestBody
             SaveMoveRequest body
     ) {
-        return ResponseEntity.badRequest().build(); // TODO
+        if (player.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return irlGameService.saveMove(player.get(), body).mapOrElse(
+                ResponseEntity::ok,
+                error -> ResponseEntity.badRequest().body(new SaveMoveErrorResponse(error))
+        );
     }
 
     public record SaveMoveRequest(
-            List<Team> teams
+            @JsonProperty("team_id")
+            int teamId,
+            @JsonProperty("moving_player_id")
+            String movingPlayerId,
+            Combination combination,
+            int value
     ) {}
 
     public record SaveMoveResponse(
             @JsonProperty("next_move_player_id")
-            String nextMovePlayerId
+            String nextMovePlayerId,
+            @JsonProperty("game_over") // if true - next_move_player_id is absent, show dialog window
+            boolean gameOver
     ) {}
 
-    public record Team(
-            List<String> players,
-            List<Score> scores
-    ) {}
-
-    public record Score(
-            Combination combination,
-            int value
+    public record SaveMoveErrorResponse(
+            String error
     ) {}
 
     public enum Combination {
@@ -140,6 +171,14 @@ public class GameIrlController {
         @JsonProperty("yahtzee")
         YAHTZEE,
         @JsonProperty("chance")
-        CHANCE
+        CHANCE;
+
+        public String propertyName() {
+            return name().toLowerCase();
+        }
+
+        public static Combination of(String propertyName) {
+            return Enum.valueOf(Combination.class, propertyName.toUpperCase());
+        }
     }
 }
