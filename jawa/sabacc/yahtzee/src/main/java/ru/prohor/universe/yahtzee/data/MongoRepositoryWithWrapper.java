@@ -26,6 +26,10 @@ public final class MongoRepositoryWithWrapper<T, W extends MongoEntityPojo<T>> {
         return base.findById(id).map(wrapFunction);
     }
 
+    public List<W> findAllByIds(List<ObjectId> ids) {
+        return base.findAllByIds(ids).stream().map(wrapFunction).toList();
+    }
+
     public List<W> find(Filter filter) {
         return base.find(filter).stream().map(wrapFunction).toList();
     }

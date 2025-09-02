@@ -19,6 +19,10 @@ public final class MongoRepository<T> {
         return base.findById(id);
     }
 
+    public List<T> findAllByIds(List<ObjectId> ids) {
+        return base.findAllByIds(ids);
+    }
+
     public List<T> find(Filter filter) {
         return base.find(filter);
     }

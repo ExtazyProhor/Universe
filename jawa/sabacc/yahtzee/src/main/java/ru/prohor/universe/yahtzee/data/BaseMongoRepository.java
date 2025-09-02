@@ -40,6 +40,13 @@ public class BaseMongoRepository<T> {
         return Opt.ofNullable(datastore.find(type).filter(dev.morphia.query.filters.Filters.eq(ID, id)).first());
     }
 
+    List<T> findAllByIds(List<ObjectId> ids) {
+        return datastore.find(type)
+                .filter(dev.morphia.query.filters.Filters.in(ID, ids))
+                .stream()
+                .toList();
+    }
+
     List<T> find(Filter filter) {
         return datastore.find(type).filter(filter).stream().toList();
     }
