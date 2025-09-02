@@ -10,7 +10,7 @@ public record User(
         long id,
         UUID uuid,
         ObjectId objectId,
-        String username,
+        String username, // TODO хранить lowercase username чтобы не дублировались
         String email,
         String password,
         boolean enabled,
