@@ -76,7 +76,7 @@ public class BaseMongoRepository<T> {
 
     MongoTextSearchResult<T> findByText(String text, int page, int pageSize) {
         return new MongoTextSearchResult<>(
-                findEntities(text, found -> found.skip((page - 1) * pageSize).limit(pageSize)),
+                findEntities(text, found -> found.skip(page * pageSize).limit(pageSize)),
                 collection.countDocuments(Filters.text(text))
         );
     }

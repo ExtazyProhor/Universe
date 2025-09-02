@@ -7,9 +7,11 @@ import ru.prohor.universe.yahtzee.web.controllers.AccountController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Service
 public class GameColorsService {
@@ -18,14 +20,25 @@ public class GameColorsService {
     private static final List<String> AVAILABLE_COLORS = List.of(); // TODO
     // TODO цвета это не одно значение, еще нужен светлый вариант и цвет текста
 
+    private final Random random;
+
     public GameColorsService(
             @Value("${universe.yahtzee.game.irl.max-teams}") int maxTeams
     ) {
         checkTeamsSize(maxTeams, AVAILABLE_COLORS.size());
+        this.random = new Random();
     }
 
     public AccountController.AvailableColorsResponse getAvailableColors() {
         return new AccountController.AvailableColorsResponse(AVAILABLE_COLORS);
+    }
+
+    public String getRandomColor() {
+        return AVAILABLE_COLORS.get(random.nextInt(AVAILABLE_COLORS.size()));
+    }
+
+    public boolean validateColor(String color) {
+        return AVAILABLE_COLORS.contains(color);
     }
 
     public Map<String, String> calculateColorsForTeams(Map<String, List<Player>> teams) {

@@ -9,17 +9,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import ru.prohor.universe.jocasta.core.collections.Opt;
 import ru.prohor.universe.jocasta.scarifJwt.AuthorizedUser;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
-import ru.prohor.universe.yahtzee.services.UserService;
+import ru.prohor.universe.yahtzee.services.AccountService;
 
 import java.io.IOException;
 
 public class YahtzeeAuthorizedUserFilter extends OncePerRequestFilter {
     public static final int YAHTZEE_AUTHORIZED_USER_FILTER_ORDER = 10;
 
-    private final UserService userService;
+    private final AccountService accountService;
 
-    public YahtzeeAuthorizedUserFilter(UserService userService) {
-        this.userService = userService;
+    public YahtzeeAuthorizedUserFilter(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class YahtzeeAuthorizedUserFilter extends OncePerRequestFilter {
 
         request.setAttribute(
                 Player.ATTRIBUTE_KEY,
-                authorizedUser.map(userService::wrap)
+                authorizedUser.map(accountService::wrap)
         );
         filterChain.doFilter(request, response);
     }

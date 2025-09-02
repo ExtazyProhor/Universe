@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.Opt;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.services.color.GameColorsService;
-import ru.prohor.universe.yahtzee.services.UserService;
+import ru.prohor.universe.yahtzee.services.AccountService;
 
 import java.util.List;
 
 @RestController("/api/account")
 public class AccountController {
     private final GameColorsService gameColorsService;
-    private final UserService userService;
+    private final AccountService accountService;
 
     public AccountController(
             GameColorsService gameColorsService,
-            UserService userService
+            AccountService accountService
     ) {
         this.gameColorsService = gameColorsService;
-        this.userService = userService;
+        this.accountService = accountService;
     }
 
     @GetMapping("/info")
@@ -35,7 +35,7 @@ public class AccountController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return ResponseEntity.ok(userService.getUserInfo(player.get()));
+        return ResponseEntity.ok(accountService.getPlayerInfo(player.get()));
     }
 
     public record InfoResponse(
@@ -55,7 +55,7 @@ public class AccountController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (userService.changeName(player.get(), body.name()))
+        if (accountService.changeName(player.get(), body.name()))
             return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
@@ -83,7 +83,7 @@ public class AccountController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (userService.changeColor(player.get(), body.color()))
+        if (accountService.changeColor(player.get(), body.color()))
             return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
@@ -101,18 +101,19 @@ public class AccountController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return ResponseEntity.ok(userService.findUsers(player.get(), body.name(), body.page()));
+        return ResponseEntity.ok(accountService.findUsers(player.get(), body.name(), body.page()));
     }
 
     public record FindUsersRequest(
             String name,
-            int page
+            int page // starts from 0, page_size = 5 items
     ) {}
 
     public record FindUsersResponse(
-            // max 10 in response, use pagination
+            // max 5 in response, use pagination
             @JsonProperty("found_users")
-            List<FoundUser> foundUsers
+            List<FoundUser> foundUsers,
+            long total
     ) {}
 
     public record FoundUser(
@@ -134,7 +135,7 @@ public class AccountController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (userService.addFriend(player.get(), body.id()))
+        if (accountService.addFriend(player.get(), body.id()))
             return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
@@ -152,7 +153,7 @@ public class AccountController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (userService.deleteFriend(player.get(), body.id()))
+        if (accountService.deleteFriend(player.get(), body.id()))
             return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
@@ -170,16 +171,17 @@ public class AccountController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return ResponseEntity.ok(userService.getFriends(player.get(), body.page()));
+        return ResponseEntity.ok(accountService.getFriends(player.get(), body.page()));
     }
 
     public record FriendsRequest(
-            int page
+            int page // starts from 0, page_size = 5 items
     ) {}
 
     public record FriendsResponse(
-            // max 10 in response, use pagination
-            List<Friend> friends
+            // max 5 in response, use pagination
+            List<Friend> friends,
+            long total
     ) {}
 
     public record Friend(
