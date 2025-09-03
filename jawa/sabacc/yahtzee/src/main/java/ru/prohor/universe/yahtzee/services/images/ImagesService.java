@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.services;
+package ru.prohor.universe.yahtzee.services.images;
 
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
@@ -10,25 +10,29 @@ import ru.prohor.universe.yahtzee.data.entities.dto.ImageDto;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Image;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 @Service
-public class AvatarService {
+public class ImagesService {
     private static final String PNG = "png";
 
     private final MongoRepositoryWithWrapper<ImageDto, Image> imagesRepository;
+    private final AvatarGenerator avatarGenerator;
 
-    public AvatarService(MongoRepositoryWithWrapper<ImageDto, Image> imagesRepository) {
+    public ImagesService(
+            MongoRepositoryWithWrapper<ImageDto, Image> imagesRepository,
+            AvatarGenerator avatarGenerator
+    ) {
         this.imagesRepository = imagesRepository;
+        this.avatarGenerator = avatarGenerator;
     }
 
     public Image generateAndSave() {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(
-                    generate(),
+                    avatarGenerator.generate(),
                     PNG,
                     byteArrayOutputStream
             );
@@ -55,9 +59,5 @@ public class AvatarService {
             return Opt.empty();
         }
         return imagesRepository.findById(objectId).map(image -> image.content().getData());
-    }
-
-    private BufferedImage generate() {
-        return new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB); // TODO
     }
 }

@@ -9,6 +9,7 @@ import ru.prohor.universe.yahtzee.data.MongoRepositoryWithWrapper;
 import ru.prohor.universe.yahtzee.data.MongoTextSearchResult;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.services.color.GameColorsService;
+import ru.prohor.universe.yahtzee.services.images.ImagesService;
 import ru.prohor.universe.yahtzee.web.controllers.AccountController;
 
 import java.util.ArrayList;
@@ -22,16 +23,16 @@ public class AccountService {
 
     private final MongoRepositoryWithWrapper<?, Player> playerRepository;
     private final GameColorsService gameColorsService;
-    private final AvatarService avatarService;
+    private final ImagesService imagesService;
 
     public AccountService(
             MongoRepositoryWithWrapper<?, Player> playerRepository,
             GameColorsService gameColorsService,
-            AvatarService avatarService
+            ImagesService imagesService
     ) {
         this.playerRepository = playerRepository;
         this.gameColorsService = gameColorsService;
-        this.avatarService = avatarService;
+        this.imagesService = imagesService;
     }
 
     public Player wrap(AuthorizedUser user) {
@@ -46,7 +47,7 @@ public class AccountService {
                     user.username(),
                     List.of(),
                     Opt.empty(),
-                    avatarService.generateAndSave().id(),
+                    imagesService.generateAndSave().id(),
                     Instant.now(),
                     false
             );

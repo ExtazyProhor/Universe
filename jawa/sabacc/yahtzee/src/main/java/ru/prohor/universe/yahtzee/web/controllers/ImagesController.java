@@ -5,19 +5,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import ru.prohor.universe.yahtzee.services.AvatarService;
+import ru.prohor.universe.yahtzee.services.images.ImagesService;
 
 @RestController("/image")
 public class ImagesController {
-    AvatarService avatarService;
+    ImagesService imagesService;
 
-    public ImagesController(AvatarService avatarService) {
-        this.avatarService = avatarService;
+    public ImagesController(ImagesService imagesService) {
+        this.imagesService = imagesService;
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> image(@PathVariable String id) {
-        return avatarService.getAvatarById(id).map(
+        return imagesService.getAvatarById(id).map(
                 data -> ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(data)
         ).orElseGet(
                 () -> ResponseEntity.notFound().build()
