@@ -4,6 +4,7 @@ import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.joda.time.Instant;
 import org.springframework.stereotype.Service;
+import ru.prohor.universe.jocasta.core.collections.Opt;
 import ru.prohor.universe.yahtzee.data.MongoRepositoryWithWrapper;
 import ru.prohor.universe.yahtzee.data.entities.dto.ImageDto;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Image;
@@ -43,6 +44,17 @@ public class AvatarService {
         } catch (IOException e) {
             throw new RuntimeException("Error writing image", e);
         }
+    }
+
+    public Opt<byte[]> getAvatarById(String id) {
+        ObjectId objectId;
+        try {
+            objectId = new ObjectId(id);
+        } catch (Exception e) {
+            // TODO log
+            return Opt.empty();
+        }
+        return imagesRepository.findById(objectId).map(image -> image.content().getData());
     }
 
     private BufferedImage generate() {
