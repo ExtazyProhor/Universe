@@ -90,7 +90,13 @@ public class IrlGameService {
                                                                 player.displayName(),
                                                                 j == team.movingPlayerIndex()
                                                         )
-                                                )
+                                                ),
+                                                team.scores().stream().map(
+                                                        score -> new GameIrlController.CombinationInfo(
+                                                                GameIrlController.Combination.of(score.combination()),
+                                                                score.value()
+                                                        )
+                                                ).toList()
                                         )
                                 )
                         )

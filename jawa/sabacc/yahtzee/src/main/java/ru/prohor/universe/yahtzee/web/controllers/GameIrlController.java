@@ -43,7 +43,7 @@ public class GameIrlController {
             int teams
     ) {}
 
-    @GetMapping("/room_info") // TODO нужны результаты предыдущих бросков для восстановления состояния
+    @GetMapping("/room_info")
     public ResponseEntity<RoomInfoResponse> getRoomInfo(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
             Opt<Player> player
@@ -67,7 +67,13 @@ public class GameIrlController {
             String title,
             TeamColor color,
             boolean moving, // next move is up to this team
-            List<PlayerInfo> players
+            List<PlayerInfo> players,
+            List<CombinationInfo> results // combinations that already filled
+    ) {}
+
+    public record CombinationInfo(
+            Combination combination,
+            int value
     ) {}
 
     public record PlayerInfo(
