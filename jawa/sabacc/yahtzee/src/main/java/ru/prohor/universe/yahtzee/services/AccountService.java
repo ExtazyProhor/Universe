@@ -55,7 +55,7 @@ public class AccountService {
         });
     }
 
-    public boolean changeName(Player player, String name) { // TODO validation name
+    public boolean changeName(Player player, String name) {
         playerRepository.save(player.toBuilder().displayName(name).build());
         return true;
     }
@@ -76,7 +76,7 @@ public class AccountService {
         );
     }
 
-    public AccountController.FindUsersResponse findUsers(Player player, String name, int page) { // TODO validate page
+    public AccountController.FindUsersResponse findUsers(Player player, String name, int page) {
         Set<ObjectId> friends = new HashSet<>(player.friends());
         MongoTextSearchResult<Player> result = playerRepository.findByText(name, page, PAGE_SIZE);
         return new AccountController.FindUsersResponse(
@@ -100,7 +100,7 @@ public class AccountService {
         try {
             objectId = new ObjectId(id);
         } catch (Exception e) {
-            // TODO log
+            e.printStackTrace(); // TODO log
             return false;
         }
         List<ObjectId> ids = new ArrayList<>(player.friends());
@@ -117,7 +117,7 @@ public class AccountService {
         try {
             objectId = new ObjectId(id);
         } catch (Exception e) {
-            // TODO log
+            e.printStackTrace(); // TODO log
             return false;
         }
         List<ObjectId> ids = new ArrayList<>(player.friends());
@@ -128,7 +128,7 @@ public class AccountService {
         return true;
     }
 
-    public AccountController.FriendsResponse getFriends(Player player, long page) { // TODO validate page
+    public AccountController.FriendsResponse getFriends(Player player, long page) {
         return new AccountController.FriendsResponse(
                 player.friends()
                         .stream()

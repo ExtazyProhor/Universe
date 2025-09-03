@@ -1,6 +1,12 @@
 package ru.prohor.universe.yahtzee.web.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +56,7 @@ public class AccountController {
     public ResponseEntity<?> changeName(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
             Opt<Player> player,
+            @Valid
             @RequestBody
             ChangeNameRequest body
     ) {
@@ -61,6 +68,9 @@ public class AccountController {
     }
 
     public record ChangeNameRequest(
+            @NotNull
+            @Size(min = 3, max = 20)
+            @Pattern(regexp = "^\\S+$")
             String name
     ) {}
 
@@ -103,6 +113,7 @@ public class AccountController {
     public ResponseEntity<FindUsersResponse> findUser(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
             Opt<Player> player,
+            @Valid
             @RequestBody
             FindUsersRequest body
     ) {
@@ -113,6 +124,7 @@ public class AccountController {
 
     public record FindUsersRequest(
             String name,
+            @Min(0) @Max(1000)
             int page // starts from 0, page_size = 5 items
     ) {}
 
@@ -173,6 +185,7 @@ public class AccountController {
     public ResponseEntity<FriendsResponse> friends(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
             Opt<Player> player,
+            @Valid
             @RequestBody
             FriendsRequest body
     ) {
@@ -182,6 +195,7 @@ public class AccountController {
     }
 
     public record FriendsRequest(
+            @Min(0) @Max(1000)
             int page // starts from 0, page_size = 5 items
     ) {}
 
