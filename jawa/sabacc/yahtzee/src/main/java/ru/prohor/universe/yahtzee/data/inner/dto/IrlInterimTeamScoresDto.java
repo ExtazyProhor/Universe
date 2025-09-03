@@ -10,8 +10,6 @@ import java.util.List;
 @Getter
 @Entity
 public class IrlInterimTeamScoresDto {
-    @Property("team_id")
-    private int teamId;
     @Property("moving_player_index")
     private int movingPlayerIndex;
     private String title;
@@ -23,14 +21,12 @@ public class IrlInterimTeamScoresDto {
     public IrlInterimTeamScoresDto() {}
 
     public IrlInterimTeamScoresDto(
-            int teamId,
             int movingPlayerIndex,
             String title,
             int color,
             List<ObjectId> players,
             List<IrlScoreDto> scores
     ) {
-        this.teamId = teamId;
         this.movingPlayerIndex = movingPlayerIndex;
         this.title = title;
         this.color = color;

@@ -9,7 +9,6 @@ import java.util.List;
 
 @Builder(toBuilder = true)
 public record IrlInterimTeamScores(
-        int teamId,
         int movingPlayerIndex,
         String title,
         int color,
@@ -19,7 +18,6 @@ public record IrlInterimTeamScores(
     @Override
     public IrlInterimTeamScoresDto toDto() {
         return new IrlInterimTeamScoresDto(
-                teamId,
                 movingPlayerIndex,
                 title,
                 color,
@@ -30,7 +28,6 @@ public record IrlInterimTeamScores(
 
     public static IrlInterimTeamScores fromDto(IrlInterimTeamScoresDto team) {
         return new IrlInterimTeamScores(
-                team.getTeamId(),
                 team.getMovingPlayerIndex(),
                 team.getTitle(),
                 team.getColor(),

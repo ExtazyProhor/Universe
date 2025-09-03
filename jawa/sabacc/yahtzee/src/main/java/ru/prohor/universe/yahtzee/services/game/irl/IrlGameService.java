@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,7 +78,6 @@ public class IrlGameService {
                                 Enumeration.enumerateAndMap(
                                         room.teams(),
                                         (i, team) -> new GameIrlController.TeamInfo(
-                                                team.teamId(),
                                                 team.title(),
                                                 gameColorsService.getById(team.color()),
                                                 i == room.movingTeamIndex(),
@@ -132,7 +130,6 @@ public class IrlGameService {
                 playersInTeams
         );
         List<IrlScore> emptyScores = List.of();
-        AtomicInteger currentTeamIndex = new AtomicInteger(0);
 
         IrlRoom room = new IrlRoom(
                 newRoomId,
@@ -140,7 +137,6 @@ public class IrlGameService {
                 player.id(),
                 FIRST_MOVE_INDEX,
                 playersInTeams.entrySet().stream().map(entry -> new IrlInterimTeamScores(
-                        currentTeamIndex.getAndIncrement(),
                         FIRST_MOVE_INDEX,
                         entry.getKey(),
                         teamsColors.get(entry.getKey()).colorId(),
@@ -213,7 +209,6 @@ public class IrlGameService {
                 nextMovingTeam.players().get(nextMovingTeam.movingPlayerIndex()).toHexString(),
                 false
         ));
-        // TODO понять зачем я делал teamId
     }
 
     private IrlGame roomToGame(IrlRoom room) {

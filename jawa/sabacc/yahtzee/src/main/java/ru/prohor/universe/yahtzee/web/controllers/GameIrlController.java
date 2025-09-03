@@ -62,8 +62,6 @@ public class GameIrlController {
     ) {}
 
     public record TeamInfo(
-            @JsonProperty("team_id")
-            int teamId,
             String title,
             TeamColor color,
             boolean moving, // next move is up to this team
@@ -128,8 +126,6 @@ public class GameIrlController {
     }
 
     public record SaveMoveRequest(
-            @JsonProperty("team_id")
-            int teamId,
             @JsonProperty("moving_player_id")
             String movingPlayerId,
             Combination combination,
