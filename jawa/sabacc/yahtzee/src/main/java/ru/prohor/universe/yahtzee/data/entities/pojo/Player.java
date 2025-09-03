@@ -17,7 +17,7 @@ public record Player(
         UUID uuid,
         long numericId,
         String username,
-        String color,
+        int color,
         String displayName,
         List<ObjectId> friends,
         Opt<ObjectId> currentRoom,

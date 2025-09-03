@@ -12,7 +12,7 @@ public record IrlInterimTeamScores(
         int teamId,
         int movingPlayerIndex,
         String title,
-        String color,
+        int color,
         List<ObjectId> players,
         List<IrlScore> scores
 ) implements MongoEntityPojo<IrlInterimTeamScoresDto> {

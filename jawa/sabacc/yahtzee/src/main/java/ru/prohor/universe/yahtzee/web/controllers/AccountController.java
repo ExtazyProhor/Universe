@@ -41,7 +41,7 @@ public class AccountController {
     public record InfoResponse(
             String username,
             String name,
-            String color,
+            String color, // format: "ff0000", hex, without alpha
             @JsonProperty("image_id")
             String imageId
     ) {}
@@ -70,8 +70,14 @@ public class AccountController {
     }
 
     public record AvailableColorsResponse(
+            List<AvailableColor> colors
+    ) {}
+
+    public record AvailableColor(
+            @JsonProperty("color_id")
+            int colorId,
             // format: "ff0000", hex, without alpha
-            List<String> colors
+            String color
     ) {}
 
     @PostMapping("/change_preferred_color")
@@ -83,13 +89,14 @@ public class AccountController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (accountService.changeColor(player.get(), body.color()))
+        if (accountService.changeColor(player.get(), body.colorId()))
             return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
 
     public record ChangePreferredColorRequest(
-            String color
+            @JsonProperty("color_id")
+            int colorId
     ) {}
 
     @PostMapping("/find_users")

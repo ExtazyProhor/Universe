@@ -81,7 +81,7 @@ public class IrlGameService {
                                         (i, team) -> new GameIrlController.TeamInfo(
                                                 team.teamId(),
                                                 team.title(),
-                                                team.color(),
+                                                gameColorsService.getById(team.color()),
                                                 i == room.movingTeamIndex(),
                                                 Enumeration.enumerateAndMap(
                                                         team.players(),
@@ -122,7 +122,9 @@ public class IrlGameService {
                     teamPlayers.playersIds().stream().map(players::get).toList()
             );
         }
-        Map<String, String> teamsColors = gameColorsService.calculateColorsForTeams(playersInTeams);
+        Map<String, GameIrlController.TeamColor> teamsColors = gameColorsService.calculateColorsForTeams(
+                playersInTeams
+        );
         List<IrlScore> emptyScores = List.of();
         AtomicInteger currentTeamIndex = new AtomicInteger(0);
 
@@ -135,7 +137,7 @@ public class IrlGameService {
                         currentTeamIndex.getAndIncrement(),
                         FIRST_MOVE_INDEX,
                         entry.getKey(),
-                        teamsColors.get(entry.getKey()),
+                        teamsColors.get(entry.getKey()).colorId(),
                         entry.getValue().stream().map(Player::id).toList(),
                         emptyScores
                 )).toList()

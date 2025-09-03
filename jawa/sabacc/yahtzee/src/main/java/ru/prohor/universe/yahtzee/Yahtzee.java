@@ -8,7 +8,7 @@ public class Yahtzee {
     public static final int COMBINATIONS = 15;
 
     public static boolean isSimple(String combination) {
-        return switch (Enum.valueOf(GameIrlController.Combination.class, combination)) {
+        return switch (GameIrlController.Combination.of(combination)) {
             case UNITS, TWOS, THREES, FOURS, FIVES, SIXES -> true;
             default -> false;
         };

@@ -2,10 +2,12 @@ package ru.prohor.universe.yahtzee.data.inner.dto;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Property;
+import lombok.Getter;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
+@Getter
 @Entity
 public class IrlInterimTeamScoresDto {
     @Property("team_id")
@@ -13,17 +15,18 @@ public class IrlInterimTeamScoresDto {
     @Property("moving_player_index")
     private int movingPlayerIndex;
     private String title;
-    private String color;
+    private int color;
     private List<ObjectId> players;
     private List<IrlScoreDto> scores;
 
+    @SuppressWarnings("unused")
     public IrlInterimTeamScoresDto() {}
 
     public IrlInterimTeamScoresDto(
             int teamId,
             int movingPlayerIndex,
             String title,
-            String color,
+            int color,
             List<ObjectId> players,
             List<IrlScoreDto> scores
     ) {
@@ -33,29 +36,5 @@ public class IrlInterimTeamScoresDto {
         this.color = color;
         this.players = players;
         this.scores = scores;
-    }
-
-    public int getTeamId() {
-        return teamId;
-    }
-
-    public int getMovingPlayerIndex() {
-        return movingPlayerIndex;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public List<ObjectId> getPlayers() {
-        return players;
-    }
-
-    public List<IrlScoreDto> getScores() {
-        return scores;
     }
 }

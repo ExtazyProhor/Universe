@@ -42,7 +42,7 @@ public class AccountService {
                     user.uuid(),
                     user.id(),
                     user.username(),
-                    gameColorsService.getRandomColor(),
+                    gameColorsService.getRandomColorId(),
                     user.username(),
                     List.of(),
                     Opt.empty(),
@@ -60,10 +60,10 @@ public class AccountService {
         return true;
     }
 
-    public boolean changeColor(Player player, String color) {
-        if (!gameColorsService.validateColor(color))
+    public boolean changeColor(Player player, int colorId) {
+        if (!gameColorsService.validateColor(colorId))
             return false;
-        playerRepository.save(player.toBuilder().color(color).build());
+        playerRepository.save(player.toBuilder().color(colorId).build());
         return true;
     }
 
@@ -71,7 +71,7 @@ public class AccountService {
         return new AccountController.InfoResponse(
                 player.username(),
                 player.displayName(),
-                player.color(),
+                gameColorsService.getById(player.color()).background(),
                 player.imageId().toHexString()
         );
     }

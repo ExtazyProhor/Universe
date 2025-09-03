@@ -1,5 +1,6 @@
 package ru.prohor.universe.yahtzee.web.controllers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class GameIrlController {
             int teams
     ) {}
 
-    @GetMapping("/room_info")
+    @GetMapping("/room_info") // TODO нужны результаты предыдущих бросков для восстановления состояния
     public ResponseEntity<RoomInfoResponse> getRoomInfo(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
             Opt<Player> player
@@ -64,7 +65,7 @@ public class GameIrlController {
             @JsonProperty("team_id")
             int teamId,
             String title,
-            String color,
+            TeamColor color,
             boolean moving, // next move is up to this team
             List<PlayerInfo> players
     ) {}
@@ -138,6 +139,16 @@ public class GameIrlController {
 
     public record SaveMoveErrorResponse(
             String error
+    ) {}
+
+    public record TeamColor(
+            @JsonIgnore
+            int colorId, // internal use
+            @JsonProperty("bg")
+            String background,
+            String text,
+            String light,
+            String dark
     ) {}
 
     public enum Combination {

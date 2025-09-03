@@ -3,12 +3,14 @@ package ru.prohor.universe.yahtzee.data.entities.dto;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
+import lombok.Getter;
 import org.bson.types.ObjectId;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 @Entity("users")
 public class PlayerDto {
     @Id
@@ -18,7 +20,7 @@ public class PlayerDto {
     @Property("numeric_id")
     private long numericId;
     private String username;
-    private String color;
+    private int color;
     @Property("display_name")
     private String displayName;
     private List<ObjectId> friends;
@@ -30,6 +32,7 @@ public class PlayerDto {
     private Instant createdAt;
     private boolean trusted;
 
+    @SuppressWarnings("unused")
     public PlayerDto() {}
 
     public PlayerDto(
@@ -37,7 +40,7 @@ public class PlayerDto {
             UUID uuid,
             long numericId,
             String username,
-            String color,
+            int color,
             String displayName,
             List<ObjectId> friends,
             ObjectId currentRoom,
@@ -56,49 +59,5 @@ public class PlayerDto {
         this.imageId = imageId;
         this.createdAt = createdAt;
         this.trusted = trusted;
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public long getNumericId() {
-        return numericId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public List<ObjectId> getFriends() {
-        return friends;
-    }
-
-    public ObjectId getCurrentRoom() {
-        return currentRoom;
-    }
-
-    public ObjectId getImageId() {
-        return imageId;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public boolean isTrusted() {
-        return trusted;
     }
 }
