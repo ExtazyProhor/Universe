@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.Opt;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
@@ -15,7 +16,8 @@ import ru.prohor.universe.yahtzee.services.game.irl.IrlGameService;
 
 import java.util.List;
 
-@RestController("/api/game/irl")
+@RestController
+@RequestMapping("/api/game/irl")
 public class GameIrlController {
     private final IrlGameService irlGameService;
 

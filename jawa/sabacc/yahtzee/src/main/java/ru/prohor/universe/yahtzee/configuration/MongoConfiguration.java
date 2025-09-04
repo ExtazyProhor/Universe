@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
+import org.bson.UuidRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,6 +52,7 @@ public class MongoConfiguration {
                 .applyToClusterSettings(builder -> builder.hosts(
                         List.of(new ServerAddress(host, post))
                 ))
+                .uuidRepresentation(UuidRepresentation.STANDARD)
                 .credential(MongoCredential.createCredential(
                         user,
                         database,

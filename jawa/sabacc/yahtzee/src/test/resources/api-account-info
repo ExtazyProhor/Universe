@@ -1,0 +1,3 @@
+curl -s \
+  -X GET "http://localhost:7002/api/account/info" \
+  -H "Cookie: scarif_access_token=$(jq -r '."test-access-token"' ~/my/holocron.json)" | jq

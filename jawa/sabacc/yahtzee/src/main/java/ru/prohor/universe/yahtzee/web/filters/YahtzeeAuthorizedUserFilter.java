@@ -28,12 +28,10 @@ public class YahtzeeAuthorizedUserFilter extends OncePerRequestFilter {
             @Nonnull HttpServletResponse response,
             @Nonnull FilterChain filterChain
     ) throws ServletException, IOException {
-        Opt<AuthorizedUser> authorizedUser = Opt.ofNullable(
-                request.getAttribute(
-                        AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY
-                )
-        ).cast();
-
+        @SuppressWarnings("unchecked")
+        Opt<AuthorizedUser> authorizedUser = (Opt<AuthorizedUser>) request.getAttribute(
+                AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY
+        );
         request.setAttribute(
                 Player.ATTRIBUTE_KEY,
                 authorizedUser.map(accountService::wrap)
