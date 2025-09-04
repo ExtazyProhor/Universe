@@ -2,6 +2,10 @@ package ru.prohor.universe.yahtzee;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.mongo.MongoReactiveDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +18,14 @@ import ru.prohor.universe.jocasta.holocron.HolocronConfiguration;
 import ru.prohor.universe.jocasta.scarifJwt.ScarifJwtConfiguration;
 
 @Configuration
-@EnableAutoConfiguration
+@EnableAutoConfiguration(
+        exclude = {
+                MongoAutoConfiguration.class,
+                MongoDataAutoConfiguration.class,
+                MongoReactiveAutoConfiguration.class,
+                MongoReactiveDataAutoConfiguration.class
+        }
+)
 @ComponentScan(excludeFilters = {
         @ComponentScan.Filter(
                 type = FilterType.ANNOTATION,

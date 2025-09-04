@@ -11,6 +11,7 @@ import org.bson.UuidRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.yahtzee.data.MongoMorphiaRepository;
 import ru.prohor.universe.yahtzee.data.MongoRepository;
 import ru.prohor.universe.yahtzee.data.entities.dto.ImageDto;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
+@Profile("!local")
 public class MongoConfiguration {
     @Bean
     public MongoClient mongoClient(
