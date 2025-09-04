@@ -15,9 +15,10 @@ import ru.prohor.universe.jocasta.core.collections.Opt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-public class BaseMongoRepository<T> {
+public class AbstractMongoMorphiaRepository<T, W> {
     private static final String NO_ENTITY = "entity does not exists, but was found";
     private static final String SCORE = "score";
     private static final String ID = "_id";
@@ -28,35 +29,48 @@ public class BaseMongoRepository<T> {
     private final Datastore datastore;
     private final Class<T> type;
 
-    BaseMongoRepository(Datastore datastore, Class<T> type) {
-        this.collection = datastore.getDatabase().getCollection(getCollectionName(type));
-        this.datastore = datastore;
+    private final Function<T, W> wrapFunction;
+    private final Function<W, T> unwrapFunction;
+
+    AbstractMongoMorphiaRepository(
+            Datastore datastore,
+            Class<T> type,
+            Function<T, W> wrapFunction,
+            Function<W, T> unwrapFunction
+    ) {
         this.type = type;
+        this.datastore = datastore;
+        this.collection = datastore.getDatabase().getCollection(getCollectionName());
+        this.wrapFunction = wrapFunction;
+        this.unwrapFunction = unwrapFunction;
     }
 
-    Opt<T> findById(ObjectId id) {
+    Opt<W> findById(ObjectId id) {
         // TODO убрать dev.morphia.query.filters. путем вынесения фильтров в отдельный класс
         // TODO + ссылки на поля классов для фильтрации
-        return Opt.ofNullable(datastore.find(type).filter(dev.morphia.query.filters.Filters.eq(ID, id)).first());
+        return Opt.ofNullable(
+                datastore.find(type).filter(dev.morphia.query.filters.Filters.eq(ID, id)).first()
+        ).map(wrapFunction);
     }
 
-    List<T> findAllByIds(List<ObjectId> ids) {
+    List<W> findAllByIds(List<ObjectId> ids) {
         return datastore.find(type)
                 .filter(dev.morphia.query.filters.Filters.in(ID, ids))
                 .stream()
+                .map(wrapFunction)
                 .toList();
     }
 
-    List<T> find(Filter filter) {
-        return datastore.find(type).filter(filter).stream().toList();
+    List<W> find(Filter filter) {
+        return datastore.find(type).filter(filter).stream().map(wrapFunction).toList();
     }
 
-    void save(T entity) {
-        datastore.save(entity);
+    void save(W entity) {
+        datastore.save(unwrapFunction.apply(entity));
     }
 
-    void save(List<T> entities) {
-        datastore.save(entities);
+    void save(List<W> entities) {
+        datastore.save(entities.stream().map(unwrapFunction).toList());
     }
 
     @SuppressWarnings("all")
@@ -70,18 +84,18 @@ public class BaseMongoRepository<T> {
         collection.deleteOne(Filters.eq(ID, id));
     }
 
-    List<T> findByText(String text) {
+    List<W> findByText(String text) {
         return findEntities(text, NO_PAGING);
     }
 
-    MongoTextSearchResult<T> findByText(String text, int page, int pageSize) {
+    MongoTextSearchResult<W> findByText(String text, int page, int pageSize) {
         return new MongoTextSearchResult<>(
                 findEntities(text, found -> found.skip(page * pageSize).limit(pageSize)),
                 collection.countDocuments(Filters.text(text))
         );
     }
 
-    private String getCollectionName(Class<T> type) {
+    private String getCollectionName() {
         Entity annotation = type.getAnnotation(Entity.class);
         if (annotation == null)
             throw new IllegalArgumentException(
@@ -90,7 +104,7 @@ public class BaseMongoRepository<T> {
         return annotation.value();
     }
 
-    private List<T> findEntities(String text, UnaryOperator<FindIterable<Document>> paging) {
+    private List<W> findEntities(String text, UnaryOperator<FindIterable<Document>> paging) {
         FindIterable<Document> findIterable = collection.find(Filters.text(text))
                 .projection(Projections.fields(Projections.include(ID), Projections.metaTextScore(SCORE)))
                 .sort(Sorts.orderBy(Sorts.metaTextScore(SCORE), Sorts.ascending(ID)));

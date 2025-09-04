@@ -5,7 +5,7 @@ import org.joda.time.Instant;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.Opt;
 import ru.prohor.universe.jocasta.scarifJwt.AuthorizedUser;
-import ru.prohor.universe.yahtzee.data.MongoRepositoryWithWrapper;
+import ru.prohor.universe.yahtzee.data.MongoRepository;
 import ru.prohor.universe.yahtzee.data.MongoTextSearchResult;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.services.color.GameColorsService;
@@ -21,12 +21,12 @@ import java.util.Set;
 public class AccountService {
     private static final int PAGE_SIZE = 5;
 
-    private final MongoRepositoryWithWrapper<?, Player> playerRepository;
+    private final MongoRepository<Player> playerRepository;
     private final GameColorsService gameColorsService;
     private final ImagesService imagesService;
 
     public AccountService(
-            MongoRepositoryWithWrapper<?, Player> playerRepository,
+            MongoRepository<Player> playerRepository,
             GameColorsService gameColorsService,
             ImagesService imagesService
     ) {

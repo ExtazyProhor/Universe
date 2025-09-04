@@ -12,7 +12,7 @@ import ru.prohor.universe.jocasta.core.collections.Opt;
 import ru.prohor.universe.jocasta.core.collections.Result;
 import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
 import ru.prohor.universe.yahtzee.Yahtzee;
-import ru.prohor.universe.yahtzee.data.MongoRepositoryWithWrapper;
+import ru.prohor.universe.yahtzee.data.MongoRepository;
 import ru.prohor.universe.yahtzee.data.entities.pojo.IrlGame;
 import ru.prohor.universe.yahtzee.data.entities.pojo.IrlRoom;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
@@ -36,17 +36,17 @@ public class IrlGameService {
 
     private final int maxTeams;
     private final int maxPlayersInTeam;
-    private final MongoRepositoryWithWrapper<?, Player> playerRepository;
-    private final MongoRepositoryWithWrapper<?, IrlGame> gameRepository;
-    private final MongoRepositoryWithWrapper<?, IrlRoom> roomRepository;
+    private final MongoRepository<Player> playerRepository;
+    private final MongoRepository<IrlGame> gameRepository;
+    private final MongoRepository<IrlRoom> roomRepository;
     private final GameColorsService gameColorsService;
 
     public IrlGameService(
             @Value("${universe.yahtzee.game.irl.max-teams}") int maxTeams,
             @Value("${universe.yahtzee.game.irl.max-players-in-team}") int maxPlayersInTeam,
-            MongoRepositoryWithWrapper<?, Player> playerRepository,
-            MongoRepositoryWithWrapper<?, IrlGame> gameRepository,
-            MongoRepositoryWithWrapper<?, IrlRoom> roomRepository,
+            MongoRepository<Player> playerRepository,
+            MongoRepository<IrlGame> gameRepository,
+            MongoRepository<IrlRoom> roomRepository,
             GameColorsService gameColorsService
     ) {
         this.maxTeams = maxTeams;

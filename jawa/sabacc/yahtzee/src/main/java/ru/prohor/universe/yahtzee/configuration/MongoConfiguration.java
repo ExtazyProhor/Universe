@@ -11,7 +11,8 @@ import org.bson.UuidRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.prohor.universe.yahtzee.data.MongoRepositoryWithWrapper;
+import ru.prohor.universe.yahtzee.data.MongoMorphiaRepository;
+import ru.prohor.universe.yahtzee.data.MongoRepository;
 import ru.prohor.universe.yahtzee.data.entities.dto.ImageDto;
 import ru.prohor.universe.yahtzee.data.entities.dto.IrlGameDto;
 import ru.prohor.universe.yahtzee.data.entities.dto.IrlRoomDto;
@@ -74,22 +75,22 @@ public class MongoConfiguration {
     }
 
     @Bean
-    public MongoRepositoryWithWrapper<ImageDto, Image> imageRepository(Datastore datastore) {
-        return new MongoRepositoryWithWrapper<>(Image::fromDto, datastore, ImageDto.class);
+    public MongoRepository<Image> imageRepository(Datastore datastore) {
+        return MongoMorphiaRepository.createRepository(datastore, ImageDto.class, Image::fromDto);
     }
 
     @Bean
-    public MongoRepositoryWithWrapper<IrlGameDto, IrlGame> irlGameRepository(Datastore datastore) {
-        return new MongoRepositoryWithWrapper<>(IrlGame::fromDto, datastore, IrlGameDto.class);
+    public MongoRepository<IrlGame> irlGameRepository(Datastore datastore) {
+        return MongoMorphiaRepository.createRepository(datastore, IrlGameDto.class, IrlGame::fromDto);
     }
 
     @Bean
-    public MongoRepositoryWithWrapper<IrlRoomDto, IrlRoom> irlRoomRepository(Datastore datastore) {
-        return new MongoRepositoryWithWrapper<>(IrlRoom::fromDto, datastore, IrlRoomDto.class);
+    public MongoRepository<IrlRoom> irlRoomRepository(Datastore datastore) {
+        return MongoMorphiaRepository.createRepository(datastore, IrlRoomDto.class, IrlRoom::fromDto);
     }
 
     @Bean
-    public MongoRepositoryWithWrapper<PlayerDto, Player> playerRepository(Datastore datastore) {
-        return new MongoRepositoryWithWrapper<>(Player::fromDto, datastore, PlayerDto.class);
+    public MongoRepository<Player> playerRepository(Datastore datastore) {
+        return MongoMorphiaRepository.createRepository(datastore, PlayerDto.class, Player::fromDto);
     }
 }

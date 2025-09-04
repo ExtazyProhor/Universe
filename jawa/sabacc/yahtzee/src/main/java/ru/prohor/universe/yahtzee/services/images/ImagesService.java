@@ -5,8 +5,7 @@ import org.bson.types.ObjectId;
 import org.joda.time.Instant;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.Opt;
-import ru.prohor.universe.yahtzee.data.MongoRepositoryWithWrapper;
-import ru.prohor.universe.yahtzee.data.entities.dto.ImageDto;
+import ru.prohor.universe.yahtzee.data.MongoRepository;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Image;
 
 import javax.imageio.ImageIO;
@@ -17,11 +16,11 @@ import java.io.IOException;
 public class ImagesService {
     private static final String PNG = "png";
 
-    private final MongoRepositoryWithWrapper<ImageDto, Image> imagesRepository;
+    private final MongoRepository<Image> imagesRepository;
     private final AvatarGenerator avatarGenerator;
 
     public ImagesService(
-            MongoRepositoryWithWrapper<ImageDto, Image> imagesRepository,
+            MongoRepository<Image> imagesRepository,
             AvatarGenerator avatarGenerator
     ) {
         this.imagesRepository = imagesRepository;

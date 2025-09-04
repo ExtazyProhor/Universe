@@ -1,6 +1,5 @@
 package ru.prohor.universe.yahtzee.data;
 
-import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filter;
 import dev.morphia.query.updates.UpdateOperator;
 import org.bson.types.ObjectId;
@@ -8,46 +7,22 @@ import ru.prohor.universe.jocasta.core.collections.Opt;
 
 import java.util.List;
 
-public final class MongoRepository<T> {
-    private final BaseMongoRepository<T> base;
+public interface MongoRepository<T> {
+    Opt<T> findById(ObjectId id);
 
-    public MongoRepository(Datastore datastore, Class<T> type) {
-        this.base = new BaseMongoRepository<>(datastore, type);
-    }
+    List<T> findAllByIds(List<ObjectId> ids);
 
-    public Opt<T> findById(ObjectId id) {
-        return base.findById(id);
-    }
+    List<T> find(Filter filter);
 
-    public List<T> findAllByIds(List<ObjectId> ids) {
-        return base.findAllByIds(ids);
-    }
+    void save(T entity);
 
-    public List<T> find(Filter filter) {
-        return base.find(filter);
-    }
+    void save(List<T> entities);
 
-    public void save(T entity) {
-        base.save(entity);
-    }
+    void update(Filter filter, UpdateOperator updateOperator);
 
-    public void save(List<T> entities) {
-        base.save(entities);
-    }
+    void deleteById(ObjectId id);
 
-    public void update(Filter filter, UpdateOperator updateOperator) {
-        base.update(filter, updateOperator);
-    }
+    List<T> findByText(String text);
 
-    public void deleteById(ObjectId id) {
-        base.deleteById(id);
-    }
-
-    public List<T> findByText(String text) {
-        return base.findByText(text);
-    }
-
-    public MongoTextSearchResult<T> findByText(String text, int page, int pageSize) {
-        return base.findByText(text, page, pageSize);
-    }
+    MongoTextSearchResult<T> findByText(String text, int page, int pageSize);
 }
