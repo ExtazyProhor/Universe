@@ -50,19 +50,3 @@ window.universeGet = async function authGet(sub, path) {
 window.universePost = async function authPost(sub, path, body) {
     return _handleAuthRequest('POST', sub, path, body);
 }
-
-/*
-
-<script src="https://scarif.tima-prohorov.ru/js/requests.js"></script>
-
-universeGet('sub', 'public/api/data')
-    .then(r => r.json())
-    .then(console.log)
-    .catch(console.error);
-
-universePost('sub', 'private/api/data', { foo: 123 })
-    .then(r => r.json())
-    .then(console.log)
-    .catch(console.error);
-
-*/
