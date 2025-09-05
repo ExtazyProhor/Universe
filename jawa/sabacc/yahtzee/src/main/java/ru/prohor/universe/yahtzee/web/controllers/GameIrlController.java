@@ -2,6 +2,8 @@ package ru.prohor.universe.yahtzee.web.controllers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +42,6 @@ public class GameIrlController {
     }
 
     public record CurrentRoomResponse(
-            String id,
             String creation, // datetime
             int teams
     ) {}
@@ -99,10 +100,14 @@ public class GameIrlController {
     }
 
     public record CreateRoomRequest(
+            @NotNull
+            @Size(min = 1, max = 8)
             List<TeamPlayers> teams
     ) {}
 
     public record TeamPlayers(
+            @NotNull
+            @Size(min = 2, max = 20)
             String title,
             @JsonProperty("players_ids")
             List<String> playersIds

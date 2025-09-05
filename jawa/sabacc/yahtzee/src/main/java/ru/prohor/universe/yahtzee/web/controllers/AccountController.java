@@ -125,6 +125,9 @@ public class AccountController {
     }
 
     public record FindUsersRequest(
+            @NotNull
+            @Size(min = 3, max = 20)
+            @Pattern(regexp = "^\\S+$")
             String name,
             @Min(0) @Max(1000)
             int page // starts from 0, page_size = 5 items

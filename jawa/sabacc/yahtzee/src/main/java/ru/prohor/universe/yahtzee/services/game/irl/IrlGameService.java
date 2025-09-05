@@ -61,7 +61,6 @@ public class IrlGameService {
         return player.currentRoom().map(
                 id -> roomRepository.findById(id).map(
                         room -> new GameIrlController.CurrentRoomResponse(
-                                room.id().toHexString(),
                                 DateTimeUtil.toReadableString(room.createdAt()),
                                 room.teams().size()
                         )
