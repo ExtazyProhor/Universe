@@ -22,6 +22,7 @@
         <module>scarif</module>
         <module>venator</module>
         <module>sabacc</module>
+        <module>korriban</module>
     </modules>
 
     <dependencyManagement>
