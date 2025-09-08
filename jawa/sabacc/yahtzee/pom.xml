@@ -16,44 +16,30 @@
         <dependency>
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-spring</artifactId>
-            <version>final</version>
         </dependency>
-
         <dependency>
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-scarif-jwt</artifactId>
-            <version>final</version>
         </dependency>
-
         <dependency>
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-holocron</artifactId>
-            <version>final</version>
         </dependency>
-
         <dependency>
             <groupId>dev.morphia.morphia</groupId>
             <artifactId>morphia-core</artifactId>
-            <version>2.5.0</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>5.5.1</version>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.19.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.38</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -64,14 +50,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.5.4</version> <!-- TODO научиться автоматически подставлять версию -->
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <mainClass>ru.prohor.universe.yahtzee.YahtzeeMain</mainClass>
                 </configuration>

@@ -16,7 +16,6 @@
     <modules>
         <module>jocasta-spring</module>
         <module>jocasta-core</module>
-        <module>jocasta-tests</module>
         <module>jocasta-joda-time</module>
         <module>jocasta-security</module>
         <module>jocasta-scarif-jwt</module>

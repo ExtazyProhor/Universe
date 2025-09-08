@@ -15,7 +15,6 @@
         <dependency>
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-spring</artifactId>
-            <version>final</version>
         </dependency>
     </dependencies>
 </project>

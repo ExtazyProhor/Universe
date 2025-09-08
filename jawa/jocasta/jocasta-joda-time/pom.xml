@@ -15,14 +15,10 @@
         <dependency>
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-core</artifactId>
-            <version>final</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.14.0</version>
         </dependency>
     </dependencies>
 </project>

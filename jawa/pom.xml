@@ -35,6 +35,156 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>5.13.1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>5.13.1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.18.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/jakarta.annotation/jakarta.annotation-api -->
+            <dependency>
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.14.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>4.5.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/dev.morphia.morphia/morphia-core -->
+            <dependency>
+                <groupId>dev.morphia.morphia</groupId>
+                <artifactId>morphia-core</artifactId>
+                <version>2.5.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>5.5.1</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.20.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.38</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.mongodb/bson -->
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>bson</artifactId>
+                <version>5.5.1</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
+            <dependency>
+                <groupId>commons-validator</groupId>
+                <artifactId>commons-validator</artifactId>
+                <version>1.10.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine -->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>3.2.2</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-core</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-spring</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-security</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-joda-time</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-scarif-jwt</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-holocron</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-core-configurations</artifactId>
+                <version>final</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>3.5.4</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
