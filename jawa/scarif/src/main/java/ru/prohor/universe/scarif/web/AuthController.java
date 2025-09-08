@@ -218,6 +218,14 @@ public class AuthController {
         ));
     }
 
+    @GetMapping("/clear_cookies")
+    public ResponseEntity<?> closeSession() {
+        return fromCookies(List.of(
+                cookieProvider.clearRefreshCookie(),
+                cookieProvider.clearAccessCookie()
+        ));
+    }
+
     public record CloseSessionRequestBody(long id) {}
 
     private ResponseEntity<?> newSession(User user, UserData userData) {

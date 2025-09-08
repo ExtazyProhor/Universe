@@ -1,5 +1,7 @@
 function _buildUrl(sub, path) {
-    return `http://localhost:7001/${path}`;
+    if (sub === 'scarif') return `http://localhost:7001/${path}`;
+    if (sub === 'yahtzee') return `http://localhost:7002/${path}`;
+    throw new Error(`Unknown subdomain: ${sub}`);
 }
 
 function _fetchWith(method, url, body) {
