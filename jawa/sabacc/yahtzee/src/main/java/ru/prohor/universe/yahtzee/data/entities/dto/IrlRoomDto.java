@@ -3,12 +3,18 @@ package ru.prohor.universe.yahtzee.data.entities.dto;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.yahtzee.data.inner.dto.IrlInterimTeamScoresDto;
 
 import java.time.Instant;
 import java.util.List;
 
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity("irl_rooms")
 public class IrlRoomDto {
     @Id
@@ -19,40 +25,4 @@ public class IrlRoomDto {
     @Property("moving_team_index")
     private int movingTeamIndex;
     private List<IrlInterimTeamScoresDto> teams;
-
-    public IrlRoomDto() {}
-
-    public IrlRoomDto(
-            ObjectId id,
-            Instant createdAt,
-            ObjectId initiator,
-            int movingTeamIndex,
-            List<IrlInterimTeamScoresDto> teams
-    ) {
-        this.id = id;
-        this.createdAt = createdAt;
-        this.initiator = initiator;
-        this.movingTeamIndex = movingTeamIndex;
-        this.teams = teams;
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public ObjectId getInitiator() {
-        return initiator;
-    }
-
-    public int getMovingTeamIndex() {
-        return movingTeamIndex;
-    }
-
-    public List<IrlInterimTeamScoresDto> getTeams() {
-        return teams;
-    }
 }
