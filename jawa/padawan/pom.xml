@@ -13,6 +13,13 @@
     <version>final</version>
     <name>padawan</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-core</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
