@@ -2,6 +2,7 @@ package ru.prohor.universe.jocasta.core.collections;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import ru.prohor.universe.jocasta.core.features.sneaky.ThrowableSupplier;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -189,17 +190,12 @@ public abstract class Opt<T> implements Serializable {
         return x == null ? empty() : of(x);
     }
 
-    public static <T> Opt<T> tryOrNull(ESupplier<T> supplier) {
+    public static <T> Opt<T> tryOrNull(ThrowableSupplier<T> supplier) {
         try {
             return ofNullable(supplier.get());
         } catch (Exception e) {
             return empty();
         }
-    }
-
-    @FunctionalInterface
-    public interface ESupplier<T> {
-        T get() throws Exception;
     }
 
     public static <T> Opt<T> when(boolean predicate, @Nonnull T x) {

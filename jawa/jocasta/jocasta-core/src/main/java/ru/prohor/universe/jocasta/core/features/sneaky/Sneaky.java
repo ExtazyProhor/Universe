@@ -7,7 +7,8 @@ public class Sneaky {
         try {
             return supplier.get();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throwUnchecked(e);
+            return null;
         }
     }
 
@@ -15,7 +16,12 @@ public class Sneaky {
         try {
             runnable.run();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throwUnchecked(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Exception> void throwUnchecked(Exception e) throws T {
+        throw (T) e;
     }
 }
