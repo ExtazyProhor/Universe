@@ -5,7 +5,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.spring.ControllersUtils;
 import ru.prohor.universe.jocasta.spring.StaticResourcesHandler;
 

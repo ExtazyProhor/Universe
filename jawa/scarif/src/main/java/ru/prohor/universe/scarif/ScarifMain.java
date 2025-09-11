@@ -13,7 +13,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.coreConfigurations.SnowflakeConfiguration;
 import ru.prohor.universe.jocasta.holocron.HolocronConfiguration;
 import ru.prohor.universe.jocasta.scarifJwt.ScarifJwtConfiguration;

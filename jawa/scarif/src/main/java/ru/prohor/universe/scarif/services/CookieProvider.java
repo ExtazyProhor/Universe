@@ -4,7 +4,7 @@ import org.joda.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 @Service
 public class CookieProvider {

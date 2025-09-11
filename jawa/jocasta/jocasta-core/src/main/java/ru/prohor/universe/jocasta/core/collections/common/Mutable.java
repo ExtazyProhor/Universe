@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.core.collections;
+package ru.prohor.universe.jocasta.core.collections.common;
 
 import java.util.function.UnaryOperator;
 

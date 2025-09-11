@@ -7,7 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 import java.util.HashMap;
 import java.util.Map;

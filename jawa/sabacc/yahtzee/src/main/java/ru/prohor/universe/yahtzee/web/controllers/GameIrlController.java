@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.services.game.irl.IrlGameService;
 

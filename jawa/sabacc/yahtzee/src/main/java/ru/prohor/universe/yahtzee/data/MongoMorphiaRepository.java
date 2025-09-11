@@ -4,7 +4,7 @@ import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filter;
 import dev.morphia.query.updates.UpdateOperator;
 import org.bson.types.ObjectId;
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 import java.util.List;
 import java.util.function.Function;

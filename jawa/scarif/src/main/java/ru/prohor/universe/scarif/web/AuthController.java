@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
 import ru.prohor.universe.jocasta.scarifJwt.AuthorizedUser;
 import ru.prohor.universe.scarif.data.session.Session;

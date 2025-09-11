@@ -2,7 +2,7 @@ package ru.prohor.universe.scarif.services;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.Pair;
 
 import java.util.ArrayList;

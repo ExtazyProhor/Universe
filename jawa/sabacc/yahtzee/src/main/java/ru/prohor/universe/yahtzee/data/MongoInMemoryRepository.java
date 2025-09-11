@@ -3,7 +3,7 @@ package ru.prohor.universe.yahtzee.data;
 import dev.morphia.query.filters.Filter;
 import dev.morphia.query.updates.UpdateOperator;
 import org.bson.types.ObjectId;
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,6 +1,6 @@
 package ru.prohor.universe.jocasta.core.features.fieldref;
 
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;

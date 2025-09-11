@@ -3,7 +3,7 @@ package ru.prohor.universe.yahtzee.services;
 import org.bson.types.ObjectId;
 import org.joda.time.Instant;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.jocasta.core.collections.Opt;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.scarifJwt.AuthorizedUser;
 import ru.prohor.universe.yahtzee.data.MongoRepository;
 import ru.prohor.universe.yahtzee.data.MongoTextSearchResult;
