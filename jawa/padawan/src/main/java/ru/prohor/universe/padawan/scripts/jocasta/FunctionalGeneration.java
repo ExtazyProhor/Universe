@@ -7,8 +7,8 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class FunctionalGenerator {
-    private static final Path ONE_OF_PACKAGE = Path.of(
+public class FunctionalGeneration {
+    private static final Path FUNCTIONAL_PACKAGE = Path.of(
             "jocasta/jocasta-core/src/main/java/ru/prohor/universe/jocasta/core/functional"
     );
     private static final int MIN = 0;
@@ -33,10 +33,10 @@ public class FunctionalGenerator {
     }
 
     private static void generateAndSave() {
-        IntStream.range(MIN, MAX + 1).forEach(i -> Sneaky.wrap(() -> {
-            Files.writeString(ONE_OF_PACKAGE.resolve(prefix(i) + "Function.java"), generateFunction(i));
-            Files.writeString(ONE_OF_PACKAGE.resolve(prefix(i) + "Consumer.java"), generateConsumer(i));
-            Files.writeString(ONE_OF_PACKAGE.resolve(prefix(i) + "Predicate.java"), generatePredicate(i));
+        IntStream.range(MIN, MAX + 1).forEach(i -> Sneaky.execute(() -> {
+            Files.writeString(FUNCTIONAL_PACKAGE.resolve(prefix(i) + "Function.java"), generateFunction(i));
+            Files.writeString(FUNCTIONAL_PACKAGE.resolve(prefix(i) + "Consumer.java"), generateConsumer(i));
+            Files.writeString(FUNCTIONAL_PACKAGE.resolve(prefix(i) + "Predicate.java"), generatePredicate(i));
         }));
     }
 

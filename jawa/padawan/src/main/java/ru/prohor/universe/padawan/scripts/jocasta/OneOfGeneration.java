@@ -4,6 +4,8 @@ import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,9 +20,27 @@ public class OneOfGeneration {
     }
 
     private static void generateAndSave() {
-        IntStream.range(2, MAX + 1).forEach(i -> Sneaky.wrap(() -> {
+        IntStream.range(2, MAX + 1).forEach(i -> Sneaky.execute(() -> {
             Files.writeString(ONE_OF_PACKAGE.resolve("OneOf" + i + ".java"), generateFor(i));
         }));
+        Sneaky.execute(() -> Files.writeString(ONE_OF_PACKAGE.resolve("OneOf.java"), generateInterface()));
+    }
+
+    private static final List<String> STATIC_FACTORIES = new ArrayList<>();
+
+    private static String generateInterface() {
+        String basic = """
+                package ru.prohor.universe.jocasta.core.collections.oneof;
+                
+                public interface OneOf {
+                    Object getAsObject();
+                
+                    <T> T getUnchecked();
+                
+                    Class<?> getType();
+                
+                """;
+        return basic + String.join("\n\n", STATIC_FACTORIES) + "\n}\n";
     }
 
     private static String generateFor(int size) {
@@ -30,6 +50,32 @@ public class OneOfGeneration {
         String generic = IntStream.range(1, size + 1)
                 .mapToObj(i -> "T" + i)
                 .collect(Collectors.joining(", ", "<", ">"));
+
+        for (int i = 0; i < size; ++i) {
+            builder.append("    static ");
+            builder.append(generic);
+            builder.append(" OneOf");
+            builder.append(size);
+            builder.append(generic);
+            builder.append(" oneOf");
+            builder.append(size);
+            builder.append("of");
+            builder.append(i + 1);
+            builder.append("(T");
+            builder.append(i + 1);
+            builder.append(" value) {\n        return new OneOf");
+            builder.append(size);
+            builder.append("<>(");
+            int[] ii = {i};
+            builder.append(IntStream.range(0, size).mapToObj(idx -> idx == ii[0] ? "value" : "null").collect(
+                    Collectors.joining(", ")
+            ));
+            builder.append(", ");
+            builder.append(i + 1);
+            builder.append(");\n    }");
+            STATIC_FACTORIES.add(builder.toString());
+            builder.setLength(0);
+        }
 
         builder.append("package ru.prohor.universe.jocasta.core.collections.oneof;\n\n");
         builder.append("public ");
@@ -64,32 +110,7 @@ public class OneOfGeneration {
         builder.append(size);
         builder.append(" = t");
         builder.append(size);
-        builder.append(";\n    }\n\n");
-
-        for (int i = 0; i < size; ++i) {
-            builder.append("    public static ");
-            builder.append(generic);
-            builder.append(" OneOf");
-            builder.append(size);
-            builder.append(generic);
-            builder.append(" oneOf");
-            builder.append(size);
-            builder.append("of");
-            builder.append(i + 1);
-            builder.append("(T");
-            builder.append(i + 1);
-            builder.append(" value) {\n        return new OneOf");
-            builder.append(size);
-            builder.append("<>(");
-            int[] ii = {i};
-            builder.append(IntStream.range(0, size).mapToObj(idx -> idx == ii[0] ? "value" : "null").collect(
-                    Collectors.joining(", ")
-            ));
-            builder.append(", ");
-            builder.append(i + 1);
-            builder.append(");\n    }\n\n");
-        }
-        builder.append("    public boolean is");
+        builder.append(";\n    }\n\n    public boolean is");
         builder.append(size);
         builder.append("() {\n        return index == INDEX_");
         builder.append(size);

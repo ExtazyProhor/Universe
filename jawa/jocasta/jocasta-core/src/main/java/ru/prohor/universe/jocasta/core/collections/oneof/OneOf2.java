@@ -10,14 +10,6 @@ public sealed class OneOf2<T1, T2> extends OneOfBase<T1> permits OneOf3 {
         this.t2 = t2;
     }
 
-    public static <T1, T2> OneOf2<T1, T2> oneOf2of1(T1 value) {
-        return new OneOf2<>(value, null, 1);
-    }
-
-    public static <T1, T2> OneOf2<T1, T2> oneOf2of2(T2 value) {
-        return new OneOf2<>(null, value, 2);
-    }
-
     public boolean is2() {
         return index == INDEX_2;
     }

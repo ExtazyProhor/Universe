@@ -10,26 +10,6 @@ public non-sealed class OneOf5<T1, T2, T3, T4, T5> extends OneOf4<T1, T2, T3, T4
         this.t5 = t5;
     }
 
-    public static <T1, T2, T3, T4, T5> OneOf5<T1, T2, T3, T4, T5> oneOf5of1(T1 value) {
-        return new OneOf5<>(value, null, null, null, null, 1);
-    }
-
-    public static <T1, T2, T3, T4, T5> OneOf5<T1, T2, T3, T4, T5> oneOf5of2(T2 value) {
-        return new OneOf5<>(null, value, null, null, null, 2);
-    }
-
-    public static <T1, T2, T3, T4, T5> OneOf5<T1, T2, T3, T4, T5> oneOf5of3(T3 value) {
-        return new OneOf5<>(null, null, value, null, null, 3);
-    }
-
-    public static <T1, T2, T3, T4, T5> OneOf5<T1, T2, T3, T4, T5> oneOf5of4(T4 value) {
-        return new OneOf5<>(null, null, null, value, null, 4);
-    }
-
-    public static <T1, T2, T3, T4, T5> OneOf5<T1, T2, T3, T4, T5> oneOf5of5(T5 value) {
-        return new OneOf5<>(null, null, null, null, value, 5);
-    }
-
     public boolean is5() {
         return index == INDEX_5;
     }

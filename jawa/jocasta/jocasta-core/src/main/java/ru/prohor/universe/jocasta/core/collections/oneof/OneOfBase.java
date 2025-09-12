@@ -13,6 +13,17 @@ public sealed abstract class OneOfBase<T1> implements OneOf permits OneOf2 {
         this.index = index;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public final <T> T getUnchecked() {
+        return (T) getAsObject();
+    }
+
+    @Override
+    public final Class<?> getType() {
+        return getAsObject().getClass();
+    }
+
     public boolean is1() {
         return index == INDEX_1;
     }
