@@ -3,6 +3,8 @@ package ru.prohor.universe.jocasta.core.collections.tuple;
 import ru.prohor.universe.jocasta.core.functional.DiFunction;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 
+import java.util.Map;
+
 /**
  * This file is a modified version of the original file developed by Stepan Koltsov at Yandex.
  * Original code is available under <a href="http://www.apache.org/licenses/LICENSE-2.0">the Apache License 2.0</a>
@@ -49,6 +51,10 @@ public class Tuple2<T1, T2> extends AbstractTuple {
 
     public Tuple2<T2, T1> swap() {
         return new Tuple2<>(t2, t1);
+    }
+
+    public static <T1, T2> Tuple2<T1, T2> wrap(Map.Entry<T1, T2> entry) {
+        return new Tuple2<>(entry.getKey(), entry.getValue());
     }
 
     @SuppressWarnings("unchecked")

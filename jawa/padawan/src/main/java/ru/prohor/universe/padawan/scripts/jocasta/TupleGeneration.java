@@ -48,6 +48,9 @@ public class TupleGeneration {
                         .collect(Collectors.joining("\n"))
         );
         builder.append("\n\n");
+        if (size == 2) {
+            builder.append("import java.util.Map;\n\n");
+        }
         builder.append(HEAD);
         builder.append(size);
         builder.append(generic);
@@ -131,6 +134,13 @@ public class TupleGeneration {
                     
                     """;
             builder.append(swap);
+            String wrap = """
+                        public static <T1, T2> Tuple2<T1, T2> wrap(Map.Entry<T1, T2> entry) {
+                            return new Tuple2<>(entry.getKey(), entry.getValue());
+                        }
+                    
+                    """;
+            builder.append(wrap);
         }
         builder.append("    @SuppressWarnings(\"unchecked\")\n    public ");
         String incrementGeneric = IntStream.range(size + 1, size + size + 1)
