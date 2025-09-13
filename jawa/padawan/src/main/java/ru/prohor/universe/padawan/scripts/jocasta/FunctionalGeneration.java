@@ -112,13 +112,7 @@ public class FunctionalGeneration {
         builder.append("package ru.prohor.universe.jocasta.core.functional;\n\n");
 
         if (size > 1)
-            builder.append("import java.util.Objects;\n");
-        if (size > 2)
-            builder.append("\n");
-        if (size == 1)
-            builder.append("import java.util.function.Predicate;\n\n");
-        else if (size == 2)
-            builder.append("import java.util.function.BiPredicate;\n\n");
+            builder.append("import java.util.Objects;\n\n");
         builder.append("@FunctionalInterface\n");
         builder.append("public interface ");
         builder.append(className);
@@ -128,21 +122,15 @@ public class FunctionalGeneration {
         if (generic.length() == 2)
             generic = "";
         builder.append(generic);
-        if (size == 1)
-            builder.append(" extends Predicate").append(generic);
-        else if (size == 2)
-            builder.append(" extends BiPredicate").append(generic);
         builder.append(" {\n");
-        if (size == 1 || size == 2)
-            builder.append("    @Override\n");
         builder.append(IntStream.range(1, size + 1).mapToObj(i -> "T" + i + " t" + i).collect(Collectors.joining(
                 ", ",
                 "    boolean test(",
-                ");\n"
+                ");\n\n"
         )));
 
         if (size > 1) {
-            builder.append("\n    static ");
+            builder.append("    static ");
             builder.append(generic);
             builder.append(" ");
             builder.append(className);
@@ -161,8 +149,62 @@ public class FunctionalGeneration {
                                 .collect(Collectors.joining(delimiter))
                 );
             }
-            builder.append(";\n    }\n");
+            builder.append(";\n    }\n\n");
         }
+
+        String defaultLogicalPrefix = "    default " + prefix(size) + "Predicate" + generic + " ";
+        String other = prefix(size) + "Predicate" + IntStream.range(1, size + 1)
+                .mapToObj(i -> "? super T" + i)
+                .collect(Collectors.joining(", ", "<", "> other"));
+        other = other.replaceAll("<>", "");
+        String paramsWithBrackets = IntStream.range(1, size + 1)
+                .mapToObj(i -> "t" + i)
+                .collect(Collectors.joining(", ", "(", ")"));
+        if (size >= 5)
+            other = "\n            " + other + "\n    ";
+
+        // and
+        builder.append(defaultLogicalPrefix);
+        builder.append("and(");
+        builder.append(other);
+        builder.append(") {\n        return ");
+        builder.append(paramsWithBrackets);
+        builder.append(" -> test");
+        builder.append(paramsWithBrackets);
+        builder.append(" &&");
+        if (size >= 5)
+            builder.append("\n                ");
+        else
+            builder.append(" ");
+        builder.append("other.test");
+        builder.append(paramsWithBrackets);
+        builder.append(";\n    }\n\n");
+
+        // negate
+        builder.append(defaultLogicalPrefix);
+        builder.append("negate() {\n        return ");
+        builder.append(paramsWithBrackets);
+        builder.append(" -> !test");
+        builder.append(paramsWithBrackets);
+        builder.append(";\n    }\n\n");
+
+        // or
+        builder.append(defaultLogicalPrefix);
+        builder.append("or(");
+        builder.append(other);
+        builder.append(") {\n        return ");
+        builder.append(paramsWithBrackets);
+        builder.append(" -> test");
+        builder.append(paramsWithBrackets);
+
+        builder.append(" ||");
+        if (size >= 5)
+            builder.append("\n                ");
+        else
+            builder.append(" ");
+        builder.append("other.test");
+        builder.append(paramsWithBrackets);
+        builder.append(";\n    }\n");
 
         builder.append("}\n");
         return builder.toString();

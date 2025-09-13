@@ -9,4 +9,16 @@ public interface TetraPredicate<T1, T2, T3, T4> {
     static <T1, T2, T3, T4> TetraPredicate<T1, T2, T3, T4> allEquals() {
         return (t1, t2, t3, t4) -> Objects.equals(t1, t2) && Objects.equals(t2, t3) && Objects.equals(t3, t4);
     }
+
+    default TetraPredicate<T1, T2, T3, T4> and(TetraPredicate<? super T1, ? super T2, ? super T3, ? super T4> other) {
+        return (t1, t2, t3, t4) -> test(t1, t2, t3, t4) && other.test(t1, t2, t3, t4);
+    }
+
+    default TetraPredicate<T1, T2, T3, T4> negate() {
+        return (t1, t2, t3, t4) -> !test(t1, t2, t3, t4);
+    }
+
+    default TetraPredicate<T1, T2, T3, T4> or(TetraPredicate<? super T1, ? super T2, ? super T3, ? super T4> other) {
+        return (t1, t2, t3, t4) -> test(t1, t2, t3, t4) || other.test(t1, t2, t3, t4);
+    }
 }

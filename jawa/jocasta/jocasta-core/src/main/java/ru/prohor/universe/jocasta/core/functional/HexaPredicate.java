@@ -13,4 +13,22 @@ public interface HexaPredicate<T1, T2, T3, T4, T5, T6> {
                 Objects.equals(t4, t5) &&
                 Objects.equals(t5, t6);
     }
+
+    default HexaPredicate<T1, T2, T3, T4, T5, T6> and(
+            HexaPredicate<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6> other
+    ) {
+        return (t1, t2, t3, t4, t5, t6) -> test(t1, t2, t3, t4, t5, t6) &&
+                other.test(t1, t2, t3, t4, t5, t6);
+    }
+
+    default HexaPredicate<T1, T2, T3, T4, T5, T6> negate() {
+        return (t1, t2, t3, t4, t5, t6) -> !test(t1, t2, t3, t4, t5, t6);
+    }
+
+    default HexaPredicate<T1, T2, T3, T4, T5, T6> or(
+            HexaPredicate<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6> other
+    ) {
+        return (t1, t2, t3, t4, t5, t6) -> test(t1, t2, t3, t4, t5, t6) ||
+                other.test(t1, t2, t3, t4, t5, t6);
+    }
 }

@@ -12,4 +12,22 @@ public interface PentaPredicate<T1, T2, T3, T4, T5> {
                 Objects.equals(t3, t4) &&
                 Objects.equals(t4, t5);
     }
+
+    default PentaPredicate<T1, T2, T3, T4, T5> and(
+            PentaPredicate<? super T1, ? super T2, ? super T3, ? super T4, ? super T5> other
+    ) {
+        return (t1, t2, t3, t4, t5) -> test(t1, t2, t3, t4, t5) &&
+                other.test(t1, t2, t3, t4, t5);
+    }
+
+    default PentaPredicate<T1, T2, T3, T4, T5> negate() {
+        return (t1, t2, t3, t4, t5) -> !test(t1, t2, t3, t4, t5);
+    }
+
+    default PentaPredicate<T1, T2, T3, T4, T5> or(
+            PentaPredicate<? super T1, ? super T2, ? super T3, ? super T4, ? super T5> other
+    ) {
+        return (t1, t2, t3, t4, t5) -> test(t1, t2, t3, t4, t5) ||
+                other.test(t1, t2, t3, t4, t5);
+    }
 }
