@@ -2,7 +2,7 @@ package ru.prohor.universe.jocasta.tgbots.support;
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.core.functional.DiFunction;
+import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class CallbackSupportImpl extends FeatureSupportImpl<CallbackQuery, String, CallbackHandler> {
     public CallbackSupportImpl(
             List<CallbackHandler> handlers,
-            DiFunction<String, FeedbackExecutor, Boolean> unknownCallbackHandler
+            TriFunction<CallbackQuery, String, FeedbackExecutor, Boolean> unknownCallbackHandler
     ) {
         super(handlers, unknownCallbackHandler);
     }
@@ -25,6 +25,6 @@ public class CallbackSupportImpl extends FeatureSupportImpl<CallbackQuery, Strin
             return true;
         String prefix = dotIndex == -1 ? callbackData : callbackData.substring(0, dotIndex);
         Opt<String> payload = Opt.when(dotIndex != -1, () -> callbackData.substring(dotIndex + 1));
-        return useHandler(prefix, handler -> handler.handle(payload, feedbackExecutor), feedbackExecutor);
+        return useHandler(callback, prefix, handler -> handler.handle(payload, feedbackExecutor), feedbackExecutor);
     }
 }

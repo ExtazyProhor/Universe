@@ -3,7 +3,7 @@ package ru.prohor.universe.jocasta.tgbots;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.prohor.universe.jocasta.core.functional.DiFunction;
+import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
@@ -64,7 +64,7 @@ public final class BotSettings {
          */
         public Builder withCommandSupport(
                 List<CommandHandler> commandHandlers,
-                DiFunction<String, FeedbackExecutor, Boolean> unknownCommandHandler
+                TriFunction<Message, String, FeedbackExecutor, Boolean> unknownCommandHandler
         ) {
             commandSupport = new CommandSupportImpl(username, commandHandlers, unknownCommandHandler);
             return this;
@@ -78,7 +78,7 @@ public final class BotSettings {
          */
         public Builder withCallbackSupport(
                 List<CallbackHandler> handlers,
-                DiFunction<String, FeedbackExecutor, Boolean> unknownCallbackHandler
+                TriFunction<CallbackQuery, String, FeedbackExecutor, Boolean> unknownCallbackHandler
         ) {
             callbackSupport = new CallbackSupportImpl(handlers, unknownCallbackHandler);
             return this;
@@ -96,7 +96,7 @@ public final class BotSettings {
         public <K, V> Builder withStatusSupport(
                 StatusStorageService<K, V> statusStorageService,
                 List<StatusHandler<K, V>> statusHandlers,
-                DiFunction<K, FeedbackExecutor, Boolean> unknownStatusHandler
+                TriFunction<Update, K, FeedbackExecutor, Boolean> unknownStatusHandler
         ) {
             statusSupport = new StatusSupportImpl<>(statusStorageService, statusHandlers, unknownStatusHandler);
             return this;

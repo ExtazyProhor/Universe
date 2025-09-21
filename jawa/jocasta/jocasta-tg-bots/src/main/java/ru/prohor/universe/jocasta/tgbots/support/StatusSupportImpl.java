@@ -2,7 +2,7 @@ package ru.prohor.universe.jocasta.tgbots.support;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.core.functional.DiFunction;
+import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.status.BotStatus;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
@@ -20,7 +20,7 @@ public class StatusSupportImpl<K, V> extends FeatureSupportImpl<Update, K, Statu
     public StatusSupportImpl(
             StatusStorageService<K, V> statusStorageService,
             List<StatusHandler<K, V>> handlers,
-            DiFunction<K, FeedbackExecutor, Boolean> unknownKeyHandler
+            TriFunction<Update, K, FeedbackExecutor, Boolean> unknownKeyHandler
     ) {
         super(handlers, unknownKeyHandler);
         this.statusStorageService = statusStorageService;
@@ -42,6 +42,7 @@ public class StatusSupportImpl<K, V> extends FeatureSupportImpl<Update, K, Statu
             return true;
 
         return useHandler(
+                update,
                 status.get().key(),
                 handler -> handler.handle(status.get().value(), feedbackExecutor),
                 feedbackExecutor

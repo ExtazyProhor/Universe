@@ -1,7 +1,7 @@
 package ru.prohor.universe.jocasta.tgbots.support;
 
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.prohor.universe.jocasta.core.functional.DiFunction;
+import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 
@@ -13,7 +13,7 @@ public class CommandSupportImpl extends FeatureSupportImpl<Message, String, Comm
     public CommandSupportImpl(
             String botUsername,
             List<CommandHandler> handlers,
-            DiFunction<String, FeedbackExecutor, Boolean> unknownCommandHandler
+            TriFunction<Message, String, FeedbackExecutor, Boolean> unknownCommandHandler
     ) {
         super(handlers, unknownCommandHandler);
         this.botUsername = botUsername;
@@ -32,6 +32,6 @@ public class CommandSupportImpl extends FeatureSupportImpl<Message, String, Comm
             text = text.substring(0, atIndex);
         }
         // log trace text
-        return useHandler(text, handler -> handler.handle(feedbackExecutor), feedbackExecutor);
+        return useHandler(message, text, handler -> handler.handle(feedbackExecutor), feedbackExecutor);
     }
 }
