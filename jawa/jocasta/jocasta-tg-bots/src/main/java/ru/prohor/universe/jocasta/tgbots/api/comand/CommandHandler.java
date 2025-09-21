@@ -1,13 +1,22 @@
 package ru.prohor.universe.jocasta.tgbots.api.comand;
 
+import ru.prohor.universe.jocasta.tgbots.api.ActionHandler;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
-public interface CommandHandler {
+public interface CommandHandler extends ActionHandler<String> {
     /**
      * @return command with a leading slash, for example, <code>/start</code>
      */
     String command();
 
+    @Override
+    default String key() {
+        return command();
+    }
+
+    /**
+     * @return command description
+     */
     String description();
 
     /**

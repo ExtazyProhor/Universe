@@ -10,19 +10,17 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.prohor.universe.jocasta.core.features.sneaky.ThrowableRunnable;
 import ru.prohor.universe.jocasta.tgbots.api.Bot;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
-import ru.prohor.universe.jocasta.tgbots.support.callback.CallbackSupport;
-import ru.prohor.universe.jocasta.tgbots.support.command.CommandSupport;
-import ru.prohor.universe.jocasta.tgbots.support.status.StatusSupport;
+import ru.prohor.universe.jocasta.tgbots.support.FeatureSupport;
 
-public abstract class TgBot extends TelegramLongPollingBot implements Bot {
+public abstract class SimpleBot extends TelegramLongPollingBot implements Bot {
     protected final FeedbackExecutor feedbackExecutor;
     protected final String username;
 
-    private final CommandSupport commandSupport;
-    private final CallbackSupport callbackSupport;
-    private final StatusSupport statusSupport;
+    private final FeatureSupport<Message> commandSupport;
+    private final FeatureSupport<CallbackQuery> callbackSupport;
+    private final FeatureSupport<Update> statusSupport;
 
-    protected TgBot(TgBotSettings settings) {
+    protected SimpleBot(BotSettings settings) {
         super(settings.token);
         this.feedbackExecutor = makeFeedbackExecutor();
         this.username = settings.username;
@@ -39,18 +37,18 @@ public abstract class TgBot extends TelegramLongPollingBot implements Bot {
     @Override
     public final void onUpdateReceived(Update update) {
         try {
-            if (!statusSupport.handleUpdate(update, feedbackExecutor))
+            if (!statusSupport.handle(update, feedbackExecutor))
                 return;
 
             if (update.hasMessage() && update.getMessage().hasText()) {
                 Message message = update.getMessage();
-                if (commandSupport.handleMessage(message, feedbackExecutor))
+                if (commandSupport.handle(message, feedbackExecutor))
                     onMessage(message);
                 return;
             }
             if (update.hasCallbackQuery()) {
                 CallbackQuery callback = update.getCallbackQuery();
-                if (callbackSupport.handleCallback(callback, feedbackExecutor))
+                if (callbackSupport.handle(callback, feedbackExecutor))
                     onCallback(callback);
                 return;
             }
