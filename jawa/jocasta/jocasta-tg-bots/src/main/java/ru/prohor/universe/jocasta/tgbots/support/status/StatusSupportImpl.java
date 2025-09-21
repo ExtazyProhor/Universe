@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
+import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusStorageService;
 import ru.prohor.universe.jocasta.tgbots.api.status.TgBotStatus;
@@ -36,7 +37,7 @@ public class StatusSupportImpl<SK, SV> implements StatusSupport {
     }
 
     @Override
-    public boolean handleUpdate(Update update) {
+    public boolean handleUpdate(Update update, FeedbackExecutor feedbackExecutor) {
         Long nullableChatId = null;
         if (update.hasMessage())
             nullableChatId = update.getMessage().getChatId();
@@ -55,10 +56,7 @@ public class StatusSupportImpl<SK, SV> implements StatusSupport {
             return true;
 
         return Opt.ofNullable(statusHandlers.get(status.get().key())).map(
-                handler -> {
-                    handler.handle(status.get().value());
-                    return handler.shouldContinueProcessing();
-                }
+                handler -> handler.handle(status.get().value(), feedbackExecutor)
         ).orElseGet(() -> {
             // TODO log.warn
             return true;

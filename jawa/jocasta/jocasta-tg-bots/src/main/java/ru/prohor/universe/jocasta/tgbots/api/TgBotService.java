@@ -7,19 +7,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TgBotService<Identifier, Task extends Identifiable<Identifier>> {
-    protected final Map<Identifier, Task> tasks = new HashMap<>();
+public class TgBotService<I, T extends Identifiable<I>> {
+    protected final Map<I, T> tasks = new HashMap<>();
 
     @SafeVarargs
-    public TgBotService(Task... tasks) {
-        Arrays.stream(tasks).forEach(x -> this.tasks.put(x.getIdentifier(), x));
+    public TgBotService(T... ts) {
+        Arrays.stream(ts).forEach(x -> this.tasks.put(x.getIdentifier(), x));
     }
 
-    public Opt<Task> getTask(Identifier identifier) {
+    public Opt<T> getTask(I identifier) {
         return Opt.ofNullable(tasks.get(identifier));
     }
 
-    public Collection<Task> getAllTasks() {
+    public Collection<T> getAllTasks() {
         return tasks.values();
     }
 }

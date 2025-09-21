@@ -3,6 +3,8 @@ package ru.prohor.universe.jocasta.tgbots;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.prohor.universe.jocasta.core.features.sneaky.ThrowableRunnable;
@@ -37,17 +39,26 @@ public abstract class TgBot extends TelegramLongPollingBot implements Bot {
     @Override
     public final void onUpdateReceived(Update update) {
         try {
-            if (!statusSupport.handleUpdate(update))
+            if (!statusSupport.handleUpdate(update, feedbackExecutor))
                 return;
 
-            if (update.hasMessage() && update.getMessage().hasText())
-                onMessage(update.getMessage());
-            else if (update.hasCallbackQuery())
-                onCallback(update.getCallbackQuery());
-            else if (update.hasMyChatMember())
+            if (update.hasMessage() && update.getMessage().hasText()) {
+                Message message = update.getMessage();
+                if (commandSupport.handleMessage(message, feedbackExecutor))
+                    onMessage(message);
+                return;
+            }
+            if (update.hasCallbackQuery()) {
+                CallbackQuery callback = update.getCallbackQuery();
+                if (callbackSupport.handleCallback(callback, feedbackExecutor))
+                    onCallback(callback);
+                return;
+            }
+            if (update.hasMyChatMember()) {
                 onMyChatMember(update.getMyChatMember());
-            else
-                onUnknownAction(update);
+                return;
+            }
+            onUnknownAction(update);
         } catch (Exception e) {
             onHandlingException(e);
         }
