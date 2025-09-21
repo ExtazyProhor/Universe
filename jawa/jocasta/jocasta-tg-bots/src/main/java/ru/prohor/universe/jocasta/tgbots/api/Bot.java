@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.tgbots.bot;
+package ru.prohor.universe.jocasta.tgbots.api;
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;

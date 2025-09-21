@@ -1,7 +1,8 @@
-package ru.prohor.universe.jocasta.tgbots.api;
+package ru.prohor.universe.jocasta.tgbots.api.comand;
 
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.prohor.universe.jocasta.tgbots.bot.TgBot;
+import ru.prohor.universe.jocasta.tgbots.api.Identifiable;
+import ru.prohor.universe.jocasta.tgbots.TgBot;
 
 public abstract class TgBotCommand implements Identifiable<String> {
     private final String command;

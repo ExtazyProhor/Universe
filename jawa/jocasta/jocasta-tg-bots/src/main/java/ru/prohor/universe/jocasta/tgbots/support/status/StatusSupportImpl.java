@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.tgbots.bot;
+package ru.prohor.universe.jocasta.tgbots.support.status;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -17,19 +17,16 @@ import java.util.stream.Collectors;
  * @param <SK> status key
  * @param <SV> status value
  */
-public abstract class StatusSupportTgBot<SK, SV> extends TgBot {
+public class StatusSupportImpl<SK, SV> implements StatusSupport {
     private final StatusStorageService<SK, SV> statusStorageService;
     private final Cache<Long, TgBotStatus<SK, SV>> cache;
     private final Map<SK, StatusHandler<SK, SV>> statusHandlers;
 
-    protected StatusSupportTgBot(
+    public StatusSupportImpl(
             int statusesCacheSize,
-            String token,
-            String username,
             StatusStorageService<SK, SV> statusStorageService,
             List<StatusHandler<SK, SV>> statusHandlers
     ) {
-        super(token, username);
         this.statusStorageService = statusStorageService;
         this.cache = Caffeine.newBuilder().maximumSize(statusesCacheSize).build();
         this.statusHandlers = statusHandlers.stream().collect(Collectors.toMap(
@@ -39,22 +36,7 @@ public abstract class StatusSupportTgBot<SK, SV> extends TgBot {
     }
 
     @Override
-    public void onUpdateReceived(Update update) {
-        try {
-            if (processStatus(update))
-                return;
-        } catch (Exception e) {
-            onHandlingException(e);
-            return;
-        }
-        super.onUpdateReceived(update);
-    }
-
-    /**
-     * @param update telegram api update
-     * @return a flag indicating whether to continue update processing
-     */
-    private boolean processStatus(Update update) {
+    public boolean handleUpdate(Update update) {
         Long nullableChatId = null;
         if (update.hasMessage())
             nullableChatId = update.getMessage().getChatId();
@@ -74,9 +56,9 @@ public abstract class StatusSupportTgBot<SK, SV> extends TgBot {
 
         return Opt.ofNullable(statusHandlers.get(status.get().key())).map(
                 handler -> {
-            handler.handle(status.get().value());
-            return handler.shouldContinueProcessing();
-        }
+                    handler.handle(status.get().value());
+                    return handler.shouldContinueProcessing();
+                }
         ).orElseGet(() -> {
             // TODO log.warn
             return true;

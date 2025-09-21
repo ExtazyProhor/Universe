@@ -1,7 +1,8 @@
-package ru.prohor.universe.jocasta.tgbots.api;
+package ru.prohor.universe.jocasta.tgbots.api.callback;
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import ru.prohor.universe.jocasta.tgbots.bot.TgBot;
+import ru.prohor.universe.jocasta.tgbots.api.Identifiable;
+import ru.prohor.universe.jocasta.tgbots.TgBot;
 
 public abstract class TgBotCallback implements Identifiable<String> {
     protected final String callbackPrefix;
