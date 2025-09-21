@@ -20,9 +20,5 @@
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
     </dependencies>
 </project>

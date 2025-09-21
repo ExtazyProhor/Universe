@@ -70,7 +70,6 @@ public final class TgBotSettings {
         }
 
         /**
-         * @param statusesCacheSize    size of cache with statuses from storage
          * @param statusStorageService implementation of statuses storage
          * @param statusHandlers       status handlers
          * @param <SK>                 status key type
@@ -78,11 +77,10 @@ public final class TgBotSettings {
          * @return this builder
          */
         public <SK, SV> Builder withStatusSupport(
-                int statusesCacheSize,
                 StatusStorageService<SK, SV> statusStorageService,
                 List<StatusHandler<SK, SV>> statusHandlers
         ) {
-            statusSupport = new StatusSupportImpl<>(statusesCacheSize, statusStorageService, statusHandlers);
+            statusSupport = new StatusSupportImpl<>(statusStorageService, statusHandlers);
             return this;
         }
 

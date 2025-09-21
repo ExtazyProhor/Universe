@@ -1,7 +1,5 @@
 package ru.prohor.universe.jocasta.tgbots.support.status;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
@@ -20,16 +18,13 @@ import java.util.stream.Collectors;
  */
 public class StatusSupportImpl<SK, SV> implements StatusSupport {
     private final StatusStorageService<SK, SV> statusStorageService;
-    private final Cache<Long, TgBotStatus<SK, SV>> cache;
     private final Map<SK, StatusHandler<SK, SV>> statusHandlers;
 
     public StatusSupportImpl(
-            int statusesCacheSize,
             StatusStorageService<SK, SV> statusStorageService,
             List<StatusHandler<SK, SV>> statusHandlers
     ) {
         this.statusStorageService = statusStorageService;
-        this.cache = Caffeine.newBuilder().maximumSize(statusesCacheSize).build();
         this.statusHandlers = statusHandlers.stream().collect(Collectors.toMap(
                 StatusHandler::key,
                 MonoFunction.identity()
@@ -47,11 +42,7 @@ public class StatusSupportImpl<SK, SV> implements StatusSupport {
             return true;
 
         long[] chatId = {nullableChatId};
-        Opt<TgBotStatus<SK, SV>> status = Opt.ofNullable(cache.getIfPresent(chatId[0])).orElse(() -> {
-            Opt<TgBotStatus<SK, SV>> statusFromStorage = statusStorageService.getStatus(chatId[0]);
-            statusFromStorage.ifPresent(st -> cache.put(chatId[0], st));
-            return statusFromStorage;
-        });
+        Opt<TgBotStatus<SK, SV>> status = statusStorageService.getStatus(chatId[0]);
         if (status.isEmpty())
             return true;
 
