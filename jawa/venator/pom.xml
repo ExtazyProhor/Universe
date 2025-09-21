@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>venator</artifactId>
-    <version>final</version>
     <name>venator</name>
 
     <dependencies>
