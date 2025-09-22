@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.spring.configuration;
+package ru.prohor.universe.jocasta.springweb.configuration;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import ru.prohor.universe.jocasta.spring.StaticResourcesHandler;
-import ru.prohor.universe.jocasta.spring.controllers.PagesController;
+import ru.prohor.universe.jocasta.springweb.StaticResourcesHandler;
+import ru.prohor.universe.jocasta.springweb.controllers.PagesController;
 
 @Configuration
 public class PagesControllerConfiguration {

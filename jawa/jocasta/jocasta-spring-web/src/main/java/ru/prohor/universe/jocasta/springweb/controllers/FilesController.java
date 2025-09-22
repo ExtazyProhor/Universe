@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.spring.controllers;
+package ru.prohor.universe.jocasta.springweb.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.FileSystemResource;
@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.spring.ControllersUtils;
-import ru.prohor.universe.jocasta.spring.StaticResourcesHandler;
+import ru.prohor.universe.jocasta.springweb.ControllersUtils;
+import ru.prohor.universe.jocasta.springweb.StaticResourcesHandler;
 
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;

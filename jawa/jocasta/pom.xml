@@ -15,6 +15,7 @@
 
     <modules>
         <module>jocasta-spring</module>
+        <module>jocasta-spring-web</module>
         <module>jocasta-core</module>
         <module>jocasta-joda-time</module>
         <module>jocasta-security</module>

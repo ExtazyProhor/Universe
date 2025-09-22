@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.spring.CookieUtil;
+import ru.prohor.universe.jocasta.springweb.CookieUtil;
 
 import java.io.IOException;
 import java.util.Arrays;

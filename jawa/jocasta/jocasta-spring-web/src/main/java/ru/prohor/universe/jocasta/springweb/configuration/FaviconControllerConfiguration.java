@@ -1,10 +1,10 @@
-package ru.prohor.universe.jocasta.spring.configuration;
+package ru.prohor.universe.jocasta.springweb.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.prohor.universe.jocasta.spring.StaticResourcesHandler;
-import ru.prohor.universe.jocasta.spring.controllers.FaviconController;
+import ru.prohor.universe.jocasta.springweb.StaticResourcesHandler;
+import ru.prohor.universe.jocasta.springweb.controllers.FaviconController;
 
 @Configuration
 public class FaviconControllerConfiguration {

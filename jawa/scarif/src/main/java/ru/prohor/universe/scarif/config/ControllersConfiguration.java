@@ -3,7 +3,7 @@ package ru.prohor.universe.scarif.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import ru.prohor.universe.jocasta.spring.configuration.AllControllersConfiguration;
+import ru.prohor.universe.jocasta.springweb.configuration.AllControllersConfiguration;
 import ru.prohor.universe.scarif.services.CookieProvider;
 import ru.prohor.universe.scarif.services.JwtProvider;
 import ru.prohor.universe.scarif.services.LoginService;

@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.spring.CookieUtil;
+import ru.prohor.universe.jocasta.springweb.CookieUtil;
 import ru.prohor.universe.scarif.services.refresh.ParsedUserToken;
 import ru.prohor.universe.scarif.services.refresh.RefreshTokenService;
 import ru.prohor.universe.scarif.services.refresh.UserTokenParsingException;

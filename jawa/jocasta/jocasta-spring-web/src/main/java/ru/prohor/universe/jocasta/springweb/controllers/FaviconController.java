@@ -1,10 +1,10 @@
-package ru.prohor.universe.jocasta.spring.controllers;
+package ru.prohor.universe.jocasta.springweb.controllers;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.prohor.universe.jocasta.spring.StaticResourcesHandler;
+import ru.prohor.universe.jocasta.springweb.StaticResourcesHandler;
 
 import java.nio.file.Path;
 

@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.spring;
+package ru.prohor.universe.jocasta.springweb;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

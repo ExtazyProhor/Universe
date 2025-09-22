@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.spring;
+package ru.prohor.universe.jocasta.springweb;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.CacheControl;

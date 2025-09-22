@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.spring.coreConfigurations;
+package ru.prohor.universe.jocasta.spring.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -33,8 +33,8 @@ public class TgConfiguration {
 
     @Bean
     public BotSettings botSettings(
-            @Value("${}") String token,
-            @Value("${}") String username,
+            @Value("${universe.yoda.bot.token}") String token,
+            @Value("${universe.yoda.bot.username}") String username,
             List<CommandHandler> commandHandlers,
             TriFunction<Message, String, FeedbackExecutor, Boolean> unknownCommandHandler
     ) {
