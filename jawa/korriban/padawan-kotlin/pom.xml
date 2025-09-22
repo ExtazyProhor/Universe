@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>padawan-kotlin</artifactId>
+    <packaging>jar</packaging>
     <name>padawan-kotlin</name>
 
     <properties>

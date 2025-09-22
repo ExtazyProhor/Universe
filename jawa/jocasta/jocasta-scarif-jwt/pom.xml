@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>jocasta-scarif-jwt</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>

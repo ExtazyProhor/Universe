@@ -12,6 +12,7 @@
     <artifactId>sabacc</artifactId>
     <packaging>pom</packaging>
     <name>sabacc</name>
+
     <modules>
         <module>yahtzee</module>
     </modules>

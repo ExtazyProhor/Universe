@@ -1,30 +1,18 @@
 package ru.prohor.universe.scarif;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
-import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.holocron.HolocronConfiguration;
 import ru.prohor.universe.jocasta.scarifJwt.ScarifJwtConfiguration;
+import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
 
 @Configuration
-@EnableAutoConfiguration(exclude = {
-        SecurityAutoConfiguration.class,
-        JpaRepositoriesAutoConfiguration.class,
-        DataSourceAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class,
-})
 @ComponentScan(excludeFilters = {
         @ComponentScan.Filter(
                 type = FilterType.ANNOTATION,
@@ -32,21 +20,14 @@ import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
         )
 })
 @Import({
+        JocastaAutoConfiguration.class,
         SnowflakeConfiguration.class,
         HolocronConfiguration.class,
         ScarifJwtConfiguration.class,
 })
 public class ScarifMain {
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(ScarifMain.class, args);
-        Opt<String> environment = Opt.ofNullable(context.getEnvironment().getProperty("universe.scarif.environment"));
-        if (environment.isEmpty())
-            throw new RuntimeException("""
-                    Environment can not be empty.
-                    Use "universe.scarif.environment={environment}" in .properties file"""
-            );
-        // TODO log
-        System.out.println("APPLICATION STARTED WITH ENV=" + environment.get());
+        SpringApplication.run(ScarifMain.class, args);
     }
 }
 // TODO java bean validation

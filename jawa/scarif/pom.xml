@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>scarif</artifactId>
+    <packaging>jar</packaging>
     <name>scarif</name>
     <description>Universe auth service</description>
 

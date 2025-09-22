@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>yoda</artifactId>
+    <packaging>jar</packaging>
     <name>yoda</name>
 
     <dependencies>

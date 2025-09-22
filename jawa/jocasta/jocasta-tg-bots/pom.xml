@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>jocasta-tg-bots</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>

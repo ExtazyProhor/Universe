@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>yahtzee</artifactId>
+    <packaging>jar</packaging>
     <name>yahtzee</name>
 
     <dependencies>

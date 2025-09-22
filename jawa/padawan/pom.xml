@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>padawan</artifactId>
-    <version>final</version>
+    <packaging>jar</packaging>
     <name>padawan</name>
 
     <dependencies>
