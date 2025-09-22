@@ -1,24 +1,16 @@
 package ru.prohor.universe.scarif;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.holocron.HolocronConfiguration;
 import ru.prohor.universe.jocasta.scarifJwt.ScarifJwtConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
+import ru.prohor.universe.jocasta.springweb.ExcludeControllersComponentScan;
 
 @Configuration
-@ComponentScan(excludeFilters = {
-        @ComponentScan.Filter(
-                type = FilterType.ANNOTATION,
-                classes = {Controller.class, RestController.class}
-        )
-})
+@ExcludeControllersComponentScan
 @Import({
         JocastaAutoConfiguration.class,
         SnowflakeConfiguration.class,
