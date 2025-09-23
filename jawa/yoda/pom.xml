@@ -22,9 +22,5 @@
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-tg-bots</artifactId>
         </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-holocron</artifactId>
-        </dependency>
     </dependencies>
 </project>

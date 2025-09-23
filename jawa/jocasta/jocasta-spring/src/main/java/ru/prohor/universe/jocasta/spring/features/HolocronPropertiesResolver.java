@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.holocron;
+package ru.prohor.universe.jocasta.spring.features;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

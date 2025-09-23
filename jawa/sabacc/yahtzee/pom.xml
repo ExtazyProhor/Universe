@@ -23,10 +23,6 @@
             <artifactId>jocasta-scarif-jwt</artifactId>
         </dependency>
         <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-holocron</artifactId>
-        </dependency>
-        <dependency>
             <groupId>dev.morphia.morphia</groupId>
             <artifactId>morphia-core</artifactId>
         </dependency>

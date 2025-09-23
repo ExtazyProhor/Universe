@@ -1,11 +1,17 @@
-# Jocasta Holocron
+# Jocasta Spring 
+
+Библиотека для работы со spring-ом
+
+## Features
+
+### Jocasta Holocron
 
 ![](assets/holocron.webp)
 
 Этот модуль предназначен для подстановки секретов
 в значения свойств из файлов `application.properties`.
 
-### Подключение
+#### Подключение
 
 ##### Импорт конфигурации
 
@@ -32,7 +38,7 @@ universe.holocron.file-path=./../../my/holocron.json
 universe.holocron.file-path=/etc/universe/holocron.json
 ```
 
-### Использование
+#### Использование
 
 Необходимо определить значение секрета в файле с
 секретами (`holocron.json`):
