@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.core.tools;
+package ru.prohor.universe.jocasta.core.features;
 
 public class SnowflakeIdGenerator {
     private static final int WORKER_ID_BITS = 10;

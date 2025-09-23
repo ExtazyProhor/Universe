@@ -18,7 +18,6 @@
         <module>jocasta-spring-web</module>
         <module>jocasta-core</module>
         <module>jocasta-joda-time</module>
-        <module>jocasta-security</module>
         <module>jocasta-scarif-jwt</module>
         <module>jocasta-tg-bots</module>
     </modules>

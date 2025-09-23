@@ -15,10 +15,6 @@
     <dependencies>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-spring-web</artifactId>
         </dependency>
         <dependency>

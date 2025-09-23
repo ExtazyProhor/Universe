@@ -5,7 +5,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.jocasta.core.tools.SnowflakeIdGenerator;
+import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
 
 import java.security.SecureRandom;
 import java.util.function.Predicate;

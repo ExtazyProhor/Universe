@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.security.rsa;
+package ru.prohor.universe.jocasta.core.security.rsa;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;

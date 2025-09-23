@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.security.rsa;
+package ru.prohor.universe.jocasta.core.security.rsa;
 
 import org.apache.commons.codec.binary.Base64;
 

@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.security.rsa.PublicKeyProvider;
+import ru.prohor.universe.jocasta.core.security.rsa.PublicKeyProvider;
 
 public class JwtVerifier {
     private final PublicKeyProvider keyProvider;

@@ -8,9 +8,9 @@ import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.jocasta.core.tools.SnowflakeIdGenerator;
+import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
 import ru.prohor.universe.jocasta.scarifJwt.JwtPayload;
-import ru.prohor.universe.jocasta.security.rsa.KeysFromStringProvider;
+import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
 import ru.prohor.universe.scarif.data.user.User;
 
 @Service
