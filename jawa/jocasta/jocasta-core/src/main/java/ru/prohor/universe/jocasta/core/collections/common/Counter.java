@@ -49,6 +49,14 @@ public class Counter<T> {
         return map.size();
     }
 
+    public boolean isEmpty() {
+        return map.isEmpty();
+    }
+
+    public boolean remove(T key) {
+        return map.remove(key) != null;
+    }
+
     public List<Count<T>> counts() {
         return map.entrySet()
                 .stream()
