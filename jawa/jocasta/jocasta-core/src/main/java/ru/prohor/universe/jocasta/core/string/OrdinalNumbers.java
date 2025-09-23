@@ -3,6 +3,7 @@ package ru.prohor.universe.jocasta.core.string;
 public class OrdinalNumbers {
     private OrdinalNumbers() {}
 
+    // TODO check available libs for this
     public static String of(int i) {
         return switch (i) {
             case 1 -> "First";
