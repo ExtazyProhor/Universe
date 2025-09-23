@@ -45,6 +45,10 @@ public class Counter<T> {
         return current;
     }
 
+    public int size() {
+        return map.size();
+    }
+
     public List<Count<T>> counts() {
         return map.entrySet()
                 .stream()
