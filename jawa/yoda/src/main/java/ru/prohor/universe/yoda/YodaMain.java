@@ -1,4 +1,4 @@
-package ru.prohor.universe.yoda.configurations;
+package ru.prohor.universe.yoda;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.ComponentScan;

@@ -43,6 +43,12 @@ public class Sneaky {
         };
     }
 
+    public static void silent(ThrowableRunnable runnable) {
+        try {
+            runnable.run();
+        } catch (Exception ignored) {}
+    }
+
     @SuppressWarnings("unchecked")
     public static <T extends Exception> void throwUnchecked(Exception e) throws T {
         throw (T) e;
