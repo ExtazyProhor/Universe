@@ -25,6 +25,11 @@ public class CallbackSupportImpl extends FeatureSupportImpl<CallbackQuery, Strin
             return true;
         String prefix = dotIndex == -1 ? callbackData : callbackData.substring(0, dotIndex);
         Opt<String> payload = Opt.when(dotIndex != -1, () -> callbackData.substring(dotIndex + 1));
-        return useHandler(callback, prefix, handler -> handler.handle(payload, feedbackExecutor), feedbackExecutor);
+        return useHandler(
+                callback,
+                prefix,
+                handler -> handler.handle(payload, callback.getMessage(), feedbackExecutor),
+                feedbackExecutor
+        );
     }
 }

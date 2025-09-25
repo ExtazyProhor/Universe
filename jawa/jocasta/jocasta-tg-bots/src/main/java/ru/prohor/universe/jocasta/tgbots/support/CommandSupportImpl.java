@@ -32,6 +32,11 @@ public class CommandSupportImpl extends FeatureSupportImpl<Message, String, Comm
             text = text.substring(0, atIndex);
         }
         // log trace text
-        return useHandler(message, text, handler -> handler.handle(feedbackExecutor), feedbackExecutor);
+        return useHandler(
+                message,
+                text,
+                handler -> handler.handle(message, feedbackExecutor),
+                feedbackExecutor
+        );
     }
 }

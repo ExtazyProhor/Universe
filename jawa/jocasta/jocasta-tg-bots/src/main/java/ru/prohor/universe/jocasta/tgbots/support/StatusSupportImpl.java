@@ -44,7 +44,7 @@ public class StatusSupportImpl<K, V> extends FeatureSupportImpl<Update, K, Statu
         return useHandler(
                 update,
                 status.get().key(),
-                handler -> handler.handle(status.get().value(), feedbackExecutor),
+                handler -> handler.handle(status.get().value(), update, feedbackExecutor),
                 feedbackExecutor
         );
     }

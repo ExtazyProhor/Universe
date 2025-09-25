@@ -4,10 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.util.Collection;
 
 public interface Bot {
     void onHandlingException(Exception e);
@@ -21,8 +18,6 @@ public interface Bot {
     void onMyChatMember(ChatMemberUpdated chatMemberUpdated);
 
     void onUnknownAction(Update update);
-
-    Collection<BotCommand> listCommands();
 
     default void onUserDeactivated(TelegramApiException e, String chatId) {
         // TODO log.warn
