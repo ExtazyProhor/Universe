@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -13,6 +12,7 @@ import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
+import ru.prohor.universe.yoda.bot.Text;
 import ru.prohor.universe.yoda.bot.YodaBot;
 import ru.prohor.universe.yoda.log.FileLogger;
 
@@ -24,14 +24,8 @@ public class TgConfiguration {
     public TriFunction<Message, String, FeedbackExecutor, Boolean> unknownCommandHandler() {
         return (message, command, feedbackExecutor) -> {
             Chat chat = message.getChat();
-            if (chat.isUserChat()) {
-                feedbackExecutor.sendMessage(
-                        SendMessage.builder()
-                                .chatId(chat.getId())
-                                .text("Неизвестная команда. Список доступных команд - /help")
-                                .build()
-                );
-            }
+            if (chat.isUserChat())
+                feedbackExecutor.sendMessage(chat.getId(), Text.CommandReplies.unknown());
             return false;
         };
     }

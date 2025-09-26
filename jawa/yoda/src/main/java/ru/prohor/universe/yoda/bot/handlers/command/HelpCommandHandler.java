@@ -1,7 +1,6 @@
 package ru.prohor.universe.yoda.bot.handlers.command;
 
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
@@ -33,14 +32,12 @@ public class HelpCommandHandler implements CommandHandler {
 
     @Override
     public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
-        feedbackExecutor.sendMessage(SendMessage.builder()
-                .chatId(message.getChatId())
-                .text(
-                        commandHandlers.stream()
-                                .map(cmd -> cmd.command() + " - " + cmd.description())
-                                .collect(Collectors.joining("\n"))
-                )
-                .build());
+        feedbackExecutor.sendMessage(
+                message.getChatId(),
+                commandHandlers.stream()
+                        .map(cmd -> cmd.command() + " - " + cmd.description())
+                        .collect(Collectors.joining("\n")) // TODO
+        );
         return false;
     }
 }

@@ -31,5 +31,9 @@ public class Text {
         public static String start() {
             return "Приветствую! Помогать с занятиями вам буду я";
         }
+
+        public static String unknown()  {
+            return "Неизвестная команда. Список доступных команд - /help";
+        }
     }
 }

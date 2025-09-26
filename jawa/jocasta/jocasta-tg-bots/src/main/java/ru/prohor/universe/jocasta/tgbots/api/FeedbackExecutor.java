@@ -7,4 +7,11 @@ public interface FeedbackExecutor {
     void sendMessage(SendMessage message);
 
     void editMessageText(EditMessageText message);
+
+    default void sendMessage(Long chatId, String text) {
+        sendMessage(SendMessage.builder()
+                .chatId(chatId)
+                .text(text)
+                .build());
+    }
 }
