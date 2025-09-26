@@ -45,6 +45,14 @@ public class AbstractMongoMorphiaRepository<T, W> {
         this.unwrapFunction = unwrapFunction;
     }
 
+    List<W> findAll() {
+        return datastore.find(type).stream().map(wrapFunction).toList();
+    }
+
+    long countDocuments() {
+        return collection.countDocuments();
+    }
+
     Opt<W> findById(ObjectId id) {
         // TODO убрать dev.morphia.query.filters. путем вынесения фильтров в отдельный класс
         // TODO + ссылки на поля классов для фильтрации

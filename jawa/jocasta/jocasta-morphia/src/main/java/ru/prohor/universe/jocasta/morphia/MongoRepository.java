@@ -8,6 +8,10 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import java.util.List;
 
 public interface MongoRepository<T> {
+    List<T> findAll();
+
+    long countDocuments();
+
     Opt<T> findById(ObjectId id);
 
     List<T> findAllByIds(List<ObjectId> ids);

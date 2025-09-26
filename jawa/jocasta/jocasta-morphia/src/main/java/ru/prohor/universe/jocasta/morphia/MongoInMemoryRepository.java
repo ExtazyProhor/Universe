@@ -5,6 +5,7 @@ import dev.morphia.query.updates.UpdateOperator;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,16 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
         this.collection = new HashMap<>();
         this.idExtractor = idExtractor;
         this.textSearchPredicate = Opt.of(textSearchPredicate);
+    }
+
+    @Override
+    public List<T> findAll() {
+        return collection.values().stream().toList();
+    }
+
+    @Override
+    public long countDocuments() {
+        return collection.size();
     }
 
     @Override

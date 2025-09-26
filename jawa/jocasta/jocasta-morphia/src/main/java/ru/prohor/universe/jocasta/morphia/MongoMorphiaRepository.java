@@ -39,6 +39,16 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
     }
 
     @Override
+    public List<T> findAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public long countDocuments() {
+        return repository.countDocuments();
+    }
+
+    @Override
     public Opt<T> findById(ObjectId id) {
         return repository.findById(id);
     }
