@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.data;
+package ru.prohor.universe.jocasta.morphia;
 
 import dev.morphia.query.filters.Filter;
 import dev.morphia.query.updates.UpdateOperator;

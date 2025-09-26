@@ -12,7 +12,7 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.common.Result;
 import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
 import ru.prohor.universe.yahtzee.Yahtzee;
-import ru.prohor.universe.yahtzee.data.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.data.entities.pojo.IrlGame;
 import ru.prohor.universe.yahtzee.data.entities.pojo.IrlRoom;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;

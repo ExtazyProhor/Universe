@@ -2,7 +2,7 @@ package ru.prohor.universe.yahtzee.data.inner.pojo;
 
 import lombok.Builder;
 import org.bson.types.ObjectId;
-import ru.prohor.universe.yahtzee.data.MongoEntityPojo;
+import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.data.inner.dto.IrlInterimTeamScoresDto;
 
 import java.util.List;

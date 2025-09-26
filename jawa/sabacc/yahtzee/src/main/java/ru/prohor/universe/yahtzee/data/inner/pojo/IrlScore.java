@@ -1,6 +1,6 @@
 package ru.prohor.universe.yahtzee.data.inner.pojo;
 
-import ru.prohor.universe.yahtzee.data.MongoEntityPojo;
+import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.data.inner.dto.IrlScoreDto;
 
 public record IrlScore(

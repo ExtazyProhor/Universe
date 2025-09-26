@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.data;
+package ru.prohor.universe.jocasta.morphia;
 
 import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filter;
@@ -29,6 +29,7 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
         ));
     }
 
+    // TODO tests
     public static <T> MongoMorphiaRepository<T> createRepository(
             Datastore datastore,
             Class<T> type

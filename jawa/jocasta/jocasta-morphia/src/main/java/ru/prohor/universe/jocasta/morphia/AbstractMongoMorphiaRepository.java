@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.data;
+package ru.prohor.universe.jocasta.morphia;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;

@@ -172,6 +172,11 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-morphia</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
                 <artifactId>jocasta-spring-web</artifactId>
                 <version>final</version>
             </dependency>

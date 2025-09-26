@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.data;
+package ru.prohor.universe.jocasta.morphia;
 
 import java.util.List;
 
