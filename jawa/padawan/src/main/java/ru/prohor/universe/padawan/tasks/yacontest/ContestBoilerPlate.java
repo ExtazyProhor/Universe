@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-@SuppressWarnings("all")
+@SuppressWarnings({"EmptyTryBlock", "unused"})
 public interface ContestBoilerPlate {
     private static void ReaderWriterFiles() throws Exception {
         try (
