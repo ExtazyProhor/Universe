@@ -12,6 +12,9 @@ fi
 SCRIPT_NAME="$BASE_DIR/$1.sh"
 
 if [ -f "$SCRIPT_NAME" ]; then
+  if [ ! -x "$SCRIPT_NAME" ]; then
+    chmod +x "$SCRIPT_NAME"
+  fi
   "$SCRIPT_NAME"
 else
   echo "${RED}$1.sh not found${RESET}"
