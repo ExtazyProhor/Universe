@@ -30,6 +30,7 @@ public class PagesControllerConfiguration {
 
     @PostConstruct
     public void init() {
+        // TODO лучше руками поискать какие файлы html есть в папке, вместо ручного указания
         RequestMappingInfo requestMappingInfo = RequestMappingInfo
                 .paths(paths.split(","))
                 .methods(RequestMethod.GET)
