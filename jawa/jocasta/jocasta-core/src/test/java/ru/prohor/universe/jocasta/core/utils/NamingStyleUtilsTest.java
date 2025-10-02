@@ -1,4 +1,3 @@
-/*
 package ru.prohor.universe.jocasta.core.utils;
 
 import org.junit.jupiter.api.Assertions;
@@ -9,7 +8,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class NamingStyleUtilsTest {
+class NamingStyleUtilsTest {
     private static final List<List<String>> TEST_ENTRIES = List.of(
             List.of(
                     "TEST",
@@ -143,19 +142,10 @@ public class NamingStyleUtilsTest {
                                 j -> {
                                     String from = testEntry.get(i);
                                     String should = testEntry.get(j);
-                                    String became = NamingStyleUtils.changeStyle(
-                                            styles[i],
-                                            styles[j],
-                                            from
-                                    );
+                                    String became = NamingStyleUtils.changeStyle(styles[i], styles[j], from);
                                     String message = "string '%s' became '%s' (should be '%s')"
                                             .formatted(from, became, should);
-
-                                    return () -> Assertions.assertEquals(
-                                            should,
-                                            became,
-                                            message
-                                    );
+                                    return () -> Assertions.assertEquals(should, became, message);
                                 }
                         )
                 )
@@ -163,4 +153,3 @@ public class NamingStyleUtilsTest {
         Assertions.assertAll(stream);
     }
 }
-*/
