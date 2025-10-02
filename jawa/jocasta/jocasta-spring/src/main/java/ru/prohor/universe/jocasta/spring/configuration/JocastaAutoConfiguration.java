@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 @Configuration
 @EnableAutoConfiguration(exclude = {
@@ -29,14 +30,14 @@ import org.springframework.core.env.Environment;
 public class JocastaAutoConfiguration {
     private static final String NO_ENV_MESSAGE = """
             Environment can not be empty.
-            Use "universe.environment={environment}" in application.properties file""";
+            Use "spring.profiles.active={environment}" in application.properties file""";
 
     @Bean
     public ApplicationRunner environmentChecker(Environment environment) {
         return args -> {
-            String env = environment.getProperty("universe.environment");
-            if (env == null || env.isBlank())
-                throw new IllegalStateException(NO_ENV_MESSAGE);
+            String env = Opt.ofNullable(environment.getProperty("spring.profiles.active"))
+                    .filter(s -> !s.isBlank())
+                    .orElseThrow(() -> new IllegalStateException(NO_ENV_MESSAGE));
             // TODO заменить на нормальный логгер
             System.out.println("APPLICATION STARTED WITH ENV=" + env);
         };
