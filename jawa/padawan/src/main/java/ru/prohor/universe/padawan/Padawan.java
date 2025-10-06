@@ -9,7 +9,7 @@ import java.util.List;
 public class Padawan {
     private static final Path RESOURCES = Path.of("padawan/src/main/resources");
 
-    public static Path load(String path) {
+    public static Path resolve(String path) {
         return RESOURCES.resolve(path);
     }
 
@@ -19,5 +19,13 @@ public class Padawan {
 
     public static List<String> readLines(String path) {
         return Sneaky.execute(() -> Files.readAllLines(RESOURCES.resolve(path)));
+    }
+
+    public static void write(String path, String content) {
+        Sneaky.execute(() -> Files.writeString(RESOURCES.resolve(path), content));
+    }
+
+    public static void writeLines(String path, List<String> lines) {
+        Sneaky.execute(() -> Files.write(RESOURCES.resolve(path), lines));
     }
 }
