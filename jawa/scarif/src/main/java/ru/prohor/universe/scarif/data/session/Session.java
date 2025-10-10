@@ -9,6 +9,8 @@ public record Session(
         long userId,
         Instant createdAt,
         Instant expiresAt,
+        // TODO https://www.baeldung.com/java-yauaa-user-agent-parsing
+        // TODO https://github.com/ua-parser/uap-java
         Opt<String> userAgent,
         Opt<String> ipAddress,
         boolean closed,
