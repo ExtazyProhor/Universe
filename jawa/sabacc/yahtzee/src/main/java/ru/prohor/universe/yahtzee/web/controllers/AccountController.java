@@ -50,6 +50,7 @@ public class AccountController {
             String username,
             String name,
             String color, // format: "ff0000", hex, without alpha
+            String contrast, // format: "ff0000", hex, without alpha, 
             @JsonProperty("image_id")
             String imageId
     ) {}

@@ -33,6 +33,7 @@ public class GameColorsService {
             new GameIrlController.TeamColor(10, "9370DB", "FFFFFF", "E6E6FA", "663399"),
             new GameIrlController.TeamColor(11, "630363", "FFFFFF", "F5E6F5", "3B003B")
     ).collect(Collectors.toMap(GameIrlController.TeamColor::colorId, color -> color));
+
     private static final int[] COLOR_IDS = COLORS.keySet().stream().mapToInt(i -> i).toArray();
 
     private final Random random;

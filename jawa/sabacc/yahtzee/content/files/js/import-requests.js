@@ -8,6 +8,6 @@
         script.src = "https://scarif.tima-prohorov.ru/files/js/requests.js";
     }
 
-    script.onerror = () => console.error("Не удалось загрузить скрипт:", script.src);
+    script.onerror = () => console.error("Failed to load script:", script.src);
     document.head.appendChild(script);
 })();
