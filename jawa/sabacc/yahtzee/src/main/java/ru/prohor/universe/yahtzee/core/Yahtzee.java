@@ -1,6 +1,4 @@
-package ru.prohor.universe.yahtzee;
-
-import ru.prohor.universe.yahtzee.web.controllers.GameIrlController;
+package ru.prohor.universe.yahtzee.core;
 
 public class Yahtzee {
     public static final int BONUS_VALUE = 35;
@@ -8,13 +6,13 @@ public class Yahtzee {
     public static final int COMBINATIONS = 15;
 
     public static boolean isSimple(String combination) {
-        return switch (GameIrlController.Combination.of(combination)) {
+        return switch (Combination.of(combination)) {
             case UNITS, TWOS, THREES, FOURS, FIVES, SIXES -> true;
             default -> false;
         };
     }
 
-    public static boolean isValidCombinationValue(GameIrlController.Combination combination, int value) {
+    public static boolean isValidCombinationValue(Combination combination, int value) {
         return switch (combination) {
             case UNITS -> simple(value, 1);
             case TWOS -> simple(value, 2);

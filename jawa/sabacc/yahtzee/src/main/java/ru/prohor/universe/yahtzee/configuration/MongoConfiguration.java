@@ -15,12 +15,12 @@ import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.jocasta.morphia.MongoMorphiaRepository;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.data.entities.dto.ImageDto;
-import ru.prohor.universe.yahtzee.data.entities.dto.IrlGameDto;
-import ru.prohor.universe.yahtzee.data.entities.dto.IrlRoomDto;
+import ru.prohor.universe.yahtzee.data.entities.dto.OfflineGameDto;
+import ru.prohor.universe.yahtzee.data.entities.dto.OfflineRoomDto;
 import ru.prohor.universe.yahtzee.data.entities.dto.PlayerDto;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Image;
-import ru.prohor.universe.yahtzee.data.entities.pojo.IrlGame;
-import ru.prohor.universe.yahtzee.data.entities.pojo.IrlRoom;
+import ru.prohor.universe.yahtzee.data.entities.pojo.OfflineGame;
+import ru.prohor.universe.yahtzee.data.entities.pojo.OfflineRoom;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
 
 import java.util.List;
@@ -82,13 +82,13 @@ public class MongoConfiguration {
     }
 
     @Bean
-    public MongoRepository<IrlGame> irlGameRepository(Datastore datastore) {
-        return MongoMorphiaRepository.createRepository(datastore, IrlGameDto.class, IrlGame::fromDto);
+    public MongoRepository<OfflineGame> offlineGameRepository(Datastore datastore) {
+        return MongoMorphiaRepository.createRepository(datastore, OfflineGameDto.class, OfflineGame::fromDto);
     }
 
     @Bean
-    public MongoRepository<IrlRoom> irlRoomRepository(Datastore datastore) {
-        return MongoMorphiaRepository.createRepository(datastore, IrlRoomDto.class, IrlRoom::fromDto);
+    public MongoRepository<OfflineRoom> offlineRoomRepository(Datastore datastore) {
+        return MongoMorphiaRepository.createRepository(datastore, OfflineRoomDto.class, OfflineRoom::fromDto);
     }
 
     @Bean

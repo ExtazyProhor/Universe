@@ -7,11 +7,11 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.scarifJwt.AuthorizedUser;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
+import ru.prohor.universe.yahtzee.core.TeamColor;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.services.color.GameColorsService;
 import ru.prohor.universe.yahtzee.services.images.ImagesService;
 import ru.prohor.universe.yahtzee.web.controllers.AccountController;
-import ru.prohor.universe.yahtzee.web.controllers.GameIrlController;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -70,7 +70,7 @@ public class AccountService {
     }
 
     public AccountController.InfoResponse getPlayerInfo(Player player) {
-        GameIrlController.TeamColor color = gameColorsService.getById(player.color());
+        TeamColor color = gameColorsService.getById(player.color());
         return new AccountController.InfoResponse(
                 player.username(),
                 player.displayName(),

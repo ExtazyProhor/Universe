@@ -26,8 +26,8 @@ exit
 ```js
 db.createCollection("users")
 db.createCollection("images")
-db.createCollection("irl_games")
-db.createCollection("irl_rooms")
+db.createCollection("offline_games")
+db.createCollection("offline_rooms")
 
 db.users.createIndex(
     {

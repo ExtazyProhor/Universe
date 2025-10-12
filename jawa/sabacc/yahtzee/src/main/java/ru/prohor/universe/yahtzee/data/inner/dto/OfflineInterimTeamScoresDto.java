@@ -9,23 +9,23 @@ import java.util.List;
 
 @Getter
 @Entity
-public class IrlInterimTeamScoresDto {
+public class OfflineInterimTeamScoresDto {
     @Property("moving_player_index")
     private int movingPlayerIndex;
     private String title;
     private int color;
     private List<ObjectId> players;
-    private List<IrlScoreDto> scores;
+    private List<OfflineScoreDto> scores;
 
     @SuppressWarnings("unused")
-    public IrlInterimTeamScoresDto() {}
+    public OfflineInterimTeamScoresDto() {}
 
-    public IrlInterimTeamScoresDto(
+    public OfflineInterimTeamScoresDto(
             int movingPlayerIndex,
             String title,
             int color,
             List<ObjectId> players,
-            List<IrlScoreDto> scores
+            List<OfflineScoreDto> scores
     ) {
         this.movingPlayerIndex = movingPlayerIndex;
         this.title = title;

@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
-import ru.prohor.universe.yahtzee.data.inner.dto.IrlTeamScoresDto;
+import ru.prohor.universe.yahtzee.data.inner.dto.OfflineTeamScoresDto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,13 +16,13 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity("irl_games")
-public class IrlGameDto {
+@Entity("offline_games")
+public class OfflineGameDto {
     @Id
     private ObjectId id;
     private LocalDate date;
     @Property("finish_time")
     private LocalTime finishTime;
     private ObjectId initiator;
-    private List<IrlTeamScoresDto> teams;
+    private List<OfflineTeamScoresDto> teams;
 }

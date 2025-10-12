@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.services.game.irl;
+package ru.prohor.universe.yahtzee.services.game.offline;
 
 import org.bson.types.ObjectId;
 import org.joda.time.DateTimeZone;
@@ -11,16 +11,18 @@ import ru.prohor.universe.jocasta.core.collections.Enumeration;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.common.Result;
 import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
-import ru.prohor.universe.yahtzee.Yahtzee;
+import ru.prohor.universe.yahtzee.core.TeamColor;
+import ru.prohor.universe.yahtzee.core.Yahtzee;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
-import ru.prohor.universe.yahtzee.data.entities.pojo.IrlGame;
-import ru.prohor.universe.yahtzee.data.entities.pojo.IrlRoom;
+import ru.prohor.universe.yahtzee.core.Combination;
+import ru.prohor.universe.yahtzee.data.entities.pojo.OfflineGame;
+import ru.prohor.universe.yahtzee.data.entities.pojo.OfflineRoom;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
-import ru.prohor.universe.yahtzee.data.inner.pojo.IrlInterimTeamScores;
-import ru.prohor.universe.yahtzee.data.inner.pojo.IrlScore;
-import ru.prohor.universe.yahtzee.data.inner.pojo.IrlTeamScores;
+import ru.prohor.universe.yahtzee.data.inner.pojo.OfflineInterimTeamScores;
+import ru.prohor.universe.yahtzee.data.inner.pojo.OfflineScore;
+import ru.prohor.universe.yahtzee.data.inner.pojo.OfflineTeamScores;
 import ru.prohor.universe.yahtzee.services.color.GameColorsService;
-import ru.prohor.universe.yahtzee.web.controllers.GameIrlController;
+import ru.prohor.universe.yahtzee.web.controllers.OfflineGameController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,22 +33,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class IrlGameService {
+public class OfflineGameService {
     private static final int FIRST_MOVE_INDEX = 0;
 
     private final int maxTeams;
     private final int maxPlayersInTeam;
     private final MongoRepository<Player> playerRepository;
-    private final MongoRepository<IrlGame> gameRepository;
-    private final MongoRepository<IrlRoom> roomRepository;
+    private final MongoRepository<OfflineGame> gameRepository;
+    private final MongoRepository<OfflineRoom> roomRepository;
     private final GameColorsService gameColorsService;
 
-    public IrlGameService(
-            @Value("${universe.yahtzee.game.irl.max-teams}") int maxTeams,
-            @Value("${universe.yahtzee.game.irl.max-players-in-team}") int maxPlayersInTeam,
+    public OfflineGameService(
+            @Value("${universe.yahtzee.game.offline.max-teams}") int maxTeams,
+            @Value("${universe.yahtzee.game.offline.max-players-in-team}") int maxPlayersInTeam,
             MongoRepository<Player> playerRepository,
-            MongoRepository<IrlGame> gameRepository,
-            MongoRepository<IrlRoom> roomRepository,
+            MongoRepository<OfflineGame> gameRepository,
+            MongoRepository<OfflineRoom> roomRepository,
             GameColorsService gameColorsService
     ) {
         this.maxTeams = maxTeams;
@@ -57,10 +59,10 @@ public class IrlGameService {
         this.gameColorsService = gameColorsService;
     }
 
-    public Opt<GameIrlController.CurrentRoomResponse> getCurrentRoom(Player player) {
+    public Opt<OfflineGameController.CurrentRoomResponse> getCurrentRoom(Player player) {
         return player.currentRoom().map(
                 id -> roomRepository.findById(id).map(
-                        room -> new GameIrlController.CurrentRoomResponse(
+                        room -> new OfflineGameController.CurrentRoomResponse(
                                 DateTimeUtil.toReadableString(room.createdAt()),
                                 room.teams().size()
                         )
@@ -70,27 +72,27 @@ public class IrlGameService {
         );
     }
 
-    public Opt<GameIrlController.RoomInfoResponse> getRoomInfo(Player player) {
+    public Opt<OfflineGameController.RoomInfoResponse> getRoomInfo(Player player) {
         return player.currentRoom().map(
                 id -> roomRepository.findById(id).map(
-                        room -> new GameIrlController.RoomInfoResponse(
+                        room -> new OfflineGameController.RoomInfoResponse(
                                 Enumeration.enumerateAndMap(
                                         room.teams(),
-                                        (i, team) -> new GameIrlController.TeamInfo(
+                                        (i, team) -> new OfflineGameController.TeamInfo(
                                                 team.title(),
                                                 gameColorsService.getById(team.color()),
                                                 i == room.movingTeamIndex(),
                                                 Enumeration.enumerateAndMap(
                                                         team.players(),
-                                                        (j, pl) -> new GameIrlController.PlayerInfo(
+                                                        (j, pl) -> new OfflineGameController.PlayerInfo(
                                                                 player.id().toHexString(),
                                                                 player.displayName(),
                                                                 j == team.movingPlayerIndex()
                                                         )
                                                 ),
                                                 team.scores().stream().map(
-                                                        score -> new GameIrlController.CombinationInfo(
-                                                                GameIrlController.Combination.of(score.combination()),
+                                                        score -> new OfflineGameController.CombinationInfo(
+                                                                Combination.of(score.combination()),
                                                                 score.value()
                                                         )
                                                 ).toList()
@@ -105,7 +107,7 @@ public class IrlGameService {
 
     public Opt<String> createRoom(
             Player player,
-            GameIrlController.CreateRoomRequest body
+            OfflineGameController.CreateRoomRequest body
     ) {
         ObjectId newRoomId = ObjectId.get();
         Map<String, Player> players;
@@ -119,23 +121,23 @@ public class IrlGameService {
         }
 
         Map<String, List<Player>> playersInTeams = new HashMap<>();
-        for (GameIrlController.TeamPlayers teamPlayers : body.teams()) {
+        for (OfflineGameController.TeamPlayers teamPlayers : body.teams()) {
             playersInTeams.put(
                     teamPlayers.title(),
                     teamPlayers.playersIds().stream().map(players::get).toList()
             );
         }
-        Map<String, GameIrlController.TeamColor> teamsColors = gameColorsService.calculateColorsForTeams(
+        Map<String, TeamColor> teamsColors = gameColorsService.calculateColorsForTeams(
                 playersInTeams
         );
-        List<IrlScore> emptyScores = List.of();
+        List<OfflineScore> emptyScores = List.of();
 
-        IrlRoom room = new IrlRoom(
+        OfflineRoom room = new OfflineRoom(
                 newRoomId,
                 Instant.now(),
                 player.id(),
                 FIRST_MOVE_INDEX,
-                playersInTeams.entrySet().stream().map(entry -> new IrlInterimTeamScores(
+                playersInTeams.entrySet().stream().map(entry -> new OfflineInterimTeamScores(
                         FIRST_MOVE_INDEX,
                         entry.getKey(),
                         teamsColors.get(entry.getKey()).colorId(),
@@ -147,9 +149,9 @@ public class IrlGameService {
         return Opt.empty();
     }
 
-    public Result<GameIrlController.SaveMoveResponse> saveMove(
+    public Result<OfflineGameController.SaveMoveResponse> saveMove(
             Player player,
-            GameIrlController.SaveMoveRequest body
+            OfflineGameController.SaveMoveRequest body
     ) {
         if (player.currentRoom().isEmpty())
             return Result.error("Player is not linked to room");
@@ -169,11 +171,11 @@ public class IrlGameService {
             return Result.error("Mover is not linked to room");
         if (!mover.currentRoom().get().equals(player.currentRoom().get()))
             return Result.error("Player and mover are in different rooms");
-        Opt<IrlRoom> roomO = roomRepository.findById(player.currentRoom().get());
+        Opt<OfflineRoom> roomO = roomRepository.findById(player.currentRoom().get());
         if (roomO.isEmpty())
             throw roomNotFound(player.currentRoom().get());
-        IrlRoom room = roomO.get();
-        IrlInterimTeamScores movingTeam = room.teams().get(room.movingTeamIndex());
+        OfflineRoom room = roomO.get();
+        OfflineInterimTeamScores movingTeam = room.teams().get(room.movingTeamIndex());
         if (!movingTeam.players().contains(mover.id()))
             return Result.error("Moving player does not belong to the current moving team");
         String combination = body.combination().propertyName();
@@ -183,12 +185,12 @@ public class IrlGameService {
             return Result.error(
                     "Illegal moving player, expect ObjectId " + movingTeam.players().get(movingTeam.movingPlayerIndex())
             );
-        List<IrlScore> scores = new ArrayList<>(movingTeam.scores());
-        scores.add(new IrlScore(body.combination().propertyName(), body.value()));
+        List<OfflineScore> scores = new ArrayList<>(movingTeam.scores());
+        scores.add(new OfflineScore(body.combination().propertyName(), body.value()));
         int newMovingPlayerIndex = movingTeam.movingPlayerIndex() + 1;
         if (newMovingPlayerIndex == movingTeam.players().size())
             newMovingPlayerIndex = 0;
-        List<IrlInterimTeamScores> teams = new ArrayList<>(room.teams());
+        List<OfflineInterimTeamScores> teams = new ArrayList<>(room.teams());
         teams.set(
                 room.movingTeamIndex(),
                 movingTeam.toBuilder().scores(scores).movingPlayerIndex(newMovingPlayerIndex).build()
@@ -198,20 +200,20 @@ public class IrlGameService {
             newMovingTeamIndex = 0;
         room = room.toBuilder().teams(teams).movingTeamIndex(newMovingTeamIndex).build();
         roomRepository.save(room);
-        IrlInterimTeamScores nextMovingTeam = room.teams().get(newMovingTeamIndex);
+        OfflineInterimTeamScores nextMovingTeam = room.teams().get(newMovingTeamIndex);
         if (nextMovingTeam.scores().size() == Yahtzee.COMBINATIONS) {
             gameRepository.save(roomToGame(room));
-            return Result.of(new GameIrlController.SaveMoveResponse(null, true));
+            return Result.of(new OfflineGameController.SaveMoveResponse(null, true));
         }
 
-        return Result.of(new GameIrlController.SaveMoveResponse(
+        return Result.of(new OfflineGameController.SaveMoveResponse(
                 nextMovingTeam.players().get(nextMovingTeam.movingPlayerIndex()).toHexString(),
                 false
         ));
     }
 
-    private IrlGame roomToGame(IrlRoom room) {
-        return new IrlGame(
+    private OfflineGame roomToGame(OfflineRoom room) {
+        return new OfflineGame(
                 ObjectId.get(),
                 LocalDate.now(DateTimeZone.UTC),
                 Opt.of(LocalTime.now(DateTimeZone.UTC)),
@@ -222,14 +224,14 @@ public class IrlGameService {
                             boolean hasBonus = team.scores()
                                     .stream()
                                     .filter(score -> Yahtzee.isSimple(score.combination()))
-                                    .mapToInt(IrlScore::value)
+                                    .mapToInt(OfflineScore::value)
                                     .sum() >= Yahtzee.BONUS_CONDITION;
-                            return new IrlTeamScores(
+                            return new OfflineTeamScores(
                                     team.players(),
                                     Opt.of(team.scores()),
                                     team.scores()
                                             .stream()
-                                            .mapToInt(IrlScore::value)
+                                            .mapToInt(OfflineScore::value)
                                             .sum() + (hasBonus ? Yahtzee.BONUS_VALUE : 0),
                                     Opt.of(hasBonus)
                             );
@@ -240,7 +242,7 @@ public class IrlGameService {
 
     private List<Player> validateAndFindPlayers(
             Player player,
-            GameIrlController.CreateRoomRequest body,
+            OfflineGameController.CreateRoomRequest body,
             ObjectId newRoomId
     ) throws RoomCreationException {
         if (player.currentRoom().isPresent())
@@ -249,7 +251,7 @@ public class IrlGameService {
             throw new RoomCreationException("Room must have from 1 to " + maxTeams + " teams");
 
         Set<String> used = new HashSet<>();
-        for (GameIrlController.TeamPlayers teamPlayers : body.teams()) {
+        for (OfflineGameController.TeamPlayers teamPlayers : body.teams()) {
             if (used.contains(teamPlayers.title()))
                 throw new RoomCreationException("Team title \"" + teamPlayers.title() + "\" used multiple times");
             used.add(teamPlayers.title());
@@ -258,7 +260,7 @@ public class IrlGameService {
         used.clear();
         List<ObjectId> playersIds = new ArrayList<>();
         try {
-            for (GameIrlController.TeamPlayers teamPlayers : body.teams()) {
+            for (OfflineGameController.TeamPlayers teamPlayers : body.teams()) {
                 if (teamPlayers.playersIds().isEmpty() || teamPlayers.playersIds().size() > maxPlayersInTeam)
                     throw new RoomCreationException("Team must have from 1 to " + maxPlayersInTeam + " players");
                 for (String id : teamPlayers.playersIds()) {

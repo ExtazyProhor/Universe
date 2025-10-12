@@ -6,36 +6,36 @@ import org.joda.time.LocalTime;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
-import ru.prohor.universe.yahtzee.data.entities.dto.IrlGameDto;
-import ru.prohor.universe.yahtzee.data.inner.pojo.IrlTeamScores;
+import ru.prohor.universe.yahtzee.data.entities.dto.OfflineGameDto;
+import ru.prohor.universe.yahtzee.data.inner.pojo.OfflineTeamScores;
 
 import java.util.List;
 
-public record IrlGame(
+public record OfflineGame(
         ObjectId id,
         LocalDate date,
         Opt<LocalTime> finishTime,
         ObjectId initiator,
-        List<IrlTeamScores> teams
-) implements MongoEntityPojo<IrlGameDto> {
+        List<OfflineTeamScores> teams
+) implements MongoEntityPojo<OfflineGameDto> {
     @Override
-    public IrlGameDto toDto() {
-        return new IrlGameDto(
+    public OfflineGameDto toDto() {
+        return new OfflineGameDto(
                 id,
                 DateTimeUtil.unwrap(date),
                 finishTime.map(DateTimeUtil::unwrap).orElseNull(),
                 initiator,
-                teams.stream().map(IrlTeamScores::toDto).toList()
+                teams.stream().map(OfflineTeamScores::toDto).toList()
         );
     }
 
-    public static IrlGame fromDto(IrlGameDto game) {
-        return new IrlGame(
+    public static OfflineGame fromDto(OfflineGameDto game) {
+        return new OfflineGame(
                 game.getId(),
                 DateTimeUtil.wrap(game.getDate()),
                 Opt.ofNullable(game.getFinishTime()).map(DateTimeUtil::wrap),
                 game.getInitiator(),
-                game.getTeams().stream().map(IrlTeamScores::fromDto).toList()
+                game.getTeams().stream().map(OfflineTeamScores::fromDto).toList()
         );
     }
 }

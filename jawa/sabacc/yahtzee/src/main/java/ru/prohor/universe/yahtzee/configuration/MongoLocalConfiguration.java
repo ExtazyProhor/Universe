@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.jocasta.morphia.MongoInMemoryRepository;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Image;
-import ru.prohor.universe.yahtzee.data.entities.pojo.IrlGame;
-import ru.prohor.universe.yahtzee.data.entities.pojo.IrlRoom;
+import ru.prohor.universe.yahtzee.data.entities.pojo.OfflineGame;
+import ru.prohor.universe.yahtzee.data.entities.pojo.OfflineRoom;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
 
 @Configuration
@@ -19,13 +19,13 @@ public class MongoLocalConfiguration {
     }
 
     @Bean
-    public MongoRepository<IrlGame> irlGameRepository() {
-        return new MongoInMemoryRepository<>(IrlGame::id);
+    public MongoRepository<OfflineGame> offlineGameRepository() {
+        return new MongoInMemoryRepository<>(OfflineGame::id);
     }
 
     @Bean
-    public MongoRepository<IrlRoom> irlRoomRepository() {
-        return new MongoInMemoryRepository<>(IrlRoom::id);
+    public MongoRepository<OfflineRoom> offlineRoomRepository() {
+        return new MongoInMemoryRepository<>(OfflineRoom::id);
     }
 
     @Bean

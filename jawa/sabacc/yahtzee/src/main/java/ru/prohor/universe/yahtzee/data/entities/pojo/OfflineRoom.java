@@ -5,37 +5,37 @@ import org.bson.types.ObjectId;
 import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
-import ru.prohor.universe.yahtzee.data.entities.dto.IrlRoomDto;
-import ru.prohor.universe.yahtzee.data.inner.pojo.IrlInterimTeamScores;
+import ru.prohor.universe.yahtzee.data.entities.dto.OfflineRoomDto;
+import ru.prohor.universe.yahtzee.data.inner.pojo.OfflineInterimTeamScores;
 
 import java.util.List;
 
 @Builder(toBuilder = true)
-public record IrlRoom(
+public record OfflineRoom(
         ObjectId id,
         Instant createdAt,
         ObjectId initiator,
         int movingTeamIndex,
-        List<IrlInterimTeamScores> teams
-) implements MongoEntityPojo<IrlRoomDto> {
+        List<OfflineInterimTeamScores> teams
+) implements MongoEntityPojo<OfflineRoomDto> {
     @Override
-    public IrlRoomDto toDto() {
-        return new IrlRoomDto(
+    public OfflineRoomDto toDto() {
+        return new OfflineRoomDto(
                 id,
                 DateTimeUtil.unwrap(createdAt),
                 initiator,
                 movingTeamIndex,
-                teams.stream().map(IrlInterimTeamScores::toDto).toList()
+                teams.stream().map(OfflineInterimTeamScores::toDto).toList()
         );
     }
 
-    public static IrlRoom fromDto(IrlRoomDto room) {
-        return new IrlRoom(
+    public static OfflineRoom fromDto(OfflineRoomDto room) {
+        return new OfflineRoom(
                 room.getId(),
                 DateTimeUtil.wrap(room.getCreatedAt()),
                 room.getInitiator(),
                 room.getMovingTeamIndex(),
-                room.getTeams().stream().map(IrlInterimTeamScores::fromDto).toList()
+                room.getTeams().stream().map(OfflineInterimTeamScores::fromDto).toList()
         );
     }
 }

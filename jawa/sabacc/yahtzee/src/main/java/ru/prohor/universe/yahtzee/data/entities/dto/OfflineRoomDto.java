@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
-import ru.prohor.universe.yahtzee.data.inner.dto.IrlInterimTeamScoresDto;
+import ru.prohor.universe.yahtzee.data.inner.dto.OfflineInterimTeamScoresDto;
 
 import java.time.Instant;
 import java.util.List;
@@ -15,8 +15,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity("irl_rooms")
-public class IrlRoomDto {
+@Entity("offline_rooms")
+public class OfflineRoomDto {
     @Id
     private ObjectId id;
     @Property("created_at")
@@ -24,5 +24,5 @@ public class IrlRoomDto {
     private ObjectId initiator;
     @Property("moving_team_index")
     private int movingTeamIndex;
-    private List<IrlInterimTeamScoresDto> teams;
+    private List<OfflineInterimTeamScoresDto> teams;
 }

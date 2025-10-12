@@ -7,9 +7,9 @@ import ru.prohor.universe.jocasta.springweb.configuration.AllControllersConfigur
 import ru.prohor.universe.yahtzee.services.images.ImagesService;
 import ru.prohor.universe.yahtzee.services.color.GameColorsService;
 import ru.prohor.universe.yahtzee.services.AccountService;
-import ru.prohor.universe.yahtzee.services.game.irl.IrlGameService;
+import ru.prohor.universe.yahtzee.services.game.offline.OfflineGameService;
 import ru.prohor.universe.yahtzee.web.controllers.AccountController;
-import ru.prohor.universe.yahtzee.web.controllers.GameIrlController;
+import ru.prohor.universe.yahtzee.web.controllers.OfflineGameController;
 import ru.prohor.universe.yahtzee.web.controllers.ImagesController;
 
 @Configuration
@@ -26,10 +26,10 @@ public class ControllersConfiguration {
     }
 
     @Bean
-    public GameIrlController gameIrlController(
-            IrlGameService irlGameService
+    public OfflineGameController offlineGameController(
+            OfflineGameService offlineGameService
     ) {
-        return new GameIrlController(irlGameService);
+        return new OfflineGameController(offlineGameService);
     }
 
     @Bean

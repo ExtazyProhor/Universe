@@ -1,6 +1,5 @@
 package ru.prohor.universe.yahtzee.web.controllers;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,18 +12,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.yahtzee.core.Combination;
+import ru.prohor.universe.yahtzee.core.TeamColor;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
-import ru.prohor.universe.yahtzee.services.game.irl.IrlGameService;
+import ru.prohor.universe.yahtzee.services.game.offline.OfflineGameService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/game/irl")
-public class GameIrlController {
-    private final IrlGameService irlGameService;
+@RequestMapping("/api/game/offline")
+public class OfflineGameController {
+    private final OfflineGameService offlineGameService;
 
-    public GameIrlController(IrlGameService irlGameService) {
-        this.irlGameService = irlGameService;
+    public OfflineGameController(OfflineGameService offlineGameService) {
+        this.offlineGameService = offlineGameService;
     }
 
     @PostMapping("/current_room")
@@ -34,7 +35,7 @@ public class GameIrlController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return irlGameService.getCurrentRoom(player.get()).map(
+        return offlineGameService.getCurrentRoom(player.get()).map(
                 ResponseEntity::ok
         ).orElseGet(
                 () -> ResponseEntity.notFound().build()
@@ -53,7 +54,7 @@ public class GameIrlController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return irlGameService.getRoomInfo(player.get()).map(
+        return offlineGameService.getRoomInfo(player.get()).map(
                 ResponseEntity::ok
         ).orElseGet(
                 () -> ResponseEntity.notFound().build()
@@ -92,7 +93,7 @@ public class GameIrlController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return irlGameService.createRoom(player.get(), body).map(
+        return offlineGameService.createRoom(player.get(), body).map(
                 error -> ResponseEntity.badRequest().body(new CreateRoomResponse(error))
         ).orElseGet(
                 () -> ResponseEntity.ok().build()
@@ -126,7 +127,7 @@ public class GameIrlController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return irlGameService.saveMove(player.get(), body).mapOrElse(
+        return offlineGameService.saveMove(player.get(), body).mapOrElse(
                 ResponseEntity::ok,
                 error -> ResponseEntity.badRequest().body(new SaveMoveErrorResponse(error))
         );
@@ -149,56 +150,4 @@ public class GameIrlController {
     public record SaveMoveErrorResponse(
             String error
     ) {}
-
-    public record TeamColor(
-            @JsonIgnore
-            int colorId, // internal use
-            @JsonProperty("bg")
-            String background,
-            String text,
-            String light,
-            String dark
-    ) {}
-
-    public enum Combination {
-        @JsonProperty("units")
-        UNITS,
-        @JsonProperty("twos")
-        TWOS,
-        @JsonProperty("threes")
-        THREES,
-        @JsonProperty("fours")
-        FOURS,
-        @JsonProperty("fives")
-        FIVES,
-        @JsonProperty("sixes")
-        SIXES,
-
-        @JsonProperty("pair")
-        PAIR,
-        @JsonProperty("two_pairs")
-        TWO_PAIRS,
-        @JsonProperty("three_of_kind")
-        THREE_OF_KIND,
-        @JsonProperty("four_of_kind")
-        FOUR_OF_KIND,
-        @JsonProperty("full_house")
-        FULL_HOUSE,
-        @JsonProperty("low_straight")
-        LOW_STRAIGHT,
-        @JsonProperty("high_straight")
-        HIGH_STRAIGHT,
-        @JsonProperty("yahtzee")
-        YAHTZEE,
-        @JsonProperty("chance")
-        CHANCE;
-
-        public String propertyName() {
-            return name().toLowerCase();
-        }
-
-        public static Combination of(String propertyName) {
-            return Enum.valueOf(Combination.class, propertyName.toUpperCase());
-        }
-    }
 }
