@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.scarifJwt;
+package ru.prohor.universe.jocasta.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;

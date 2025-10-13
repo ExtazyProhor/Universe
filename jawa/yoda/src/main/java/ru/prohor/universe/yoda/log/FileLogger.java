@@ -2,7 +2,7 @@ package ru.prohor.universe.yoda.log;
 
 import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
-import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

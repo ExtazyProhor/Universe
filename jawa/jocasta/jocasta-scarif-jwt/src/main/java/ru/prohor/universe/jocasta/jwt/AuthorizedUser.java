@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.scarifJwt;
+package ru.prohor.universe.jocasta.jwt;
 
 import java.util.UUID;
 

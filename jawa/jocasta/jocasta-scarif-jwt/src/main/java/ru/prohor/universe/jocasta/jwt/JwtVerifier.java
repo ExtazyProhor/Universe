@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.scarifJwt;
+package ru.prohor.universe.jocasta.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

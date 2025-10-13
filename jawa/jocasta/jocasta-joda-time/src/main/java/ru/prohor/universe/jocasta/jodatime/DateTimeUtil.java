@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jodaTime;
+package ru.prohor.universe.jocasta.jodatime;
 
 import jakarta.annotation.Nonnull;
 import org.joda.time.DateTimeZone;

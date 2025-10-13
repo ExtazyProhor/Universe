@@ -4,7 +4,7 @@ import org.bson.types.ObjectId;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.data.entities.dto.OfflineGameDto;
 import ru.prohor.universe.yahtzee.data.inner.pojo.OfflineTeamScores;

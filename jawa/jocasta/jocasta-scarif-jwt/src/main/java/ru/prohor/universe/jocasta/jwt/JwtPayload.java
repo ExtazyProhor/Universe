@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.scarifJwt;
+package ru.prohor.universe.jocasta.jwt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.Instant;

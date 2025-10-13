@@ -2,7 +2,7 @@ package ru.prohor.universe.scarif.data.refresh;
 
 import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.scarif.data.session.Session;
 
 public record RefreshToken(

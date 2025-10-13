@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.Enumeration;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.common.Result;
-import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.yahtzee.core.TeamColor;
 import ru.prohor.universe.yahtzee.core.Yahtzee;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;

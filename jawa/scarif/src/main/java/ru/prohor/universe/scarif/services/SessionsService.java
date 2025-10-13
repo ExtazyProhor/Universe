@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
-import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.scarif.data.refresh.JpaRefreshTokenMethods;
 import ru.prohor.universe.scarif.data.refresh.RefreshToken;
 import ru.prohor.universe.scarif.data.session.JpaSessionMethods;
