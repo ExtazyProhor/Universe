@@ -3,20 +3,23 @@ package ru.prohor.universe.jocasta.core.string;
 public class OrdinalNumbers {
     private OrdinalNumbers() {}
 
-    // TODO check available libs for this
-    public static String of(int i) {
-        return switch (i) {
-            case 1 -> "First";
-            case 2 -> "Second";
-            case 3 -> "Third";
-            case 4 -> "Fourth";
-            case 5 -> "Fifth";
-            case 6 -> "Sixth";
-            case 7 -> "Seventh";
-            case 8 -> "Eighth";
-            case 9 -> "Ninth";
-            case 10 -> "Tenth";
-            default -> throw new IllegalArgumentException("numbers before 1 and after 10 are not supported");
+    public static String of(int number) {
+        if (number <= 0)
+            throw new IllegalArgumentException(
+                    "Ordinal numbers are only defined for positive integers: " + number + " is illegal"
+            );
+        return number + getSuffix(number);
+    }
+
+    private static String getSuffix(int number) {
+        int mod100 = number % 100;
+        if (mod100 >= 11 && mod100 <= 13)
+            return "th";
+        return switch (number % 10) {
+            case 1 -> "st";
+            case 2 -> "nd";
+            case 3 -> "rd";
+            default -> "th";
         };
     }
 }

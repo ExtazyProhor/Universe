@@ -14,7 +14,7 @@ public final class FileSystemUtils {
     public static class UserDir {
         private final String path;
 
-        public UserDir(String path) {
+        private UserDir(String path) {
             this.path = path;
         }
 
