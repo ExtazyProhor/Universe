@@ -4,6 +4,7 @@ import org.bson.types.ObjectId;
 import org.joda.time.Instant;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.jwt.AuthorizedUser;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
@@ -23,15 +24,18 @@ public class AccountService {
     private static final int PAGE_SIZE = 5;
 
     private final MongoRepository<Player> playerRepository;
+    private final GeneralRoomsService generalRoomsService;
     private final GameColorsService gameColorsService;
     private final ImagesService imagesService;
 
     public AccountService(
             MongoRepository<Player> playerRepository,
+            GeneralRoomsService generalRoomsService,
             GameColorsService gameColorsService,
             ImagesService imagesService
     ) {
         this.playerRepository = playerRepository;
+        this.generalRoomsService = generalRoomsService;
         this.gameColorsService = gameColorsService;
         this.imagesService = imagesService;
     }
@@ -76,7 +80,14 @@ public class AccountService {
                 player.displayName(),
                 color.background(),
                 color.text(),
-                player.imageId().toHexString()
+                player.imageId().toHexString(),
+                generalRoomsService.findRoom(player.currentRoom()).map(
+                        room -> new AccountController.RoomInfo(
+                                room.type().propertyName(),
+                                DateTimeUtil.toReadableString(room.createdAt()),
+                                room.teamsCount()
+                        )
+                ).orElseNull()
         );
     }
 

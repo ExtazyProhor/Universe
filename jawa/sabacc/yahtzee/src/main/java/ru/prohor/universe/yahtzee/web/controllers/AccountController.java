@@ -52,7 +52,14 @@ public class AccountController {
             String color, // format: "ff0000", hex, without alpha
             String contrast, // format: "ff0000", hex, without alpha, 
             @JsonProperty("image_id")
-            String imageId
+            String imageId,
+            RoomInfo room // optional
+    ) {}
+
+    public record RoomInfo(
+            String type, // lowercase RoomType
+            String creation, // datetime
+            int teams
     ) {}
 
     @PostMapping("/change_name")

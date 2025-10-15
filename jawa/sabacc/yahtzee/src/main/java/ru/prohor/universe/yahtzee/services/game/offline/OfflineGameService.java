@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.Enumeration;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.common.Result;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.yahtzee.core.TeamColor;
 import ru.prohor.universe.yahtzee.core.Yahtzee;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
@@ -23,6 +22,7 @@ import ru.prohor.universe.yahtzee.data.inner.pojo.OfflineScore;
 import ru.prohor.universe.yahtzee.data.inner.pojo.OfflineTeamScores;
 import ru.prohor.universe.yahtzee.data.inner.pojo.RoomReference;
 import ru.prohor.universe.yahtzee.core.RoomType;
+import ru.prohor.universe.yahtzee.services.GeneralRoomsService;
 import ru.prohor.universe.yahtzee.services.color.GameColorsService;
 import ru.prohor.universe.yahtzee.web.controllers.OfflineGameController;
 
@@ -61,21 +61,8 @@ public class OfflineGameService {
         this.gameColorsService = gameColorsService;
     }
 
-    public Opt<OfflineGameController.CurrentRoomResponse> getCurrentRoom(Player player) {
-        return offlineOrEmpty(player.currentRoom()).map(
-                id -> roomRepository.findById(id).map(
-                        room -> new OfflineGameController.CurrentRoomResponse(
-                                DateTimeUtil.toReadableString(room.createdAt()),
-                                room.teams().size()
-                        )
-                ).orElseThrow(
-                        () -> roomNotFound(id)
-                )
-        );
-    }
-
     public Opt<OfflineGameController.RoomInfoResponse> getRoomInfo(Player player) {
-        return offlineOrEmpty(player.currentRoom()).map(
+        return player.currentRoom().filter(ref -> ref.type() == RoomType.TACTILE_OFFLINE).map(RoomReference::id).map(
                 id -> roomRepository.findById(id).map(
                         room -> new OfflineGameController.RoomInfoResponse(
                                 Enumeration.enumerateAndMap(
@@ -102,7 +89,7 @@ public class OfflineGameService {
                                 )
                         )
                 ).orElseThrow(
-                        () -> roomNotFound(id)
+                        () -> GeneralRoomsService.roomNotFound(id, RoomType.TACTILE_OFFLINE)
                 )
         );
     }
@@ -173,9 +160,11 @@ public class OfflineGameService {
             return Result.error("Mover is not linked to room");
         if (!mover.currentRoom().get().equals(player.currentRoom().get()))
             return Result.error("Player and mover are in different rooms");
-        Opt<OfflineRoom> roomO = roomRepository.findById(offlineOrEmpty(player.currentRoom()).get());
+        if (player.currentRoom().get().type() != RoomType.TACTILE_OFFLINE)
+            return Result.error("Illegal room type: " + player.currentRoom().get().type().propertyName());
+        Opt<OfflineRoom> roomO = roomRepository.findById(player.currentRoom().get().id());
         if (roomO.isEmpty())
-            throw roomNotFound(offlineOrEmpty(player.currentRoom()).get());
+            throw GeneralRoomsService.roomNotFound(player.currentRoom().get().id(), RoomType.TACTILE_OFFLINE);
         OfflineRoom room = roomO.get();
         OfflineInterimTeamScores movingTeam = room.teams().get(room.movingTeamIndex());
         if (!movingTeam.players().contains(mover.id()))
@@ -287,13 +276,5 @@ public class OfflineGameService {
                                 .build()
                 ).toList());
         return players;
-    }
-
-    private static RuntimeException roomNotFound(ObjectId id) {
-        return new RuntimeException("Server error: room {" + id + "} not found");
-    }
-
-    private Opt<ObjectId> offlineOrEmpty(Opt<RoomReference> roomRef) {
-        return roomRef.filter(ref -> ref.type() == RoomType.TACTILE_OFFLINE).map(RoomReference::id);
     }
 }

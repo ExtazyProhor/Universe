@@ -28,25 +28,6 @@ public class OfflineGameController {
         this.offlineGameService = offlineGameService;
     }
 
-    @PostMapping("/current_room")
-    public ResponseEntity<CurrentRoomResponse> currentRoom(
-            @RequestAttribute(Player.ATTRIBUTE_KEY)
-            Opt<Player> player
-    ) {
-        if (player.isEmpty())
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return offlineGameService.getCurrentRoom(player.get()).map(
-                ResponseEntity::ok
-        ).orElseGet(
-                () -> ResponseEntity.notFound().build()
-        );
-    }
-
-    public record CurrentRoomResponse(
-            String creation, // datetime
-            int teams
-    ) {}
-
     @GetMapping("/room_info")
     public ResponseEntity<RoomInfoResponse> getRoomInfo(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
