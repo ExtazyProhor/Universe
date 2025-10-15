@@ -136,6 +136,7 @@ public class AccountService {
         return new AccountController.FriendsResponse(
                 player.friends()
                         .stream()
+                        .sorted()
                         .skip(page * PAGE_SIZE)
                         .limit(PAGE_SIZE)
                         .map(id -> playerRepository.findById(id).orElseThrow(

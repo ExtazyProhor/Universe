@@ -7,6 +7,7 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.data.entities.dto.PlayerDto;
+import ru.prohor.universe.yahtzee.data.inner.pojo.RoomReference;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +21,7 @@ public record Player(
         int color,
         String displayName,
         List<ObjectId> friends,
-        Opt<ObjectId> currentRoom,
+        Opt<RoomReference> currentRoom,
         ObjectId imageId,
         Instant createdAt,
         boolean trusted
@@ -37,7 +38,7 @@ public record Player(
                 color,
                 displayName,
                 friends,
-                currentRoom.orElseNull(),
+                currentRoom.map(RoomReference::toDto).orElseNull(),
                 imageId,
                 DateTimeUtil.unwrap(createdAt),
                 trusted
@@ -53,7 +54,7 @@ public record Player(
                 player.getColor(),
                 player.getDisplayName(),
                 player.getFriends(),
-                Opt.ofNullable(player.getCurrentRoom()),
+                Opt.ofNullable(player.getCurrentRoom()).map(RoomReference::fromDto),
                 player.getImageId(),
                 DateTimeUtil.wrap(player.getCreatedAt()),
                 player.isTrusted()

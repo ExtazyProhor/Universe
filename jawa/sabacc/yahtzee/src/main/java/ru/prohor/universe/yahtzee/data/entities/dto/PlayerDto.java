@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import ru.prohor.universe.yahtzee.data.inner.dto.RoomReferenceDto;
 
 import java.time.Instant;
 import java.util.List;
@@ -29,7 +30,7 @@ public class PlayerDto {
     private String displayName;
     private List<ObjectId> friends;
     @Property("current_room")
-    private ObjectId currentRoom;
+    private RoomReferenceDto currentRoom;
     @Property("image_id")
     private ObjectId imageId;
     @Property("created_at")
