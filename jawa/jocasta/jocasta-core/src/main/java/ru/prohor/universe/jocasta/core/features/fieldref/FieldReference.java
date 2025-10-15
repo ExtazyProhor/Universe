@@ -11,7 +11,7 @@ import java.util.Arrays;
  * <h3>Usage</h3>
  * <pre>
  *     {@code
- *     public static <T> String name(PropertyRef<T> ref) {
+ *     public static <T> String name(FieldReference<T> ref) {
  *         return ref.name();
  *     }
  *     }
