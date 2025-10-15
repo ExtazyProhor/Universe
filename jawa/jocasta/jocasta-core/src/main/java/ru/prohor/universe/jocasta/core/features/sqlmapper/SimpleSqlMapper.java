@@ -46,7 +46,7 @@ public class SimpleSqlMapper {
         return countByFields(connection, entity) > 0;
     }
 
-    public static <T extends Entity> int abstractCount(Connection connection, Class<T> clazz, String condition)
+    private static <T extends Entity> int abstractCount(Connection connection, Class<T> clazz, String condition)
             throws SQLException {
         Statement statement = null;
         ResultSet resultSet = null;
