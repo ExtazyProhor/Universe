@@ -11,15 +11,12 @@ public class Paginator { // TODO move to custom List
         return unsafePaginate(list, page, size);
     }
 
-    public static <T> Stream<T> paginate(Stream<T> stream, long page, int size) {
-        check(page, size);
-        return unsafePaginate(stream, page, size);
-    }
-
     public static <T> List<T> paginateOrLastPage(List<T> list, long page, int size) {
         check(page, size);
+        if (list.isEmpty())
+            return list;
         int length = list.size();
-        long skip = (long) page * size;
+        long skip = page * size;
         if (skip < length)
             return unsafePaginate(list, page, size);
         return unsafePaginate(list, (length - 1) / size, size);
