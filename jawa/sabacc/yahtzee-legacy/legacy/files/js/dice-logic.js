@@ -16,6 +16,8 @@ const categories = {
     'chance': () => chance()
 };
 
+const imagesDir = 'files/images/'
+
 function rand(fromInclusive, toInclusive) {
     return fromInclusive + Math.floor(Math.random() * (toInclusive - fromInclusive + 1));
 }
@@ -24,14 +26,14 @@ function simple(value) {
     const list = [];
     const count = rand(1, 4);
     for (let i = 0; i < count; i++) {
-        list.push(`images/${value}-a.png`);
+        list.push(`${imagesDir}${value}-a.png`);
     }
     while (list.length < 5) {
         let val = value;
         while (val === value) {
             val = rand(1, 6);
         }
-        list.push(`images/${val}-p.png`);
+        list.push(`${imagesDir}${val}-p.png`);
     }
     return list;
 }
@@ -42,7 +44,7 @@ function count(countNeeded) {
     const usedValues = new Set([value]);
 
     for (let i = 0; i < countNeeded; i++) {
-        list.push(`images/${value}-a.png`);
+        list.push(`${imagesDir}${value}-a.png`);
     }
 
     while (list.length < 5) {
@@ -51,7 +53,7 @@ function count(countNeeded) {
             val = rand(1, 6);
         }
         usedValues.add(val);
-        list.push(`images/${val}-p.png`);
+        list.push(`${imagesDir}${val}-p.png`);
     }
     return list;
 }
@@ -64,11 +66,11 @@ function twoPairs() {
         last = rand(1, 6);
     }
     return [
-        `images/${first}-a.png`,
-        `images/${first}-a.png`,
-        `images/${second}-a.png`,
-        `images/${second}-a.png`,
-        `images/${last}-p.png`
+        `${imagesDir}${first}-a.png`,
+        `${imagesDir}${first}-a.png`,
+        `${imagesDir}${second}-a.png`,
+        `${imagesDir}${second}-a.png`,
+        `${imagesDir}${last}-p.png`
     ];
 }
 
@@ -76,11 +78,11 @@ function fullHouse() {
     const first = rand(1, 6);
     const second = rand(1, 6);
     return [
-        `images/${first}-a.png`,
-        `images/${first}-a.png`,
-        `images/${second}-a.png`,
-        `images/${second}-a.png`,
-        `images/${second}-a.png`
+        `${imagesDir}${first}-a.png`,
+        `${imagesDir}${first}-a.png`,
+        `${imagesDir}${second}-a.png`,
+        `${imagesDir}${second}-a.png`,
+        `${imagesDir}${second}-a.png`
     ];
 }
 
@@ -88,9 +90,9 @@ function smallStraight() {
     const start = rand(1, 3);
     const list = [];
     for (let i = start; i < start + 4; i++) {
-        list.push(`images/${i}-a.png`);
+        list.push(`${imagesDir}${i}-a.png`);
     }
-    list.push(`images/${start + rand(0, 3)}-p.png`);
+    list.push(`${imagesDir}${start + rand(0, 3)}-p.png`);
     return list;
 }
 
@@ -98,7 +100,7 @@ function largeStraight() {
     const start = rand(1, 2);
     const list = [];
     for (let i = start; i < start + 5; i++) {
-        list.push(`images/${i}-a.png`);
+        list.push(`${imagesDir}${i}-a.png`);
     }
     return list;
 }
@@ -112,7 +114,7 @@ function chance() {
         [list[i], list[j]] = [list[j], list[i]];
     }
 
-    return list.map(i => `images/${i}-p.png`);
+    return list.map(i => `${imagesDir}${i}-p.png`);
 }
 
 function updateDiceImages() {
