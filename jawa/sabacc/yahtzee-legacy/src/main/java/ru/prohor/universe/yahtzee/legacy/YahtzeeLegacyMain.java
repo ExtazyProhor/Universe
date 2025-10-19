@@ -1,15 +1,24 @@
 package ru.prohor.universe.yahtzee.legacy;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
-import ru.prohor.universe.jocasta.springweb.ExcludeControllersComponentScan;
+import ru.prohor.universe.jocasta.springweb.configuration.FaviconControllerConfiguration;
+import ru.prohor.universe.jocasta.springweb.configuration.FilesControllerConfiguration;
+import ru.prohor.universe.jocasta.springweb.configuration.RootControllerConfiguration;
+import ru.prohor.universe.jocasta.springweb.configuration.StaticResourcesHandlerConfiguration;
 
 @Configuration
-@ExcludeControllersComponentScan
+@ComponentScan
 @Import({
+        StaticResourcesHandlerConfiguration.class,
+        FilesControllerConfiguration.class,
+        FaviconControllerConfiguration.class,
+        RootControllerConfiguration.class,
+
         JocastaAutoConfiguration.class,
         HolocronConfiguration.class,
 })
