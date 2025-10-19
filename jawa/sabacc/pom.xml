@@ -15,5 +15,6 @@
 
     <modules>
         <module>yahtzee</module>
+        <module>yahtzee-legacy</module>
     </modules>
 </project>
