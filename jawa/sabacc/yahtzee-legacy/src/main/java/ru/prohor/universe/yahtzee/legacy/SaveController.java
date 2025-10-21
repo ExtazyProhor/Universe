@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @RestController
@@ -19,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 public class SaveController {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ZoneId utc = ZoneId.of("UTC");
     private final Path dir;
 
     public SaveController(
@@ -32,7 +34,7 @@ public class SaveController {
     public ResponseEntity<String> game(@RequestBody String jsonData) {
         try {
             objectMapper.readTree(jsonData);
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = LocalDateTime.now(utc);
             JsonNode jsonNode = objectMapper.readTree(jsonData);
             Files.writeString(
                     dir.resolve("game_" + now.format(formatter) + ".json"),
