@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +29,8 @@ public class SaveController {
             String outputPath
     ) {
         this.dir = Path.of(outputPath);
+        if (!Files.exists(dir))
+            Sneaky.execute(() -> Files.createDirectory(dir));
     }
 
     @PostMapping("/game")
