@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Яцзы</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,7 +14,10 @@
         }
 
         body {
-            font-family: 'Montserrat', sans-serif;
+            font-family: "Comfortaa", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 700;
+            font-style: normal;
             background: url('/files/images/bg.png') center center / cover no-repeat fixed;
             min-height: 100vh;
             height: 100vh;
@@ -39,14 +44,14 @@
         }
 
         .stats-table .reset-btn {
+            color: #000000;
+            font-size: 16px;
             width: calc(50% - 5px);
             padding: 12px;
             background: linear-gradient(135deg, #FF6B6B, #ee5a52);
             color: white;
             border: none;
             border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -57,7 +62,7 @@
         }
 
         .stats-table {
-            background: #2a2a2a;
+            background: rgba(42, 42, 42, 0.85);
             color: white;
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -72,7 +77,6 @@
         .stats-table td {
             padding: 12px 15px;
             border-bottom: 1px solid #444444;
-            font-weight: 600;
             text-align: center;
         }
 
@@ -94,7 +98,7 @@
         }
 
         .table-section {
-            background: #2a2a2a;
+            background: rgba(42, 42, 42, 0.85);
             color: white;
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -107,7 +111,6 @@
             color: white;
             padding: 10px 20px;
             font-size: 18px;
-            font-weight: 600;
         }
 
         .complex-header {
@@ -128,7 +131,6 @@
             border: none;
             border-radius: 6px;
             font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -162,6 +164,10 @@
             height: 50px;
         }
 
+        tbody tr td {
+            font-size: 14px;
+        }
+
         td:last-child {
             height: 45px;
             vertical-align: middle;
@@ -180,15 +186,13 @@
         th {
             background-color: #1a1a1a;
             color: white;
-            font-weight: 600;
         }
 
         tr:hover {
-            background-color: #333333;
+            background: rgba(51, 51, 51, 0.5);
         }
 
         .saved-score {
-            font-weight: 600;
             padding: 8px;
             border-radius: 6px;
             width: 40px;
@@ -208,7 +212,6 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: 600;
             font-size: 16px;
             transition: all 0.3s ease;
             margin: 1px;
@@ -220,7 +223,6 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: 600;
             font-size: 16px;
             transition: all 0.3s ease;
             margin: 1px;
@@ -250,7 +252,6 @@
             justify-content: center;
             box-sizing: border-box;
             margin: 1px;
-            font-weight: 600;
             font-size: 14px;
         }
 
@@ -287,7 +288,7 @@
         }
 
         .teams-bar {
-            background: #2a2a2a;
+            background: rgba(42, 42, 42, 0.85);
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             margin: 20px;
@@ -314,7 +315,6 @@
         }
 
         .team-name {
-            font-weight: 600;
             font-size: 14px;
             flex: 1;
             white-space: nowrap;
@@ -362,7 +362,7 @@
         }
 
         .team-btn:disabled, .team-btn[style*="cursor: not-allowed"] {
-            opacity: 0.5;
+            opacity: 0.3; /* todo */
             pointer-events: none;
         }
 
@@ -370,11 +370,11 @@
             width: calc(50% - 5px);
             padding: 12px;
             background: linear-gradient(135deg, #FFC107, #FF9800);
-            color: white;
+            color: #000000;
+            font-size: 16px;
             border: none;
             border-radius: 6px;
             font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -385,6 +385,7 @@
         }
 
         .undo-btn:disabled {
+            color: #000000;
             background: #ccc;
             cursor: not-allowed;
             opacity: 0.6;
@@ -444,7 +445,7 @@
                 </thead>
                 <tbody>
                 <tr data-category="units">
-                    <td>единицы</td>
+                    <td>Единицы</td>
                     <td>N единиц</td>
                     <td>N × 1</td>
                     <td>
@@ -455,7 +456,7 @@
                     </td>
                 </tr>
                 <tr data-category="twos">
-                    <td>двойки</td>
+                    <td>Двойки</td>
                     <td>N двоек</td>
                     <td>N × 2</td>
                     <td>
@@ -466,7 +467,7 @@
                     </td>
                 </tr>
                 <tr data-category="threes">
-                    <td>тройки</td>
+                    <td>Тройки</td>
                     <td>N троек</td>
                     <td>N × 3</td>
                     <td>
@@ -477,7 +478,7 @@
                     </td>
                 </tr>
                 <tr data-category="fours">
-                    <td>четверки</td>
+                    <td>Четверки</td>
                     <td>N четверок</td>
                     <td>N × 4</td>
                     <td>
@@ -488,7 +489,7 @@
                     </td>
                 </tr>
                 <tr data-category="fives">
-                    <td>пятерки</td>
+                    <td>Пятерки</td>
                     <td>N пятерок</td>
                     <td>N × 5</td>
                     <td>
@@ -499,7 +500,7 @@
                     </td>
                 </tr>
                 <tr data-category="sixes">
-                    <td>шестёрки</td>
+                    <td>Шестёрки</td>
                     <td>N шестёрок</td>
                     <td>N × 6</td>
                     <td>
@@ -529,8 +530,8 @@
                 <tbody>
                 <tr data-category="pair">
                     <td>пара</td>
-                    <td>два равных</td>
-                    <td>сумма всех</td>
+                    <td>Два равных</td>
+                    <td>Сумма всех</td>
                     <td>
                         <div class="dice-images"></div>
                     </td>
@@ -539,9 +540,9 @@
                     </td>
                 </tr>
                 <tr data-category="two-pairs">
-                    <td>две пары</td>
-                    <td>два по два</td>
-                    <td>сумма всех</td>
+                    <td>Две пары</td>
+                    <td>Два по два</td>
+                    <td>Сумма всех</td>
                     <td>
                         <div class="dice-images"></div>
                     </td>
@@ -550,9 +551,9 @@
                     </td>
                 </tr>
                 <tr data-category="three-of-kind">
-                    <td>сет (тройка)</td>
-                    <td>три равных</td>
-                    <td>сумма всех</td>
+                    <td>Сет (тройка)</td>
+                    <td>Три равных</td>
+                    <td>Сумма всех</td>
                     <td>
                         <div class="dice-images"></div>
                     </td>
@@ -561,9 +562,9 @@
                     </td>
                 </tr>
                 <tr data-category="four-of-kind">
-                    <td>каре</td>
-                    <td>четыре равных</td>
-                    <td>сумма всех</td>
+                    <td>Каре</td>
+                    <td>Четыре равных</td>
+                    <td>Сумма всех</td>
                     <td>
                         <div class="dice-images"></div>
                     </td>
@@ -572,8 +573,8 @@
                     </td>
                 </tr>
                 <tr data-category="full-house" data-fixed-score="25">
-                    <td>фулл-хаус</td>
-                    <td>пара и сет</td>
+                    <td>Фулл-хаус</td>
+                    <td>Пара и сет</td>
                     <td>25</td>
                     <td>
                         <div class="dice-images"></div>
@@ -583,8 +584,8 @@
                     </td>
                 </tr>
                 <tr data-category="small-straight" data-fixed-score="30">
-                    <td>короткий стрит</td>
-                    <td>четыре подряд</td>
+                    <td>Короткий стрит</td>
+                    <td>Четыре подряд</td>
                     <td>30</td>
                     <td>
                         <div class="dice-images"></div>
@@ -594,8 +595,8 @@
                     </td>
                 </tr>
                 <tr data-category="large-straight" data-fixed-score="40">
-                    <td>длинный стрит</td>
-                    <td>пять подряд</td>
+                    <td>Длинный стрит</td>
+                    <td>Пять подряд</td>
                     <td>40</td>
                     <td>
                         <div class="dice-images"></div>
@@ -605,8 +606,8 @@
                     </td>
                 </tr>
                 <tr data-category="yahtzee" data-fixed-score="50">
-                    <td>покер (яцзы)</td>
-                    <td>пять равных</td>
+                    <td>Покер (яцзы)</td>
+                    <td>Пять равных</td>
                     <td>50</td>
                     <td>
                         <div class="dice-images"></div>
@@ -616,9 +617,9 @@
                     </td>
                 </tr>
                 <tr data-category="chance">
-                    <td>шанс</td>
-                    <td>любые значения</td>
-                    <td>сумма всех</td>
+                    <td>Шанс</td>
+                    <td>Любые значения</td>
+                    <td>Сумма всех</td>
                     <td>
                         <div class="dice-images"></div>
                     </td>
@@ -674,6 +675,8 @@
     let gameMode = 'preparation';
     let lastAction = null;
 
+    const pageLoadedAt = Date.now();
+
     const teamColors = [
         { bg: '#FFD700', text: '#000000', light: '#FFF8DC', dark: '#B8860B' },
         { bg: '#FF8C00', text: '#FFFFFF', light: '#FFE4B5', dark: '#CC7000' },
@@ -685,8 +688,9 @@
         { bg: '#DC143C', text: '#FFFFFF', light: '#FFE6E6', dark: '#8B0000' },
         { bg: '#20B2AA', text: '#FFFFFF', light: '#E0FFFF', dark: '#008B8B' },
         { bg: '#1E70FF', text: '#FFFFFF', light: '#E6F2FF', dark: '#104E8B' },
-        { bg: '#0C610C', text: '#FFFFFF', light: '#EAF6EA', dark: '#0F3D0F' },
-        { bg: '#630363', text: '#FFFFFF', light: '#F5E6F5', dark: '#3B003B' },
+        { bg: '#2E7D32', text: '#FFFFFF', light: '#E8F5E9', dark: '#1B5E20' },
+        { bg: '#7B1FA2', text: '#FFFFFF', light: '#F3E5F5', dark: '#4A148C' },
+
         { bg: '#8B4513', text: '#FFFFFF', light: '#F5DEB3', dark: '#5C2E0D' },
         { bg: '#D2B48C', text: '#000000', light: '#FAEBD7', dark: '#A68B65' },
         { bg: '#808080', text: '#FFFFFF', light: '#DCDCDC', dark: '#404040' },
@@ -744,8 +748,8 @@
         if (fixedScore) {
             const score = parseInt(fixedScore);
             modalButtons.insertAdjacentHTML('afterbegin', `
-            <button class="modal-btn primary" onclick="saveScore(${score})">Засчитать ${score}</button>
             <button class="modal-btn secondary" onclick="saveScore(0)">Засчитать 0</button>
+            <button class="modal-btn primary" onclick="saveScore(${score})">Засчитать ${score}</button>
         `);
         } else {
             let min, max;
@@ -1038,6 +1042,14 @@
     }
 
     function resetGame() {
+        const dayMs = 24 * 60 * 60 * 1000;
+        const elapsed = Date.now() - pageLoadedAt;
+
+        if (elapsed >= dayMs) {
+            location.reload();
+            return;
+        }
+
         teamScores = {};
         currentTurnTeamIndex = 0;
         lastAction = null;
@@ -1062,7 +1074,7 @@
                         const isActive = isTeamActive(index);
                         const buttonStyle = isActive
                             ? `background-color: ${team.color.bg}; color: ${team.color.text};`
-                            : `background-color: #e0e0e0; color: #999; cursor: not-allowed;`;
+                            : `visibility: hidden;`;
 
                         return `<button class="team-btn" style="${buttonStyle}" onclick="${isActive ? `openModal(this, ${index})` : 'return false;'}">${isActive ? '+' : '+'}</button>`;
                     }
