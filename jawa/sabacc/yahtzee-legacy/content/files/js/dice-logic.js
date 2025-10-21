@@ -16,24 +16,26 @@ const categories = {
     'chance': () => chance()
 };
 
-const imagesDir = 'files/images/'
-
 function rand(fromInclusive, toInclusive) {
     return fromInclusive + Math.floor(Math.random() * (toInclusive - fromInclusive + 1));
+}
+
+function createDice(value, isActive) {
+    return { value, isActive };
 }
 
 function simple(value) {
     const list = [];
     const count = rand(1, 4);
     for (let i = 0; i < count; i++) {
-        list.push(`${imagesDir}${value}-a.png`);
+        list.push(createDice(value, true));
     }
     while (list.length < 5) {
         let val = value;
         while (val === value) {
             val = rand(1, 6);
         }
-        list.push(`${imagesDir}${val}-p.png`);
+        list.push(createDice(val, false));
     }
     return list;
 }
@@ -42,18 +44,16 @@ function count(countNeeded) {
     const list = [];
     const value = rand(1, 6);
     const usedValues = new Set([value]);
-
     for (let i = 0; i < countNeeded; i++) {
-        list.push(`${imagesDir}${value}-a.png`);
+        list.push(createDice(value, true));
     }
-
     while (list.length < 5) {
         let val = value;
         while (usedValues.has(val)) {
             val = rand(1, 6);
         }
         usedValues.add(val);
-        list.push(`${imagesDir}${val}-p.png`);
+        list.push(createDice(val, false));
     }
     return list;
 }
@@ -66,11 +66,11 @@ function twoPairs() {
         last = rand(1, 6);
     }
     return [
-        `${imagesDir}${first}-a.png`,
-        `${imagesDir}${first}-a.png`,
-        `${imagesDir}${second}-a.png`,
-        `${imagesDir}${second}-a.png`,
-        `${imagesDir}${last}-p.png`
+        createDice(first, true),
+        createDice(first, true),
+        createDice(second, true),
+        createDice(second, true),
+        createDice(last, false)
     ];
 }
 
@@ -78,11 +78,11 @@ function fullHouse() {
     const first = rand(1, 6);
     const second = rand(1, 6);
     return [
-        `${imagesDir}${first}-a.png`,
-        `${imagesDir}${first}-a.png`,
-        `${imagesDir}${second}-a.png`,
-        `${imagesDir}${second}-a.png`,
-        `${imagesDir}${second}-a.png`
+        createDice(first, true),
+        createDice(first, true),
+        createDice(second, true),
+        createDice(second, true),
+        createDice(second, true)
     ];
 }
 
@@ -90,9 +90,9 @@ function smallStraight() {
     const start = rand(1, 3);
     const list = [];
     for (let i = start; i < start + 4; i++) {
-        list.push(`${imagesDir}${i}-a.png`);
+        list.push(createDice(i, true));
     }
-    list.push(`${imagesDir}${start + rand(0, 3)}-p.png`);
+    list.push(createDice(start + rand(0, 3), false));
     return list;
 }
 
@@ -100,7 +100,7 @@ function largeStraight() {
     const start = rand(1, 2);
     const list = [];
     for (let i = start; i < start + 5; i++) {
-        list.push(`${imagesDir}${i}-a.png`);
+        list.push(createDice(i, true));
     }
     return list;
 }
@@ -108,13 +108,25 @@ function largeStraight() {
 function chance() {
     const list = [1, 2, 3, 4, 5, 6];
     list.splice(rand(2, 3), 1);
-
     for (let i = list.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [list[i], list[j]] = [list[j], list[i]];
     }
+    return list.map(i => createDice(i, false));
+}
 
-    return list.map(i => `${imagesDir}${i}-p.png`);
+function renderDice(dice) {
+    const diceEl = document.createElement('div');
+    diceEl.className = `dice ${dice.isActive ? 'active' : 'passive'}`;
+    diceEl.setAttribute('data-value', dice.value);
+
+    for (let i = 0; i < 9; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dice-dot empty';
+        diceEl.appendChild(dot);
+    }
+
+    return diceEl;
 }
 
 function updateDiceImages() {
@@ -122,15 +134,13 @@ function updateDiceImages() {
     rows.forEach(row => {
         const category = row.dataset.category;
         if (categories[category]) {
-            const images = categories[category]();
+            const diceList = categories[category]();
             const diceContainer = row.querySelector('.dice-images');
             if (diceContainer) {
                 diceContainer.innerHTML = '';
-                images.forEach(src => {
-                    const img = document.createElement('img');
-                    img.src = src;
-                    img.alt = src.match(/(\d)/)?.[1] || '';
-                    diceContainer.appendChild(img);
+                diceList.forEach(dice => {
+                    const diceEl = renderDice(dice);
+                    diceContainer.appendChild(diceEl);
                 });
             }
         }
