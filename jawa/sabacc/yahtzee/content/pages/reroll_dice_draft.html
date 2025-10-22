@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Игральных костей</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            perspective: 1000px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 700px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .dice-container {
+            margin: 30px 0;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            gap: 40px;
+        }
+
+        .dice {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(0deg) rotateY(0deg);
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #f0f0f0, #ffffff);
+            border: 2px solid #333;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dice-face.front { transform: rotateY(0deg) translateZ(40px); }
+        .dice-face.back { transform: rotateY(180deg) translateZ(40px); }
+        .dice-face.right { transform: rotateY(90deg) translateZ(40px); }
+        .dice-face.left { transform: rotateY(-90deg) translateZ(40px); }
+        .dice-face.top { transform: rotateX(90deg) translateZ(40px); }
+        .dice-face.bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+        .dice-dots {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            padding: 12px;
+            box-sizing: border-box;
+            place-items: center;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: #333;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Грани кости */
+        .face-1 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-1 .dot:nth-child(1) { grid-row: 2; grid-column: 2; }
+
+        .face-2 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-2 .dot:nth-child(1) { grid-row: 1; grid-column: 1; }
+        .face-2 .dot:nth-child(2) { grid-row: 3; grid-column: 3; }
+
+        .face-3 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-3 .dot:nth-child(1) { grid-row: 1; grid-column: 1; }
+        .face-3 .dot:nth-child(2) { grid-row: 2; grid-column: 2; }
+        .face-3 .dot:nth-child(3) { grid-row: 3; grid-column: 3; }
+
+        .face-4 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-4 .dot:nth-child(1) { grid-row: 1; grid-column: 1; }
+        .face-4 .dot:nth-child(2) { grid-row: 1; grid-column: 3; }
+        .face-4 .dot:nth-child(3) { grid-row: 3; grid-column: 1; }
+        .face-4 .dot:nth-child(4) { grid-row: 3; grid-column: 3; }
+
+        .face-5 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-5 .dot:nth-child(1) { grid-row: 1; grid-column: 1; }
+        .face-5 .dot:nth-child(2) { grid-row: 1; grid-column: 3; }
+        .face-5 .dot:nth-child(3) { grid-row: 2; grid-column: 2; }
+        .face-5 .dot:nth-child(4) { grid-row: 3; grid-column: 1; }
+        .face-5 .dot:nth-child(5) { grid-row: 3; grid-column: 3; }
+
+        .face-6 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-6 .dot:nth-child(1) { grid-row: 1; grid-column: 1; }
+        .face-6 .dot:nth-child(2) { grid-row: 1; grid-column: 3; }
+        .face-6 .dot:nth-child(3) { grid-row: 2; grid-column: 1; }
+        .face-6 .dot:nth-child(4) { grid-row: 2; grid-column: 3; }
+        .face-6 .dot:nth-child(5) { grid-row: 3; grid-column: 1; }
+        .face-6 .dot:nth-child(6) { grid-row: 3; grid-column: 3; }
+
+        .roll-button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .roll-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .roll-button:active {
+            transform: translateY(0);
+        }
+
+        .roll-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .shadow {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translateZ(-50px) rotateX(90deg);
+            top: 50%;
+            left: 50%;
+            margin-left: -50px;
+            margin-top: -50px;
+        }
+
+        .error {
+            color: #ff4444;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .attempts {
+            font-size: 18px;
+            margin: 15px 0;
+            color: #666;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .dice-wrapper {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .dice-wrapper.selected::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 8px;
+            background: linear-gradient(90deg, #00ffff, #0080ff);
+            border-radius: 2px;
+            box-shadow: 0 0 10px #00ffff;
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1>🎲 5 Игральных костей</h1>
+
+    <div class="dice-container">
+        <div class="dice-wrapper" onclick="toggleDiceSelection(0)">
+            <div class="shadow"></div>
+            <div class="dice" id="dice-0">
+                <div class="dice-face front">
+                    <div class="dice-dots face-1">
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face back">
+                    <div class="dice-dots face-6">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face right">
+                    <div class="dice-dots face-3">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face left">
+                    <div class="dice-dots face-4">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face top">
+                    <div class="dice-dots face-2">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face bottom">
+                    <div class="dice-dots face-5">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dice-wrapper" onclick="toggleDiceSelection(1)">
+            <div class="shadow"></div>
+            <div class="dice" id="dice-1">
+                <div class="dice-face front">
+                    <div class="dice-dots face-1">
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face back">
+                    <div class="dice-dots face-6">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face right">
+                    <div class="dice-dots face-3">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face left">
+                    <div class="dice-dots face-4">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face top">
+                    <div class="dice-dots face-2">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face bottom">
+                    <div class="dice-dots face-5">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dice-wrapper" onclick="toggleDiceSelection(2)">
+            <div class="shadow"></div>
+            <div class="dice" id="dice-2">
+                <div class="dice-face front">
+                    <div class="dice-dots face-1">
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face back">
+                    <div class="dice-dots face-6">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face right">
+                    <div class="dice-dots face-3">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face left">
+                    <div class="dice-dots face-4">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face top">
+                    <div class="dice-dots face-2">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face bottom">
+                    <div class="dice-dots face-5">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dice-wrapper" onclick="toggleDiceSelection(3)">
+            <div class="shadow"></div>
+            <div class="dice" id="dice-3">
+                <div class="dice-face front">
+                    <div class="dice-dots face-1">
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face back">
+                    <div class="dice-dots face-6">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face right">
+                    <div class="dice-dots face-3">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face left">
+                    <div class="dice-dots face-4">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face top">
+                    <div class="dice-dots face-2">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face bottom">
+                    <div class="dice-dots face-5">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dice-wrapper" onclick="toggleDiceSelection(4)">
+            <div class="shadow"></div>
+            <div class="dice" id="dice-4">
+                <div class="dice-face front">
+                    <div class="dice-dots face-1">
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face back">
+                    <div class="dice-dots face-6">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face right">
+                    <div class="dice-dots face-3">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face left">
+                    <div class="dice-dots face-4">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face top">
+                    <div class="dice-dots face-2">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="dice-face bottom">
+                    <div class="dice-dots face-5">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="result" id="result">
+        Нажмите кнопку, чтобы бросить кости!
+    </div>
+
+    <div class="attempts" id="attempts">
+        Попытки: 3/3
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <button class="roll-button" id="rollButton" onclick="rollDice()">
+        🎲 Бросить кости
+    </button>
+</div>
+
+<script>
+    let isRolling = false;
+    let attemptsLeft = 3;
+    let selectedDice = new Set();
+    let currentDiceValues = [1, 1, 1, 1, 1];
+
+    const faceRotations = {
+        1: { x: 0, y: 0 },
+        2: { x: -90, y: 0 },
+        3: { x: 0, y: -90 },
+        4: { x: 0, y: 90 },
+        5: { x: 90, y: 0 },
+        6: { x: 0, y: 180 }
+    };
+
+    function toggleDiceSelection(diceId) {
+        if (isRolling || attemptsLeft === 3) return;
+
+        const wrapper = document.getElementById(`dice-${diceId}`).parentElement;
+
+        if (selectedDice.has(diceId)) {
+            selectedDice.delete(diceId);
+            wrapper.classList.remove('selected');
+        } else {
+            selectedDice.add(diceId);
+            wrapper.classList.add('selected');
+        }
+
+        updateRollButton();
+    }
+
+    function updateRollButton() {
+        const rollButton = document.getElementById('rollButton');
+        if (attemptsLeft === 3) {
+            rollButton.textContent = '🎲 Бросить кости';
+        } else if (selectedDice.size === 0) {
+            rollButton.textContent = '🎲 Выберите кости для переброса';
+            rollButton.disabled = true;
+        } else {
+            rollButton.textContent = `🎲 Перебросить ${selectedDice.size} кост${selectedDice.size === 1 ? 'ь' : selectedDice.size < 5 ? 'и' : 'ей'}`;
+            rollButton.disabled = false;
+        }
+    }
+
+    async function rollDice() {
+        if (attemptsLeft <= 0) return;
+        if (isRolling) return;
+        if (attemptsLeft < 3 && selectedDice.size === 0) return;
+
+        isRolling = true;
+        const result = document.getElementById('result');
+        const rollButton = document.getElementById('rollButton');
+        const error = document.getElementById('error');
+
+        error.textContent = '';
+        rollButton.disabled = true;
+        rollButton.textContent = '🎲 Бросаем...';
+        result.textContent = 'Кости в воздухе...';
+
+        try {
+            const dicesToRoll = attemptsLeft === 3 ? [0, 1, 2, 3, 4] : Array.from(selectedDice);
+
+            const response = await fetch('http://localhost:8080/api/game/roll-dice', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dicesToRoll)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const diceResults = await response.json();
+
+            // Убираем выделение с костей
+            selectedDice.clear();
+            document.querySelectorAll('.dice-wrapper').forEach(wrapper => {
+                wrapper.classList.remove('selected');
+            });
+
+            const animationPromises = diceResults.map(async (diceResult) => {
+                const dice = document.getElementById(`dice-${diceResult.diceId}`);
+                const targetRotation = faceRotations[diceResult.value];
+
+                const duration = 1500 + Math.random() * 1000;
+                const spins = 3 + Math.floor(Math.random() * 3);
+                const finalX = targetRotation.x + (spins * 360);
+                const finalY = targetRotation.y + (spins * 360);
+
+                dice.style.transition = `transform ${duration}ms ease-out`;
+                dice.style.transform = `rotateX(${finalX}deg) rotateY(${finalY}deg)`;
+
+                await new Promise(resolve => setTimeout(resolve, duration));
+
+                dice.style.transition = 'none';
+                dice.style.transform = `rotateX(${targetRotation.x}deg) rotateY(${targetRotation.y}deg)`;
+
+                setTimeout(() => {
+                    dice.style.transition = '';
+                }, 100);
+            });
+
+            await Promise.all(animationPromises);
+
+            diceResults.forEach(diceResult => {
+                currentDiceValues[diceResult.diceId] = diceResult.value;
+            });
+
+            const totalSum = currentDiceValues.reduce((sum, value) => sum + value, 0);
+            result.textContent = `Сумма очков: ${totalSum}`;
+
+            attemptsLeft--;
+            document.getElementById('attempts').textContent = `Попытки: ${attemptsLeft}/3`;
+
+            updateRollButton();
+
+        } catch (err) {
+            error.textContent = `Ошибка: ${err.message}`;
+            result.textContent = 'Произошла ошибка при броске костей';
+        } finally {
+            isRolling = false;
+            if (attemptsLeft > 0) {
+                rollButton.disabled = false;
+            }
+        }
+    }
+
+    function reset() {
+        attemptsLeft = 3;
+        selectedDice.clear();
+
+        document.getElementById('attempts').textContent = `Попытки: 3/3`;
+        document.getElementById('result').textContent = 'Нажмите кнопку, чтобы бросить кости!';
+        document.getElementById('error').textContent = '';
+
+        // Убираем выделение с костей
+        document.querySelectorAll('.dice-wrapper').forEach(wrapper => {
+            wrapper.classList.remove('selected');
+        });
+
+        // Сбрасываем кости в исходное положение
+        for (let i = 0; i < 5; i++) {
+            const dice = document.getElementById(`dice-${i}`);
+            dice.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        }
+
+        updateRollButton();
+        const rollButton = document.getElementById('rollButton');
+        rollButton.disabled = false;
+        rollButton.textContent = '🎲 Бросить кости';
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !isRolling) {
+            rollDice();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        for (let i = 0; i < 5; i++) {
+            const dice = document.getElementById(`dice-${i}`);
+            dice.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        }
+        updateRollButton();
+    });
+</script>
+</body>
+</html>

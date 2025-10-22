@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Игральная кость</title>
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            perspective: 1000px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .dice-container {
+            margin: 30px 0;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        .dice {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(0deg) rotateY(0deg);
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #f0f0f0, #ffffff);
+            border: 2px solid #333;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dice-face.front { transform: rotateY(0deg) translateZ(40px); }
+        .dice-face.back { transform: rotateY(180deg) translateZ(40px); }
+        .dice-face.right { transform: rotateY(90deg) translateZ(40px); }
+        .dice-face.left { transform: rotateY(-90deg) translateZ(40px); }
+        .dice-face.top { transform: rotateX(90deg) translateZ(40px); }
+        .dice-face.bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+        .dice-dots {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            padding: 12px;
+            box-sizing: border-box;
+            place-items: center;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: #333;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Грани кости */
+        .face-1 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-1 .dot:nth-child(1) { grid-row: 2; grid-column: 2; }
+
+        .face-2 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-2 .dot:nth-child(1) { grid-row: 1; grid-column: 1; }
+        .face-2 .dot:nth-child(2) { grid-row: 3; grid-column: 3; }
+
+        .face-3 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-3 .dot:nth-child(1) { grid-row: 1; grid-column: 1; }
+        .face-3 .dot:nth-child(2) { grid-row: 2; grid-column: 2; }
+        .face-3 .dot:nth-child(3) { grid-row: 3; grid-column: 3; }
+
+        .face-4 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-4 .dot:nth-child(1) { grid-row: 1; grid-column: 1; }
+        .face-4 .dot:nth-child(2) { grid-row: 1; grid-column: 3; }
+        .face-4 .dot:nth-child(3) { grid-row: 3; grid-column: 1; }
+        .face-4 .dot:nth-child(4) { grid-row: 3; grid-column: 3; }
+
+        .face-5 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-5 .dot:nth-child(1) { grid-row: 1; grid-column: 1; }
+        .face-5 .dot:nth-child(2) { grid-row: 1; grid-column: 3; }
+        .face-5 .dot:nth-child(3) { grid-row: 2; grid-column: 2; }
+        .face-5 .dot:nth-child(4) { grid-row: 3; grid-column: 1; }
+        .face-5 .dot:nth-child(5) { grid-row: 3; grid-column: 3; }
+
+        .face-6 {
+            grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+            place-items: center;
+        }
+        .face-6 .dot:nth-child(1) { grid-row: 1; grid-column: 1; }
+        .face-6 .dot:nth-child(2) { grid-row: 1; grid-column: 3; }
+        .face-6 .dot:nth-child(3) { grid-row: 2; grid-column: 1; }
+        .face-6 .dot:nth-child(4) { grid-row: 2; grid-column: 3; }
+        .face-6 .dot:nth-child(5) { grid-row: 3; grid-column: 1; }
+        .face-6 .dot:nth-child(6) { grid-row: 3; grid-column: 3; }
+
+        .roll-button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .roll-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .roll-button:active {
+            transform: translateY(0);
+        }
+
+        .roll-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .debug-info {
+            font-size: 14px;
+            color: #666;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 0, 0.1);
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 0, 0.3);
+        }
+
+        .shadow {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translateZ(-50px) rotateX(90deg);
+            top: 50%;
+            left: 50%;
+            margin-left: -50px;
+            margin-top: -50px;
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+  <h1>🎲 3D Игральная кость</h1>
+
+  <div class="dice-container">
+    <div class="shadow"></div>
+    <div class="dice" id="dice">
+      <!-- Грань 1 (передняя) -->
+      <div class="dice-face front">
+        <div class="dice-dots face-1">
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <!-- Грань 6 (задняя) -->
+      <div class="dice-face back">
+        <div class="dice-dots face-6">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <!-- Грань 3 (правая) -->
+      <div class="dice-face right">
+        <div class="dice-dots face-3">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <!-- Грань 4 (левая) -->
+      <div class="dice-face left">
+        <div class="dice-dots face-4">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <!-- Грань 2 (верхняя) -->
+      <div class="dice-face top">
+        <div class="dice-dots face-2">
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <!-- Грань 5 (нижняя) -->
+      <div class="dice-face bottom">
+        <div class="dice-dots face-5">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="debug-info" id="debugInfo">
+    🔧 Отладка: Нажмите кнопку для броска
+  </div>
+
+  <div class="result" id="result">
+    Нажмите кнопку, чтобы бросить кость!
+  </div>
+
+  <button class="roll-button" id="rollButton" onclick="rollDice()">
+    🎲 Бросить кость
+  </button>
+</div>
+
+<script>
+        let isRolling = false;
+
+        // Точные углы для каждой грани кубика
+        const faceRotations = {
+            1: { x: 0, y: 0 },        // передняя грань
+            2: { x: -90, y: 0 },      // верхняя грань
+            3: { x: 0, y: -90 },      // правая грань
+            4: { x: 0, y: 90 },       // левая грань
+            5: { x: 90, y: 0 },       // нижняя грань
+            6: { x: 0, y: 180 }       // задняя грань
+        };
+
+        function rollDice() {
+            if (isRolling) return;
+
+            isRolling = true;
+            const dice = document.getElementById('dice');
+            const result = document.getElementById('result');
+            const rollButton = document.getElementById('rollButton');
+            const debugInfo = document.getElementById('debugInfo');
+
+            // Отключаем кнопку
+            rollButton.disabled = true;
+            rollButton.textContent = '🎲 Бросаем...';
+            result.textContent = 'Кость в воздухе...';
+
+            // Генерируем случайное значение
+            const targetValue = Math.floor(Math.random() * 6) + 1;
+            const targetRotation = faceRotations[targetValue];
+
+            // Показываем отладочную информацию
+            debugInfo.innerHTML = `🔧 Отладка: Должно выпасть <strong>${targetValue}</strong>, поворот: X=${targetRotation.x}°, Y=${targetRotation.y}°`;
+
+            // Случайное время анимации от 1.5 до 2 секунд
+            const duration = 1500 + Math.random() * 500;
+
+            // Добавляем дополнительные обороты для эффекта вращения
+            const spins = 3 + Math.floor(Math.random() * 3); // 3-5 оборотов
+            const finalX = targetRotation.x + (spins * 360);
+            const finalY = targetRotation.y + (spins * 360);
+
+            // Применяем анимацию через transition
+            dice.style.transition = `transform ${duration}ms ease-out`;
+            dice.style.transform = `rotateX(${finalX}deg) rotateY(${finalY}deg)`;
+
+            // Ждем завершения анимации
+            setTimeout(() => {
+                // Убираем transition и устанавливаем точную позицию
+                dice.style.transition = 'none';
+                dice.style.transform = `rotateX(${targetRotation.x}deg) rotateY(${targetRotation.y}deg)`;
+
+                // Показываем результат
+                result.textContent = `Выпало: ${targetValue}`;
+                debugInfo.innerHTML = `🔧 Отладка: Выпало <strong>${targetValue}</strong> ✅ Совпадает!`;
+
+                // Включаем кнопку
+                rollButton.disabled = false;
+                rollButton.textContent = '🎲 Бросить кость';
+                isRolling = false;
+
+                // Возвращаем transition для следующего броска
+                setTimeout(() => {
+                    dice.style.transition = '';
+                }, 100);
+
+            }, duration);
+        }
+
+        // Обработчик для нажатия Enter
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !isRolling) {
+                rollDice();
+            }
+        });
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            const dice = document.getElementById('dice');
+            dice.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+    </script>
+</body>
+</html>
