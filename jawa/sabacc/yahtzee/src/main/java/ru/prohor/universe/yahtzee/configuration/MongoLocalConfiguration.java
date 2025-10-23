@@ -4,7 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.jocasta.morphia.MongoInMemoryRepository;
+import ru.prohor.universe.jocasta.morphia.MongoInMemoryTransactionService;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Image;
 import ru.prohor.universe.yahtzee.data.entities.pojo.OfflineGame;
 import ru.prohor.universe.yahtzee.data.entities.pojo.OfflineRoom;
@@ -34,5 +36,10 @@ public class MongoLocalConfiguration {
                 Player::id,
                 (player, s) -> player.username().equalsIgnoreCase(s) || player.displayName().equalsIgnoreCase(s)
         );
+    }
+
+    @Bean
+    public MongoTransactionService transactionService() {
+        return new MongoInMemoryTransactionService();
     }
 }

@@ -5,7 +5,7 @@ import dev.morphia.query.updates.UpdateOperator;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,18 +25,16 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     private final Opt<BiPredicate<T, String>> textSearchPredicate;
 
     public MongoInMemoryRepository(Function<T, ObjectId> idExtractor) {
-        this.collection = new HashMap<>();
-        this.idExtractor = idExtractor;
-        this.textSearchPredicate = Opt.empty();
+        this(idExtractor, null);
     }
 
     public MongoInMemoryRepository(
             Function<T, ObjectId> idExtractor,
             BiPredicate<T, String> textSearchPredicate
     ) {
-        this.collection = new HashMap<>();
+        this.collection = Collections.synchronizedMap(new HashMap<>());
         this.idExtractor = idExtractor;
-        this.textSearchPredicate = Opt.of(textSearchPredicate);
+        this.textSearchPredicate = Opt.ofNullable(textSearchPredicate);
     }
 
     @Override

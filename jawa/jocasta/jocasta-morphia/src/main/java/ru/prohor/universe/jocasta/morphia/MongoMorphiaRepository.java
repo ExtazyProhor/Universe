@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.function.Function;
 
 public class MongoMorphiaRepository<T> implements MongoRepository<T> {
-    private final AbstractMongoMorphiaRepository<?, T> repository;
+    final AbstractMongoMorphiaRepository<?, T> repository;
 
-    private MongoMorphiaRepository(AbstractMongoMorphiaRepository<?, T> repository) {
+    MongoMorphiaRepository(AbstractMongoMorphiaRepository<?, T> repository) {
         this.repository = repository;
     }
 

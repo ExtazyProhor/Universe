@@ -23,7 +23,7 @@ public class AbstractMongoMorphiaRepository<T, W> {
     private static final String SCORE = "score";
     private static final String ID = "_id";
 
-    private static final UnaryOperator<FindIterable<Document>> NO_PAGING = x -> x;
+    private static final UnaryOperator<FindIterable<Document>> NO_PAGING = UnaryOperator.identity();
 
     private final MongoCollection<Document> collection;
     private final Datastore datastore;
@@ -43,6 +43,10 @@ public class AbstractMongoMorphiaRepository<T, W> {
         this.collection = datastore.getDatabase().getCollection(getCollectionName());
         this.wrapFunction = wrapFunction;
         this.unwrapFunction = unwrapFunction;
+    }
+
+    AbstractMongoMorphiaRepository<T, W> copy(Datastore datastore) {
+        return new AbstractMongoMorphiaRepository<>(datastore, type, wrapFunction, unwrapFunction);
     }
 
     List<W> findAll() {
