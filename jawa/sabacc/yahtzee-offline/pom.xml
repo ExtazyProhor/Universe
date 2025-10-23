@@ -5,19 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.prohor.universe</groupId>
-        <artifactId>jawa</artifactId>
+        <artifactId>sabacc</artifactId>
         <version>final</version>
     </parent>
 
-    <artifactId>sabacc</artifactId>
-    <packaging>pom</packaging>
-    <name>sabacc</name>
-
-    <modules>
-        <module>yahtzee</module>
-        <module>yahtzee-legacy</module>
-        <module>yahtzee-offline</module>
-        <module>yahtzee-online</module>
-        <module>yahtzee-core</module>
-    </modules>
+    <artifactId>yahtzee-offline</artifactId>
+    <packaging>jar</packaging>
+    <name>yahtzee-offline</name>
 </project>
