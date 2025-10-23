@@ -99,7 +99,10 @@ public class MongoConfiguration {
     }
 
     @Bean
-    public MongoTransactionService transactionService(Datastore datastore) {
-        return new MongoMorphiaTransactionService(datastore);
+    public MongoTransactionService transactionService(
+            @Value("${universe.yahtzee.mongo.transaction-retries}") int retries,
+            Datastore datastore
+    ) {
+        return new MongoMorphiaTransactionService(datastore, retries);
     }
 }

@@ -4,7 +4,7 @@ import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 
 public class MongoInMemoryTransactionService implements MongoTransactionService {
     @Override
-    public synchronized <E> E withTransaction(MonoFunction<MongoTransaction, E> transaction) {
-        return transaction.apply(new MongoInMemoryTransaction());
+    public synchronized <T> MongoTransactionResult<T> withTransaction(MonoFunction<MongoTransaction, T> transaction) {
+        return MongoTransactionResult.success(transaction.apply(new MongoInMemoryTransaction()));
     }
 }
