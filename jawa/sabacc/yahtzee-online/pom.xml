@@ -12,4 +12,11 @@
     <artifactId>yahtzee-online</artifactId>
     <packaging>jar</packaging>
     <name>yahtzee-online</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>yahtzee-core</artifactId>
+        </dependency>
+    </dependencies>
 </project>

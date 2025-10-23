@@ -209,6 +209,21 @@
                 <artifactId>jocasta-tg-bots</artifactId>
                 <version>final</version>
             </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>yahtzee-core</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>yahtzee-offline</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>yahtzee-online</artifactId>
+                <version>final</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

@@ -26,6 +26,16 @@
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-scarif-jwt</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>yahtzee-offline</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>yahtzee-online</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
