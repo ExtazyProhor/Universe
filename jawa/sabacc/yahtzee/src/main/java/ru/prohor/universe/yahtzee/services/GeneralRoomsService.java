@@ -1,13 +1,11 @@
 package ru.prohor.universe.yahtzee.services;
 
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.core.GameRoom;
-import ru.prohor.universe.yahtzee.core.RoomType;
-import ru.prohor.universe.yahtzee.data.entities.pojo.OfflineRoom;
-import ru.prohor.universe.yahtzee.data.inner.pojo.RoomReference;
+import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
+import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
 
 @Service
 public class GeneralRoomsService {
@@ -15,10 +13,6 @@ public class GeneralRoomsService {
 
     public GeneralRoomsService(MongoRepository<OfflineRoom> tactileOfflineRoomRepository) {
         this.tactileOfflineRoomRepository = tactileOfflineRoomRepository;
-    }
-
-    public static RuntimeException roomNotFound(ObjectId id, RoomType roomType) {
-        return new RuntimeException("Server error: " + roomType.propertyName() + " room {" + id + "} not found");
     }
 
     public Opt<? extends GameRoom> findRoom(Opt<RoomReference> roomRef) {

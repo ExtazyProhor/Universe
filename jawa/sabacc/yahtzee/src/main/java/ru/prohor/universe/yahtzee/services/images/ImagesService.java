@@ -6,7 +6,7 @@ import org.joda.time.Instant;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
-import ru.prohor.universe.yahtzee.data.entities.pojo.Image;
+import ru.prohor.universe.yahtzee.core.data.entities.pojo.Image;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;

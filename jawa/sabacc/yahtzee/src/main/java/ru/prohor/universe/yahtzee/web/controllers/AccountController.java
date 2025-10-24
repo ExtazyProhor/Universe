@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
-import ru.prohor.universe.yahtzee.services.color.GameColorsService;
+import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 import ru.prohor.universe.yahtzee.services.AccountService;
 
 import java.util.List;
@@ -89,7 +89,13 @@ public class AccountController {
 
     @GetMapping("/get_available_colors")
     public ResponseEntity<AvailableColorsResponse> getAvailableColors() {
-        return ResponseEntity.ok(gameColorsService.getAvailableColors());
+        return ResponseEntity.ok(
+                new AvailableColorsResponse(
+                        gameColorsService.getAvailableColors().stream().map(
+                                color -> new AccountController.AvailableColor(color.colorId(), color.background())
+                        ).toList()
+                )
+        );
     }
 
     public record AvailableColorsResponse(

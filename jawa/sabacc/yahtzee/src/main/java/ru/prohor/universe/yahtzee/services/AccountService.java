@@ -13,8 +13,8 @@ import ru.prohor.universe.jocasta.jwt.AuthorizedUser;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
 import ru.prohor.universe.yahtzee.core.TeamColor;
-import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
-import ru.prohor.universe.yahtzee.services.color.GameColorsService;
+import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 import ru.prohor.universe.yahtzee.services.images.ImagesService;
 import ru.prohor.universe.yahtzee.web.controllers.AccountController;
 

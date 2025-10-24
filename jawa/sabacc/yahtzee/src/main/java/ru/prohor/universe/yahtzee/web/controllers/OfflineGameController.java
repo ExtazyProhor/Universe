@@ -1,8 +1,5 @@
 package ru.prohor.universe.yahtzee.web.controllers;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.yahtzee.core.Combination;
-import ru.prohor.universe.yahtzee.core.TeamColor;
-import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
-import ru.prohor.universe.yahtzee.services.game.offline.OfflineGameService;
-
-import java.util.List;
+import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.offline.api.CreateRoomRequest;
+import ru.prohor.universe.yahtzee.offline.api.CreateRoomResponse;
+import ru.prohor.universe.yahtzee.offline.api.RoomInfoResponse;
+import ru.prohor.universe.yahtzee.offline.api.SaveMoveErrorResponse;
+import ru.prohor.universe.yahtzee.offline.api.SaveMoveRequest;
+import ru.prohor.universe.yahtzee.offline.services.OfflineGameService;
 
 @RestController
 @RequestMapping("/api/game/offline")
@@ -42,29 +40,6 @@ public class OfflineGameController {
         );
     }
 
-    public record RoomInfoResponse(
-            List<TeamInfo> teams
-    ) {}
-
-    public record TeamInfo(
-            String title,
-            TeamColor color,
-            boolean moving, // next move is up to this team
-            List<PlayerInfo> players,
-            List<CombinationInfo> results // combinations that already filled
-    ) {}
-
-    public record CombinationInfo(
-            Combination combination,
-            int value
-    ) {}
-
-    public record PlayerInfo(
-            String id,
-            String name,
-            boolean moving // next move of his team is up to this player
-    ) {}
-
     @PostMapping("/create_room")
     public ResponseEntity<?> createRoom(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
@@ -81,24 +56,6 @@ public class OfflineGameController {
         );
     }
 
-    public record CreateRoomRequest(
-            @NotNull
-            @Size(min = 1, max = 8)
-            List<TeamPlayers> teams
-    ) {}
-
-    public record TeamPlayers(
-            @NotNull
-            @Size(min = 2, max = 20)
-            String title,
-            @JsonProperty("players_ids")
-            List<String> playersIds
-    ) {}
-
-    public record CreateRoomResponse(
-            String error // optional error message
-    ) {}
-
     @PostMapping("/save_move")
     public ResponseEntity<?> saveMove(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
@@ -113,22 +70,4 @@ public class OfflineGameController {
                 error -> ResponseEntity.badRequest().body(new SaveMoveErrorResponse(error))
         );
     }
-
-    public record SaveMoveRequest(
-            @JsonProperty("moving_player_id")
-            String movingPlayerId,
-            Combination combination,
-            int value
-    ) {}
-
-    public record SaveMoveResponse(
-            @JsonProperty("next_move_player_id")
-            String nextMovePlayerId,
-            @JsonProperty("game_over") // if true - next_move_player_id is absent, show dialog window
-            boolean gameOver
-    ) {}
-
-    public record SaveMoveErrorResponse(
-            String error
-    ) {}
 }

@@ -18,5 +18,14 @@
             <groupId>ru.prohor.universe</groupId>
             <artifactId>yahtzee-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-spring</artifactId>
+        </dependency>
     </dependencies>
 </project>
