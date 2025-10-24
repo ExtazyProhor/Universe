@@ -1,7 +1,6 @@
 package ru.prohor.universe.jocasta.core.collections;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Paginator { // TODO move to custom List
     private Paginator() {}
@@ -22,12 +21,45 @@ public class Paginator { // TODO move to custom List
         return unsafePaginate(list, (length - 1) / size, size);
     }
 
-    private static <T> List<T> unsafePaginate(List<T> list, long page, int size) {
-        return unsafePaginate(list.stream(), page, size).toList();
+    // TODO поменять для тестов
+    public static <T> PaginationResult<T> richPaginate(List<T> list, long page, int size) {
+        check(page, size);
+        if (list.isEmpty())
+            return new PaginationResult<>(list, 0, 0);
+        return new PaginationResult<>(
+                unsafePaginate(list, page, size),
+                (int) page,
+                lastPage(list.size(), size)
+        );
     }
 
-    private static <T> Stream<T> unsafePaginate(Stream<T> stream, long page, int size) {
-        return stream.skip(page * size).limit(size);
+    // TODO поменять для тестов
+    public static <T> PaginationResult<T> richPaginateOrLastPage(List<T> list, long page, int size) {
+        check(page, size);
+        if (list.isEmpty())
+            return new PaginationResult<>(list, 0, 0);
+        int length = list.size();
+        long skip = page * size;
+        int lastPage = lastPage(length, size);
+        if (skip < length)
+            return new PaginationResult<>(
+                    unsafePaginate(list, page, size),
+                    (int) page,
+                    lastPage
+            );
+        return new PaginationResult<>(
+                unsafePaginate(list, lastPage, size),
+                lastPage,
+                lastPage
+        );
+    }
+
+    private static <T> List<T> unsafePaginate(List<T> list, long page, int size) {
+        return list.stream().skip(page * size).limit(size).toList();
+    }
+
+    private static int lastPage(int length, int pageSize) {
+        return (length - 1) / pageSize;
     }
 
     private static void check(long page, int size) {
