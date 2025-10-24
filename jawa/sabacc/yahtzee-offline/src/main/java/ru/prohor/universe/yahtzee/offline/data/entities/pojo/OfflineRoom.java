@@ -5,8 +5,8 @@ import org.bson.types.ObjectId;
 import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
-import ru.prohor.universe.yahtzee.core.GameRoom;
-import ru.prohor.universe.yahtzee.core.RoomType;
+import ru.prohor.universe.yahtzee.core.core.GameRoom;
+import ru.prohor.universe.yahtzee.core.core.RoomType;
 import ru.prohor.universe.yahtzee.offline.data.entities.dto.OfflineRoomDto;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineInterimTeamScores;
 

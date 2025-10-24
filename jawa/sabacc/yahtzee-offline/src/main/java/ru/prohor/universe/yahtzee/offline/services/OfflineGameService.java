@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.Enumeration;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.common.Result;
-import ru.prohor.universe.yahtzee.core.TeamColor;
-import ru.prohor.universe.yahtzee.core.Yahtzee;
+import ru.prohor.universe.yahtzee.core.core.TeamColor;
+import ru.prohor.universe.yahtzee.core.core.Yahtzee;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
-import ru.prohor.universe.yahtzee.core.Combination;
+import ru.prohor.universe.yahtzee.core.core.Combination;
 import ru.prohor.universe.yahtzee.offline.api.CombinationInfo;
 import ru.prohor.universe.yahtzee.offline.api.CreateRoomRequest;
 import ru.prohor.universe.yahtzee.offline.api.PlayerInfo;
@@ -29,7 +29,7 @@ import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineInterimTeamScor
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineScore;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineTeamScores;
 import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
-import ru.prohor.universe.yahtzee.core.RoomType;
+import ru.prohor.universe.yahtzee.core.core.RoomType;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
 import java.util.ArrayList;

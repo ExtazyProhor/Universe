@@ -2,7 +2,7 @@ package ru.prohor.universe.yahtzee.core.services.color;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.yahtzee.core.TeamColor;
+import ru.prohor.universe.yahtzee.core.core.TeamColor;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
 
 import java.util.ArrayList;

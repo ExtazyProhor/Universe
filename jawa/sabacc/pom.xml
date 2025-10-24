@@ -14,7 +14,7 @@
     <name>sabacc</name>
 
     <modules>
-        <module>yahtzee</module>
+        <module>yahtzee-app</module>
         <module>yahtzee-legacy</module>
         <module>yahtzee-offline</module>
         <module>yahtzee-online</module>

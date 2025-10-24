@@ -1,6 +1,6 @@
 package ru.prohor.universe.yahtzee.offline.api;
 
-import ru.prohor.universe.yahtzee.core.TeamColor;
+import ru.prohor.universe.yahtzee.core.core.TeamColor;
 
 import java.util.List;
 
