@@ -67,30 +67,39 @@ public class OfflineGameService {
                         room -> new OfflineGameController.RoomInfoResponse(
                                 Enumeration.enumerateAndMap(
                                         room.teams(),
-                                        (i, team) -> new OfflineGameController.TeamInfo(
-                                                team.title(),
-                                                gameColorsService.getById(team.color()),
-                                                i == room.movingTeamIndex(),
-                                                Enumeration.enumerateAndMap(
-                                                        team.players(),
-                                                        (j, pl) -> new OfflineGameController.PlayerInfo(
-                                                                player.id().toHexString(),
-                                                                player.displayName(),
-                                                                j == team.movingPlayerIndex()
-                                                        )
-                                                ),
-                                                team.scores().stream().map(
-                                                        score -> new OfflineGameController.CombinationInfo(
-                                                                Combination.of(score.combination()),
-                                                                score.value()
-                                                        )
-                                                ).toList()
-                                        )
+                                        (i, team) -> teamScoresEnumerationMapper(i, team, room, player)
                                 )
                         )
                 ).orElseThrow(
                         () -> GeneralRoomsService.roomNotFound(id, RoomType.TACTILE_OFFLINE)
                 )
+        );
+    }
+
+    public OfflineGameController.TeamInfo teamScoresEnumerationMapper(
+            int i,
+            OfflineInterimTeamScores team,
+            OfflineRoom room,
+            Player player
+    ) {
+        return new OfflineGameController.TeamInfo(
+                team.title(),
+                gameColorsService.getById(team.color()),
+                i == room.movingTeamIndex(),
+                Enumeration.enumerateAndMap(
+                        team.players(),
+                        (j, pl) -> new OfflineGameController.PlayerInfo(
+                                player.id().toHexString(),
+                                player.displayName(),
+                                j == team.movingPlayerIndex()
+                        )
+                ),
+                team.scores().stream().map(
+                        score -> new OfflineGameController.CombinationInfo(
+                                Combination.of(score.combination()),
+                                score.value()
+                        )
+                ).toList()
         );
     }
 
@@ -211,23 +220,25 @@ public class OfflineGameService {
                 room.initiator(),
                 room.teams()
                         .stream()
-                        .map(team -> {
-                            boolean hasBonus = team.scores()
-                                    .stream()
-                                    .filter(score -> Yahtzee.isSimple(score.combination()))
-                                    .mapToInt(OfflineScore::value)
-                                    .sum() >= Yahtzee.BONUS_CONDITION;
-                            return new OfflineTeamScores(
-                                    team.players(),
-                                    Opt.of(team.scores()),
-                                    team.scores()
-                                            .stream()
-                                            .mapToInt(OfflineScore::value)
-                                            .sum() + (hasBonus ? Yahtzee.BONUS_VALUE : 0),
-                                    Opt.of(hasBonus)
-                            );
-                        })
+                        .map(this::offlineTeamScoresMapper)
                         .toList()
+        );
+    }
+
+    private OfflineTeamScores offlineTeamScoresMapper(OfflineInterimTeamScores team) {
+        boolean hasBonus = team.scores()
+                .stream()
+                .filter(score -> Yahtzee.isSimple(score.combination()))
+                .mapToInt(OfflineScore::value)
+                .sum() >= Yahtzee.BONUS_CONDITION;
+        return new OfflineTeamScores(
+                team.players(),
+                Opt.of(team.scores()),
+                team.scores()
+                        .stream()
+                        .mapToInt(OfflineScore::value)
+                        .sum() + (hasBonus ? Yahtzee.BONUS_VALUE : 0),
+                Opt.of(hasBonus)
         );
     }
 

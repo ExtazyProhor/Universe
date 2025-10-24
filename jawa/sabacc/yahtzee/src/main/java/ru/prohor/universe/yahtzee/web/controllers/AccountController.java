@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.yahtzee.data.entities.pojo.Player;
@@ -53,7 +54,9 @@ public class AccountController {
             String contrast, // format: "ff0000", hex, without alpha, 
             @JsonProperty("image_id")
             String imageId,
-            RoomInfo room // optional
+            RoomInfo room, // optional
+            @JsonProperty("total_incoming_requests")
+            int totalIncomingRequests // show request sticker (1 - 9+)
     ) {}
 
     public record RoomInfo(
@@ -145,7 +148,9 @@ public class AccountController {
             // max 5 in response, use pagination
             @JsonProperty("found_users")
             List<FoundUser> foundUsers,
-            long total
+            int page, // may differ for the requested value, starts from 0
+            @JsonProperty("max_page")
+            int maxPage // may differ for the requested value
     ) {}
 
     public record FoundUser(
@@ -158,41 +163,17 @@ public class AccountController {
             boolean isFriend
     ) {}
 
-    @PostMapping("/add_friend")
-    public ResponseEntity<?> addFriend(
-            @RequestAttribute(Player.ATTRIBUTE_KEY)
-            Opt<Player> player,
-            @RequestBody
-            AddFriendRequest body
-    ) {
-        if (player.isEmpty())
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (accountService.addFriend(player.get(), body.id()))
-            return ResponseEntity.ok().build();
-        return ResponseEntity.badRequest().build();
-    }
-
-    public record AddFriendRequest(
-            String id
-    ) {}
-
     @PostMapping("/delete_friend")
     public ResponseEntity<?> deleteFriend(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
             Opt<Player> player,
-            @RequestBody
-            DeleteFriendRequest body
+            @RequestParam("id")
+            String id
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        if (accountService.deleteFriend(player.get(), body.id()))
-            return ResponseEntity.ok().build();
-        return ResponseEntity.badRequest().build();
+        return accountService.deleteFriend(player.get(), id);
     }
-
-    public record DeleteFriendRequest(
-            String id
-    ) {}
 
     @PostMapping("/friends")
     public ResponseEntity<FriendsResponse> friends(
@@ -215,7 +196,9 @@ public class AccountController {
     public record FriendsResponse(
             // max 5 in response, use pagination
             List<Friend> friends,
-            long total
+            int page, // may differ for the requested value, starts from 0
+            @JsonProperty("max_page")
+            int maxPage // may differ for the requested value
     ) {}
 
     public record Friend(
@@ -226,4 +209,103 @@ public class AccountController {
             String imageId,
             boolean inGame // if true - can not invite in room
     ) {}
+
+    @PostMapping("/requests")
+    public ResponseEntity<RequestsResponse> requests(
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
+            @Valid
+            @RequestBody
+            RequestsRequest body
+    ) {
+        if (player.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok(accountService.findRequests(player.get(), body));
+    }
+
+    public record RequestsRequest(
+            boolean incoming,
+            @Min(0) @Max(1000)
+            int page // starts from 0, page_size = 5 items
+    ) {}
+
+    public record RequestsResponse(
+            // max 5 in response, use pagination
+            List<PlayerRequestInfo> players,
+            int page, // may differ for the requested value, starts from 0
+            @JsonProperty("max_page")
+            int maxPage // may differ for the requested value
+    ) {}
+
+    public record PlayerRequestInfo(
+            String id,
+            String username,
+            String name,
+            @JsonProperty("image_id")
+            String imageId
+    ) {}
+
+    public record RequestConflict(String code) {}
+
+    public static final ResponseEntity<?> REQUEST_ALREADY_EXISTS = ResponseEntity.status(HttpStatus.CONFLICT).body(
+            new RequestConflict("request_already_exists")
+    );
+    public static final ResponseEntity<?> ALREADY_FRIENDS = ResponseEntity.status(HttpStatus.CONFLICT).body(
+            new RequestConflict("already_friends")
+    );
+
+    @PostMapping("/send_request")
+    public ResponseEntity<?> sendRequest(
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
+            @RequestParam("id")
+            String id
+    ) {
+        if (player.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return accountService.sendRequest(player.get(), id);
+    }
+
+    /**
+     * On behalf of the sender
+     */
+    @PostMapping("/retract_request")
+    public ResponseEntity<?> retractRequest(
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
+            @RequestParam("id")
+            String id
+    ) {
+        if (player.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return accountService.retractRequest(player.get(), id);
+    }
+
+    /**
+     * On behalf of the recipient
+     */
+    @PostMapping("/decline_request")
+    public ResponseEntity<?> declineRequest(
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
+            @RequestParam("id")
+            String id
+    ) {
+        if (player.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return accountService.declineRequest(player.get(), id);
+
+    }
+
+    @PostMapping("/accept_request")
+    public ResponseEntity<?> acceptRequest(
+            @RequestAttribute(Player.ATTRIBUTE_KEY)
+            Opt<Player> player,
+            @RequestParam("id")
+            String id
+    ) {
+        if (player.isEmpty())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return accountService.acceptRequest(player.get(), id);
+    }
 }

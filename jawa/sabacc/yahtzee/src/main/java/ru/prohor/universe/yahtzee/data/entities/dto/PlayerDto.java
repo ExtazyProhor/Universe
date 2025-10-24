@@ -36,4 +36,8 @@ public class PlayerDto {
     @Property("created_at")
     private Instant createdAt;
     private boolean trusted;
+    @Property("outcoming_requests")
+    private List<ObjectId> outcomingRequests;
+    @Property("incoming_requests")
+    private List<ObjectId> incomingRequests;
 }
