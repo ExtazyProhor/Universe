@@ -9,6 +9,7 @@ import dev.morphia.Datastore;
 import dev.morphia.annotations.Entity;
 import dev.morphia.query.filters.Filter;
 import dev.morphia.query.updates.UpdateOperator;
+import dev.morphia.transactions.MorphiaSession;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
@@ -23,7 +24,7 @@ public class AbstractMongoMorphiaRepository<T, W> {
     private static final String SCORE = "score";
     private static final String ID = "_id";
 
-    private static final UnaryOperator<FindIterable<Document>> NO_PAGING = x -> x;
+    private static final UnaryOperator<FindIterable<Document>> NO_PAGING = UnaryOperator.identity();
 
     private final MongoCollection<Document> collection;
     private final Datastore datastore;
@@ -31,6 +32,8 @@ public class AbstractMongoMorphiaRepository<T, W> {
 
     private final Function<T, W> wrapFunction;
     private final Function<W, T> unwrapFunction;
+
+    private final Opt<MorphiaSession> session;
 
     AbstractMongoMorphiaRepository(
             Datastore datastore,
@@ -43,6 +46,25 @@ public class AbstractMongoMorphiaRepository<T, W> {
         this.collection = datastore.getDatabase().getCollection(getCollectionName());
         this.wrapFunction = wrapFunction;
         this.unwrapFunction = unwrapFunction;
+        this.session = Opt.empty();
+    }
+
+    private AbstractMongoMorphiaRepository(
+            Class<T> type,
+            Function<T, W> wrapFunction,
+            Function<W, T> unwrapFunction,
+            MorphiaSession session
+    ) {
+        this.datastore = session;
+        this.session = Opt.of(session);
+        this.type = type;
+        this.collection = datastore.getDatabase().getCollection(getCollectionName());
+        this.wrapFunction = wrapFunction;
+        this.unwrapFunction = unwrapFunction;
+    }
+
+    AbstractMongoMorphiaRepository<T, W> copy(MorphiaSession session) {
+        return new AbstractMongoMorphiaRepository<>(type, wrapFunction, unwrapFunction, session);
     }
 
     List<W> findAll() {
@@ -50,7 +72,9 @@ public class AbstractMongoMorphiaRepository<T, W> {
     }
 
     long countDocuments() {
-        return collection.countDocuments();
+        return session.isEmpty()
+                ? collection.countDocuments()
+                : collection.countDocuments(session.get());
     }
 
     Opt<W> findById(ObjectId id) {
@@ -89,7 +113,10 @@ public class AbstractMongoMorphiaRepository<T, W> {
     }
 
     void deleteById(ObjectId id) {
-        collection.deleteOne(Filters.eq(ID, id));
+        if (session.isEmpty())
+            collection.deleteOne(Filters.eq(ID, id));
+        else
+            collection.deleteOne(session.get(), Filters.eq(ID, id));
     }
 
     List<W> findByText(String text) {
@@ -97,9 +124,17 @@ public class AbstractMongoMorphiaRepository<T, W> {
     }
 
     MongoTextSearchResult<W> findByText(String text, int page, int pageSize) {
+        long total = session.isEmpty()
+                ? collection.countDocuments(Filters.text(text))
+                : collection.countDocuments(session.get(), Filters.text(text));
+
+        int lastPage = (int) ((total - 1) / pageSize);
+        int targetPage = (long) page * pageSize < total ? page : lastPage;
         return new MongoTextSearchResult<>(
-                findEntities(text, found -> found.skip(page * pageSize).limit(pageSize)),
-                collection.countDocuments(Filters.text(text))
+                findEntities(text, found -> found.skip(targetPage * pageSize).limit(pageSize)),
+                total,
+                targetPage,
+                lastPage
         );
     }
 
@@ -113,7 +148,11 @@ public class AbstractMongoMorphiaRepository<T, W> {
     }
 
     private List<W> findEntities(String text, UnaryOperator<FindIterable<Document>> paging) {
-        FindIterable<Document> findIterable = collection.find(Filters.text(text))
+        FindIterable<Document> findIterable = session.isEmpty()
+                ? collection.find(Filters.text(text))
+                : collection.find(session.get(), Filters.text(text));
+
+        findIterable = findIterable
                 .projection(Projections.fields(Projections.include(ID), Projections.metaTextScore(SCORE)))
                 .sort(Sorts.orderBy(Sorts.metaTextScore(SCORE), Sorts.ascending(ID)));
         findIterable = paging.apply(findIterable);

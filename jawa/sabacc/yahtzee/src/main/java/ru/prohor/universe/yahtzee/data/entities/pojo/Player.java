@@ -24,7 +24,9 @@ public record Player(
         Opt<RoomReference> currentRoom,
         ObjectId imageId,
         Instant createdAt,
-        boolean trusted
+        boolean trusted,
+        List<ObjectId> outcomingRequests,
+        List<ObjectId> incomingRequests
 ) implements MongoEntityPojo<PlayerDto> {
     public static final String ATTRIBUTE_KEY = "universe.yahtzee-player";
 
@@ -41,7 +43,9 @@ public record Player(
                 currentRoom.map(RoomReference::toDto).orElseNull(),
                 imageId,
                 DateTimeUtil.unwrap(createdAt),
-                trusted
+                trusted,
+                outcomingRequests,
+                incomingRequests
         );
     }
 
@@ -57,7 +61,9 @@ public record Player(
                 Opt.ofNullable(player.getCurrentRoom()).map(RoomReference::fromDto),
                 player.getImageId(),
                 DateTimeUtil.wrap(player.getCreatedAt()),
-                player.isTrusted()
+                player.isTrusted(),
+                player.getOutcomingRequests(),
+                player.getIncomingRequests()
         );
     }
 }

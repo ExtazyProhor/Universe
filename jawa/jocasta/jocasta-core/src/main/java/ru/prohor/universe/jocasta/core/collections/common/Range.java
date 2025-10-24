@@ -21,7 +21,7 @@ public class Range {
     public static Iterable<Integer> range(int from, int to, int step) {
         if (step == 0)
             throw new RuntimeException("Step must not be 0");
-        MonoPredicate<Integer> hasNext = cursor -> step > 0 ? cursor < to : cursor > to;
+        MonoPredicate<Integer> hasNext = step > 0 ? cursor -> cursor < to : cursor -> cursor > to;
         return () -> new IntRangeIterator(hasNext, step, from);
     }
 

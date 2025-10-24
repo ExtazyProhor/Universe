@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record TeamColor(
         @JsonIgnore
-        int colorId, // internal use
+        int colorId, // internal usage
         @JsonProperty("bg")
         String background,
         String text,

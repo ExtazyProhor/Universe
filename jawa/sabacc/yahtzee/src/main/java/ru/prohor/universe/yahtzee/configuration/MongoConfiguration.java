@@ -13,7 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.jocasta.morphia.MongoMorphiaRepository;
+import ru.prohor.universe.jocasta.morphia.MongoMorphiaTransactionService;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.yahtzee.data.entities.dto.ImageDto;
 import ru.prohor.universe.yahtzee.data.entities.dto.OfflineGameDto;
 import ru.prohor.universe.yahtzee.data.entities.dto.OfflineRoomDto;
@@ -94,5 +96,13 @@ public class MongoConfiguration {
     @Bean
     public MongoRepository<Player> playerRepository(Datastore datastore) {
         return MongoMorphiaRepository.createRepository(datastore, PlayerDto.class, Player::fromDto);
+    }
+
+    @Bean
+    public MongoTransactionService transactionService(
+            @Value("${universe.yahtzee.mongo.transaction-retries}") int retries,
+            Datastore datastore
+    ) {
+        return new MongoMorphiaTransactionService(datastore, retries);
     }
 }

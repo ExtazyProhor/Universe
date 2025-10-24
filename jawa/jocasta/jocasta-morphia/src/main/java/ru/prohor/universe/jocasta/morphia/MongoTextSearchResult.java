@@ -4,5 +4,7 @@ import java.util.List;
 
 public record MongoTextSearchResult<T> (
         List<T> entities,
-        long total
+        long total,
+        int page,
+        int lastPage
 ) {}
