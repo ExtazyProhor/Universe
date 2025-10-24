@@ -3,6 +3,8 @@ package ru.prohor.universe.jocasta.morphia;
 import dev.morphia.query.filters.Filter;
 import dev.morphia.query.updates.UpdateOperator;
 import org.bson.types.ObjectId;
+import ru.prohor.universe.jocasta.core.collections.PaginationResult;
+import ru.prohor.universe.jocasta.core.collections.Paginator;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 import java.util.Collections;
@@ -101,9 +103,12 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
         if (textSearchPredicate.isEmpty())
             throw UNSUPPORTED_TEXT_SEARCH;
         List<T> all = findByText(text);
+        PaginationResult<T> paginationResult = Paginator.richPaginateOrLastPage(all, page, pageSize);
         return new MongoTextSearchResult<>(
-                all.stream().skip((long) page * pageSize).limit(pageSize).toList(),
-                all.size()
+                paginationResult.values(),
+                all.size(),
+                paginationResult.page(),
+                paginationResult.lastPage()
         );
     }
 }
