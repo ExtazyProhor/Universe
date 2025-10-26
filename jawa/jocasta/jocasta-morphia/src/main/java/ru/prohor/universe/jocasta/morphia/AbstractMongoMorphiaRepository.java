@@ -50,21 +50,19 @@ public class AbstractMongoMorphiaRepository<T, W> {
     }
 
     private AbstractMongoMorphiaRepository(
-            Class<T> type,
-            Function<T, W> wrapFunction,
-            Function<W, T> unwrapFunction,
+            AbstractMongoMorphiaRepository<T, W> source,
             MorphiaSession session
     ) {
         this.datastore = session;
         this.session = Opt.of(session);
-        this.type = type;
-        this.collection = datastore.getDatabase().getCollection(getCollectionName());
-        this.wrapFunction = wrapFunction;
-        this.unwrapFunction = unwrapFunction;
+        this.type = source.type;
+        this.collection = session.getDatabase().getCollection(getCollectionName());
+        this.wrapFunction = source.wrapFunction;
+        this.unwrapFunction = source.unwrapFunction;
     }
 
     AbstractMongoMorphiaRepository<T, W> copy(MorphiaSession session) {
-        return new AbstractMongoMorphiaRepository<>(type, wrapFunction, unwrapFunction, session);
+        return new AbstractMongoMorphiaRepository<>(this, session);
     }
 
     List<W> findAll() {
