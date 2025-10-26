@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Яцзы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .tables-container {
+            flex: 2;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .table-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .complex-header {
+            background: linear-gradient(135deg, #FF6B6B, #ee5a52);
+        }
+
+        table {
+            table-layout: fixed;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th:nth-child(1), td:nth-child(1) { width: 15%; }
+        th:nth-child(2), td:nth-child(2) { width: 20%; }
+        th:nth-child(3), td:nth-child(3) { width: 20%; }
+        th:nth-child(4), td:nth-child(4) { width: 25%; }
+        th:nth-child(5), td:nth-child(5) { width: 20%; }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr {
+            height: 60px;
+        }
+
+        td:last-child {
+            height: 60px;
+            vertical-align: middle;
+        }
+
+        td:last-child > div {
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .dice-images {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+        }
+
+        .dice-images img {
+            width: 25px;
+            height: 25px;
+            border-radius: 3px;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+
+        .bonus-achieved {
+            color: #FF6B6B;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #FF6B6B, #ee5a52);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .game-complete {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .saved-score {
+            font-weight: 600;
+            color: #4CAF50;
+            background-color: #e8f5e9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .modal-score-input {
+            width: 150px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .modal-score-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .modal-score-input.valid {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+        }
+
+        .modal-score-input.invalid {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .modal-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: linear-gradient(135deg, #757575, #616161);
+            color: white;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .select-btn {
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .dice-images {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="tables-container">
+        <div id="game-complete" class="game-complete" style="display: none;"></div>
+
+        <div class="table-section">
+            <div class="table-header">Простые (≥ 63 → +35)</div>
+            <table id="simple-table">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Формула очков</th>
+                    <th>Пример костей</th>
+                    <th>Получено очков</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-category="units">
+                    <td>единицы</td>
+                    <td>n единиц</td>
+                    <td>n × 1</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/2-p.png" alt="2">
+                            <img src="images/6-p.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="twos">
+                    <td>двойки</td>
+                    <td>n двоек</td>
+                    <td>n × 2</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/1-p.png" alt="1">
+                            <img src="images/3-p.png" alt="3">
+                            <img src="images/5-p.png" alt="5">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="threes">
+                    <td>тройки</td>
+                    <td>n троек</td>
+                    <td>n × 3</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/2-p.png" alt="2">
+                            <img src="images/6-p.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="fours">
+                    <td>четверки</td>
+                    <td>n четверок</td>
+                    <td>n × 4</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/1-p.png" alt="1">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="fives">
+                    <td>пятерки</td>
+                    <td>n пятерок</td>
+                    <td>n × 5</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/2-p.png" alt="2">
+                            <img src="images/4-p.png" alt="4">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="sixes">
+                    <td>шестёрки</td>
+                    <td>n шестёрок</td>
+                    <td>n × 6</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/6-a.png" alt="6">
+                            <img src="images/6-a.png" alt="6">
+                            <img src="images/1-p.png" alt="1">
+                            <img src="images/3-p.png" alt="3">
+                            <img src="images/5-p.png" alt="5">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-section">
+            <div class="table-header complex-header">Сложные</div>
+            <table id="complex-table">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Формула очков</th>
+                    <th>Пример костей</th>
+                    <th>Получено очков</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-category="pair">
+                    <td>пара</td>
+                    <td>два равных</td>
+                    <td>сумма всех цифр</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/1-p.png" alt="1">
+                            <img src="images/2-p.png" alt="2">
+                            <img src="images/6-p.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="two-pairs">
+                    <td>две пары</td>
+                    <td>два по два</td>
+                    <td>сумма всех цифр</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/3-p.png" alt="3">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="three-of-kind">
+                    <td>сет (тройка)</td>
+                    <td>три равных</td>
+                    <td>сумма всех цифр</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/5-p.png" alt="5">
+                            <img src="images/6-p.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="four-of-kind">
+                    <td>каре</td>
+                    <td>четыре равных</td>
+                    <td>сумма всех цифр</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/4-p.png" alt="4">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="full-house" data-fixed-score="25">
+                    <td>фулл-хаус</td>
+                    <td>пара и сет</td>
+                    <td>25</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/6-a.png" alt="6">
+                            <img src="images/6-a.png" alt="6">
+                            <img src="images/6-a.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="small-straight" data-fixed-score="30">
+                    <td>короткий стрит</td>
+                    <td>четыре подряд</td>
+                    <td>30</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/6-a.png" alt="6">
+                            <img src="images/1-p.png" alt="1">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="large-straight" data-fixed-score="40">
+                    <td>длинный стрит</td>
+                    <td>пять подряд</td>
+                    <td>40</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/6-a.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="yahtzee" data-fixed-score="50">
+                    <td>покер (яцзы)</td>
+                    <td>пять равных</td>
+                    <td>50</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                <tr data-category="chance">
+                    <td>шанс</td>
+                    <td>любые значения</td>
+                    <td>сумма всех цифр</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/1-p.png" alt="1">
+                            <img src="images/5-p.png" alt="5">
+                            <img src="images/2-p.png" alt="2">
+                            <img src="images/4-p.png" alt="4">
+                            <img src="images/6-p.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="select-btn" onclick="openModal(this)">Выбрать</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-card">
+            <div class="sidebar-title">Осталось очков до бонуса</div>
+            <div class="sidebar-value" id="bonus-remaining">63</div>
+        </div>
+
+        <div class="sidebar-card">
+            <div class="sidebar-title">Сумма очков</div>
+            <div class="sidebar-value" id="total-score">0</div>
+        </div>
+
+        <button class="reset-btn" onclick="resetGame()">Начать заново</button>
+    </div>
+</div>
+
+<div id="modal-overlay" class="modal-overlay" style="display: none;" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-title" id="modal-title"></div>
+        <div id="modal-content"></div>
+        <div class="modal-buttons">
+            <button class="modal-btn cancel" onclick="closeModal()">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let scoreDtos = {
+        simple: {},
+        complex: {}
+    };
+    let savedScores = {};
+    let currentRow = null;
+
+    function openModal(button) {
+        const row = button.closest('tr');
+        const category = row.dataset.category;
+
+        if (savedScores[category]) {
+            return;
+        }
+
+        currentRow = row;
+        const title = row.cells[0].textContent;
+        const isSimple = row.closest('#simple-table') !== null;
+        const fixedScore = row.dataset.fixedScore;
+
+        document.getElementById('modal-title').textContent = `Комбинация: ${title}`;
+
+        const modalContent = document.getElementById('modal-content');
+        const modalButtons = document.querySelector('.modal-buttons');
+
+        modalContent.innerHTML = '';
+        modalButtons.innerHTML = '<button class="modal-btn cancel" onclick="closeModal()">Отмена</button>';
+
+        if (fixedScore) {
+            const score = parseInt(fixedScore);
+            modalButtons.insertAdjacentHTML('afterbegin', `
+            <button class="modal-btn primary" onclick="saveScore(${score})">Засчитать ${score}</button>
+            <button class="modal-btn secondary" onclick="saveScore(0)">Засчитать 0</button>
+        `);
+        } else {
+            let min, max;
+            if (isSimple) {
+                const category = row.dataset.category;
+                min = 0;
+                if (category === 'units') max = 5;
+                else if (category === 'twos') max = 10;
+                else if (category === 'threes') max = 15;
+                else if (category === 'fours') max = 20;
+                else if (category === 'fives') max = 25;
+                else if (category === 'sixes') max = 30;
+            } else {
+                min = category === 'chance' ? 5 : 0;
+                max = category === 'two-pairs' ? 28 : 30;
+            }
+
+            modalContent.innerHTML = `
+    <div style="text-align: center; margin-bottom: 15px; color: #666; font-size: 14px;">
+        Введите количество очков (${min}-${max})
+    </div>
+    <input type="number" class="modal-score-input"
+           data-min="${min}" data-max="${max}"
+           min="${min}" max="${max}">
+`;
+
+            const modalInput = modalContent.querySelector('.modal-score-input');
+            modalInput.addEventListener('input', function() {
+                validateModalInput(this);
+            });
+
+            modalInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    const saveBtn = document.getElementById('save-btn');
+                    if (!saveBtn.disabled) {
+                        saveScoreFromInput();
+                    }
+                }
+            });
+
+            modalInput.addEventListener('keypress', function(event) {
+                if (!/[0-9]/.test(event.key) &&
+                !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
+                    event.preventDefault();
+                }
+
+                if (this.value.length >= 2 &&
+                !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
+                    event.preventDefault();
+                }
+            });
+
+            modalButtons.insertAdjacentHTML('afterbegin', `
+            <button class="modal-btn primary" onclick="saveScoreFromInput()" id="save-btn" disabled>Сохранить</button>
+        `);
+        }
+
+        document.getElementById('modal-overlay').style.display = 'flex';
+
+        const input = modalContent.querySelector('.modal-score-input');
+        if (input) {
+            setTimeout(() => input.focus(), 100);
+        }
+    }
+
+    function closeModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('modal-overlay').style.display = 'none';
+        currentRow = null;
+    }
+
+    function validateModalInput(input) {
+        const min = parseInt(input.dataset.min);
+        const max = parseInt(input.dataset.max);
+        const value = parseInt(input.value);
+        const saveBtn = document.getElementById('save-btn');
+
+        input.classList.remove('valid', 'invalid');
+
+        if (input.value === '') {
+            saveBtn.disabled = true;
+            return false;
+        }
+
+        if (isNaN(value) || value < min || value > max) {
+            input.classList.add('invalid');
+            saveBtn.disabled = true;
+            return false;
+        } else {
+            const isSimple = currentRow.closest('#simple-table') !== null;
+            if (isSimple) {
+                const category = currentRow.dataset.category;
+                let divisor = 1;
+                if (category === 'twos') divisor = 2;
+                else if (category === 'threes') divisor = 3;
+                else if (category === 'fours') divisor = 4;
+                else if (category === 'fives') divisor = 5;
+                else if (category === 'sixes') divisor = 6;
+
+                if (value % divisor !== 0) {
+                    input.classList.add('invalid');
+                    saveBtn.disabled = true;
+                    return false;
+                }
+            }
+
+            input.classList.add('valid');
+            saveBtn.disabled = false;
+            return true;
+        }
+    }
+
+    function saveScoreFromInput() {
+        const input = document.querySelector('.modal-score-input');
+        const score = parseInt(input.value);
+        saveScore(score);
+    }
+
+    function saveScore(score) {
+        const category = currentRow.dataset.category;
+        const isSimple = currentRow.closest('#simple-table') !== null;
+
+        if (isSimple) {
+            scoreDtos.simple[category] = score;
+        } else {
+            scoreDtos.complex[category] = score;
+        }
+
+        savedScores[category] = score;
+
+        const button = currentRow.querySelector('.select-btn');
+        button.outerHTML = `<div class="saved-score">${score}</div>`;
+
+        updateScores();
+        checkGameComplete();
+        closeModal();
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    function updateScores() {
+        const simpleTotal = Object.values(scoreDtos.simple).reduce((sum, score) => sum + score, 0);
+
+        const bonusRemaining = Math.max(0, 63 - simpleTotal);
+        const bonusAchieved = simpleTotal >= 63;
+        const bonusScore = bonusAchieved ? 35 : 0;
+
+        const complexTotal = Object.values(scoreDtos.complex).reduce((sum, score) => sum + score, 0);
+        const totalScore = simpleTotal + complexTotal + bonusScore;
+
+        const bonusElement = document.getElementById('bonus-remaining');
+        if (bonusAchieved) {
+            bonusElement.textContent = 'бонус получен';
+            bonusElement.classList.add('bonus-achieved');
+        } else {
+            bonusElement.textContent = bonusRemaining;
+            bonusElement.classList.remove('bonus-achieved');
+        }
+
+        document.getElementById('total-score').textContent = totalScore;
+    }
+
+    function checkGameComplete() {
+        const totalCategories = 15;
+        const savedCount = Object.keys(savedScores).length;
+
+        if (savedCount === totalCategories) {
+            const totalScore = parseInt(document.getElementById('total-score').textContent);
+            const gameCompleteElement = document.getElementById('game-complete');
+            gameCompleteElement.textContent = `Поздравляем! Ваша сумма очков - ${totalScore}`;
+            gameCompleteElement.style.display = 'block';
+        } else {
+            document.getElementById('game-complete').style.display = 'none';
+        }
+    }
+
+    function resetGame() {
+        scoreDtos = {
+            simple: {},
+            complex: {}
+        };
+        savedScores = {};
+
+        document.querySelectorAll('.saved-score').forEach(element => {
+            const row = element.closest('tr');
+            element.outerHTML = '<button class="select-btn" onclick="openModal(this)">Выбрать</button>';
+        });
+
+        updateScores();
+        document.getElementById('game-complete').style.display = 'none';
+    }
+</script>
+</body>
+</html>

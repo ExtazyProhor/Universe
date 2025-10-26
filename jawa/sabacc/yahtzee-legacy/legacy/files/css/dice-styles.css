@@ -1,0 +1,11 @@
+.dice-images {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+
+.dice-images img {
+    width: 25px;
+    height: 25px;
+    border-radius: 3px;
+}

@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Яцзы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .tables-container {
+            flex: 2;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .table-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .complex-header {
+            background: linear-gradient(135deg, #FF6B6B, #ee5a52);
+        }
+
+        table {
+            table-layout: fixed;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th:nth-child(1), td:nth-child(1) { width: 15%; }
+        th:nth-child(2), td:nth-child(2) { width: 20%; }
+        th:nth-child(3), td:nth-child(3) { width: 20%; }
+        th:nth-child(4), td:nth-child(4) { width: 25%; }
+        th:nth-child(5), td:nth-child(5) { width: 20%; }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr {
+            height: 60px;
+        }
+
+        td:last-child {
+            height: 60px;
+            vertical-align: middle;
+        }
+
+        td:last-child > div {
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .dice-images {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+        }
+
+        .dice-images img {
+            width: 25px;
+            height: 25px;
+            border-radius: 3px;
+        }
+
+        .score-input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .score-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .score-input.valid {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+        }
+
+        .score-input.invalid {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+
+        .fixed-score-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .score-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .score-btn.primary {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .score-btn.secondary {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        .score-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+
+        .bonus-achieved {
+            color: #FF6B6B;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #FF6B6B, #ee5a52);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .game-complete {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .save-btn {
+            padding: 6px 8px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            margin-left: 8px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .saved-score {
+            font-weight: 600;
+            color: #4CAF50;
+            background-color: #e8f5e9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .dice-images {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="tables-container">
+        <div id="game-complete" class="game-complete" style="display: none;"></div>
+
+        <div class="table-section">
+            <div class="table-header">Простые (≥ 63 → +35)</div>
+            <table id="simple-table">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Формула очков</th>
+                    <th>Пример костей</th>
+                    <th>Получено очков</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-category="units">
+                    <td>единицы</td>
+                    <td>n единиц</td>
+                    <td>n × 1</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/2-p.png" alt="2">
+                            <img src="images/6-p.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="0" data-max="5" min="0" max="5">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="twos">
+                    <td>двойки</td>
+                    <td>n двоек</td>
+                    <td>n × 2</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/1-p.png" alt="1">
+                            <img src="images/3-p.png" alt="3">
+                            <img src="images/5-p.png" alt="5">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="0" data-max="10" min="0" max="10">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="threes">
+                    <td>тройки</td>
+                    <td>n троек</td>
+                    <td>n × 3</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/2-p.png" alt="2">
+                            <img src="images/6-p.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="0" data-max="15" min="0" max="15">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="fours">
+                    <td>четверки</td>
+                    <td>n четверок</td>
+                    <td>n × 4</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/1-p.png" alt="1">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="0" data-max="20" min="0" max="20">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="fives">
+                    <td>пятерки</td>
+                    <td>n пятерок</td>
+                    <td>n × 5</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/2-p.png" alt="2">
+                            <img src="images/4-p.png" alt="4">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="0" data-max="25" min="0" max="25">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="sixes">
+                    <td>шестёрки</td>
+                    <td>n шестёрок</td>
+                    <td>n × 6</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/6-a.png" alt="6">
+                            <img src="images/6-a.png" alt="6">
+                            <img src="images/1-p.png" alt="1">
+                            <img src="images/3-p.png" alt="3">
+                            <img src="images/5-p.png" alt="5">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="0" data-max="30" min="0" max="30">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-section">
+            <div class="table-header complex-header">Сложные</div>
+            <table id="complex-table">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Формула очков</th>
+                    <th>Пример костей</th>
+                    <th>Получено очков</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-category="pair">
+                    <td>пара</td>
+                    <td>два равных</td>
+                    <td>сумма всех цифр</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/1-p.png" alt="1">
+                            <img src="images/2-p.png" alt="2">
+                            <img src="images/6-p.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="0" data-max="30" min="0" max="30">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="two-pairs">
+                    <td>две пары</td>
+                    <td>два по два</td>
+                    <td>сумма всех цифр</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/3-p.png" alt="3">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="0" data-max="28" min="0" max="28">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="three-of-kind">
+                    <td>сет (тройка)</td>
+                    <td>три равных</td>
+                    <td>сумма всех цифр</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/1-a.png" alt="1">
+                            <img src="images/5-p.png" alt="5">
+                            <img src="images/6-p.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="0" data-max="30" min="0" max="30">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="four-of-kind">
+                    <td>каре</td>
+                    <td>четыре равных</td>
+                    <td>сумма всех цифр</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/4-p.png" alt="4">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="0" data-max="30" min="0" max="30">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="full-house" data-fixed-score="25">
+                    <td>фулл-хаус</td>
+                    <td>пара и сет</td>
+                    <td>25</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/6-a.png" alt="6">
+                            <img src="images/6-a.png" alt="6">
+                            <img src="images/6-a.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <div class="fixed-score-buttons">
+                                <button class="score-btn primary" data-score="25">засчитать 25</button>
+                                <button class="score-btn secondary" data-score="0">засчитать 0</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="small-straight" data-fixed-score="30">
+                    <td>короткий стрит</td>
+                    <td>четыре подряд</td>
+                    <td>30</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/6-a.png" alt="6">
+                            <img src="images/1-p.png" alt="1">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <div class="fixed-score-buttons">
+                                <button class="score-btn primary" data-score="30">засчитать 30</button>
+                                <button class="score-btn secondary" data-score="0">засчитать 0</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="large-straight" data-fixed-score="40">
+                    <td>длинный стрит</td>
+                    <td>пять подряд</td>
+                    <td>40</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/3-a.png" alt="3">
+                            <img src="images/4-a.png" alt="4">
+                            <img src="images/5-a.png" alt="5">
+                            <img src="images/6-a.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <div class="fixed-score-buttons">
+                                <button class="score-btn primary" data-score="40">засчитать 40</button>
+                                <button class="score-btn secondary" data-score="0">засчитать 0</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="yahtzee" data-fixed-score="50">
+                    <td>покер (яцзы)</td>
+                    <td>пять равных</td>
+                    <td>50</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                            <img src="images/2-a.png" alt="2">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <div class="fixed-score-buttons">
+                                <button class="score-btn primary" data-score="50">засчитать 50</button>
+                                <button class="score-btn secondary" data-score="0">засчитать 0</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-category="chance">
+                    <td>шанс</td>
+                    <td>любые значения</td>
+                    <td>сумма всех цифр</td>
+                    <td>
+                        <div class="dice-images">
+                            <img src="images/1-p.png" alt="1">
+                            <img src="images/5-p.png" alt="5">
+                            <img src="images/2-p.png" alt="2">
+                            <img src="images/4-p.png" alt="4">
+                            <img src="images/6-p.png" alt="6">
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="score-input" data-min="5" data-max="30" min="5" max="30">
+                            <button class="save-btn" style="display: none;">✔</button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-card">
+            <div class="sidebar-title">Осталось очков до бонуса</div>
+            <div class="sidebar-value" id="bonus-remaining">63</div>
+        </div>
+
+        <div class="sidebar-card">
+            <div class="sidebar-title">Сумма очков</div>
+            <div class="sidebar-value" id="total-score">0</div>
+        </div>
+
+        <button class="reset-btn" onclick="resetGame()">Начать заново</button>
+    </div>
+</div>
+
+<script>
+    let scoreDtos = {
+        simple: {},
+        complex: {}
+    };
+    let savedScores = {};
+
+    function validateInput(input) {
+        const min = parseInt(input.dataset.min);
+        const max = parseInt(input.dataset.max);
+        const value = parseInt(input.value);
+
+        input.classList.remove('valid', 'invalid');
+
+        if (input.value === '') {
+            return false;
+        }
+
+        if (isNaN(value) || value < min || value > max) {
+            input.classList.add('invalid');
+            return false;
+        } else {
+            const isSimple = input.closest('#simple-table') !== null;
+            if (isSimple) {
+                const category = input.closest('tr').dataset.category;
+                let divisor = 1;
+                if (category === 'twos') divisor = 2;
+                else if (category === 'threes') divisor = 3;
+                else if (category === 'fours') divisor = 4;
+                else if (category === 'fives') divisor = 5;
+                else if (category === 'sixes') divisor = 6;
+
+                if (value % divisor !== 0) {
+                    input.classList.add('invalid');
+                    return false;
+                }
+            }
+
+            input.classList.add('valid');
+            return true;
+        }
+    }
+
+    document.querySelectorAll('.score-input').forEach(input => {
+        const saveBtn = input.parentElement.querySelector('.save-btn');
+
+        input.addEventListener('input', function() {
+            const isValid = validateInput(this);
+            const category = this.closest('tr').dataset.category;
+
+            if (isValid && !savedScores[category]) {
+                saveBtn.style.display = 'inline-block';
+            } else {
+                saveBtn.style.display = 'none';
+            }
+        });
+
+        saveBtn.addEventListener('click', function() {
+            const category = input.closest('tr').dataset.category;
+            const score = parseInt(input.value);
+            const isSimple = input.closest('#simple-table') !== null;
+
+            if (isSimple) {
+                scoreDtos.simple[category] = score;
+            } else {
+                scoreDtos.complex[category] = score;
+            }
+
+            savedScores[category] = score;
+
+            input.style.display = 'none';
+            saveBtn.style.display = 'none';
+
+            const savedDisplay = document.createElement('div');
+            savedDisplay.className = 'saved-score';
+            savedDisplay.textContent = score;
+            input.parentElement.appendChild(savedDisplay);
+
+            updateScores();
+            checkGameComplete();
+        });
+    });
+
+    document.querySelectorAll('.score-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const score = parseInt(this.dataset.score);
+            const category = this.closest('tr').dataset.category;
+            const row = this.closest('tr');
+
+            if (!savedScores[category]) {
+                scoreDtos.complex[category] = score;
+                savedScores[category] = score;
+
+                row.querySelectorAll('.score-btn').forEach(btn => btn.style.display = 'none');
+
+                const savedDisplay = document.createElement('div');
+                savedDisplay.className = 'saved-score';
+                savedDisplay.textContent = score;
+                row.querySelector('td:last-child > div').appendChild(savedDisplay);
+
+                updateScores();
+                checkGameComplete();
+            }
+        });
+    });
+
+    function updateScores() {
+        const simpleTotal = Object.values(scoreDtos.simple).reduce((sum, score) => sum + score, 0);
+
+        const bonusRemaining = Math.max(0, 63 - simpleTotal);
+        const bonusAchieved = simpleTotal >= 63;
+        const bonusScore = bonusAchieved ? 35 : 0;
+
+        const complexTotal = Object.values(scoreDtos.complex).reduce((sum, score) => sum + score, 0);
+        const totalScore = simpleTotal + complexTotal + bonusScore;
+
+        const bonusElement = document.getElementById('bonus-remaining');
+        if (bonusAchieved) {
+            bonusElement.textContent = 'бонус получен';
+            bonusElement.classList.add('bonus-achieved');
+        } else {
+            bonusElement.textContent = bonusRemaining;
+            bonusElement.classList.remove('bonus-achieved');
+        }
+
+        document.getElementById('total-score').textContent = totalScore;
+    }
+
+    function checkGameComplete() {
+        const totalCategories = 15;
+        const savedCount = Object.keys(savedScores).length;
+
+        if (savedCount === totalCategories) {
+            const totalScore = parseInt(document.getElementById('total-score').textContent);
+            const gameCompleteElement = document.getElementById('game-complete');
+            gameCompleteElement.textContent = `Поздравляем! Ваша сумма очков - ${totalScore}`;
+            gameCompleteElement.style.display = 'block';
+        } else {
+            document.getElementById('game-complete').style.display = 'none';
+        }
+    }
+
+    function resetGame() {
+        scoreDtos = {
+            simple: {},
+            complex: {}
+        };
+        savedScores = {};
+
+        document.querySelectorAll('.score-input').forEach(input => {
+            input.value = '';
+            input.classList.remove('valid', 'invalid');
+            input.style.display = 'inline-block';
+        });
+
+        document.querySelectorAll('.save-btn').forEach(btn => {
+            btn.style.display = 'none';
+        });
+
+        document.querySelectorAll('.score-btn').forEach(button => {
+            button.style.display = 'inline-block';
+        });
+
+        document.querySelectorAll('.saved-score').forEach(element => {
+            element.remove();
+        });
+
+        updateScores();
+        document.getElementById('game-complete').style.display = 'none';
+    }
+</script>
+</body>
+</html>

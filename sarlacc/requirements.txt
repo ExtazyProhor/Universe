@@ -4,3 +4,4 @@ pynput~=1.8.1
 keyboard~=0.13.5
 requests~=2.32.5
 pyttsx3~=2.99
+pdfrw~=0.4

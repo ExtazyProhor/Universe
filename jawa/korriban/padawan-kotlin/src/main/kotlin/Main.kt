@@ -1,4 +1,4 @@
-package ru.prohor.universe.korriban.padawanKotlin
+package ru.prohor.universe.korriban.padawan
 
 fun main() {
 

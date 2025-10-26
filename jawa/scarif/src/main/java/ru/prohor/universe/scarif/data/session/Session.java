@@ -2,13 +2,15 @@ package ru.prohor.universe.scarif.data.session;
 
 import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 
 public record Session(
         long id,
         long userId,
         Instant createdAt,
         Instant expiresAt,
+        // TODO https://www.baeldung.com/java-yauaa-user-agent-parsing
+        // TODO https://github.com/ua-parser/uap-java
         Opt<String> userAgent,
         Opt<String> ipAddress,
         boolean closed,

@@ -2,7 +2,7 @@ package ru.prohor.universe.scarif.data.user;
 
 import org.bson.types.ObjectId;
 import org.joda.time.Instant;
-import ru.prohor.universe.jocasta.jodaTime.DateTimeUtil;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 
 import java.util.UUID;
 
