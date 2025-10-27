@@ -17,4 +17,20 @@ public record RoomReference(
     public static RoomReference fromDto(RoomReferenceDto roomRef) {
         return new RoomReference(roomRef.getId(), RoomType.of(roomRef.getType()));
     }
+
+    public boolean isTactileOffline() {
+        return type == RoomType.TACTILE_OFFLINE;
+    }
+
+    public boolean isVirtualOnline() {
+        return type == RoomType.VIRTUAL_ONLINE;
+    }
+
+    public boolean isTactileOnline() {
+        return type == RoomType.TACTILE_ONLINE;
+    }
+
+    public boolean isVirtualOffline() {
+        return type == RoomType.VIRTUAL_OFFLINE;
+    }
 }

@@ -68,25 +68,17 @@ public class OfflineGameService {
     }
 
     public Opt<RoomInfoResponse> getRoomInfo(Player player) {
-        return player.currentRoom().filter(ref -> ref.type() == RoomType.TACTILE_OFFLINE).map(RoomReference::id).map(
-                id -> roomRepository.findById(id).map(
+        return player.currentRoom()
+                .filter(RoomReference::isTactileOffline)
+                .map(RoomReference::id)
+                .map(roomRepository::ensuredFindById).map(
                         room -> new RoomInfoResponse(
                                 Enumeration.enumerateAndMap(
                                         room.teams(),
                                         (i, team) -> teamScoresEnumerationMapper(i, team, room, player)
                                 )
                         )
-                ).orElseThrow(
-                        // TODO mongo ensure
-                        () -> {
-                            throw new RuntimeException(
-                                    "Server error: " +
-                                            RoomType.TACTILE_OFFLINE.propertyName() +
-                                            " room {" + id + "} not found"
-                            );
-                        }
-                )
-        );
+                );
     }
 
     public TeamInfo teamScoresEnumerationMapper(

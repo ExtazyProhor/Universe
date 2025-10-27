@@ -20,6 +20,7 @@ import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -138,7 +139,7 @@ public class AccountService {
             return ResponseEntity.notFound().build();
 
         player = player.toBuilder().friends(ids).build();
-        Player friend = playerRepository.findById(objectId).get(); // TODO mongo ensure
+        Player friend = playerRepository.ensuredFindById(objectId);
         ids = new ArrayList<>(friend.friends());
         ids.remove(player.id());
         friend = friend.toBuilder().friends(ids).build();
@@ -172,25 +173,23 @@ public class AccountService {
     // TODO transaction
     public AccountController.RequestsResponse findRequests(Player player, AccountController.RequestsRequest body) {
         List<ObjectId> players = body.incoming() ? player.incomingRequests() : player.outcomingRequests();
-        PaginationResult<ObjectId> paginationResult = Paginator.richPaginateOrLastPage(players, body.page(), PAGE_SIZE);
-        Map<ObjectId, Player> idPlayerMap = playerRepository.findAllByIds(paginationResult.values())
-                .stream()
-                .collect(Collectors.toMap(Player::id, Function.identity()));
+        PaginationResult<Player> paginationResult = Paginator.richPaginateOrLastPage(
+                playerRepository.ensuredFindAllByIds(players)
+                        .stream()
+                        .sorted(Comparator.comparing(Player::id))
+                        .toList(),
+                body.page(),
+                PAGE_SIZE
+        );
 
         return new AccountController.RequestsResponse(
                 paginationResult.values()
                         .stream()
-                        .map(id -> Opt.ofNullable(idPlayerMap.get(id)))
-                        .filter(playerO -> {
-                            if (playerO.isEmpty())
-                                System.out.println("player is null"); // TODO mongo ensure
-                            return playerO.isPresent();
-                        })
-                        .map(playerO -> new AccountController.PlayerRequestInfo(
-                                playerO.get().id().toHexString(),
-                                playerO.get().username(),
-                                playerO.get().displayName(),
-                                playerO.get().imageId().toHexString()
+                        .map(p -> new AccountController.PlayerRequestInfo(
+                                p.id().toHexString(),
+                                p.username(),
+                                p.displayName(),
+                                p.imageId().toHexString()
                         ))
                         .toList(),
                 paginationResult.page(),
@@ -214,7 +213,6 @@ public class AccountService {
         if (target.isEmpty())
             return ResponseEntity.notFound().build();
         Player friend = target.get();
-        // TODO метод ensure в mongo, который будет падать если не найдет юзера
         Set<ObjectId> outcomingRequests = new HashSet<>(player.outcomingRequests());
         if (outcomingRequests.contains(objectId))
             return AccountController.REQUEST_ALREADY_EXISTS;
