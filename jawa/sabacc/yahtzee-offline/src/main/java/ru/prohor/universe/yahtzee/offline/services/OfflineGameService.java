@@ -122,14 +122,13 @@ public class OfflineGameService {
     ) {
         ObjectId newRoomId = ObjectId.get();
         Map<String, Player> players;
-        try {
-            players = validateAndFindPlayers(player, body, newRoomId).stream().collect(Collectors.toMap(
-                    p -> p.id().toHexString(),
-                    p -> p
-            ));
-        } catch (RoomCreationException e) {
-            return Opt.of(e.getMessage());
-        }
+        Result<List<Player>> playersResult = validateAndFindPlayers(player, body, newRoomId);
+        if (playersResult.isError())
+            return Opt.of(playersResult.error());
+        players = playersResult.result().stream().collect(Collectors.toMap(
+                p -> p.id().toHexString(),
+                p -> p
+        ));
 
         Map<String, List<Player>> playersInTeams = new HashMap<>();
         for (TeamPlayers teamPlayers : body.teams()) {
@@ -259,20 +258,20 @@ public class OfflineGameService {
         );
     }
 
-    private List<Player> validateAndFindPlayers(
+    private Result<List<Player>> validateAndFindPlayers(
             Player player,
             CreateRoomRequest body,
             ObjectId newRoomId
-    ) throws RoomCreationException {
+    ) {
         if (player.currentRoom().isPresent())
-            throw new RoomCreationException("Player already linked to room {" + player.currentRoom().get() + "}");
+            return Result.error("Player already linked to room {" + player.currentRoom().get() + "}");
         if (body.teams().isEmpty() || body.teams().size() > maxTeams)
-            throw new RoomCreationException("Room must have from 1 to " + maxTeams + " teams");
+            return Result.error("Room must have from 1 to " + maxTeams + " teams");
 
         Set<String> used = new HashSet<>();
         for (TeamPlayers teamPlayers : body.teams()) {
             if (used.contains(teamPlayers.title()))
-                throw new RoomCreationException("Team title \"" + teamPlayers.title() + "\" used multiple times");
+                return Result.error("Team title \"" + teamPlayers.title() + "\" used multiple times");
             used.add(teamPlayers.title());
         }
 
@@ -281,28 +280,28 @@ public class OfflineGameService {
         try {
             for (TeamPlayers teamPlayers : body.teams()) {
                 if (teamPlayers.playersIds().isEmpty() || teamPlayers.playersIds().size() > maxPlayersInTeam)
-                    throw new RoomCreationException("Team must have from 1 to " + maxPlayersInTeam + " players");
+                    return Result.error("Team must have from 1 to " + maxPlayersInTeam + " players");
                 for (String id : teamPlayers.playersIds()) {
                     playersIds.add(new ObjectId(id));
                     if (used.contains(id))
-                        throw new RoomCreationException("Duplicate playerId: {" + id + "}");
+                        return Result.error("Duplicate playerId: {" + id + "}");
                     used.add(id);
                 }
             }
         } catch (Exception e) {
-            throw new RoomCreationException("Illegal format of ObjectId {" + e.getMessage() + "}");
+            return Result.error("Illegal format of ObjectId {" + e.getMessage() + "}");
         }
         List<Player> players = playerRepository.findAllByIds(playersIds);
         if (players.size() != playersIds.size())
-            throw new RoomCreationException(playersIds.size() - players.size() + " players not found in the database");
+            return Result.error(playersIds.size() - players.size() + " players not found in the database");
         if (players.stream().anyMatch(p -> p.currentRoom().isPresent()))
-            throw new RoomCreationException("Some players already have linked rooms");
+            return Result.error("Some players already have linked rooms");
         playerRepository.save(
                 players.stream().map(
                         p -> p.toBuilder()
                                 .currentRoom(Opt.of(new RoomReference(newRoomId, RoomType.TACTILE_OFFLINE)))
                                 .build()
                 ).toList());
-        return players;
+        return Result.of(players);
     }
 }
