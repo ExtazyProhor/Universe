@@ -12,6 +12,7 @@ import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.jwt.AuthorizedUser;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
+import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.yahtzee.app.services.images.ImagesService;
 import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
 import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
@@ -23,24 +24,27 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
 public class AccountService {
     private static final int PAGE_SIZE = 5;
-    private static final int TRANSACTION_RETRIES = 2;
 
+    private final MongoTransactionService transactionService;
     private final MongoRepository<Player> playerRepository;
     private final GeneralRoomsService generalRoomsService;
     private final GameColorsService gameColorsService;
     private final ImagesService imagesService;
 
     public AccountService(
+            MongoTransactionService transactionService,
             MongoRepository<Player> playerRepository,
             GeneralRoomsService generalRoomsService,
             GameColorsService gameColorsService,
             ImagesService imagesService
     ) {
+        this.transactionService = transactionService;
         this.playerRepository = playerRepository;
         this.generalRoomsService = generalRoomsService;
         this.gameColorsService = gameColorsService;
@@ -49,25 +53,30 @@ public class AccountService {
 
     public Player wrap(AuthorizedUser user) {
         ObjectId objectId = new ObjectId(user.objectId());
-        return playerRepository.findById(objectId).orElseGet(() -> {
-            Player player = new Player(
-                    objectId,
-                    user.uuid(),
-                    user.id(),
-                    user.username(),
-                    gameColorsService.getRandomColorId(),
-                    user.username(),
-                    List.of(),
-                    Opt.empty(),
-                    imagesService.generateAndSave().id(),
-                    Instant.now(),
-                    false,
-                    Collections.emptyList(),
-                    Collections.emptyList()
-            );
-            playerRepository.save(player);
-            return player;
-        });
+
+        return transactionService.withTransaction(transaction -> {
+            MongoRepository<Player> transactional = transaction.wrap(playerRepository);
+
+            return transactional.findById(objectId).orElseGet(() -> {
+                Player player = new Player(
+                        objectId,
+                        user.uuid(),
+                        user.id(),
+                        user.username(),
+                        gameColorsService.getRandomColorId(),
+                        user.username(),
+                        List.of(),
+                        Opt.empty(),
+                        imagesService.generateAndSave().id(),
+                        Instant.now(),
+                        false,
+                        Collections.emptyList(),
+                        Collections.emptyList()
+                );
+                transactional.save(player);
+                return player;
+            });
+        }).asOpt().orElseThrow(() -> new RuntimeException("Error while requesting user data from the database"));
     }
 
     public boolean changeName(Player player, String name) {
@@ -122,7 +131,6 @@ public class AccountService {
         );
     }
 
-    // TODO transaction
     public ResponseEntity<?> deleteFriend(Player player, String id) {
         ObjectId objectId;
         try {
@@ -131,18 +139,31 @@ public class AccountService {
             e.printStackTrace(); // TODO log
             return ResponseEntity.badRequest().build();
         }
-        // TODO requery
-        List<ObjectId> ids = new ArrayList<>(player.friends());
-        if (!ids.remove(objectId))
-            return ResponseEntity.notFound().build();
 
-        player = player.toBuilder().friends(ids).build();
-        Player friend = playerRepository.ensuredFindById(objectId);
-        ids = new ArrayList<>(friend.friends());
-        ids.remove(player.id());
-        friend = friend.toBuilder().friends(ids).build();
-        playerRepository.save(List.of(player, friend)); // TODO в отдельный сервис
-        return ResponseEntity.ok().build();
+        return transactionService.withTransaction(transaction -> {
+            MongoRepository<Player> transactional = transaction.wrap(playerRepository);
+            Map<ObjectId, Player> playerAndFriend = transactional.findAllByIdsAsMap(
+                    List.of(player.id(), objectId),
+                    Player::id
+            );
+            if (!playerAndFriend.containsKey(objectId))
+                return ResponseEntity.notFound().build();
+            Player updated = playerAndFriend.get(player.id());
+            if (!updated.friends().contains(objectId))
+                return ResponseEntity.notFound().build();
+
+            playerRepository.save(List.of(
+                    deleteFriend(updated, objectId),
+                    deleteFriend(playerAndFriend.get(objectId), updated.id())
+            ));
+            return ResponseEntity.ok().build();
+        }).asOpt().orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
+    private Player deleteFriend(Player player, ObjectId friend) {
+        List<ObjectId> friendsIds = new ArrayList<>(player.friends());
+        friendsIds.remove(friend);
+        return player.toBuilder().friends(friendsIds).build();
     }
 
     public AccountController.FriendsResponse getFriends(Player player, long page) {
@@ -150,11 +171,9 @@ public class AccountService {
                 player.friends().stream().sorted().toList(), page, PAGE_SIZE
         );
         return new AccountController.FriendsResponse(
-                paginationResult.values()
+                playerRepository.ensuredFindAllByIds(paginationResult.values())
                         .stream()
-                        .map(id -> playerRepository.findById(id).orElseThrow(
-                                () -> new RuntimeException("Server error: Player {" + id + "} now found")
-                        ))
+                        .sorted(Comparator.comparing(Player::id))
                         .map(p -> new AccountController.Friend(
                                 p.id().toHexString(),
                                 p.username(),
@@ -168,21 +187,19 @@ public class AccountService {
         );
     }
 
-    // TODO transaction
     public AccountController.RequestsResponse findRequests(Player player, AccountController.RequestsRequest body) {
-        List<ObjectId> players = body.incoming() ? player.incomingRequests() : player.outcomingRequests();
-        PaginationResult<Player> paginationResult = Paginator.richPaginateOrLastPage(
-                playerRepository.ensuredFindAllByIds(players)
-                        .stream()
-                        .sorted(Comparator.comparing(Player::id))
-                        .toList(),
-                body.page(),
-                PAGE_SIZE
+        List<ObjectId> requests = body.incoming() ? player.incomingRequests() : player.outcomingRequests();
+
+        PaginationResult<ObjectId> paginationResult = Paginator.richPaginateOrLastPage(
+                requests.stream().sorted().toList(), body.page(), PAGE_SIZE
         );
+        List<Player> players = playerRepository.ensuredFindAllByIds(paginationResult.values())
+                .stream()
+                .sorted(Comparator.comparing(Player::id))
+                .toList();
 
         return new AccountController.RequestsResponse(
-                paginationResult.values()
-                        .stream()
+                players.stream()
                         .map(p -> new AccountController.PlayerRequestInfo(
                                 p.id().toHexString(),
                                 p.username(),
@@ -200,56 +217,36 @@ public class AccountService {
         try {
             objectId = new ObjectId(id);
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log
-            // TODO мб временный бан user-а (SB - Suspicious Behaviour)
+            e.printStackTrace(); // TODO log (SB - Suspicious Behaviour)
             return ResponseEntity.badRequest().build();
         }
 
-        // TODO транзакция, сначала перезапрос пользователя + друга
-        player = player; // TODO
-        Opt<Player> target = playerRepository.findById(objectId);
-        if (target.isEmpty())
-            return ResponseEntity.notFound().build();
-        Player friend = target.get();
-        Set<ObjectId> outcomingRequests = new HashSet<>(player.outcomingRequests());
-        if (outcomingRequests.contains(objectId))
-            return AccountController.REQUEST_ALREADY_EXISTS;
+        return transactionService.withTransaction(transaction -> {
+            MongoRepository<Player> transactional = transaction.wrap(playerRepository);
+            Map<ObjectId, Player> playerAndFriend = transactional.findAllByIdsAsMap(
+                    List.of(player.id(), objectId),
+                    Player::id
+            );
 
-        Set<ObjectId> incomingRequests = new HashSet<>(player.incomingRequests());
-        if (incomingRequests.contains(objectId)) {
-            // TODO вынести эту логику в отдельный класс `FriendRequestsService`
-            incomingRequests.remove(objectId);
-            List<ObjectId> friends = new ArrayList<>(player.friends());
-            friends.add(objectId);
-            player = player.toBuilder()
-                    .incomingRequests(incomingRequests.stream().toList())
-                    .friends(friends)
-                    .build();
-            incomingRequests = new HashSet<>(target.get().incomingRequests());
-            friends = new ArrayList<>(friend.friends());
-            friends.add(player.id());
-            friend = friend.toBuilder()
-                    .incomingRequests(incomingRequests.stream().toList())
-                    .friends(friends)
-                    .build();
-            playerRepository.save(List.of(player, friend));
-            // TODO создать record с результатом. Тут - добавление в друзья
-            return ResponseEntity.ok("{\"result\": \"added\"}");
-        }
+            if (!playerAndFriend.containsKey(objectId))
+                return ResponseEntity.notFound().build();
+            Player updated = playerAndFriend.get(player.id());
+            Player friend = playerAndFriend.get(objectId);
 
-        Set<ObjectId> friends = new HashSet<>(player.friends());
-        if (friends.contains(objectId))
-            return AccountController.ALREADY_FRIENDS;
+            if (updated.outcomingRequests().contains(objectId))
+                return AccountController.REQUEST_ALREADY_EXISTS;
+            if (updated.friends().contains(objectId))
+                return AccountController.ALREADY_FRIENDS;
 
-        outcomingRequests.add(objectId);
-        incomingRequests = new HashSet<>(friend.incomingRequests());
-        incomingRequests.add(player.id());
+            if (updated.incomingRequests().contains(objectId)) {
+                addFriend(transactional, friend, updated);
+                return AccountController.FRIEND_ADDED;
+            }
 
-        player = player.toBuilder().outcomingRequests(outcomingRequests.stream().toList()).build();
-        friend = friend.toBuilder().incomingRequests(incomingRequests.stream().toList()).build();
-        playerRepository.save(List.of(player, friend));
-        // TODO а тут - отправка заявки
-        return ResponseEntity.ok("{\"result\": \"requested\"}");
+            sendRequest(transactional, updated, friend);
+
+            return AccountController.REQUEST_SENT;
+        }).asOpt().orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
     public ResponseEntity<?> retractRequest(Player player, String id) {
@@ -262,5 +259,43 @@ public class AccountService {
 
     public ResponseEntity<?> acceptRequest(Player player, String id) {
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build(); // TODO
+    }
+
+    private void addFriend(MongoRepository<Player> transactional, Player outcoming, Player incoming) {
+        List<ObjectId> outcomingRequests = new ArrayList<>(outcoming.outcomingRequests());
+        outcomingRequests.remove(incoming.id());
+        List<ObjectId> outcomingFriends = new ArrayList<>(outcoming.friends());
+        outcomingFriends.add(incoming.id());
+        outcoming = outcoming.toBuilder()
+                .outcomingRequests(outcomingRequests)
+                .friends(outcomingFriends)
+                .build();
+
+        List<ObjectId> incomingRequests = new ArrayList<>(incoming.incomingRequests());
+        incomingRequests.remove(outcoming.id());
+        List<ObjectId> incomingFriends = new ArrayList<>(incoming.friends());
+        incomingFriends.add(outcoming.id());
+        incoming = incoming.toBuilder()
+                .incomingRequests(incomingRequests)
+                .friends(incomingFriends)
+                .build();
+
+        transactional.save(List.of(outcoming, incoming));
+    }
+
+    private void sendRequest(MongoRepository<Player> transactional, Player outcoming, Player incoming) {
+        List<ObjectId> outcomingRequests = new ArrayList<>(outcoming.outcomingRequests());
+        outcomingRequests.add(incoming.id());
+        outcoming = outcoming.toBuilder()
+                .outcomingRequests(outcomingRequests)
+                .build();
+
+        List<ObjectId> incomingRequests = new ArrayList<>(incoming.incomingRequests());
+        incomingRequests.add(outcoming.id());
+        incoming = incoming.toBuilder()
+                .incomingRequests(incomingRequests)
+                .build();
+
+        transactional.save(List.of(outcoming, incoming));
     }
 }

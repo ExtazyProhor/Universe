@@ -16,11 +16,16 @@ public class MongoMorphiaTransactionService implements MongoTransactionService {
     @Override
     public <T> MongoTransactionResult<T> withTransaction(MonoFunction<MongoTransaction, T> transaction) {
         for (int ignored : Range.range(retries))
-            return MongoTransactionResult.success(
-                    datastore.withTransaction(
-                            session -> transaction.apply(new MongoMorphiaTransaction(session))
-                    )
-            );
+            try {
+                return MongoTransactionResult.success(
+                        datastore.withTransaction(
+                                session -> transaction.apply(new MongoMorphiaTransaction(session))
+                        )
+                );
+            } catch (Exception e) {
+                // TODO log
+                e.printStackTrace();
+            }
         return MongoTransactionResult.error();
     }
 }

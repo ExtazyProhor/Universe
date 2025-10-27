@@ -253,13 +253,21 @@ public class AccountController {
             String imageId
     ) {}
 
-    public record RequestConflict(String code) {}
+    public record SendRequestConflict(String code) {}
+
+    public record SendRequestResult(String result) {}
 
     public static final ResponseEntity<?> REQUEST_ALREADY_EXISTS = ResponseEntity.status(HttpStatus.CONFLICT).body(
-            new RequestConflict("request_already_exists")
+            new SendRequestConflict("request_already_exists")
     );
     public static final ResponseEntity<?> ALREADY_FRIENDS = ResponseEntity.status(HttpStatus.CONFLICT).body(
-            new RequestConflict("already_friends")
+            new SendRequestConflict("already_friends")
+    );
+    public static final ResponseEntity<?> FRIEND_ADDED = ResponseEntity.ok(
+            new SendRequestResult("friend_added")
+    );
+    public static final ResponseEntity<?> REQUEST_SENT = ResponseEntity.ok(
+            new SendRequestResult("request_sent")
     );
 
     @PostMapping("/send_request")

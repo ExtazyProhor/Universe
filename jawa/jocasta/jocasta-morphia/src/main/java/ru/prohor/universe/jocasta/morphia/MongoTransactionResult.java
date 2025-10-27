@@ -1,5 +1,7 @@
 package ru.prohor.universe.jocasta.morphia;
 
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
+
 public class MongoTransactionResult<T> {
     public final boolean success;
     public final T value;
@@ -15,5 +17,9 @@ public class MongoTransactionResult<T> {
 
     public static <T> MongoTransactionResult<T> error() {
         return new MongoTransactionResult<>(false, null);
+    }
+
+    public Opt<T> asOpt() {
+        return Opt.when(success, value);
     }
 }
