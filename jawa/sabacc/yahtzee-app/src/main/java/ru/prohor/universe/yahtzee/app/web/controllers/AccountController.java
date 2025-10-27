@@ -50,6 +50,8 @@ public class AccountController {
     public record InfoResponse(
             String username,
             String name,
+            @JsonProperty("random_color")
+            boolean randomColor, // if true, color and contrast are absent
             String color, // format: "ff0000", hex, without alpha
             String contrast, // format: "ff0000", hex, without alpha, 
             @JsonProperty("image_id")

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.Enumeration;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.common.Result;
-import ru.prohor.universe.yahtzee.core.core.TeamColor;
+import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
 import ru.prohor.universe.yahtzee.core.core.Yahtzee;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.core.core.Combination;
@@ -87,9 +87,11 @@ public class OfflineGameService {
             OfflineRoom room,
             Player player
     ) {
+        Opt<TeamColor> color = gameColorsService.getById(team.color());
         return new TeamInfo(
                 team.title(),
-                gameColorsService.getById(team.color()),
+                color.isEmpty(),
+                color.orElseNull(),
                 i == room.movingTeamIndex(),
                 Enumeration.enumerateAndMap(
                         team.players(),

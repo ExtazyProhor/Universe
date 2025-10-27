@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.core.core;
+package ru.prohor.universe.yahtzee.core.core.color;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

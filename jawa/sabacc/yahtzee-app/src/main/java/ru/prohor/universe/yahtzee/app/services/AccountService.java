@@ -12,21 +12,18 @@ import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.jwt.AuthorizedUser;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
-import ru.prohor.universe.yahtzee.core.core.TeamColor;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
-import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 import ru.prohor.universe.yahtzee.app.services.images.ImagesService;
 import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
+import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
+import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -86,12 +83,13 @@ public class AccountService {
     }
 
     public AccountController.InfoResponse getPlayerInfo(Player player) {
-        TeamColor color = gameColorsService.getById(player.color());
+        Opt<TeamColor> color = gameColorsService.getById(player.color());
         return new AccountController.InfoResponse(
                 player.username(),
                 player.displayName(),
-                color.background(),
-                color.text(),
+                color.isEmpty(),
+                color.isPresent() ? color.get().background() : null,
+                color.isPresent() ? color.get().text() : null,
                 player.imageId().toHexString(),
                 generalRoomsService.findRoom(player.currentRoom()).map(
                         room -> new AccountController.RoomInfo(
