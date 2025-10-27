@@ -3,13 +3,11 @@ package ru.prohor.universe.yoda.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
+import ru.prohor.universe.jocasta.tgbots.RegisterBot;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 import ru.prohor.universe.yoda.bot.Text;
@@ -43,12 +41,7 @@ public class TgConfiguration {
     }
 
     @Bean
-    public YodaBot simpleBot(BotSettings settings, FileLogger logger) {
-        return Sneaky.execute(() -> {
-            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            YodaBot bot = new YodaBot(settings, logger);
-            telegramBotsApi.registerBot(bot);
-            return bot;
-        });
+    public YodaBot yodaBot(BotSettings settings, FileLogger logger) {
+        return RegisterBot.register(new YodaBot(settings, logger));
     }
 }

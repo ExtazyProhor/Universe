@@ -24,6 +24,7 @@
         <module>sabacc</module>
         <module>korriban</module>
         <module>yoda</module>
+        <module>boba-fett</module>
     </modules>
 
     <dependencyManagement>
