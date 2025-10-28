@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.PaginationResult;
 import ru.prohor.universe.jocasta.core.collections.Paginator;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.functional.DiConsumer;
+import ru.prohor.universe.jocasta.core.functional.DiFunction;
+import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.jwt.AuthorizedUser;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
@@ -229,7 +232,7 @@ public class AccountService {
             );
 
             if (!playerAndFriend.containsKey(objectId))
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.notFound().build(); // TODO log [SB]
             Player updated = playerAndFriend.get(player.id());
             Player friend = playerAndFriend.get(objectId);
 
@@ -243,22 +246,81 @@ public class AccountService {
                 return AccountController.FRIEND_ADDED;
             }
 
-            sendRequest(transactional, updated, friend);
+            editRequest(transactional, updated, friend, List::add);
 
             return AccountController.REQUEST_SENT;
         }).asOpt().orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
     public ResponseEntity<?> retractRequest(Player player, String id) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build(); // TODO
+        return checkAndEditRequest(
+                player,
+                id,
+                (updated, friend, transactional) -> {
+                    if (!updated.outcomingRequests().contains(friend.id()))
+                        return ResponseEntity.notFound().build();
+
+                    editRequest(transactional, updated, friend, List::remove);
+                    return ResponseEntity.ok().build();
+                }
+        );
     }
 
     public ResponseEntity<?> declineRequest(Player player, String id) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build(); // TODO
+        return checkAndEditRequest(
+                player,
+                id,
+                (updated, friend, transactional) -> {
+                    if (!updated.incomingRequests().contains(friend.id()))
+                        return ResponseEntity.notFound().build();
+
+                    editRequest(transactional, friend, updated, List::remove);
+                    return ResponseEntity.ok().build();
+                }
+        );
     }
 
     public ResponseEntity<?> acceptRequest(Player player, String id) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build(); // TODO
+        return checkAndEditRequest(
+                player,
+                id,
+                (updated, friend, transactional) -> {
+                    if (!updated.incomingRequests().contains(friend.id()))
+                        return ResponseEntity.notFound().build();
+
+                    addFriend(transactional, friend, updated);
+                    return ResponseEntity.ok().build();
+                }
+        );
+    }
+
+    private ResponseEntity<?> checkAndEditRequest(
+            Player player,
+            String id,
+            TriFunction<Player, Player, MongoRepository<Player>, ResponseEntity<?>> playerToFriendFunction
+    ) {
+        ObjectId objectId;
+        try {
+            objectId = new ObjectId(id);
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO log (SB - Suspicious Behaviour)
+            return ResponseEntity.badRequest().build();
+        }
+
+        return transactionService.withTransaction(transaction -> {
+            MongoRepository<Player> transactional = transaction.wrap(playerRepository);
+            Map<ObjectId, Player> playerAndFriend = transactional.findAllByIdsAsMap(
+                    List.of(player.id(), objectId),
+                    Player::id
+            );
+
+            if (!playerAndFriend.containsKey(objectId))
+                return ResponseEntity.notFound().build(); // TODO log [SB]
+            Player updated = playerAndFriend.get(player.id());
+            Player friend = playerAndFriend.get(objectId);
+
+            return playerToFriendFunction.apply(updated, friend, transactional);
+        }).asOpt().orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
     private void addFriend(MongoRepository<Player> transactional, Player outcoming, Player incoming) {
@@ -283,15 +345,20 @@ public class AccountService {
         transactional.save(List.of(outcoming, incoming));
     }
 
-    private void sendRequest(MongoRepository<Player> transactional, Player outcoming, Player incoming) {
+    private void editRequest(
+            MongoRepository<Player> transactional,
+            Player outcoming,
+            Player incoming,
+            DiConsumer<List<ObjectId>, ObjectId> action
+    ) {
         List<ObjectId> outcomingRequests = new ArrayList<>(outcoming.outcomingRequests());
-        outcomingRequests.add(incoming.id());
+        action.accept(outcomingRequests, incoming.id());
         outcoming = outcoming.toBuilder()
                 .outcomingRequests(outcomingRequests)
                 .build();
 
         List<ObjectId> incomingRequests = new ArrayList<>(incoming.incomingRequests());
-        incomingRequests.add(outcoming.id());
+        action.accept(incomingRequests, outcoming.id());
         incoming = incoming.toBuilder()
                 .incomingRequests(incomingRequests)
                 .build();
