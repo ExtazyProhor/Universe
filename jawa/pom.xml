@@ -25,6 +25,7 @@
         <module>korriban</module>
         <module>yoda</module>
         <module>boba-fett</module>
+        <module>hyperspace</module>
     </modules>
 
     <dependencyManagement>
