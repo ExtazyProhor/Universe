@@ -9,7 +9,6 @@ import ru.prohor.universe.jocasta.core.collections.PaginationResult;
 import ru.prohor.universe.jocasta.core.collections.Paginator;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.DiConsumer;
-import ru.prohor.universe.jocasta.core.functional.DiFunction;
 import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.jwt.AuthorizedUser;

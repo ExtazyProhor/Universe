@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("SpellCheckingInspection")
 public enum YahtzeeColor implements SelectedColor {
     CRIMSON(new TeamColor(0, "DC143C", "FFFFFF", "FFE6E6", "8B0000")),
     ORANGE_RED(new TeamColor(1, "FF4500", "FFFFFF", "FFE4E1", "CC3700")),
