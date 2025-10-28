@@ -151,6 +151,54 @@ public class GameColorsServiceTest {
     }
 
     //@Test
+    void testCalculateColorsForTeamsOptimizesColorAssignment3() {
+        int color1 = YahtzeeColor.CRIMSON.getColorId();
+        int color2 = YahtzeeColor.ORANGE_RED.getColorId();
+        int color3 = YahtzeeColor.FOREST_GREEN.getColorId();
+        int color4 = YahtzeeColor.ROYAL_BLUE.getColorId();
+
+        Map<String, List<Player>> teams = new HashMap<>();
+        teams.put("Team A", List.of(
+                mockPlayer.toBuilder().color(color1).build(),
+                mockPlayer.toBuilder().color(color2).build()
+        ));
+        teams.put("Team B", List.of(
+                mockPlayer.toBuilder().color(color3).build(),
+                mockPlayer.toBuilder().color(color4).build()
+        ));
+
+        Map<String, TeamColor> result = service.calculateColorsForTeams(teams);
+
+        //Assertions.assertNotNull(result);
+        //Assertions.assertTrue(List.of(color1, color2).contains(result.get("Team A").colorId()));
+        //Assertions.assertTrue(List.of(color3, color4).contains(result.get("Team B").colorId()));
+    }
+
+    //@Test
+    void testCalculateColorsForTeamsOptimizesColorAssignment4() {
+        int color1 = YahtzeeColor.CRIMSON.getColorId();
+        int color2 = YahtzeeColor.ORANGE_RED.getColorId();
+        int color3 = YahtzeeColor.FOREST_GREEN.getColorId();
+
+        Map<String, List<Player>> teams = new HashMap<>();
+        teams.put("Team A", List.of(
+                mockPlayer.toBuilder().color(color1).build(),
+                mockPlayer.toBuilder().color(color2).build()
+        ));
+        teams.put("Team B", List.of(
+                mockPlayer.toBuilder().color(color2).build(),
+                mockPlayer.toBuilder().color(color3).build()
+        ));
+
+        Map<String, TeamColor> result = service.calculateColorsForTeams(teams);
+
+        //Assertions.assertNotNull(result);
+        //Assertions.assertNotEquals(result.get("Team A").colorId(), result.get("Team B").colorId());
+        //Assertions.assertTrue(List.of(color1, color2).contains(result.get("Team A").colorId()));
+        //Assertions.assertTrue(List.of(color2, color3).contains(result.get("Team B").colorId()));
+    }
+
+    //@Test
     void testCalculateColorsForTeamsRandomColorAssignment() {
         Map<String, List<Player>> teams = new HashMap<>();
         teams.put("Team A", List.of(
