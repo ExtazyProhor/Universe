@@ -21,5 +21,6 @@
         <module>jocasta-scarif-jwt</module>
         <module>jocasta-tg-bots</module>
         <module>jocasta-morphia</module>
+        <module>jocasta-jackson-joda-time</module>
     </modules>
 </project>

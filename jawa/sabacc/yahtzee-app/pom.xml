@@ -41,6 +41,10 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-jackson-joda-time</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
