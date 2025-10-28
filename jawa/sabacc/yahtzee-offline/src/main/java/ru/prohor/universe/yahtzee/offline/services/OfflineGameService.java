@@ -6,18 +6,23 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.Enumeration;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.common.Result;
+import ru.prohor.universe.jocasta.morphia.MongoTransaction;
+import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
 import ru.prohor.universe.yahtzee.core.core.Yahtzee;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.core.core.Combination;
 import ru.prohor.universe.yahtzee.offline.api.CombinationInfo;
 import ru.prohor.universe.yahtzee.offline.api.CreateRoomRequest;
+import ru.prohor.universe.yahtzee.offline.api.CreateRoomErrorResponse;
 import ru.prohor.universe.yahtzee.offline.api.PlayerInfo;
 import ru.prohor.universe.yahtzee.offline.api.RoomInfoResponse;
+import ru.prohor.universe.yahtzee.offline.api.SaveMoveErrorResponse;
 import ru.prohor.universe.yahtzee.offline.api.SaveMoveRequest;
 import ru.prohor.universe.yahtzee.offline.api.SaveMoveResponse;
 import ru.prohor.universe.yahtzee.offline.api.TeamInfo;
@@ -46,6 +51,7 @@ public class OfflineGameService {
 
     private final int maxTeams;
     private final int maxPlayersInTeam;
+    private final MongoTransactionService transactionService;
     private final MongoRepository<Player> playerRepository;
     private final MongoRepository<OfflineGame> gameRepository;
     private final MongoRepository<OfflineRoom> roomRepository;
@@ -54,6 +60,7 @@ public class OfflineGameService {
     public OfflineGameService(
             @Value("${universe.yahtzee.game.offline.max-teams}") int maxTeams,
             @Value("${universe.yahtzee.game.offline.max-players-in-team}") int maxPlayersInTeam,
+            MongoTransactionService transactionService,
             MongoRepository<Player> playerRepository,
             MongoRepository<OfflineGame> gameRepository,
             MongoRepository<OfflineRoom> roomRepository,
@@ -61,6 +68,7 @@ public class OfflineGameService {
     ) {
         this.maxTeams = maxTeams;
         this.maxPlayersInTeam = maxPlayersInTeam;
+        this.transactionService = transactionService;
         this.playerRepository = playerRepository;
         this.gameRepository = gameRepository;
         this.roomRepository = roomRepository;
@@ -110,116 +118,127 @@ public class OfflineGameService {
         );
     }
 
-    public Opt<String> createRoom(
+    public ResponseEntity<?> createRoom(
             Player player,
             CreateRoomRequest body
     ) {
-        ObjectId newRoomId = ObjectId.get();
-        Map<String, Player> players;
-        Result<List<Player>> playersResult = validateAndFindPlayers(player, body, newRoomId);
-        if (playersResult.isError())
-            return Opt.of(playersResult.error());
-        players = playersResult.result().stream().collect(Collectors.toMap(
-                p -> p.id().toHexString(),
-                p -> p
-        ));
+        return transactionService.withTransaction(transaction -> {
+            MongoRepository<OfflineRoom> transactional = transaction.wrap(roomRepository);
+            ObjectId newRoomId = ObjectId.get();
+            Map<String, Player> players;
+            Result<List<Player>> playersResult = validateAndFindPlayers(player, body, newRoomId, transaction);
+            if (playersResult.isError())
+                return ResponseEntity.badRequest().body(new CreateRoomErrorResponse(playersResult.error()));
+            players = playersResult.result().stream().collect(Collectors.toMap(
+                    p -> p.id().toHexString(),
+                    p -> p
+            ));
 
-        Map<String, List<Player>> playersInTeams = new HashMap<>();
-        for (TeamPlayers teamPlayers : body.teams()) {
-            playersInTeams.put(
-                    teamPlayers.title(),
-                    teamPlayers.playersIds().stream().map(players::get).toList()
+            Map<String, List<Player>> playersInTeams = new HashMap<>();
+            for (TeamPlayers teamPlayers : body.teams()) {
+                playersInTeams.put(
+                        teamPlayers.title(),
+                        teamPlayers.playersIds().stream().map(players::get).toList()
+                );
+            }
+            Map<String, TeamColor> teamsColors = gameColorsService.calculateColorsForTeams(
+                    playersInTeams
             );
-        }
-        Map<String, TeamColor> teamsColors = gameColorsService.calculateColorsForTeams(
-                playersInTeams
-        );
-        List<OfflineScore> emptyScores = List.of();
+            List<OfflineScore> emptyScores = List.of();
 
-        OfflineRoom room = new OfflineRoom(
-                newRoomId,
-                Instant.now(),
-                player.id(),
-                FIRST_MOVE_INDEX,
-                playersInTeams.entrySet().stream().map(entry -> new OfflineInterimTeamScores(
-                        FIRST_MOVE_INDEX,
-                        entry.getKey(),
-                        teamsColors.get(entry.getKey()).colorId(),
-                        entry.getValue().stream().map(Player::id).toList(),
-                        emptyScores
-                )).toList()
-        );
-        roomRepository.save(room);
-        return Opt.empty();
+            OfflineRoom room = new OfflineRoom(
+                    newRoomId,
+                    Instant.now(),
+                    player.id(),
+                    FIRST_MOVE_INDEX,
+                    playersInTeams.entrySet().stream().map(entry -> new OfflineInterimTeamScores(
+                            FIRST_MOVE_INDEX,
+                            entry.getKey(),
+                            teamsColors.get(entry.getKey()).colorId(),
+                            entry.getValue().stream().map(Player::id).toList(),
+                            emptyScores
+                    )).toList()
+            );
+            transactional.save(room);
+            return ResponseEntity.ok().build();
+        }).asOpt().orElse(ResponseEntity.internalServerError().build());
     }
 
-    public Result<SaveMoveResponse> saveMove(
-            Player player,
-            SaveMoveRequest body
-    ) {
-        if (player.currentRoom().isEmpty())
-            return Result.error("Player is not linked to room");
-        ObjectId moverId;
-        try {
-            moverId = new ObjectId(body.movingPlayerId());
-        } catch (Exception e) {
-            return Result.error("Illegal ObjectId format");
-        }
-        Opt<Player> moverO = playerRepository.findById(moverId);
-        if (moverO.isEmpty())
-            return Result.error("Moving player does not exist");
-        if (!Yahtzee.isValidCombinationValue(body.combination(), body.value()))
-            return Result.error("Illegal value " + body.value() + " for combination " + body.combination());
-        Player mover = moverO.get();
-        if (mover.currentRoom().isEmpty())
-            return Result.error("Mover is not linked to room");
-        if (!mover.currentRoom().get().equals(player.currentRoom().get()))
-            return Result.error("Player and mover are in different rooms");
-        if (player.currentRoom().get().type() != RoomType.TACTILE_OFFLINE)
-            return Result.error("Illegal room type: " + player.currentRoom().get().type().propertyName());
-        Opt<OfflineRoom> roomO = roomRepository.findById(player.currentRoom().get().id());
-        if (roomO.isEmpty())
-            throw new RuntimeException(
-                    "Server error: " +
-                            RoomType.TACTILE_OFFLINE.propertyName() +
-                            " room {" + player.currentRoom().get().id() + "} not found"
+    public ResponseEntity<?> saveMove(Player player, SaveMoveRequest body) {
+        return transactionService.withTransaction(transaction -> {
+            ObjectId moverId;
+            try {
+                moverId = new ObjectId(body.movingPlayerId());
+            } catch (Exception e) {
+                return saveMoveError("Illegal ObjectId format"); // TODO log [SB]
+            }
+            MongoRepository<Player> transactionalPlayerRepository = transaction.wrap(playerRepository);
+            MongoRepository<OfflineRoom> transactionalRoomRepository = transaction.wrap(roomRepository);
+            MongoRepository<OfflineGame> transactionalGameRepository = transaction.wrap(gameRepository);
+            Map<ObjectId, Player> playerAndMover = transactionalPlayerRepository.findAllByIdsAsMap(
+                    List.of(player.id(), moverId),
+                    Player::id
             );
-        OfflineRoom room = roomO.get();
-        OfflineInterimTeamScores movingTeam = room.teams().get(room.movingTeamIndex());
-        if (!movingTeam.players().contains(mover.id()))
-            return Result.error("Moving player does not belong to the current moving team");
-        String combination = body.combination().propertyName();
-        if (movingTeam.scores().stream().anyMatch(score -> score.combination().equals(combination)))
-            return Result.error("Moving team already has combination " + combination);
-        if (!movingTeam.players().get(movingTeam.movingPlayerIndex()).equals(mover.id()))
-            return Result.error(
-                    "Illegal moving player, expect ObjectId " + movingTeam.players().get(movingTeam.movingPlayerIndex())
-            );
-        List<OfflineScore> scores = new ArrayList<>(movingTeam.scores());
-        scores.add(new OfflineScore(body.combination().propertyName(), body.value()));
-        int newMovingPlayerIndex = movingTeam.movingPlayerIndex() + 1;
-        if (newMovingPlayerIndex == movingTeam.players().size())
-            newMovingPlayerIndex = 0;
-        List<OfflineInterimTeamScores> teams = new ArrayList<>(room.teams());
-        teams.set(
-                room.movingTeamIndex(),
-                movingTeam.toBuilder().scores(scores).movingPlayerIndex(newMovingPlayerIndex).build()
-        );
-        int newMovingTeamIndex = room.movingTeamIndex() + 1;
-        if (newMovingTeamIndex == room.teams().size())
-            newMovingTeamIndex = 0;
-        room = room.toBuilder().teams(teams).movingTeamIndex(newMovingTeamIndex).build();
-        roomRepository.save(room);
-        OfflineInterimTeamScores nextMovingTeam = room.teams().get(newMovingTeamIndex);
-        if (nextMovingTeam.scores().size() == Yahtzee.COMBINATIONS) {
-            gameRepository.save(roomToGame(room));
-            return Result.of(new SaveMoveResponse(null, true));
-        }
+            if (!playerAndMover.containsKey(moverId))
+                return saveMoveError("Moving player does not exist"); // TODO log [SB]
+            Player updated = playerAndMover.get(player.id());
+            if (updated.currentRoom().isEmpty())
+                return saveMoveError("Player is not linked to room");
 
-        return Result.of(new SaveMoveResponse(
-                nextMovingTeam.players().get(nextMovingTeam.movingPlayerIndex()).toHexString(),
-                false
-        ));
+            if (!Yahtzee.isValidCombinationValue(body.combination(), body.value()))
+                return saveMoveError("Illegal value " + body.value() + " for combination " + body.combination()); // TODO log [SB]
+            Player mover = playerAndMover.get(moverId);
+            if (mover.currentRoom().isEmpty())
+                return saveMoveError("Mover is not linked to room");
+            if (!mover.currentRoom().get().equals(updated.currentRoom().get()))
+                return saveMoveError("Player and mover are in different rooms"); // TODO log [SB]
+            if (updated.currentRoom().get().type() != RoomType.TACTILE_OFFLINE)
+                return saveMoveError("Illegal room type: " + updated.currentRoom()
+                        .get()
+                        .type()
+                        .propertyName()); // TODO log [SB]
+            OfflineRoom room = transactionalRoomRepository.ensuredFindById(updated.currentRoom().get().id());
+            OfflineInterimTeamScores movingTeam = room.teams().get(room.movingTeamIndex());
+            if (!movingTeam.players().contains(mover.id()))
+                return saveMoveError("Moving player does not belong to the current moving team");
+            String combination = body.combination().propertyName();
+            if (movingTeam.scores().stream().anyMatch(score -> score.combination().equals(combination)))
+                return saveMoveError("Moving team already has combination " + combination);
+            if (!movingTeam.players().get(movingTeam.movingPlayerIndex()).equals(mover.id()))
+                return saveMoveError(
+                        "Illegal moving player, expect ObjectId " + movingTeam.players()
+                                .get(movingTeam.movingPlayerIndex())
+                );
+            List<OfflineScore> scores = new ArrayList<>(movingTeam.scores());
+            scores.add(new OfflineScore(body.combination().propertyName(), body.value()));
+            int newMovingPlayerIndex = movingTeam.movingPlayerIndex() + 1;
+            if (newMovingPlayerIndex == movingTeam.players().size())
+                newMovingPlayerIndex = 0;
+            List<OfflineInterimTeamScores> teams = new ArrayList<>(room.teams());
+            teams.set(
+                    room.movingTeamIndex(),
+                    movingTeam.toBuilder().scores(scores).movingPlayerIndex(newMovingPlayerIndex).build()
+            );
+            int newMovingTeamIndex = room.movingTeamIndex() + 1;
+            if (newMovingTeamIndex == room.teams().size())
+                newMovingTeamIndex = 0;
+            room = room.toBuilder().teams(teams).movingTeamIndex(newMovingTeamIndex).build();
+            transactionalRoomRepository.save(room);
+            OfflineInterimTeamScores nextMovingTeam = room.teams().get(newMovingTeamIndex);
+            if (nextMovingTeam.scores().size() == Yahtzee.COMBINATIONS) {
+                transactionalGameRepository.save(roomToGame(room));
+                return ResponseEntity.ok(new SaveMoveResponse(null, true));
+            }
+
+            return ResponseEntity.ok(new SaveMoveResponse(
+                    nextMovingTeam.players().get(nextMovingTeam.movingPlayerIndex()).toHexString(),
+                    false
+            ));
+        }).asOpt().orElse(ResponseEntity.internalServerError().build());
+    }
+
+    private ResponseEntity<SaveMoveErrorResponse> saveMoveError(String error) {
+        return ResponseEntity.badRequest().body(new SaveMoveErrorResponse(error));
     }
 
     private OfflineGame roomToGame(OfflineRoom room) {
@@ -255,8 +274,10 @@ public class OfflineGameService {
     private Result<List<Player>> validateAndFindPlayers(
             Player player,
             CreateRoomRequest body,
-            ObjectId newRoomId
+            ObjectId newRoomId,
+            MongoTransaction transaction
     ) {
+        MongoRepository<Player> transactional = transaction.wrap(playerRepository);
         if (player.currentRoom().isPresent())
             return Result.error("Player already linked to room {" + player.currentRoom().get() + "}");
         if (body.teams().isEmpty() || body.teams().size() > maxTeams)
@@ -285,12 +306,12 @@ public class OfflineGameService {
         } catch (Exception e) {
             return Result.error("Illegal format of ObjectId {" + e.getMessage() + "}");
         }
-        List<Player> players = playerRepository.findAllByIds(playersIds);
+        List<Player> players = transactional.findAllByIds(playersIds);
         if (players.size() != playersIds.size())
             return Result.error(playersIds.size() - players.size() + " players not found in the database");
         if (players.stream().anyMatch(p -> p.currentRoom().isPresent()))
             return Result.error("Some players already have linked rooms");
-        playerRepository.save(
+        transactional.save(
                 players.stream().map(
                         p -> p.toBuilder()
                                 .currentRoom(Opt.of(new RoomReference(newRoomId, RoomType.TACTILE_OFFLINE)))

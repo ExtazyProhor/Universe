@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.offline.api.CreateRoomRequest;
-import ru.prohor.universe.yahtzee.offline.api.CreateRoomResponse;
 import ru.prohor.universe.yahtzee.offline.api.RoomInfoResponse;
-import ru.prohor.universe.yahtzee.offline.api.SaveMoveErrorResponse;
 import ru.prohor.universe.yahtzee.offline.api.SaveMoveRequest;
 import ru.prohor.universe.yahtzee.offline.services.OfflineGameService;
 
@@ -49,11 +47,7 @@ public class OfflineGameController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return offlineGameService.createRoom(player.get(), body).map(
-                error -> ResponseEntity.badRequest().body(new CreateRoomResponse(error))
-        ).orElseGet(
-                () -> ResponseEntity.ok().build()
-        );
+        return offlineGameService.createRoom(player.get(), body);
     }
 
     @PostMapping("/save_move")
@@ -65,9 +59,6 @@ public class OfflineGameController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return offlineGameService.saveMove(player.get(), body).mapOrElse(
-                ResponseEntity::ok,
-                error -> ResponseEntity.badRequest().body(new SaveMoveErrorResponse(error))
-        );
+        return offlineGameService.saveMove(player.get(), body);
     }
 }
