@@ -2,7 +2,7 @@
 
 Сервисы в `Universe` используют единый сервер аутентификации
 `scarif`. Для других сервисов он предоставляет
-[jwt access-token](../jocasta/jocasta-scarif-jwt), в котором
+[jwt access-token](../hyperspace/scarif-jwt), в котором
 есть вся необходимая информация о запросе.
 
 ### Подключение в `html`

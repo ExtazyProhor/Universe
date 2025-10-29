@@ -24,7 +24,7 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-scarif-jwt</artifactId>
+            <artifactId>scarif-jwt</artifactId>
         </dependency>
 
         <dependency>

@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jwt;
+package ru.prohor.universe.hyperspace.jwt;
 
 import java.util.UUID;
 

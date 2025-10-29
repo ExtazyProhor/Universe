@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
-import ru.prohor.universe.jocasta.jwt.AuthorizedUser;
+import ru.prohor.universe.hyperspace.jwt.AuthorizedUser;
 import ru.prohor.universe.scarif.data.session.Session;
 import ru.prohor.universe.scarif.data.user.User;
 import ru.prohor.universe.scarif.services.CookieProvider;

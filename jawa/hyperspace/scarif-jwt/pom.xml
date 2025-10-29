@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.prohor.universe</groupId>
-        <artifactId>jocasta</artifactId>
+        <artifactId>hyperspace</artifactId>
         <version>final</version>
     </parent>
 
-    <artifactId>jocasta-scarif-jwt</artifactId>
+    <artifactId>scarif-jwt</artifactId>
     <packaging>jar</packaging>
+    <name>scarif-jwt</name>
 
     <dependencies>
         <dependency>

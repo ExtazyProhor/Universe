@@ -11,7 +11,7 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.DiConsumer;
 import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
-import ru.prohor.universe.jocasta.jwt.AuthorizedUser;
+import ru.prohor.universe.hyperspace.jwt.AuthorizedUser;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;

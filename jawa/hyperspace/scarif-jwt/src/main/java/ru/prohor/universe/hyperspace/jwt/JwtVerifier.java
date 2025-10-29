@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jwt;
+package ru.prohor.universe.hyperspace.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

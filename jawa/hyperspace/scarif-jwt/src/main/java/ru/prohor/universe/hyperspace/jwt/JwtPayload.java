@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jwt;
+package ru.prohor.universe.hyperspace.jwt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.Instant;
