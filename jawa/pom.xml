@@ -231,6 +231,11 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
+                <artifactId>scarif-jwt-provider</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
                 <artifactId>jocasta-jackson-joda-time</artifactId>
                 <version>final</version>
             </dependency>

@@ -5,16 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.prohor.universe</groupId>
-        <artifactId>jawa</artifactId>
+        <artifactId>hyperspace</artifactId>
         <version>final</version>
     </parent>
 
-    <artifactId>hyperspace</artifactId>
-    <packaging>pom</packaging>
-    <name>hyperspace</name>
+    <artifactId>scarif-jwt-provider</artifactId>
+    <packaging>jar</packaging>
+    <name>scarif-jwt-provider</name>
 
-    <modules>
-        <module>scarif-jwt</module>
-        <module>scarif-jwt-provider</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>scarif-jwt</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -1,4 +1,4 @@
-package ru.prohor.universe.scarif.services;
+package ru.prohor.universe.hyperspace.jwtprovider;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -6,14 +6,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
 import ru.prohor.universe.hyperspace.jwt.JwtPayload;
 import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
-import ru.prohor.universe.scarif.data.user.User;
 
-@Service
+import java.util.UUID;
+
 public class JwtProvider {
     private final int accessTokenTtlMinutes;
     private final SnowflakeIdGenerator snowflakeIdGenerator;
@@ -21,7 +19,7 @@ public class JwtProvider {
     private final ObjectMapper objectMapper;
 
     public JwtProvider(
-            @Value("${universe.scarif.accessTokenTtlMinutes}") int accessTokenTtlMinutes,
+            int accessTokenTtlMinutes,
             SnowflakeIdGenerator snowflakeIdGenerator,
             KeysFromStringProvider keysFromStringProvider,
             ObjectMapper objectMapper
@@ -32,12 +30,12 @@ public class JwtProvider {
         this.objectMapper = objectMapper;
     }
 
-    public String getToken(User user) {
+    public String getToken(long id, UUID uuid, String objectId, String username) {
         JwtPayload payload = new JwtPayload(
-                user.id(),
-                user.uuid(),
-                user.objectId().toString(),
-                user.username(),
+                id,
+                uuid,
+                objectId,
+                username,
                 Instant.now().plus(Duration.standardMinutes(accessTokenTtlMinutes)),
                 snowflakeIdGenerator.nextId()
         );

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.prohor.universe.jocasta.springweb.configuration.AllControllersConfiguration;
 import ru.prohor.universe.scarif.services.CookieProvider;
-import ru.prohor.universe.scarif.services.JwtProvider;
+import ru.prohor.universe.hyperspace.jwtprovider.JwtProvider;
 import ru.prohor.universe.scarif.services.LoginService;
 import ru.prohor.universe.scarif.services.RateLimitService;
 import ru.prohor.universe.scarif.services.RegistrationService;

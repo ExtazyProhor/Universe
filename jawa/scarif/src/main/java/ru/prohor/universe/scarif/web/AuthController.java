@@ -17,7 +17,7 @@ import ru.prohor.universe.hyperspace.jwt.AuthorizedUser;
 import ru.prohor.universe.scarif.data.session.Session;
 import ru.prohor.universe.scarif.data.user.User;
 import ru.prohor.universe.scarif.services.CookieProvider;
-import ru.prohor.universe.scarif.services.JwtProvider;
+import ru.prohor.universe.hyperspace.jwtprovider.JwtProvider;
 import ru.prohor.universe.scarif.services.LoginService;
 import ru.prohor.universe.scarif.services.RateLimitService;
 import ru.prohor.universe.scarif.services.RegistrationService;
@@ -145,7 +145,7 @@ public class AuthController {
         }
         return fromCookies(List.of(
                 cookieProvider.createRefreshCookie(userTokenAndUserId.get().userToken()),
-                cookieProvider.createAccessCookie(userO.map(jwtProvider::getToken).get())
+                cookieProvider.createAccessCookie(userO.map(this::getToken).get())
         ));
     }
 
@@ -236,7 +236,7 @@ public class AuthController {
         );
         return fromCookies(List.of(
                 cookieProvider.createRefreshCookie(token),
-                cookieProvider.createAccessCookie(jwtProvider.getToken(user))
+                cookieProvider.createAccessCookie(getToken(user))
         ));
     }
 
@@ -247,5 +247,14 @@ public class AuthController {
                         cookies
                 )))
         ).build();
+    }
+
+    private String getToken(User user) {
+        return jwtProvider.getToken(
+                user.id(),
+                user.uuid(),
+                user.objectId().toString(),
+                user.username()
+        );
     }
 }
