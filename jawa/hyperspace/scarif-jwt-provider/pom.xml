@@ -18,5 +18,14 @@
             <groupId>ru.prohor.universe</groupId>
             <artifactId>scarif-jwt</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-jackson-joda-time</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
