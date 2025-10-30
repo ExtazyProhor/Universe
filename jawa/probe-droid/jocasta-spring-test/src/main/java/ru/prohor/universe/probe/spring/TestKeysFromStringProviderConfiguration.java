@@ -1,4 +1,4 @@
-package ru.prohor.universe.probe;
+package ru.prohor.universe.probe.spring;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;

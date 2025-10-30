@@ -13,12 +13,11 @@ import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
 import ru.prohor.universe.jocasta.jackson.jodatime.JacksonJodaTimeConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
-import ru.prohor.universe.probe.BaseSpringTest;
-import ru.prohor.universe.probe.TestKeysFromStringProviderConfiguration;
-import ru.prohor.universe.probe.TestPlaceholderProperties;
+import ru.prohor.universe.probe.spring.BaseSpringTest;
+import ru.prohor.universe.probe.spring.TestKeysFromStringProviderConfiguration;
+import ru.prohor.universe.probe.spring.TestPlaceholderProperties;
 
 import java.util.UUID;
-
 
 @SpringJUnitConfig(classes = {
         HolocronConfiguration.class,
@@ -36,7 +35,7 @@ public class JwtProviderTest extends BaseSpringTest {
             ObjectMapper objectMapper,
             SnowflakeIdGenerator snowflakeIdGenerator,
             KeysFromStringProvider keysFromStringProvider,
-            @Value("${universe.hyperspace.jwtprovider.access-token-ttl-minutes}") int accessTokenTtlMinutes
+            @Value("${universe.test.access-token-ttl-minutes}") int accessTokenTtlMinutes
     ) {
         this.jwtProvider = new JwtProvider(
                 accessTokenTtlMinutes,

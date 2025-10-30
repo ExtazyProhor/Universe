@@ -264,6 +264,7 @@
                 <groupId>ru.prohor.universe</groupId>
                 <artifactId>jocasta-spring-test</artifactId>
                 <version>final</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
