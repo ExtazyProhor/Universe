@@ -12,4 +12,8 @@
     <artifactId>probe-droid</artifactId>
     <packaging>pom</packaging>
     <name>probe-droid</name>
+
+    <modules>
+        <module>jocasta-spring-test</module>
+    </modules>
 </project>

@@ -4,11 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.test.context.TestConstructor;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.prohor.universe.hyperspace.jwt.AuthorizedUser;
 import ru.prohor.universe.hyperspace.jwt.JwtVerifier;
@@ -18,6 +13,9 @@ import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
 import ru.prohor.universe.jocasta.jackson.jodatime.JacksonJodaTimeConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
+import ru.prohor.universe.probe.BaseSpringTest;
+import ru.prohor.universe.probe.TestKeysFromStringProviderConfiguration;
+import ru.prohor.universe.probe.TestPlaceholderProperties;
 
 import java.util.UUID;
 
@@ -26,22 +24,20 @@ import java.util.UUID;
         HolocronConfiguration.class,
         JacksonJodaTimeConfiguration.class,
         SnowflakeConfiguration.class,
-        JwtProviderTest.TestProperties.class
+
+        TestPlaceholderProperties.class,
+        TestKeysFromStringProviderConfiguration.class
 })
-@TestPropertySource(locations = "classpath:test.properties")
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-public class JwtProviderTest {
+public class JwtProviderTest extends BaseSpringTest {
     private final JwtProvider jwtProvider;
     private final JwtVerifier jwtVerifier;
 
     public JwtProviderTest(
             ObjectMapper objectMapper,
             SnowflakeIdGenerator snowflakeIdGenerator,
-            @Value("${universe.hyperspace.jwtprovider.private-key}") String privateKey,
-            @Value("${universe.hyperspace.jwtprovider.public-key}") String publicKey,
+            KeysFromStringProvider keysFromStringProvider,
             @Value("${universe.hyperspace.jwtprovider.access-token-ttl-minutes}") int accessTokenTtlMinutes
     ) {
-        KeysFromStringProvider keysFromStringProvider = new KeysFromStringProvider(privateKey, publicKey);
         this.jwtProvider = new JwtProvider(
                 accessTokenTtlMinutes,
                 snowflakeIdGenerator,
@@ -73,13 +69,5 @@ public class JwtProviderTest {
         Assertions.assertEquals(uuid, authorizedUser.uuid());
         Assertions.assertEquals(objectId, authorizedUser.objectId());
         Assertions.assertEquals(username, authorizedUser.username());
-    }
-
-    @TestConfiguration
-    static class TestProperties {
-        @Bean
-        static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-            return new PropertySourcesPlaceholderConfigurer();
-        }
     }
 }

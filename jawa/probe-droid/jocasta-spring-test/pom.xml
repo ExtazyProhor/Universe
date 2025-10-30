@@ -5,27 +5,22 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.prohor.universe</groupId>
-        <artifactId>hyperspace</artifactId>
+        <artifactId>probe-droid</artifactId>
         <version>final</version>
     </parent>
 
-    <artifactId>scarif-jwt-provider</artifactId>
+    <artifactId>jocasta-spring-test</artifactId>
     <packaging>jar</packaging>
-    <name>scarif-jwt-provider</name>
+    <name>jocasta-spring-test</name>
 
     <dependencies>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>scarif-jwt</artifactId>
+            <artifactId>jocasta-spring</artifactId>
         </dependency>
         <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-jackson-joda-time</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-spring-test</artifactId>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
     </dependencies>
 </project>

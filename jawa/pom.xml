@@ -260,6 +260,11 @@
                 <artifactId>yahtzee-online</artifactId>
                 <version>final</version>
             </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-spring-test</artifactId>
+                <version>final</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
