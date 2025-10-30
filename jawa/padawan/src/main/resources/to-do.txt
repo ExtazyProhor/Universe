@@ -1,3 +1,0 @@
-PaginatorTest
-RangeTest
-GameColorsServiceTest

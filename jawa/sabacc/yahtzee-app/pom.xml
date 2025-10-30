@@ -26,6 +26,11 @@
             <groupId>ru.prohor.universe</groupId>
             <artifactId>scarif-jwt</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>scarif-jwt-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>ru.prohor.universe</groupId>

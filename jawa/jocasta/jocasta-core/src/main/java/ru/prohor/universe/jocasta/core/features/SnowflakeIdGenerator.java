@@ -49,38 +49,15 @@ public class SnowflakeIdGenerator {
         return timestamp;
     }
 
-    // TODO для тестов
-    // TODO public static long extractTimestamp(long id) {
-    // TODO     return ((id >> TIMESTAMP_SHIFT) + EPOCH);
-    // TODO }
-    // TODO public static long extractWorkerId(long id) {
-    // TODO     return (id >> WORKER_ID_SHIFT) & MAX_WORKER_ID;
-    // TODO }
-    // TODO public static long extractSequence(long id) {
-    // TODO     return id & MAX_SEQUENCE;
-    // TODO }
-    // TODO // Getters для информации о конфигурации
-    // TODO public long getWorkerId() {
-    // TODO     return workerId;
-    // TODO }
-    // TODO public static long getMaxWorkerId() {
-    // TODO     return MAX_WORKER_ID;
-    // TODO }
-    // TODO public static long getEpoch() {
-    // TODO     return EPOCH;
-    // TODO }
-    // TODO // Пример использования
-    // TODO public static void main(String[] args) {
-    // TODO     SnowflakeIdGenerator generator = new SnowflakeIdGenerator(1);
-    // TODO     System.out.println("Генерация Snowflake ID:");
-    // TODO     for (int i = 0; i < 10; i++) {
-    // TODO         long id = generator.nextId();
-    // TODO         System.out.printf("ID: %d, Timestamp: %d, WorkerID: %d, Sequence: %d%n",
-    // TODO                 id,
-    // TODO                 extractTimestamp(id),
-    // TODO                 extractWorkerId(id),
-    // TODO                 extractSequence(id)
-    // TODO         );
-    // TODO     }
-    // TODO }
+    public static long extractTimestamp(long id) {
+        return ((id >> TIMESTAMP_SHIFT) + EPOCH);
+    }
+
+    public static long extractWorkerId(long id) {
+        return (id >> WORKER_ID_SHIFT) & MAX_WORKER_ID;
+    }
+
+    public static long extractSequence(long id) {
+        return id & MAX_SEQUENCE;
+    }
 }
