@@ -30,7 +30,7 @@ public class MyConfiguration {}
 
 ```properties
 # для local
-universe.holocron.file-path=./../../my/holocron.json
+universe.holocron.file-path=${user.home}/my/holocron.json
 ```
 
 ```properties

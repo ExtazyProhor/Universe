@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@Profile("!local")
+@Profile("!local & !testing")
 public class MongoConfiguration {
     @Bean
     public MongoClient mongoClient(

@@ -13,7 +13,7 @@ import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
 
 @Configuration
-@Profile("local")
+@Profile("local | testing")
 public class MongoLocalConfiguration {
     @Bean
     public MongoRepository<Image> imageRepository() {
