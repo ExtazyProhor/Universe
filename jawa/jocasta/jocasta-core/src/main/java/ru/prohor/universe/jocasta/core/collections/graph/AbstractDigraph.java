@@ -1,10 +1,10 @@
 package ru.prohor.universe.jocasta.core.collections.graph;
 
-import ru.prohor.universe.jocasta.core.collections.common.Counter;
-
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface AbstractDigraph<T> extends AbstractGraph<T> {
@@ -24,7 +24,7 @@ public interface AbstractDigraph<T> extends AbstractGraph<T> {
                 if (used.contains(fromStack)) {
                     stack.pollLast();
                     if (!list.contains(fromStack)) {
-                        list.add(0, fromStack);
+                        list.addFirst(fromStack);
                     }
                     continue;
                 }
@@ -38,21 +38,23 @@ public interface AbstractDigraph<T> extends AbstractGraph<T> {
     default List<T> topologicalSortingByKahn() {
         List<T> list = new LinkedList<>();
 
-        Counter<T> inDegreeCounter = new Counter<>();
-        //for (T t : getAllVertices())
-        //    inDegreeCounter.set(t, 0);
+        Map<T, Integer> inDegreeCounter = new HashMap<>();
         for (T vertex : getAllVertices())
+            inDegreeCounter.put(vertex, 0);
+        for (T vertex : getAllVertices()) {
             for (T incidentVertex : getIncidentVertices(vertex))
-                inDegreeCounter.inc(incidentVertex);
-
-        int count = inDegreeCounter.size();
+                inDegreeCounter.put(incidentVertex, inDegreeCounter.getOrDefault(incidentVertex, 0) + 1);
+        }
+        int count = verticesCount();
         while (!inDegreeCounter.isEmpty()) {
-            for (Counter.Count<T> entry : inDegreeCounter.counts()) {
-                if (entry.value() == 0) {
-                    list.add(entry.key());
-                    inDegreeCounter.remove(entry.key());
-                    for (T incident : getIncidentVertices(entry.key()))
-                        inDegreeCounter.dec(incident);
+            for (Map.Entry<T, Integer> entry : inDegreeCounter.entrySet()) {
+                if (entry.getValue() == 0) {
+                    list.add(entry.getKey());
+                    inDegreeCounter.remove(entry.getKey());
+                    for (T incident : getIncidentVertices(entry.getKey())) {
+                        int newCount = inDegreeCounter.get(incident) - 1;
+                        inDegreeCounter.put(incident, newCount);
+                    }
                     break;
                 }
             }
