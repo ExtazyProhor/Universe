@@ -5,20 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.prohor.universe</groupId>
-        <artifactId>jawa</artifactId>
+        <artifactId>sabacc</artifactId>
         <version>final</version>
     </parent>
 
-    <artifactId>sabacc</artifactId>
-    <packaging>pom</packaging>
-    <name>sabacc</name>
+    <artifactId>kryonet</artifactId>
+    <packaging>jar</packaging>
+    <name>kryonet</name>
 
-    <modules>
-        <module>yahtzee-app</module>
-        <module>yahtzee-legacy</module>
-        <module>yahtzee-offline</module>
-        <module>yahtzee-online</module>
-        <module>yahtzee-core</module>
-        <module>kryonet</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryonet</artifactId>
+            <version>2.22.0-RC1</version>
+        </dependency>
+    </dependencies>
 </project>
