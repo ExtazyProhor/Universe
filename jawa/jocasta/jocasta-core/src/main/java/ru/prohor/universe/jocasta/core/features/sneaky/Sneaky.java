@@ -10,7 +10,7 @@ public class Sneaky {
             return supplier.get();
         } catch (Exception e) {
             throwUnchecked(e);
-            return null;
+            throw new RuntimeException();
         }
     }
 
@@ -28,7 +28,7 @@ public class Sneaky {
                 return supplier.get();
             } catch (Exception e) {
                 throwUnchecked(e);
-                return null;
+                throw new RuntimeException();
             }
         };
     }
