@@ -189,17 +189,17 @@ public abstract class DesBase {
         key = expandKeyWithParityBits(key);
         long permutedKey = 0;
         for (int i = 0; i < KEY_SIZE; i++) {
-            permutedKey |= ((key >> (BLOCK_SIZE - KEY_PERMUTATION_TABLE[i])) & 1) << (KEY_SIZE - 1 - i);
+            permutedKey |= ((key >> (BLOCK_SIZE - KEY_PERMUTATION_TABLE[i])) & 1L) << (KEY_SIZE - 1 - i);
         }
         for (int i = 0; i < ROUNDS; ++i) {
             long roundKey = 0;
             for (int j = 0; j < ROUND_KEY_SIZE; j++) {
-                roundKey |= ((permutedKey >> (KEY_SIZE - BIT_SAMPLING_TABLE_FOR_ROUND_KEYS[j])) & 1)
-                        << (ROUND_KEY_SIZE - 1 - i);
+                roundKey |= ((permutedKey >> (KEY_SIZE - BIT_SAMPLING_TABLE_FOR_ROUND_KEYS[j])) & 1L)
+                        << (ROUND_KEY_SIZE - 1 - j);
             }
             roundKeys[i] = roundKey;
-            long left = permutedKey >>> (KEY_SIZE / 2);
-            long right = permutedKey ^ (left << (KEY_SIZE / 2));
+            long left = (permutedKey >>> (KEY_SIZE / 2)) & ((1L << (KEY_SIZE / 2)) - 1);
+            long right = permutedKey & ((1L << (KEY_SIZE / 2)) - 1);
             left = leftCycleShiftFor28bits(left, SHIFT_AMOUNTS[i]);
             right = leftCycleShiftFor28bits(right, SHIFT_AMOUNTS[i]);
             permutedKey = (left << (KEY_SIZE / 2)) | right;
@@ -211,24 +211,24 @@ public abstract class DesBase {
         // initial permutation
         long newBlock = 0;
         for (int i = 0; i < BLOCK_SIZE; i++) {
-            newBlock |= ((block >> (BLOCK_SIZE - IP_TABLE[i])) & 1) << (BLOCK_SIZE - 1 - i);
+            newBlock |= ((block >> (BLOCK_SIZE - IP_TABLE[i])) & 1L) << (BLOCK_SIZE - 1 - i);
         }
         block = newBlock;
 
         // 16 rounds
-        long left = block >>> (HALF_BLOCK_SIZE);
+        long left = block >>> HALF_BLOCK_SIZE;
         long right = block & MAX_HALF_VALUE;
         for (int i = 0; i < ROUNDS; i++) {
             long temp = left;
             left = right;
             right = temp ^ functionOfFeistel(right, roundKeys[i]);
         }
-        block = (left << (BLOCK_SIZE / 2)) | right;
+        block = (right << HALF_BLOCK_SIZE) | (left & MAX_HALF_VALUE);
 
         // final permutation
         newBlock = 0;
         for (int i = 0; i < BLOCK_SIZE; i++) {
-            newBlock |= ((block >> (BLOCK_SIZE - IP_INV_TABLE[i])) & 1) << (BLOCK_SIZE - 1 - i);
+            newBlock |= ((block >> (BLOCK_SIZE - IP_INV_TABLE[i])) & 1L) << (BLOCK_SIZE - 1 - i);
         }
         return newBlock;
     }
@@ -237,24 +237,24 @@ public abstract class DesBase {
         // initial permutation
         long newBlock = 0;
         for (int i = 0; i < BLOCK_SIZE; i++) {
-            newBlock |= ((block >> (BLOCK_SIZE - IP_TABLE[i])) & 1) << (BLOCK_SIZE - 1 - i);
+            newBlock |= ((block >> (BLOCK_SIZE - IP_TABLE[i])) & 1L) << (BLOCK_SIZE - 1 - i);
         }
         block = newBlock;
 
         // 16 rounds
-        long left = block >>> (HALF_BLOCK_SIZE);
+        long left = block >>> HALF_BLOCK_SIZE;
         long right = block & MAX_HALF_VALUE;
         for (int i = 0; i < ROUNDS; i++) {
-            long temp = right;
-            right = left;
-            left = temp ^ functionOfFeistel(left, roundKeys[ROUNDS - 1 - i]);
+            long temp = left;
+            left = right;
+            right = temp ^ functionOfFeistel(right, roundKeys[ROUNDS - 1 - i]);
         }
-        block = (left << (BLOCK_SIZE / 2)) | right;
+        block = (right << HALF_BLOCK_SIZE) | (left & MAX_HALF_VALUE);
 
         // final permutation
         newBlock = 0;
         for (int i = 0; i < BLOCK_SIZE; i++) {
-            newBlock |= ((block >> (BLOCK_SIZE - IP_INV_TABLE[i])) & 1) << (BLOCK_SIZE - 1 - i);
+            newBlock |= ((block >> (BLOCK_SIZE - IP_INV_TABLE[i])) & 1L) << (BLOCK_SIZE - 1 - i);
         }
         return newBlock;
     }
