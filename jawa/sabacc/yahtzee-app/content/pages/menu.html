@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Меню Яцзы</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      width: 100%;
+      height: 50px;
+      background-color: #444;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 20px;
+      color: white;
+      gap: 15px;
+    }
+
+    header .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    header nav {
+      display: flex;
+      gap: 15px;
+    }
+
+    header nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    main {
+      height: calc(100vh - 50px);
+      background: url('/files/images/bg1.png') center/cover no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(2, 150px);
+      grid-template-rows: repeat(2, 150px);
+      gap: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 30px;
+    }
+
+    .grid-container button {
+      border: none;
+      border-radius: 15px;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .grid-container button:hover {
+      transform: scale(1.05);
+    }
+
+    header .avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    header .player-name {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    header .player-nick {
+      font-size: 13px;
+      color: #ddd;
+    }
+
+    header .edit-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    header .edit-btn img {
+      width: 18px;
+      height: 18px;
+      filter: brightness(0) invert(1);
+    }
+
+    header .color-circle {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background-color: #4ade80;
+      border: 3px solid white;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="/files/images/unknown.svg" alt="Avatar" class="avatar">
+  <span class="player-name">Игрок</span>
+  <button class="edit-btn"><img src="/files/images/pencil.svg" alt="Edit"></button>
+  <span class="player-nick">@player123</span>
+  <div class="color-circle"></div>
+  <button class="edit-btn"><img src="/files/images/pencil.svg" alt="Edit"></button>
+</header>
+
+<main>
+  <div class="grid-container">
+    <button style="background-image: url('/files/images/game-section-1.jpg');"></button>
+    <button style="background-image: url('/files/images/game-section-2.jpg');"></button>
+    <button style="background-image: url('/files/images/game-section-1.jpg');"></button>
+    <button style="background-image: url('/files/images/game-section-2.jpg');"></button>
+  </div>
+</main>
+
+</body>
+</html>
