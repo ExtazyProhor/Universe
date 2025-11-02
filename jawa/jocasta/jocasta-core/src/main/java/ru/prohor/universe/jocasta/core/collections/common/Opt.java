@@ -151,15 +151,6 @@ public abstract class Opt<T> {
         return (Opt<F>) this;
     }
 
-    @SuppressWarnings("unchecked")
-    public <F> Opt<F> castOrEmpty() {
-        try {
-            return (Opt<F>) this;
-        } catch (ClassCastException e) {
-            return empty();
-        }
-    }
-
     public void ifPresent(MonoConsumer<? super T> consumer) {
         if (isPresent())
             consumer.accept(get());
@@ -178,7 +169,7 @@ public abstract class Opt<T> {
     }
 
     public static <T> Opt<T> of(@Nonnull T x) {
-        return new Some<>(x);
+        return new Some<>(Objects.requireNonNull(x));
     }
 
     public static <T> Opt<T> ofNullable(@Nullable T x) {
