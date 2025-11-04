@@ -1,4 +1,4 @@
-package ru.prohor.universe.venator;
+package ru.prohor.universe.venator.old;
 
 import java.io.IOException;
 import java.nio.file.Path;

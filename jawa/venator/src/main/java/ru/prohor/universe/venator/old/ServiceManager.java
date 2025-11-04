@@ -1,4 +1,4 @@
-package ru.prohor.universe.venator;
+package ru.prohor.universe.venator.old;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.scheduling.annotation.Scheduled;

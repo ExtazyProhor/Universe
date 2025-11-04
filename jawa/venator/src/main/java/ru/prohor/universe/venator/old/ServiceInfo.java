@@ -1,4 +1,4 @@
-package ru.prohor.universe.venator;
+package ru.prohor.universe.venator.old;
 
 import java.nio.file.Path;
 import java.time.Instant;

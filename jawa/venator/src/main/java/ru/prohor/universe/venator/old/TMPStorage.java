@@ -1,4 +1,4 @@
-package ru.prohor.universe.venator;
+package ru.prohor.universe.venator.old;
 
 import org.springframework.stereotype.Service;
 
