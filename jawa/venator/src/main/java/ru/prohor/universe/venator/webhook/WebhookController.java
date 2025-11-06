@@ -1,5 +1,6 @@
 package ru.prohor.universe.venator.webhook;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import ru.prohor.universe.venator.webhook.model.ApiResponse;
 import ru.prohor.universe.venator.webhook.model.WebhookPayload;
 
@@ -36,8 +38,11 @@ public class WebhookController {
     public ResponseEntity<ApiResponse> handleWebhook(
             @RequestHeader(value = GITHUB_SIGNATURE_HEADER, required = false) String signature,
             @Valid @RequestBody WebhookPayload payload,
-            @RequestBody String body
+            HttpServletRequest request
     ) {
+        ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
+        String body = requestWrapper.getContentAsString();
+
         String actionRepositoryName = payload.repository().fullName();
         //TODO log.info("Received webhook from repository: {}", actionRepositoryName);
         if (!signatureService.verifySignature(signature, body)) {

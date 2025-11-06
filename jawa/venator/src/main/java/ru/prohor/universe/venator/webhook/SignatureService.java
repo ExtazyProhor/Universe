@@ -7,16 +7,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SignatureService {
-    private final String secret;
+    private final HmacUtils hmacUtils;
 
     public SignatureService(@Value("${universe.venator.webhook.secret}") String secret) {
-        this.secret = secret;
+        this.hmacUtils = new HmacUtils(HmacAlgorithms.HMAC_SHA_256, secret);
     }
 
     public boolean verifySignature(String signature, String body) {
         if (signature == null)
             return false;
-        String hmacHex = new HmacUtils(HmacAlgorithms.HMAC_SHA_256, secret).hmacHex(body);
+        String hmacHex = hmacUtils.hmacHex(body);
         String expectedSignature = "sha256=" + hmacHex;
         return signature.equals(expectedSignature);
     }

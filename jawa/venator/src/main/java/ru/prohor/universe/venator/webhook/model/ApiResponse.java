@@ -1,5 +1,8 @@
 package ru.prohor.universe.venator.webhook.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record ApiResponse(
         boolean success,
         String message

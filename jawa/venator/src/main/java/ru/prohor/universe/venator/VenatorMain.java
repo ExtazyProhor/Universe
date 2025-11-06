@@ -7,12 +7,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
+import ru.prohor.universe.jocasta.springweb.features.cache.CachingRequestBodyConfiguration;
 
 @Configuration
 @ComponentScan
 @Import({
         JocastaAutoConfiguration.class,
         HolocronConfiguration.class,
+        CachingRequestBodyConfiguration.class,
 })
 @EnableAsync
 public class VenatorMain {
