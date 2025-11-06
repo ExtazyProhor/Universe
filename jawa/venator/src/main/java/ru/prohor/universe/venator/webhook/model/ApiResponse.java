@@ -1,4 +1,4 @@
-package ru.prohor.universe.venator.webhook;
+package ru.prohor.universe.venator.webhook.model;
 
 public record ApiResponse(
         boolean success,
