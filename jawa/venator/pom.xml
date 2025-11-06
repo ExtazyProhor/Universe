@@ -18,6 +18,16 @@
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-spring-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

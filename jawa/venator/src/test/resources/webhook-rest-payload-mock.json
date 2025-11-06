@@ -1,0 +1,15 @@
+{
+  "ref": "refs/heads/main",
+  "repository": {
+    "full_name": "ExtazyProhor/Universe",
+    "pushed_at": 1762467209,
+    "clone_url": "https://github.com/ExtazyProhor/Universe.git",
+    "master_branch": "main"
+  },
+  "sender": {
+    "login": "ExtazyProhor"
+  },
+  "head_commit": {
+    "message": "add yahtzee menu draft"
+  }
+}
