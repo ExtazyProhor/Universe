@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.prohor.universe</groupId>
-        <artifactId>korriban</artifactId>
+        <artifactId>jawa</artifactId>
         <version>final</version>
     </parent>
 
     <artifactId>padawan-kt</artifactId>
     <packaging>jar</packaging>
-    <name>padawan-kotlin</name>
+    <name>padawan-kt</name>
 
     <dependencies>
         <dependency>
@@ -22,7 +22,7 @@
 
     <build>
         <finalName>venator</finalName>
-        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
 
         <plugins>
             <plugin>

@@ -23,13 +23,14 @@
     <modules>
         <module>jocasta</module>
         <module>padawan</module>
+        <module>padawan-kt</module>
         <module>scarif</module>
         <module>sabacc</module>
-        <module>korriban</module>
         <module>yoda</module>
         <module>boba-fett</module>
         <module>hyperspace</module>
         <module>probe-droid</module>
+        <module>venator</module>
     </modules>
 
     <dependencyManagement>

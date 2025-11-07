@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.prohor.universe</groupId>
-        <artifactId>korriban</artifactId>
+        <artifactId>jawa</artifactId>
         <version>final</version>
     </parent>
 
     <artifactId>venator</artifactId>
     <packaging>jar</packaging>
-    <name>venator-kt</name>
+    <name>venator</name>
 
     <dependencies>
         <dependency>
@@ -40,8 +40,8 @@
 
     <build>
         <finalName>venator</finalName>
-        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
 
         <plugins>
             <plugin>
