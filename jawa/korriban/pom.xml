@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>padawan-kotlin</module>
-        <module>venator-kt</module>
+        <module>padawan-kt</module>
+        <module>venator</module>
     </modules>
 </project>

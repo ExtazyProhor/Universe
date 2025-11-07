@@ -9,7 +9,7 @@
         <version>final</version>
     </parent>
 
-    <artifactId>venator-kt</artifactId>
+    <artifactId>venator</artifactId>
     <packaging>jar</packaging>
     <name>venator-kt</name>
 
