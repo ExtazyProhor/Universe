@@ -11,6 +11,10 @@ public enum UniverseEnvironment {
     LOCAL,
     STABLE,
     TESTING;
+    
+    public boolean canBeObtainedLocally() {
+        return this == LOCAL || this == TESTING;
+    }
 
     private static final Map<String, UniverseEnvironment> MAPPER = Arrays.stream(values())
             .collect(Collectors.toMap(env -> env.name().toLowerCase(), MonoFunction.identity()));

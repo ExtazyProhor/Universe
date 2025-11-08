@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import ru.prohor.universe.jocasta.spring.UniverseEnvironment;
 
 @Configuration
 @EnableAutoConfiguration(exclude = {
@@ -27,18 +28,24 @@ import org.springframework.core.env.Environment;
         MongoReactiveDataAutoConfiguration.class,
 })
 public class JocastaAutoConfiguration {
+    private static final String ENV_PROPERTY = "universe.environment";
     private static final String NO_ENV_MESSAGE = """
             Environment can not be empty.
             Use "universe.environment={environment}" in application.properties file""";
 
     @Bean
-    public ApplicationRunner environmentChecker(Environment environment) {
+    public UniverseEnvironment universeEnvironment(Environment environment) {
+        String env = environment.getProperty(ENV_PROPERTY);
+        if (env == null || env.isBlank())
+            throw new IllegalStateException(NO_ENV_MESSAGE);
+        return UniverseEnvironment.get(env);
+    }
+
+    @Bean
+    public ApplicationRunner environmentChecker(UniverseEnvironment universeEnvironment) {
         return args -> {
-            String env = environment.getProperty("universe.environment");
-            if (env == null || env.isBlank())
-                throw new IllegalStateException(NO_ENV_MESSAGE);
             // TODO заменить на нормальный логгер
-            System.out.println("APPLICATION STARTED WITH ENV=" + env);
+            System.out.println("APPLICATION STARTED WITH ENV=" + universeEnvironment.name());
         };
     }
 }
