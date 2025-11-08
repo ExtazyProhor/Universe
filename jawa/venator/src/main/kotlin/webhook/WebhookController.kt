@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.ContentCachingRequestWrapper
+import ru.prohor.universe.jocasta.spring.UniverseEnvironment
 import ru.prohor.universe.venator.webhook.model.ApiResponse
 import ru.prohor.universe.venator.webhook.model.WebhookPayload
 
@@ -19,15 +20,24 @@ import ru.prohor.universe.venator.webhook.model.WebhookPayload
 class WebhookController(
     @param:Value($$"${universe.venator.git-repo.name}")
     private val repositoryName: String,
+    private val environment: UniverseEnvironment,
     private val signatureService: SignatureService,
+    private val ipValidationService: IpValidationService,
     private val webhookAction: WebhookAction
 ) {
     @PostMapping(value = ["/on_push"], consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun handleWebhook(
         @RequestHeader(value = GITHUB_SIGNATURE_HEADER, required = false) signature: String?,
-        @RequestBody payload:  WebhookPayload,
+        @RequestHeader(value = REAL_IP_HEADER, required = false) realIp: String?,
+        @RequestBody payload: WebhookPayload,
         request: HttpServletRequest
     ): ResponseEntity<ApiResponse> {
+        val address = if (environment.canBeObtainedLocally() && realIp == null) request.remoteAddr else realIp
+        if (address == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("IP address unrecognized"))
+        if (!ipValidationService.isValidIp(address))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Illegal IP address"))
+
         val requestWrapper = request as ContentCachingRequestWrapper
         val body = requestWrapper.contentAsString
 
@@ -66,5 +76,6 @@ class WebhookController(
 
     companion object {
         private const val GITHUB_SIGNATURE_HEADER = "X-Hub-Signature-256"
+        private const val REAL_IP_HEADER = "X-Real-IP"
     }
 }
