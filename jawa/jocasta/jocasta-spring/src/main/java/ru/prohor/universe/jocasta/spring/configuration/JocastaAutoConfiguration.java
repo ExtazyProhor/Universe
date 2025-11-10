@@ -28,10 +28,10 @@ import ru.prohor.universe.jocasta.spring.UniverseEnvironment;
         MongoReactiveDataAutoConfiguration.class,
 })
 public class JocastaAutoConfiguration {
-    private static final String ENV_PROPERTY = "universe.environment";
+    private static final String ENV_PROPERTY = "spring.profiles.active";
     private static final String NO_ENV_MESSAGE = """
-            Environment can not be empty.
-            Use "universe.environment={environment}" in application.properties file""";
+            No spring profile is active.
+            Use environment variable or application.properties file""";
 
     @Bean
     public UniverseEnvironment universeEnvironment(Environment environment) {
