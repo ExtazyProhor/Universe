@@ -11,9 +11,7 @@
 Этот модуль предназначен для подстановки секретов
 в значения свойств из файлов `application.properties`.
 
-#### Подключение
-
-##### Импорт конфигурации
+#### Подключение (импорт конфигурации)
 
 ```java
 import org.springframework.context.annotation.Configuration;
@@ -24,18 +22,6 @@ import org.springframework.context.annotation.Import;
         HolocronConfiguration.class
 })
 public class MyConfiguration {}
-```
-
-##### Указание местоположения файла с секретами
-
-```properties
-# для local
-universe.holocron.file-path=${user.home}/my/holocron.json
-```
-
-```properties
-# для stable
-universe.holocron.file-path=/etc/universe/holocron.json
 ```
 
 #### Использование

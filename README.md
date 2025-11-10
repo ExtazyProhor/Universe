@@ -40,3 +40,11 @@ alias uni="$UNIVERSE_HOME/c3po/uni/uni.sh"
 source ~/.bashrc # для bash
 source ~/.zshrc # для zsh
 ```
+
+##### Для IDEA
+
+`Edit Configurations...` -> `Environment variables`:
+
+```sh
+UNIVERSE_HOME=path/to/repository/root; HOLOCRON_JSON=path/to/holocron.json
+```

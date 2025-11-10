@@ -10,7 +10,7 @@ import ru.prohor.universe.jocasta.spring.features.HolocronPropertiesResolver;
 public class HolocronConfiguration {
     @Bean
     public static BeanFactoryPostProcessor holocronPropertiesResolver(
-            @Value("${universe.holocron.file-path}") String filePath
+            @Value("${HOLOCRON_JSON}") String filePath
     ) {
         return new HolocronPropertiesResolver(filePath);
     }
