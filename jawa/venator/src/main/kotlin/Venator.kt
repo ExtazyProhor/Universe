@@ -13,7 +13,6 @@ import ru.prohor.universe.jocasta.springweb.features.cache.CachingRequestBodyCon
 @Import(
     JocastaAutoConfiguration::class,
     HolocronConfiguration::class,
-    CachingRequestBodyConfiguration::class
 )
 class Venator
 

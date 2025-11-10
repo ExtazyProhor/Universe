@@ -1,19 +1,22 @@
 package ru.prohor.universe.venator.webhook
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.util.ContentCachingRequestWrapper
 import ru.prohor.universe.jocasta.spring.UniverseEnvironment
 import ru.prohor.universe.venator.webhook.model.ApiResponse
 import ru.prohor.universe.venator.webhook.model.WebhookPayload
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 @RestController
 @RequestMapping("/webhook")
@@ -23,13 +26,13 @@ class WebhookController(
     private val environment: UniverseEnvironment,
     private val signatureService: SignatureService,
     private val ipValidationService: IpValidationService,
-    private val webhookAction: WebhookAction
+    private val webhookAction: WebhookAction,
+    private val objectMapper: ObjectMapper
 ) {
     @PostMapping(value = ["/on_push"], consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun handleWebhook(
         @RequestHeader(value = GITHUB_SIGNATURE_HEADER, required = false) signature: String?,
         @RequestHeader(value = REAL_IP_HEADER, required = false) realIp: String?,
-        @RequestBody payload: WebhookPayload,
         request: HttpServletRequest
     ): ResponseEntity<ApiResponse> {
         val address = if (environment.canBeObtainedLocally() && realIp == null) request.remoteAddr else realIp
@@ -38,8 +41,12 @@ class WebhookController(
         if (!ipValidationService.isValidIp(address))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Illegal IP address"))
 
-        val requestWrapper = request as ContentCachingRequestWrapper
-        val body = requestWrapper.contentAsString
+        val body = request.bodyAsString()
+        val payload = try {
+            objectMapper.readValue<WebhookPayload>(body)
+        } catch (_: JsonProcessingException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Illegal body structure"))
+        }
 
         val actionRepositoryName = payload.repository.fullName
         // TODO log.info("Received webhook from repository: {}", actionRepositoryName);
@@ -50,7 +57,7 @@ class WebhookController(
 
         if (actionRepositoryName != repositoryName) {
             // TODO log.warn("Webhook from unknown repository: {}", actionRepositoryName);
-            return ResponseEntity.ok(ApiResponse.error("Unknown repository"))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Unknown repository"))
         }
 
         val actionBranch = payload.ref.replace("refs/heads/", "")
@@ -63,7 +70,15 @@ class WebhookController(
         return ResponseEntity.ok(ApiResponse.success("Webhook accepted"))
     }
 
-    fun processWebhook(payload: WebhookPayload) {
+    private fun HttpServletRequest.bodyAsString(): String {
+        val bytes: ByteArray = inputStream.readAllBytes()
+        return String(
+            bytes,
+            characterEncoding?.let { Charset.forName(it) } ?: StandardCharsets.UTF_8
+        )
+    }
+
+    private fun processWebhook(payload: WebhookPayload) {
         try {
             // TODO log.info("Starting webhook processing");
             webhookAction.accept(payload)

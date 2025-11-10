@@ -96,7 +96,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
 
-        Assertions.assertEquals(HttpStatus.OK, response.statusCode)
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
         Assertions.assertNotNull(response.body)
         JSONAssert.assertEquals(
             ObjectMapper().writeValueAsString(ApiResponse.error("Unknown repository")),
@@ -136,6 +136,11 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+        JSONAssert.assertEquals(
+            ObjectMapper().writeValueAsString(ApiResponse.error("Illegal body structure")),
+            response.body,
+            JSONCompareMode.NON_EXTENSIBLE
+        )
     }
 
     private fun addSignature(payload: String, headers: HttpHeaders, secret: String? = null) {
