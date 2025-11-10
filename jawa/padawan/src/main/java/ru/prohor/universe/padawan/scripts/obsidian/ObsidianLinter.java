@@ -1,6 +1,7 @@
 package ru.prohor.universe.padawan.scripts.obsidian;
 
 import ru.prohor.universe.jocasta.core.collections.Enumeration;
+import ru.prohor.universe.jocasta.core.utils.FileSystemUtils;
 import ru.prohor.universe.padawan.scripts.obsidian.tasks.AllFoldersHaveDescriptionTask;
 import ru.prohor.universe.padawan.scripts.obsidian.tasks.NoUntitledNoteTask;
 
@@ -41,7 +42,7 @@ public class ObsidianLinter {
                         new NoUntitledNoteTask(),
                         new AllFoldersHaveDescriptionTask()
                 ),
-                Path.of(System.getProperty("user.home")).resolve("theory")
+                FileSystemUtils.userHome().asPath().resolve("theory")
         ).validate();
     }
 }

@@ -1,5 +1,7 @@
 package ru.prohor.universe.padawan.scripts.images;
 
+import ru.prohor.universe.jocasta.core.utils.FileSystemUtils;
+
 import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -14,8 +16,8 @@ public class ImageColorsReduction {
     private static final double LEVEL_COUNT = 256.0 / (COLOR_LEVELS - 1);
 
     public static void main(String[] args) throws Exception {
-        compressImage(System.getProperty("user.home") + "/image.png", "image2.png");
-        compressImageBW(System.getProperty("user.home") + "/image.png", "image1.png");
+        compressImage(FileSystemUtils.userHome().asString() + "/image.png", "image2.png");
+        compressImageBW(FileSystemUtils.userHome().asString() + "/image.png", "image1.png");
     }
 
     private static void compressImageBW(String input, String output) throws Exception {

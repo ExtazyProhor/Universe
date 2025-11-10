@@ -2,6 +2,7 @@ package ru.prohor.universe.padawan.scripts.parsers;
 
 import jakarta.annotation.Nonnull;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
+import ru.prohor.universe.jocasta.core.utils.FileSystemUtils;
 
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -25,7 +26,7 @@ public class ObsidianStats {
     ));
 
     public static void main(String[] args) {
-        stats(Path.of(System.getProperty("user.home")).resolve("theory"));
+        stats(FileSystemUtils.userHome().asPath().resolve("theory"));
     }
 
     private static void stats(Path storagePath) {
