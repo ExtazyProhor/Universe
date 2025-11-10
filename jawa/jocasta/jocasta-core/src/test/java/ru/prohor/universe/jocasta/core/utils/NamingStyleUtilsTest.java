@@ -1,4 +1,3 @@
-/*
 package ru.prohor.universe.jocasta.core.utils;
 
 import org.junit.jupiter.api.Assertions;
@@ -163,4 +162,3 @@ public class NamingStyleUtilsTest {
         Assertions.assertAll(stream);
     }
 }
-*/
