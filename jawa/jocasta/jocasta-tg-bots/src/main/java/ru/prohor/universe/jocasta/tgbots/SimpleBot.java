@@ -1,38 +1,32 @@
 package ru.prohor.universe.jocasta.tgbots;
 
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.prohor.universe.jocasta.core.features.sneaky.ThrowableRunnable;
-import ru.prohor.universe.jocasta.tgbots.api.Bot;
-import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.support.FeatureSupport;
 
-public abstract class SimpleBot extends TelegramLongPollingBot implements Bot {
-    protected final FeedbackExecutor feedbackExecutor;
-    protected final String username;
-
+public abstract class SimpleBot extends DeafBot {
     private final FeatureSupport<Message> commandSupport;
     private final FeatureSupport<CallbackQuery> callbackSupport;
     private final FeatureSupport<Update> statusSupport;
 
     protected SimpleBot(BotSettings settings) {
-        super(settings.token);
-        this.feedbackExecutor = makeFeedbackExecutor();
-        this.username = settings.username;
+        super(settings.auth);
         this.commandSupport = settings.commandSupport;
         this.callbackSupport = settings.callbackSupport;
         this.statusSupport = settings.statusSupport;
     }
 
-    @Override
-    public final String getBotUsername() {
-        return username;
-    }
+    public abstract void onHandlingException(Exception e);
+
+    public abstract void onMessage(Message message);
+
+    public abstract void onCallback(CallbackQuery callbackQuery);
+
+    public abstract void onMyChatMember(ChatMemberUpdated chatMemberUpdated);
+
+    public abstract void onUnknownAction(Update update);
 
     @Override
     public final void onUpdateReceived(Update update) {
@@ -59,38 +53,6 @@ public abstract class SimpleBot extends TelegramLongPollingBot implements Bot {
             onUnknownAction(update);
         } catch (Exception e) {
             onHandlingException(e);
-        }
-    }
-
-    private FeedbackExecutor makeFeedbackExecutor() {
-        return new FeedbackExecutor() {
-            @Override
-            public void sendMessage(SendMessage message) {
-                executeSending(() -> execute(message), message.getChatId());
-            }
-
-            @Override
-            public void editMessageText(EditMessageText message) {
-                executeSending(() -> execute(message), message.getChatId());
-            }
-        };
-    }
-
-    private void executeSending(ThrowableRunnable task, String chatId) {
-        try {
-            task.run();
-        } catch (TelegramApiException e) {
-            String message = e.getMessage();
-            if (message.contains("user is deactivated"))
-                onUserDeactivated(e, chatId);
-            else if (message.contains("bot was blocked by the user"))
-                onBotBlockedByUser(e, chatId);
-            else if (message.contains("group chat was upgraded to a supergroup chat"))
-                onGroupWasUpgradedToSupergroup(e, chatId);
-            else
-                onSendingException(e, chatId);
-        } catch (Exception e) {
-            onSendingException(e, chatId);
         }
     }
 }

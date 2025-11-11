@@ -18,8 +18,7 @@ import ru.prohor.universe.jocasta.tgbots.support.StatusSupportImpl;
 import java.util.List;
 
 public final class BotSettings {
-    final String token;
-    final String username;
+    final BotAuth auth;
 
     final FeatureSupport<Message> commandSupport;
     final FeatureSupport<CallbackQuery> callbackSupport;
@@ -32,8 +31,7 @@ public final class BotSettings {
             FeatureSupport<CallbackQuery> callbackSupport,
             FeatureSupport<Update> statusSupport
     ) {
-        this.token = token;
-        this.username = username;
+        this.auth = new BotAuth(username, token);
         this.commandSupport = commandSupport;
         this.callbackSupport = callbackSupport;
         this.statusSupport = statusSupport;
