@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.codec.digest.HmacAlgorithms
 import org.apache.commons.codec.digest.HmacUtils
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -29,11 +29,18 @@ import ru.prohor.universe.venator.webhook.model.WebhookPayload
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@Import(WebhookControllerTest.DebugWebhookAction::class)
 class WebhookControllerTest(
     @param:Value($$"${universe.venator.webhook.secret}") private val secret: String?,
     private val rest: TestRestTemplate
 ) {
+    @BeforeEach
+    fun setupDebugBeans() {
+        DebugWebhookAction.payload = null
+        DebugWebhookNotifier.wasFailure = false
+        DebugWebhookNotifier.wasInfo = false
+        DebugWebhookNotifier.wasSuccess = false
+    }
+
     @Test
     fun testParseWebhookPayload() {
         val payload = getResource("/webhook-payload-mock.json")
@@ -42,6 +49,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.OK, response.statusCode)
+        Assertions.assertTrue(DebugWebhookNotifier.wasSuccess)
 
         val expectedRestPayload = getResource("/webhook-rest-payload-mock.json")
         val parsedPayload = DebugWebhookAction.payload
@@ -61,6 +69,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
+        Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
     }
 
     @Test
@@ -71,6 +80,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
+        Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
     }
 
     @Test
@@ -82,6 +92,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
+        Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
     }
 
     @Test
@@ -97,6 +108,7 @@ class WebhookControllerTest(
         val response = doRequest(payload, headers)
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+        Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
         Assertions.assertNotNull(response.body)
         JSONAssert.assertEquals(
             ObjectMapper().writeValueAsString(ApiResponse.error("Unknown repository")),
@@ -118,9 +130,10 @@ class WebhookControllerTest(
         val response = doRequest(payload, headers)
 
         Assertions.assertEquals(HttpStatus.OK, response.statusCode)
+        Assertions.assertTrue(DebugWebhookNotifier.wasInfo)
         Assertions.assertNotNull(response.body)
         JSONAssert.assertEquals(
-            ObjectMapper().writeValueAsString(ApiResponse.success("Ignored, wrong branch")),
+            ObjectMapper().writeValueAsString(ApiResponse.success("Webhook ignored, wrong branch: some-branch")),
             response.body,
             JSONCompareMode.NON_EXTENSIBLE
         )
@@ -136,6 +149,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+        Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
         JSONAssert.assertEquals(
             ObjectMapper().writeValueAsString(ApiResponse.error("Illegal body structure")),
             response.body,
@@ -178,6 +192,28 @@ class WebhookControllerTest(
 
         companion object {
             var payload: WebhookPayload? = null
+        }
+    }
+
+    @Service
+    @Primary
+    class DebugWebhookNotifier : WebhookNotifier {
+        override fun failure(message: String) {
+            wasFailure = true
+        }
+
+        override fun info(message: String) {
+            wasInfo = true
+        }
+
+        override fun success(payload: WebhookPayload) {
+            wasSuccess = true
+        }
+
+        companion object {
+            var wasFailure = false
+            var wasInfo = false
+            var wasSuccess = false
         }
     }
 }

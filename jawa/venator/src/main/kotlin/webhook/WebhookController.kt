@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController
 import ru.prohor.universe.jocasta.spring.UniverseEnvironment
 import ru.prohor.universe.venator.webhook.model.ApiResponse
 import ru.prohor.universe.venator.webhook.model.WebhookPayload
+import ru.prohor.universe.venator.webhook.service.IpValidationService
+import ru.prohor.universe.venator.webhook.service.SignatureService
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
@@ -27,6 +29,7 @@ class WebhookController(
     private val signatureService: SignatureService,
     private val ipValidationService: IpValidationService,
     private val webhookAction: WebhookAction,
+    private val webhookNotifier: WebhookNotifier,
     private val objectMapper: ObjectMapper
 ) {
     @PostMapping(value = ["/on_push"], consumes = [MediaType.APPLICATION_JSON_VALUE])
@@ -37,37 +40,55 @@ class WebhookController(
     ): ResponseEntity<ApiResponse> {
         val address = if (environment.canBeObtainedLocally() && realIp == null) request.remoteAddr else realIp
         if (address == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("IP address unrecognized"))
+            return onFailure(HttpStatus.UNAUTHORIZED, "IP address unrecognized")
         if (!ipValidationService.isValidIp(address))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Illegal IP address"))
+            return onFailure(HttpStatus.UNAUTHORIZED, "Illegal IP address")
 
         val body = request.bodyAsString()
         val payload = try {
             objectMapper.readValue<WebhookPayload>(body)
         } catch (_: JsonProcessingException) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Illegal body structure"))
+            return onFailure(HttpStatus.BAD_REQUEST, "Illegal body structure")
         }
 
         val actionRepositoryName = payload.repository.fullName
         // TODO log.info("Received webhook from repository: {}", actionRepositoryName);
         if (!signatureService.verifySignature(signature, body)) {
             // TODO log.warn("Invalid webhook signature");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Invalid signature"))
+            return onFailure(HttpStatus.UNAUTHORIZED, "Invalid signature")
         }
 
         if (actionRepositoryName != repositoryName) {
             // TODO log.warn("Webhook from unknown repository: {}", actionRepositoryName);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Unknown repository"))
+            return onFailure(HttpStatus.BAD_REQUEST, "Unknown repository")
         }
 
         val actionBranch = payload.ref.replace("refs/heads/", "")
         if (actionBranch != payload.repository.masterBranch) {
             // TODO log.info("Ignoring push to branch: {}", actionBranch);
-            return ResponseEntity.ok(ApiResponse.success("Ignored, wrong branch"))
+            return onInfo("Webhook ignored, wrong branch: $actionBranch")
         }
 
         processWebhook(payload)
-        return ResponseEntity.ok(ApiResponse.success("Webhook accepted"))
+        return onSuccess(payload)
+    }
+
+    private fun onFailure(status: HttpStatus, message: String): ResponseEntity<ApiResponse> {
+        webhookNotifier.failure(message)
+        val response = ApiResponse.error(message)
+        return ResponseEntity.status(status).body(response)
+    }
+
+    private fun onInfo(message: String): ResponseEntity<ApiResponse> {
+        webhookNotifier.info(message)
+        val response = ApiResponse.success(message)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    private fun onSuccess(payload: WebhookPayload): ResponseEntity<ApiResponse> {
+        webhookNotifier.success(payload)
+        val response = ApiResponse.success("Webhook accepted")
+        return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
     private fun HttpServletRequest.bodyAsString(): String {

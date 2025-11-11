@@ -23,6 +23,14 @@
             <artifactId>jocasta-spring-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-tg-bots</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-joda-time</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
