@@ -37,6 +37,9 @@ source ~/.zprofile # для zsh
 alias venator="$UNIVERSE_HOME/jawa/venator/venator.sh"
 alias uni="$UNIVERSE_HOME/c3po/uni/uni.sh"
 
+chmod +x "$UNIVERSE_HOME/jawa/venator/venator.sh"
+chmod +x "$UNIVERSE_HOME/c3po/uni/uni.sh"
+
 source ~/.bashrc # для bash
 source ~/.zshrc # для zsh
 ```
