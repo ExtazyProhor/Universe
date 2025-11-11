@@ -1,4 +1,4 @@
-package ru.prohor.universe.venator.webhook
+package ru.prohor.universe.venator.webhook.service
 
 private const val IP_BITS = 32
 private const val OCTET_BITS = 8

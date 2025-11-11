@@ -1,4 +1,4 @@
-package ru.prohor.universe.venator.webhook
+package ru.prohor.universe.venator.webhook.service
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service

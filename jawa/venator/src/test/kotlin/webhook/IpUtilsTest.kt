@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import ru.prohor.universe.venator.webhook.service.toBitPrefixWithMask
+import ru.prohor.universe.venator.webhook.service.toBitRepresentation
 
 class IpUtilsTest {
     @Test

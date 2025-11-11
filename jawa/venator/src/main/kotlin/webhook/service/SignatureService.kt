@@ -1,4 +1,4 @@
-package ru.prohor.universe.venator.webhook
+package ru.prohor.universe.venator.webhook.service
 
 import org.apache.commons.codec.digest.HmacAlgorithms
 import org.apache.commons.codec.digest.HmacUtils
