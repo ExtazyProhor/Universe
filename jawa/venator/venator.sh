@@ -57,15 +57,25 @@ start_service() {
     nohup "$PATH_TO_JAVA" -jar "$PATH_TO_JAR" /tmp >>"$LOG_PATH_NAME" 2>&1 &
     echo $! > "$PID_PATH_NAME"
 
-    sleep 1
     pid=$(cat "$PID_PATH_NAME")
-    if is_running "$pid"; then
-        echo "${GREEN}$SERVICE_NAME started (PID: $pid)${RESET}"
-    else
-        echo "${RED}Failed to start $SERVICE_NAME${RESET}"
-        rm -f "$PID_PATH_NAME"
-        exit 1
-    fi
+    for _ in {1..30}; do
+        sleep 0.5
+        if curl -fs http://127.0.0.1:8081/actuator/health >/dev/null; then
+            echo "${GREEN}$SERVICE_NAME started with PID $pid${RESET}"
+            exit 0
+        fi
+
+        if ! is_running "$pid"; then
+            echo "${RED}$SERVICE_NAME crashed on startup${RESET}"
+            echo ""
+            tail -n 100 "$LOG_PATH_NAME"
+            rm -f "$PID_PATH_NAME"
+            exit 1
+        fi
+    done
+
+    echo "${RED}Health check timed out${RESET}"
+    exit 1
 }
 
 stop_service() {
