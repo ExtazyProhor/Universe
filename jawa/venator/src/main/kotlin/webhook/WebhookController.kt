@@ -105,7 +105,9 @@ class WebhookController(
             webhookAction.accept(payload)
             // TODO log.info("Webhook processing completed successfully");
         } catch (e: Exception) {
+            webhookNotifier.failure("Error processing webhook: $e")
             // TODO log.error("Error processing webhook", e);
+            e.printStackTrace()
             throw RuntimeException(e)
         }
     }
