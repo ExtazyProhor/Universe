@@ -59,6 +59,20 @@ source ~/.bashrc # для bash
 source ~/.zshrc # для zsh
 ```
 
+##### Дополнительно для `bash`
+
+Создать или открыть файл `~/.bash_profile`, в который написать:
+
+```sh
+if [ -f ~/.profile ]; then
+    source ~/.profile
+fi
+
+if [ -f ~/.bashrc ]; then
+    source ~/.bashrc
+fi
+```
+
 ##### Для IDEA
 
 `Edit Configurations...` -> `Environment variables`:
