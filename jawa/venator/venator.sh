@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 SERVICE_NAME="venator"
-PATH_BASE="$UNIVERSE_HOME/jawa/venator/target"
+PATH_BASE="$UNIVERSE_WORKSPACE/venator"
 PATH_TO_JAR="$PATH_BASE/venator.jar"
 PATH_TO_JAVA="/usr/bin/java"
 PID_PATH_NAME="$PATH_BASE/venator.pid"

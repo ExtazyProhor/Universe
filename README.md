@@ -16,12 +16,19 @@ Bash + Batch
 
 ### Настройка окружения
 
+##### Клонирование репозитория
+
+```sh
+git clone --branch main https://github.com/ExtazyProhor/Universe.git $UNIVERSE_HOME
+```
+
 ##### Переменные окружения
 
 `~/.profile` для bash или `~/.zprofile` для zsh
 
 ```sh
 export UNIVERSE_HOME="path/to/repository/root"
+export UNIVERSE_WORKSPACE="path/to/workspace/dir"
 export HOLOCRON_JSON="path/to/holocron.json"
 export SPRING_PROFILES_ACTIVE=stable # для сервера
 
