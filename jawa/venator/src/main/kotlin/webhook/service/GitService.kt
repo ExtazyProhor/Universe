@@ -23,7 +23,7 @@ class GitService(
     }
 
     fun lastCommit(): String {
-        return runCommand(listOf("git", "log", "-1", "--format=%H"), "Log")
+        return runCommand(listOf("git", "log", "-1", "--format=%H"), "Log", universePath)
     }
 
     private fun cloneRepository(url: String, branch: String) {
