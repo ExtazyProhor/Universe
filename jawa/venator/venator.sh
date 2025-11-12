@@ -60,7 +60,7 @@ start_service() {
     pid=$(cat "$PID_PATH_NAME")
     for _ in {1..30}; do
         sleep 0.5
-        if curl -fs http://127.0.0.1:8081/actuator/health >/dev/null; then
+        if curl -fs http://127.0.0.1:7005/actuator/health >/dev/null; then
             echo "${GREEN}$SERVICE_NAME started with PID $pid${RESET}"
             exit 0
         fi
