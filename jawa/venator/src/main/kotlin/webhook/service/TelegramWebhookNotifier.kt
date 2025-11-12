@@ -51,7 +51,7 @@ class TelegramWebhookNotifier(
         val login = sender.login
         val commit = headCommit.message
         val datetime = formatter.print(DateTime(repository.pushedAt * 1000, zone))
-        val message = "\u2705 $login pushed new changes to Universe at $datetime. Last commit is:\n\n*$commit*"
+        val message = "\u2705 $login pushed new changes to Universe at\n_${datetime}_.\nLast commit is:\n\n*$commit*"
         return SendMessage.builder()
             .chatId(notifiableChatId)
             .text(message)
