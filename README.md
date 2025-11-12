@@ -2,7 +2,7 @@
 
 ![](assets/universe.jpg)
 Монорепозиторий для всех локальных разработок. Делится на
-поддиректории по используемым языкам.
+поддиректории по используемым языкам или предметным областям.
 
 ### Структура
 
@@ -13,6 +13,14 @@ Java + Kotlin
 ##### [C3PO](c3po)
 
 Bash + Batch
+
+##### [Sarlacc](sarlacc)
+
+Python
+
+##### [Sabacc](sabacc)
+
+Игры на Unity или LibGDX + текстуры и заготовки для них
 
 ### Настройка окружения
 
@@ -56,5 +64,5 @@ source ~/.zshrc # для zsh
 `Edit Configurations...` -> `Environment variables`:
 
 ```sh
-UNIVERSE_HOME=path/to/repository/root; HOLOCRON_JSON=path/to/holocron.json
+UNIVERSE_HOME=path/to/repository/root; UNIVERSE_WORKSPACE=path/to/workspace/dir; HOLOCRON_JSON=path/to/holocron.json
 ```
