@@ -75,19 +75,19 @@ class WebhookController(
 
     private fun onFailure(status: HttpStatus, message: String): ResponseEntity<ApiResponse> {
         webhookNotifier.failure(message)
-        val response = ApiResponse.error(message)
+        val response = ApiResponse(message)
         return ResponseEntity.status(status).body(response)
     }
 
     private fun onInfo(message: String): ResponseEntity<ApiResponse> {
         webhookNotifier.info(message)
-        val response = ApiResponse.success(message)
+        val response = ApiResponse(message)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
     private fun onSuccess(payload: WebhookPayload): ResponseEntity<ApiResponse> {
         webhookNotifier.success(payload)
-        val response = ApiResponse.success("Webhook accepted")
+        val response = ApiResponse("Webhook accepted")
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 

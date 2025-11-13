@@ -111,7 +111,7 @@ class WebhookControllerTest(
         Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
         Assertions.assertNotNull(response.body)
         JSONAssert.assertEquals(
-            ObjectMapper().writeValueAsString(ApiResponse.error("Unknown repository")),
+            ObjectMapper().writeValueAsString(ApiResponse("Unknown repository")),
             response.body,
             JSONCompareMode.NON_EXTENSIBLE
         )
@@ -133,7 +133,7 @@ class WebhookControllerTest(
         Assertions.assertTrue(DebugWebhookNotifier.wasInfo)
         Assertions.assertNotNull(response.body)
         JSONAssert.assertEquals(
-            ObjectMapper().writeValueAsString(ApiResponse.success("Webhook ignored, wrong branch: some-branch")),
+            ObjectMapper().writeValueAsString(ApiResponse("Webhook ignored, wrong branch: some-branch")),
             response.body,
             JSONCompareMode.NON_EXTENSIBLE
         )
@@ -151,7 +151,7 @@ class WebhookControllerTest(
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
         Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
         JSONAssert.assertEquals(
-            ObjectMapper().writeValueAsString(ApiResponse.error("Illegal body structure")),
+            ObjectMapper().writeValueAsString(ApiResponse("Illegal body structure")),
             response.body,
             JSONCompareMode.NON_EXTENSIBLE
         )
