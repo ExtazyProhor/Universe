@@ -12,27 +12,15 @@ class GitService(
     private val repoPath = executor.universeHome.toString()
 
     fun cloneOrPullRepository(url: String, branch: String) {
-        if (Files.exists(executor.universeHome)) {
-            // TODO log.info("Repository exists, pulling changes");
-            pullChanges(branch)
-        } else {
-            // TODO log.info("Repository doesn't exist, cloning");
-            cloneRepository(url, branch)
-        }
+        if (!Files.exists(executor.universeHome))
+            throw RuntimeException("repository does not exist, clone it")
+        pullChanges(branch)
     }
 
     fun lastCommit(): String {
         return executor.runCommand(
             listOf("git", "-C", repoPath, "log", "-1", "--format=%H"),
             "git log"
-        )
-    }
-
-    private fun cloneRepository(url: String, branch: String) {
-        Files.createDirectories(executor.universeHome.parent)
-        executor.runCommand(
-            listOf("git", "clone", "--branch", branch, url, repoPath),
-            "git clone"
         )
     }
 
