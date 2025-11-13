@@ -9,8 +9,6 @@ data class RepositoryInfo(
     val fullName: String,
     @field:JsonProperty("pushed_at")
     val pushedAt: Long,
-    @field:JsonProperty("clone_url")
-    val cloneUrl: String,
     @field:JsonProperty("master_branch")
     val masterBranch: String
 )

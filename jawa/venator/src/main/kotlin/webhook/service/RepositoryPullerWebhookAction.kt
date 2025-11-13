@@ -21,7 +21,7 @@ class RepositoryPullerWebhookAction(
             // TODO log warn
             println("Commits before updating are equal")
         }
-        gitService.cloneOrPullRepository(payload.repository.cloneUrl, payload.ref.replace("refs/heads/", ""))
+        gitService.pullRepository(payload.ref.replace("refs/heads/", ""))
         val actualLastCommit = gitService.lastCommit()
         if (actionHeadCommitId != actualLastCommit) {
             // TODO log warn

@@ -11,7 +11,7 @@ class GitService(
 ) {
     private val repoPath = executor.universeHome.toString()
 
-    fun cloneOrPullRepository(url: String, branch: String) {
+    fun pullRepository(branch: String) {
         if (!Files.exists(executor.universeHome))
             throw RuntimeException("repository does not exist, clone it")
         pullChanges(branch)
