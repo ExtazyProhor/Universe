@@ -12,10 +12,10 @@ class CommandExecutor(
     val universeHome: Path = Path.of(universeHome)
     val universeWorkspace: Path = Path.of(universeWorkspace)
 
-    fun runCommand(
-        command: List<String>,
-        operation: String
-    ): String {
+    fun runCommand(command: List<String>): String {
+        val operation = command.filter { !it.contains("-") && !it.contains("/") }.take(2).joinToString(separator = " ")
+        if (operation.isBlank())
+            throw IllegalArgumentException("Illegal command: ${command.joinToString(separator = " ")}")
         val process = ProcessBuilder(command)
             .redirectErrorStream(true)
             .start()

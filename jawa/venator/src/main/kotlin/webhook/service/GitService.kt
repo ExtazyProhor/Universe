@@ -19,15 +19,13 @@ class GitService(
 
     fun lastCommit(): String {
         return executor.runCommand(
-            listOf("git", "-C", repoPath, "log", "-1", "--format=%H"),
-            "git log"
+            command = listOf("git", "-C", repoPath, "log", "-1", "--format=%H")
         )
     }
 
     private fun pullChanges(branch: String) {
         executor.runCommand(
-            listOf("git", "-C", repoPath, "pull", "origin", branch),
-            "git pull"
+            command = listOf("git", "-C", repoPath, "pull", "origin", branch),
         )
     }
 }
