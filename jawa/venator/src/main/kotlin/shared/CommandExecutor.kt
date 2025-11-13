@@ -1,17 +1,9 @@
 package ru.prohor.universe.venator.shared
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.nio.file.Path
 
 @Service
-class CommandExecutor(
-    @Value($$"${UNIVERSE_HOME}") universeHome: String,
-    @Value($$"${UNIVERSE_WORKSPACE}") universeWorkspace: String,
-) {
-    val universeHome: Path = Path.of(universeHome)
-    val universeWorkspace: Path = Path.of(universeWorkspace)
-
+class CommandExecutor() {
     fun runCommand(command: List<String>): String {
         val operation = command.filter { !it.contains("-") && !it.contains("/") }.take(2).joinToString(separator = " ")
         if (operation.isBlank())

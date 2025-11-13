@@ -6,10 +6,11 @@ import java.util.concurrent.locks.ReentrantLock
 abstract class FileSystemComponent(val path: Path) {
     private val lock = ReentrantLock()
 
-    fun <T> tryPerform(operation: (path: Path) -> T): T? {
-        if (!lock.tryLock()) return null
+    fun tryPerform(operation: (path: Path) -> Unit, timeout: Timeout? = null): Boolean {
+        if (timeout?.let { !lock.tryLock(it.timeout, it.unit) } ?: !lock.tryLock()) return false
         try {
-            return operation.invoke(path)
+            operation.invoke(path)
+            return true
         } finally {
             lock.unlock()
         }
