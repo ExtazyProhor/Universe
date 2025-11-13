@@ -1,19 +1,18 @@
 package ru.prohor.universe.venator.webhook.service
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import ru.prohor.universe.venator.shared.CommandExecutor
 import java.nio.file.Files
-import java.nio.file.Path
 
 
 @Service
 class GitService(
-    @Value($$"${UNIVERSE_HOME}") universeHome: String
+    private val executor: CommandExecutor
 ) {
-    private val universePath = Path.of(universeHome)
+    private val repoPath = executor.universeHome.toString()
 
     fun cloneOrPullRepository(url: String, branch: String) {
-        if (Files.exists(universePath)) {
+        if (Files.exists(executor.universeHome)) {
             // TODO log.info("Repository exists, pulling changes");
             pullChanges(branch)
         } else {
@@ -23,37 +22,24 @@ class GitService(
     }
 
     fun lastCommit(): String {
-        return runCommand(listOf("git", "log", "-1", "--format=%H"), "Log", universePath)
+        return executor.runCommand(
+            listOf("git", "-C", repoPath, "log", "-1", "--format=%H"),
+            "git log"
+        )
     }
 
     private fun cloneRepository(url: String, branch: String) {
-        Files.createDirectories(universePath.parent)
-        runCommand(listOf("git", "clone", "--branch", branch, url, universePath.toString()), "Clone")
+        Files.createDirectories(executor.universeHome.parent)
+        executor.runCommand(
+            listOf("git", "clone", "--branch", branch, url, repoPath),
+            "git clone"
+        )
     }
 
     private fun pullChanges(branch: String) {
-        runCommand(listOf("git", "pull", "origin", branch), "Pull", universePath)
-    }
-
-    private fun runCommand(
-        command: List<String>,
-        operation: String,
-        workingDir: Path = Path.of(".")
-    ):String {
-        val process = ProcessBuilder(command)
-            .directory(workingDir.toFile())
-            .redirectErrorStream(true)
-            .start()
-        val output = process.inputStream.bufferedReader().readText().trim()
-        // TODO log
-        println("=== $operation repository begin ===")
-        println(output)
-        println("=== $operation repository end ===")
-
-        val exitCode = process.waitFor()
-        if (exitCode != 0) {
-            throw RuntimeException("$operation failed with exit code: $exitCode")
-        }
-        return output
+        executor.runCommand(
+            listOf("git", "-C", repoPath, "pull", "origin", branch),
+            "git pull"
+        )
     }
 }
