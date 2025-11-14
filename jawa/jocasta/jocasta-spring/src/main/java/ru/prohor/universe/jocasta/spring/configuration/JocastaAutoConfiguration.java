@@ -15,6 +15,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import ru.prohor.universe.jocasta.spring.UniverseEnvironment;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 @Configuration
 @EnableAutoConfiguration(exclude = {
         SecurityAutoConfiguration.class,
@@ -28,19 +32,30 @@ import ru.prohor.universe.jocasta.spring.UniverseEnvironment;
         MongoReactiveDataAutoConfiguration.class,
 })
 public class JocastaAutoConfiguration {
-    private static final String ENV_PROPERTY = "spring.profiles.active";
-    private static final String NO_ENV_MESSAGE = """
+    private static final String NO_PROFILE_MESSAGE = """
             No spring profile is active.
             Use environment variable or application.properties file""";
 
     @Bean
     public UniverseEnvironment universeEnvironment(Environment environment) {
-        String env = environment.getProperty(ENV_PROPERTY);
+        String[] profiles = environment.getActiveProfiles();
+        if (profiles.length == 0)
+            throw new IllegalStateException(NO_PROFILE_MESSAGE);
+
         // TODO
-        System.out.println("env from JocastaAutoConfiguration = " + env);
-        if (env == null || env.isBlank())
-            throw new IllegalStateException(NO_ENV_MESSAGE);
-        return UniverseEnvironment.get(env);
+        System.out.println("profiles = " + Arrays.toString(profiles));
+
+        List<UniverseEnvironment> environments = Arrays.stream(profiles)
+                .map(UniverseEnvironment::get)
+                .filter(Objects::nonNull)
+                .toList();
+        // TODO
+        System.out.println("environments = " + environments);
+        if (environments.isEmpty())
+            throw new IllegalStateException("There is no universe environment");
+        if (environments.size() > 1)
+            throw new IllegalStateException("There are more than 1 universe environment");
+        return environments.getFirst();
     }
 
     @Bean

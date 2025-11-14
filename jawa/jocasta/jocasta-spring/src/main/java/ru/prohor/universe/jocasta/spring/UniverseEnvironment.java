@@ -11,7 +11,7 @@ public enum UniverseEnvironment {
     LOCAL,
     STABLE,
     TESTING;
-    
+
     public boolean canBeObtainedLocally() {
         return this == LOCAL || this == TESTING;
     }
@@ -19,11 +19,7 @@ public enum UniverseEnvironment {
     private static final Map<String, UniverseEnvironment> MAPPER = Arrays.stream(values())
             .collect(Collectors.toMap(env -> env.name().toLowerCase(), MonoFunction.identity()));
 
-    @Nonnull
     public static UniverseEnvironment get(@Nonnull String environmentName) {
-        UniverseEnvironment env = MAPPER.get(environmentName.toLowerCase());
-        if (env == null)
-            throw new IllegalArgumentException("Illegal UniverseEnvironment name");
-        return env;
+        return MAPPER.get(environmentName.toLowerCase());
     }
 }
