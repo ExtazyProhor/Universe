@@ -164,7 +164,7 @@ build_service() {
 test_service() {
     echo "${GREEN}Running tests for $SERVICE_NAME...${RESET}"
 
-    mvn -f "$MAIN_POM_PATH" clean test -pl venator -am
+    mvn -f "$MAIN_POM_PATH" clean test -pl venator -am -amd
     status=$?
 
     if [ "$status" -ne 0 ]; then

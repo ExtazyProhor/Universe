@@ -76,8 +76,7 @@ class WebhookController(
     }
 
     private fun onFailure(status: HttpStatus, message: String): ResponseEntity<ApiResponse> {
-        val message = "failures at webhook controller:\n*$message*"
-        notifier.failure(message)
+        notifier.failure("failures at webhook controller:\n*$message*")
         val response = ApiResponse(message)
         return ResponseEntity.status(status).body(response)
     }
