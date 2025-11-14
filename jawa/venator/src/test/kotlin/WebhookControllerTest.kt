@@ -26,7 +26,7 @@ import ru.prohor.universe.venator.webhook.model.WebhookPayload
 
 @SpringBootTest(
     classes = [Venator::class],
-    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class WebhookControllerTest(

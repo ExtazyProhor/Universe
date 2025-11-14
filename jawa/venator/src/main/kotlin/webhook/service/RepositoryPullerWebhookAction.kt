@@ -51,10 +51,10 @@ class RepositoryPullerWebhookAction(
             notifier.info("Tests were passed successfully")
         } else {
             val modulesList = testResult.failedModules
-                .joinToString(separator = "\n\t", prefix = "\n\t") { module ->
+                .joinToString(separator = "\n") { module ->
                     module.modulePath
                 }
-            notifier.failure("${testResult.failedModules.size} modules failed:$modulesList")
+            notifier.failure("${testResult.failedModules.size} modules failed:\n$modulesList")
         }
     }
 }

@@ -31,7 +31,7 @@ import java.util.UUID;
 @ActiveProfiles("testing")
 @SpringBootTest(
         classes = YahtzeeMain.class,
-        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @Import(SnowflakeConfiguration.class)
