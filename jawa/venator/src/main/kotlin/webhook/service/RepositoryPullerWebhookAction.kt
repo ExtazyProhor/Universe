@@ -2,18 +2,22 @@ package ru.prohor.universe.venator.webhook.service
 
 import org.springframework.stereotype.Service
 import ru.prohor.universe.jocasta.spring.UniverseEnvironment
+import ru.prohor.universe.venator.build.service.MavenService
 import ru.prohor.universe.venator.fs.Repository
 import ru.prohor.universe.venator.fs.Timeout
 import ru.prohor.universe.venator.webhook.WebhookAction
+import ru.prohor.universe.venator.webhook.WebhookNotifier
 import ru.prohor.universe.venator.webhook.model.WebhookPayload
 import java.nio.file.Path
 import java.util.concurrent.TimeUnit
 
 @Service
 class RepositoryPullerWebhookAction(
+    private val notifier: WebhookNotifier,
     private val repository: Repository,
     private val environment: UniverseEnvironment,
-    private val gitService: GitService
+    private val gitService: GitService,
+    private val mavenService: MavenService
 ) : WebhookAction {
     override fun accept(payload: WebhookPayload) {
         if (environment != UniverseEnvironment.STABLE) {
@@ -41,6 +45,20 @@ class RepositoryPullerWebhookAction(
         if (actionHeadCommitId != actualLastCommit) {
             // TODO log warn
             println("Commits after updating are not equal")
+        }
+        val testResult = mavenService.cleanTestAll()
+        if (testResult.success) {
+            notifier.info("Tests were passed successfully")
+        } else {
+            println("=".repeat(10) + "start" + "=".repeat(10))
+            println(testResult)
+            println("=".repeat(10) + "end" + "=".repeat(10))
+            val modulesList = testResult.failedModules
+                .filter { it.failedTests.isNotEmpty() }
+                .joinToString(separator = "\n\t", prefix = "\n\t") { module ->
+                    module.modulePath
+                }
+            notifier.failure("${testResult.failedModules.size} modules failed:$modulesList")
         }
     }
 }
