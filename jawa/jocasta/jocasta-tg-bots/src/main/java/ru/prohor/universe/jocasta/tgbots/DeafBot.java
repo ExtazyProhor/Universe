@@ -25,12 +25,12 @@ public abstract class DeafBot extends TelegramLongPollingBot {
     private FeedbackExecutor makeFeedbackExecutor() {
         return new FeedbackExecutor() {
             @Override
-            public void sendMessage(SendMessage message) {
+            public synchronized void sendMessage(SendMessage message) {
                 executeSending(() -> execute(message), message.getChatId());
             }
 
             @Override
-            public void editMessageText(EditMessageText message) {
+            public synchronized void editMessageText(EditMessageText message) {
                 executeSending(() -> execute(message), message.getChatId());
             }
         };

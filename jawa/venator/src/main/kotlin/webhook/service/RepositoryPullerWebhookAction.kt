@@ -9,6 +9,7 @@ import ru.prohor.universe.venator.webhook.WebhookAction
 import ru.prohor.universe.venator.webhook.WebhookNotifier
 import ru.prohor.universe.venator.webhook.model.WebhookPayload
 import java.nio.file.Path
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.TimeUnit
 
 @Service
@@ -17,7 +18,8 @@ class RepositoryPullerWebhookAction(
     private val repository: Repository,
     private val environment: UniverseEnvironment,
     private val gitService: GitService,
-    private val mavenService: MavenService
+    private val mavenService: MavenService,
+    private val webhookExecutor: ExecutorService
 ) : WebhookAction {
     override fun accept(payload: WebhookPayload) {
         if (environment != UniverseEnvironment.STABLE) {
@@ -30,6 +32,9 @@ class RepositoryPullerWebhookAction(
         )
         if (!wasPerformed)
             throw RuntimeException("Local Universe repository is locked")
+        webhookExecutor.submit {
+            runTests()
+        }
     }
 
     private fun performPulling(payload: WebhookPayload, universe: Path) {
@@ -46,15 +51,20 @@ class RepositoryPullerWebhookAction(
             // TODO log warn
             println("Commits after updating are not equal")
         }
-        val testResult = mavenService.cleanTestAll()
-        if (testResult.success) {
-            notifier.info("Tests were passed successfully")
-        } else {
-            val modulesList = testResult.failedModules
-                .joinToString(separator = "\n") { module ->
-                    module.modulePath
-                }
-            notifier.failure("${testResult.failedModules.size} modules failed:\n$modulesList")
+    }
+
+    private fun runTests() {
+        repository.perform {
+            val testResult = mavenService.cleanTestAll()
+            if (testResult.success) {
+                notifier.info("Tests were passed successfully")
+            } else {
+                val modulesList = testResult.failedModules
+                    .joinToString(separator = "\n") { module ->
+                        module.modulePath
+                    }
+                notifier.failure("${testResult.failedModules.size} modules failed:\n$modulesList")
+            }
         }
     }
 }

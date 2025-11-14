@@ -7,7 +7,7 @@ PATH_BASE="$UNIVERSE_WORKSPACE/venator"
 PATH_TO_JAR="$PATH_BASE/venator.jar"
 PATH_TO_JAVA="/usr/bin/java"
 PID_PATH_NAME="$PATH_BASE/venator.pid"
-LOG_PATH_NAME="$PATH_BASE/venator.log"
+LOG_PATH_NAME="$PATH_BASE/venator-$(date +'%Y-%m-%d_%H-%M-%S').log"
 
 # colors
 if command -v tput &>/dev/null && [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then

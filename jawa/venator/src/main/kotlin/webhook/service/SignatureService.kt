@@ -9,12 +9,9 @@ import org.springframework.stereotype.Service
 class SignatureService(
     @Value($$"${universe.venator.webhook.secret}") secret: String
 ) {
-    private val s = secret
     private val hmacUtils: HmacUtils = HmacUtils(HmacAlgorithms.HMAC_SHA_256, secret)
 
     fun verifySignature(signature: String?, body: String): Boolean {
-        // TODO debug
-        println("secret in controller=\"${s}\"")
         return signature?.let { it == "sha256=${hmacUtils.hmacHex(body)}" } ?: false
     }
 }

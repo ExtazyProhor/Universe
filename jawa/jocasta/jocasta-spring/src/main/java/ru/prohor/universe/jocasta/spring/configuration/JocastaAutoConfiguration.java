@@ -42,15 +42,11 @@ public class JocastaAutoConfiguration {
         if (profiles.length == 0)
             throw new IllegalStateException(NO_PROFILE_MESSAGE);
 
-        // TODO
-        System.out.println("profiles = " + Arrays.toString(profiles));
-
         List<UniverseEnvironment> environments = Arrays.stream(profiles)
                 .map(UniverseEnvironment::get)
                 .filter(Objects::nonNull)
                 .toList();
-        // TODO
-        System.out.println("environments = " + environments);
+
         if (environments.isEmpty())
             throw new IllegalStateException("There is no universe environment");
         if (environments.size() > 1)
