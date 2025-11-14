@@ -10,22 +10,22 @@ import kotlin.io.path.isDirectory
 
 @Service
 class MavenTestsInspector {
-    fun inspectTestsFailures(repositoryPath: Path): List<FailedModuleResult> {
-        return findAllTestReports(repositoryPath).map { report ->
+    fun inspectTestsFailures(jawaPath: Path): List<FailedModuleResult> {
+        return findAllTestReports(jawaPath).map { report ->
             FailedModuleResult(
-                modulePath = repositoryPath.relativize(report.parent.parent).toString(),
+                modulePath = jawaPath.relativize(report.parent.parent).toString(),
                 failedTests = inspectModuleFailures(report)
             )
-        }
+        }.filter { moduleResult -> moduleResult.failedTests.isNotEmpty() }
     }
 
-    private fun findAllTestReports(repositoryPath: Path): List<Path> {
-        if (!repositoryPath.exists())
+    private fun findAllTestReports(jawaPath: Path): List<Path> {
+        if (!jawaPath.exists())
             return emptyList()
 
         val result = mutableListOf<Path>()
         val dirsToVisit = ArrayDeque<Path>()
-        dirsToVisit.add(repositoryPath)
+        dirsToVisit.add(jawaPath)
 
         while (dirsToVisit.isNotEmpty()) {
             val dir = dirsToVisit.removeFirst()
@@ -60,16 +60,25 @@ class MavenTestsInspector {
             for (i in 0 until testcases.length) {
                 val testcase = testcases.item(i) as Element
                 val failures = testcase.getElementsByTagName("failure")
+                val errors = testcase.getElementsByTagName("error")
 
-                if (failures.length > 0) {
+                if (failures.length > 0 || errors.length > 0) {
                     val className = testcase.getAttribute("classname")
                     val methodName = testcase.getAttribute("name")
-                    val message = failures.item(0).attributes?.getNamedItem("message")?.nodeValue
-                    val stackTrace = failures.item(0).textContent.trim()
+
+                    val problemNode = if (failures.length > 0)
+                        failures.item(0) as Element
+                    else
+                        errors.item(0) as Element
+
+                    val message = problemNode.getAttribute("message")
+                    val type = problemNode.getAttribute("type")
+                    val stackTrace = problemNode.textContent.trim()
+
                     results += FailedTest(
                         className = className,
                         methodName = methodName,
-                        message = message,
+                        message = if (message.isNullOrBlank()) type else message,
                         stackTrace = stackTrace
                     )
                 }

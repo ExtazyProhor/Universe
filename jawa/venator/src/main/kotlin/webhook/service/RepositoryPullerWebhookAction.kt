@@ -50,11 +50,7 @@ class RepositoryPullerWebhookAction(
         if (testResult.success) {
             notifier.info("Tests were passed successfully")
         } else {
-            println("=".repeat(10) + "start" + "=".repeat(10))
-            println(testResult)
-            println("=".repeat(10) + "end" + "=".repeat(10))
             val modulesList = testResult.failedModules
-                .filter { it.failedTests.isNotEmpty() }
                 .joinToString(separator = "\n\t", prefix = "\n\t") { module ->
                     module.modulePath
                 }
