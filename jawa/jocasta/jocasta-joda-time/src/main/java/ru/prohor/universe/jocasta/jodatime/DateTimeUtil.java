@@ -10,9 +10,13 @@ import org.joda.time.format.DateTimeFormatter;
 
 public class DateTimeUtil {
     private static final int NANOS_IN_MILLI = 1_000_000;
+    private static final DateTimeZone MOSCOW_ZONE = DateTimeZone.forID("Europe/Moscow");
     private static final DateTimeFormatter BASE_FORMATTER = DateTimeFormat
             .forStyle("SM")
-            .withZone(DateTimeZone.forID("Europe/Moscow"));
+            .withZone(MOSCOW_ZONE);
+    private static final DateTimeFormatter DIGIT_FORMATTER = DateTimeFormat
+            .forPattern("HH:mm:ss dd-MM-yyyy")
+            .withZone(MOSCOW_ZONE);
 
     /**
      * Instant
@@ -66,5 +70,10 @@ public class DateTimeUtil {
     @Nonnull
     public static String toReadableString(@Nonnull Instant instant) {
         return instant.toString(BASE_FORMATTER);
+    }
+
+    @Nonnull
+    public static String toDigitsString(@Nonnull Instant instant) {
+        return instant.toString(DIGIT_FORMATTER);
     }
 }

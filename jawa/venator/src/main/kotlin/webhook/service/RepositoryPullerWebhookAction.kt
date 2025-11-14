@@ -6,7 +6,7 @@ import ru.prohor.universe.venator.build.service.MavenService
 import ru.prohor.universe.venator.fs.Repository
 import ru.prohor.universe.venator.fs.Timeout
 import ru.prohor.universe.venator.webhook.WebhookAction
-import ru.prohor.universe.venator.webhook.WebhookNotifier
+import ru.prohor.universe.venator.shared.Notifier
 import ru.prohor.universe.venator.webhook.model.WebhookPayload
 import java.nio.file.Path
 import java.util.concurrent.ExecutorService
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 @Service
 class RepositoryPullerWebhookAction(
-    private val notifier: WebhookNotifier,
+    private val notifier: Notifier,
     private val repository: Repository,
     private val environment: UniverseEnvironment,
     private val gitService: GitService,
@@ -57,13 +57,13 @@ class RepositoryPullerWebhookAction(
         repository.perform {
             val testResult = mavenService.cleanTestAll()
             if (testResult.success) {
-                notifier.info("Tests were passed successfully")
+                notifier.success("Tests were passed successfully")
             } else {
                 val modulesList = testResult.failedModules
                     .joinToString(separator = "\n") { module ->
                         module.modulePath
                     }
-                notifier.failure("${testResult.failedModules.size} modules failed:\n$modulesList")
+                notifier.failure("${testResult.failedModules.size} modules failed tests:\n$modulesList")
             }
         }
     }

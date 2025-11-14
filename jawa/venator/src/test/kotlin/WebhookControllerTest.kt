@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestConstructor
 import ru.prohor.universe.venator.Venator
+import ru.prohor.universe.venator.shared.Notifier
 import ru.prohor.universe.venator.webhook.model.ApiResponse
 import ru.prohor.universe.venator.webhook.model.WebhookPayload
 
@@ -38,9 +39,9 @@ class WebhookControllerTest(
     @BeforeEach
     fun setupDebugBeans() {
         DebugWebhookAction.payload = null
-        DebugWebhookNotifier.wasFailure = false
-        DebugWebhookNotifier.wasInfo = false
-        DebugWebhookNotifier.wasSuccess = false
+        DebugNotifier.wasFailure = false
+        DebugNotifier.wasInfo = false
+        DebugNotifier.wasSuccess = false
     }
 
     @Test
@@ -51,7 +52,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.OK, response.statusCode)
-        Assertions.assertTrue(DebugWebhookNotifier.wasSuccess)
+        Assertions.assertTrue(DebugNotifier.wasSuccess)
 
         val expectedRestPayload = getResource("/webhook-rest-payload-mock.json")
         val parsedPayload = DebugWebhookAction.payload
@@ -71,7 +72,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
-        Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
+        Assertions.assertTrue(DebugNotifier.wasFailure)
     }
 
     @Test
@@ -82,7 +83,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
-        Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
+        Assertions.assertTrue(DebugNotifier.wasFailure)
     }
 
     @Test
@@ -94,7 +95,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
-        Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
+        Assertions.assertTrue(DebugNotifier.wasFailure)
     }
 
     @Test
@@ -110,7 +111,7 @@ class WebhookControllerTest(
         val response = doRequest(payload, headers)
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
-        Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
+        Assertions.assertTrue(DebugNotifier.wasFailure)
         Assertions.assertNotNull(response.body)
         JSONAssert.assertEquals(
             ObjectMapper().writeValueAsString(ApiResponse("Unknown repository")),
@@ -132,7 +133,7 @@ class WebhookControllerTest(
         val response = doRequest(payload, headers)
 
         Assertions.assertEquals(HttpStatus.OK, response.statusCode)
-        Assertions.assertTrue(DebugWebhookNotifier.wasInfo)
+        Assertions.assertTrue(DebugNotifier.wasInfo)
         Assertions.assertNotNull(response.body)
         JSONAssert.assertEquals(
             ObjectMapper().writeValueAsString(ApiResponse("Webhook ignored, wrong branch: some-branch")),
@@ -151,7 +152,7 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
-        Assertions.assertTrue(DebugWebhookNotifier.wasFailure)
+        Assertions.assertTrue(DebugNotifier.wasFailure)
         JSONAssert.assertEquals(
             ObjectMapper().writeValueAsString(ApiResponse("Illegal body structure")),
             response.body,
@@ -199,7 +200,7 @@ class WebhookControllerTest(
 
     @Service
     @Primary
-    class DebugWebhookNotifier : WebhookNotifier {
+    class DebugNotifier : Notifier {
         override fun failure(message: String) {
             wasFailure = true
         }
@@ -208,7 +209,7 @@ class WebhookControllerTest(
             wasInfo = true
         }
 
-        override fun success(payload: WebhookPayload) {
+        override fun success(message: String) {
             wasSuccess = true
         }
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import jakarta.servlet.http.HttpServletRequest
+import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil
 import ru.prohor.universe.jocasta.spring.UniverseEnvironment
+import ru.prohor.universe.venator.shared.Notifier
 import ru.prohor.universe.venator.webhook.model.ApiResponse
 import ru.prohor.universe.venator.webhook.model.WebhookPayload
 import ru.prohor.universe.venator.webhook.service.IpValidationService
@@ -29,7 +32,7 @@ class WebhookController(
     private val signatureService: SignatureService,
     private val ipValidationService: IpValidationService,
     private val webhookAction: WebhookAction,
-    private val webhookNotifier: WebhookNotifier,
+    private val notifier: Notifier,
     private val objectMapper: ObjectMapper
 ) {
     @PostMapping(value = ["/on_push"], consumes = [MediaType.APPLICATION_JSON_VALUE])
@@ -69,24 +72,27 @@ class WebhookController(
             return onInfo("Webhook ignored, wrong branch: $actionBranch")
         }
 
-        processWebhook(payload)
-        return onSuccess(payload)
+        return processWebhook(payload)
     }
 
     private fun onFailure(status: HttpStatus, message: String): ResponseEntity<ApiResponse> {
-        webhookNotifier.failure(message)
+        val message = "failures at webhook controller:\n*$message*"
+        notifier.failure(message)
         val response = ApiResponse(message)
         return ResponseEntity.status(status).body(response)
     }
 
     private fun onInfo(message: String): ResponseEntity<ApiResponse> {
-        webhookNotifier.info(message)
+        notifier.info(message)
         val response = ApiResponse(message)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
     private fun onSuccess(payload: WebhookPayload): ResponseEntity<ApiResponse> {
-        webhookNotifier.success(payload)
+        val login = payload.sender.login
+        val commit = payload.headCommit.message
+        val datetime = DateTimeUtil.toDigitsString(DateTime(payload.repository.pushedAt * 1000).toInstant())
+        notifier.success("$login pushed new changes to Universe at\n${datetime}.\nLast commit is:\n\n*$commit*")
         val response = ApiResponse("Webhook accepted")
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
@@ -99,16 +105,16 @@ class WebhookController(
         )
     }
 
-    private fun processWebhook(payload: WebhookPayload) {
+    private fun processWebhook(payload: WebhookPayload): ResponseEntity<ApiResponse> {
         try {
             // TODO log.info("Starting webhook processing");
             webhookAction.accept(payload)
+            return onSuccess(payload)
             // TODO log.info("Webhook processing completed successfully");
         } catch (e: Exception) {
-            webhookNotifier.failure("Error processing webhook: $e")
             // TODO log.error("Error processing webhook", e);
             e.printStackTrace()
-            throw RuntimeException(e)
+            return onFailure(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing webhook: $e")
         }
     }
 
