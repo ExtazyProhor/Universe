@@ -8,6 +8,7 @@ PATH_TO_JAR="$PATH_BASE/venator.jar"
 PATH_TO_JAVA="/usr/bin/java"
 PID_PATH_NAME="$PATH_BASE/venator.pid"
 LOG_PATH_NAME="$PATH_BASE/venator.log"
+SYS_LOG_PATH_NAME="$PATH_BASE/venator-sys.log"
 
 # colors
 if command -v tput &>/dev/null && [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
@@ -134,10 +135,10 @@ restart_service() {
 
 build_service() {
     echo "${GREEN}Building $SERVICE_NAME...${RESET}"
-    mvn -f "$MAIN_POM_PATH" clean package -pl venator -am -DskipTests
-    status=$?
+    mvn -f "$MAIN_POM_PATH" clean package -pl venator -am -DskipTests 2>&1 | tee -a "$SYS_LOG_PATH_NAME"
+    status=${PIPESTATUS[0]}
 
-    if [ $status -ne 0 ]; then
+    if [ "$status" -ne 0 ]; then
         echo "${RED}Maven build failed. Aborting${RESET}"
         return 1
     fi
@@ -161,6 +162,20 @@ build_service() {
     echo "${GREEN}$SERVICE_NAME built and deployed, use ${RESET}venator restart${GREEN} to restart it${RESET}"
 }
 
+test_service() {
+    echo "${GREEN}Running tests for $SERVICE_NAME...${RESET}"
+
+    mvn -f "$MAIN_POM_PATH" clean test -pl venator -am 2>&1 | tee -a "$SYS_LOG_PATH_NAME"
+    status=${PIPESTATUS[0]}
+
+    if [ "$status" -ne 0 ]; then
+        echo "${RED}Tests failed${RESET}"
+        return 1
+    fi
+
+    echo "${GREEN}All tests passed successfully${RESET}"
+}
+
 # prerequisites
 if [ ! -x "$PATH_TO_JAVA" ]; then
     echo "${RED}java not found at $PATH_TO_JAVA${RESET}"
@@ -178,8 +193,9 @@ case "$1" in
     restart) restart_service ;;
     status)  status_service ;;
     build)  build_service ;;
+    test)  test_service ;;
     *)
-        echo "${RED}usage: $0 [status | start | stop | restart | build]${RESET}"
+        echo "${RED}usage: $0 [status | start | stop | restart | build | test]${RESET}"
         exit 1
     ;;
 esac
