@@ -121,6 +121,8 @@ class WebhookControllerTest(
 
     @Test
     fun testWebhookWithAnotherBranch() {
+        // TODO debug
+        println("secret in tests=\"${secret}\"")
         val payload = getResource("/webhook-payload-mock.json")
             .replace(
                 "\"ref\": \"refs/heads/main\"",
@@ -131,6 +133,8 @@ class WebhookControllerTest(
 
         val response = doRequest(payload, headers)
 
+        // TODO debug
+        println("response=\"${response.body}\"")
         Assertions.assertEquals(HttpStatus.OK, response.statusCode)
         Assertions.assertTrue(DebugWebhookNotifier.wasInfo)
         Assertions.assertNotNull(response.body)

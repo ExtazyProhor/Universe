@@ -8,7 +8,6 @@ PATH_TO_JAR="$PATH_BASE/venator.jar"
 PATH_TO_JAVA="/usr/bin/java"
 PID_PATH_NAME="$PATH_BASE/venator.pid"
 LOG_PATH_NAME="$PATH_BASE/venator.log"
-SYS_LOG_PATH_NAME="$PATH_BASE/venator-sys.log"
 
 # colors
 if command -v tput &>/dev/null && [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
@@ -135,8 +134,8 @@ restart_service() {
 
 build_service() {
     echo "${GREEN}Building $SERVICE_NAME...${RESET}"
-    mvn -f "$MAIN_POM_PATH" clean package -pl venator -am -DskipTests 2>&1 | tee -a "$SYS_LOG_PATH_NAME"
-    status=${PIPESTATUS[0]}
+    mvn -f "$MAIN_POM_PATH" clean package -pl venator -am -DskipTests
+    status=$?
 
     if [ "$status" -ne 0 ]; then
         echo "${RED}Maven build failed. Aborting${RESET}"
@@ -154,7 +153,7 @@ build_service() {
     mv "$TARGET_JAR_PATH" "$PATH_TO_JAR"
     status=$?
 
-    if [ $status -ne 0 ]; then
+    if [ "$status" -ne 0 ]; then
         echo "${RED}Failed to move new JAR into place${RESET}"
         return 1
     fi
@@ -165,8 +164,8 @@ build_service() {
 test_service() {
     echo "${GREEN}Running tests for $SERVICE_NAME...${RESET}"
 
-    mvn -f "$MAIN_POM_PATH" clean test -pl venator -am 2>&1 | tee -a "$SYS_LOG_PATH_NAME"
-    status=${PIPESTATUS[0]}
+    mvn -f "$MAIN_POM_PATH" clean test -pl venator -am
+    status=$?
 
     if [ "$status" -ne 0 ]; then
         echo "${RED}Tests failed${RESET}"
