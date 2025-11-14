@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 SERVICE_NAME="venator"
+MAIN_POM_PATH="$UNIVERSE_HOME/jawa/pom.xml"
+TARGET_JAR_PATH="$UNIVERSE_HOME/jawa/venator/target/venator.jar"
 PATH_BASE="$UNIVERSE_WORKSPACE/venator"
 PATH_TO_JAR="$PATH_BASE/venator.jar"
 PATH_TO_JAVA="/usr/bin/java"
@@ -131,7 +133,32 @@ restart_service() {
 }
 
 build_service() {
-  echo "build" # TODO
+    echo "${GREEN}Building $SERVICE_NAME...${RESET}"
+    mvn -f "$MAIN_POM_PATH" clean package -pl venator -am -DskipTests
+    status=$?
+
+    if [ $status -ne 0 ]; then
+        echo "${RED}Maven build failed. Aborting${RESET}"
+        return 1
+    fi
+
+    if [ ! -f "$TARGET_JAR_PATH" ]; then
+        echo "${RED}Build succeeded but output JAR is missing: $TARGET_JAR_PATH${RESET}"
+        return 1
+    fi
+
+    if [ -f "$PATH_TO_JAR" ]; then
+        rm -f "$PATH_TO_JAR"
+    fi
+    mv "$TARGET_JAR_PATH" "$PATH_TO_JAR"
+    status=$?
+
+    if [ $status -ne 0 ]; then
+        echo "${RED}Failed to move new JAR into place${RESET}"
+        return 1
+    fi
+
+    echo "${GREEN}$SERVICE_NAME built and deployed, use ${RESET}venator restart${GREEN} to restart it${RESET}"
 }
 
 # prerequisites
