@@ -130,6 +130,10 @@ restart_service() {
     start_service
 }
 
+build_service() {
+  echo "build" # TODO
+}
+
 # prerequisites
 if [ ! -x "$PATH_TO_JAVA" ]; then
     echo "${RED}java not found at $PATH_TO_JAVA${RESET}"
@@ -138,7 +142,6 @@ fi
 
 if [ ! -f "$PATH_TO_JAR" ]; then
     echo "${RED}jar not found at $PATH_TO_JAR${RESET}"
-    exit 1
 fi
 
 # main
@@ -147,8 +150,9 @@ case "$1" in
     stop)    stop_service ;;
     restart) restart_service ;;
     status)  status_service ;;
+    build)  build_service ;;
     *)
-        echo "${RED}usage: $0 [status | start | stop | restart]${RESET}"
+        echo "${RED}usage: $0 [status | start | stop | restart | build]${RESET}"
         exit 1
     ;;
 esac
