@@ -36,6 +36,8 @@ public class JocastaAutoConfiguration {
     @Bean
     public UniverseEnvironment universeEnvironment(Environment environment) {
         String env = environment.getProperty(ENV_PROPERTY);
+        // TODO
+        System.out.println("env from JocastaAutoConfiguration = " + env);
         if (env == null || env.isBlank())
             throw new IllegalStateException(NO_ENV_MESSAGE);
         return UniverseEnvironment.get(env);
