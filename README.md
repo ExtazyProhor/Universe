@@ -24,6 +24,15 @@ Python
 
 ### Настройка окружения
 
+##### Инструменты разработки и запуска
+
+Необходимы java, git и maven (`mvn`).
+
+Проверка наличия:
+```sh
+for cmd in java git mvn; do command -v "$cmd" >/dev/null 2>&1 || echo "$cmd is missing"; done
+```
+
 ##### Клонирование репозитория
 
 ```sh
