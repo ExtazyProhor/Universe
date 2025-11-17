@@ -53,7 +53,7 @@ class MavenService(
      */
     fun build(modulePath: String) {
         executor.runCommand(
-            command = listOf("mvn", "-f", jawaPom, "package", "-pl", modulePath, "-am")
+            command = listOf("mvn", "-f", jawaPom, "package", "-pl", modulePath, "-am", "-DskipTests")
         )
     }
 }
