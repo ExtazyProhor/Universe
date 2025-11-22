@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Legacy Yahtzee" type="Application" factoryName="Application">
+    <envs>
+      <env name="UNIVERSE_HOME" value="$PROJECT_DIR$/.." />
+      <env name="HOLOCRON_JSON" value="$USER_HOME$/my/holocron.json" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="ru.prohor.universe.yahtzee.legacy.YahtzeeLegacyMain" />
+    <module name="yahtzee-legacy" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,3 +1,8 @@
 .idea/*
 !.idea/codeStyles/
 !.idea/codeStyles/*
+!.idea/runConfigurations/
+!.idea/runConfigurations/*
+!.idea/inspectionProfiles/
+!.idea/inspectionProfiles/*
+!.idea/misc.xml

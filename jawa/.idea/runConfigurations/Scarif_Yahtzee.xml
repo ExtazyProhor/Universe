@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Scarif+Yahtzee" type="CompoundRunConfigurationType">
+    <toRun name="Scarif" type="Application" />
+    <toRun name="Yahtzee" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>
