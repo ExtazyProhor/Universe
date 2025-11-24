@@ -19,6 +19,18 @@
             <artifactId>jocasta-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-tg-bots</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-morphia</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
         </dependency>
