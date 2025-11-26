@@ -53,6 +53,14 @@ source ~/.profile # для bash
 source ~/.zprofile # для zsh
 ```
 
+Для windows в powershell:
+```ps1
+[System.Environment]::SetEnvironmentVariable('UNIVERSE_HOME', 'C:\path\to\repository\root', 'User')
+[System.Environment]::SetEnvironmentVariable('UNIVERSE_WORKSPACE', 'C:\path\to\workspace\dir', 'User')
+[System.Environment]::SetEnvironmentVariable('HOLOCRON_JSON', 'C:\path\to\holocron.json', 'User')
+[System.Environment]::SetEnvironmentVariable('SPRING_PROFILES_ACTIVE', 'stable', 'User')
+```
+
 ##### `alias`-ы
 
 `~/.bashrc` для bash или `~/.zshrc` для zsh
