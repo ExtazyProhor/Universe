@@ -25,6 +25,7 @@ class RepositoryPullerWebhookAction(
         if (environment != UniverseEnvironment.STABLE) {
             // TODO log
             println("Env is not stable, skip repo updating")
+            return
         }
         val wasPerformed = repository.tryPerform(
             operation = { universe -> performPulling(payload, universe) },
