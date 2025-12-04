@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class IpValidationService(
-    // https://api.github.com/meta
     @Value($$"${universe.venator.webhook.permitted-ip}") permittedIps: List<String>
 ) {
     private val bitPrefixes = permittedIps.map { permittedIp ->
