@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Yoda" type="Application" factoryName="Application">
     <envs>
-      <env name="UNIVERSE_HOME" value="$PROJECT_DIR$/.." />
-      <env name="HOLOCRON_JSON" value="$USER_HOME$/my/holocron.json" />
+      <env name="HOLOCRON_JSON" value="$HOLOCRON_JSON$" />
+      <env name="UNIVERSE_HOME" value="$UNIVERSE_HOME$" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="ru.prohor.universe.yoda.YodaMain" />
     <module name="yoda" />

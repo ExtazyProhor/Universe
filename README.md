@@ -95,5 +95,5 @@ fi
 `Edit Configurations...` -> `Environment variables`:
 
 ```sh
-UNIVERSE_HOME=path/to/repository/root; UNIVERSE_WORKSPACE=path/to/workspace/dir; HOLOCRON_JSON=path/to/holocron.json
+UNIVERSE_HOME=$UNIVERSE_HOME$; UNIVERSE_WORKSPACE=$UNIVERSE_WORKSPACE$; HOLOCRON_JSON=$HOLOCRON_JSON$
 ```
