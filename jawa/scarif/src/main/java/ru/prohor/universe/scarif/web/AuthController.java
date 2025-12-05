@@ -1,6 +1,5 @@
 package ru.prohor.universe.scarif.web;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.prohor.universe.hyperspace.jwt.AuthorizedUser;
+import ru.prohor.universe.hyperspace.jwtprovider.JwtProvider;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
-import ru.prohor.universe.hyperspace.jwt.AuthorizedUser;
 import ru.prohor.universe.scarif.data.session.Session;
 import ru.prohor.universe.scarif.data.user.User;
 import ru.prohor.universe.scarif.services.CookieProvider;
-import ru.prohor.universe.hyperspace.jwtprovider.JwtProvider;
 import ru.prohor.universe.scarif.services.LoginService;
 import ru.prohor.universe.scarif.services.RateLimitService;
 import ru.prohor.universe.scarif.services.RegistrationService;
@@ -73,7 +72,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
 
         if (parsedUserToken.isPresent() || authorizedUser.isPresent())
-            return ResponseEntity.status(HttpServletResponse.SC_CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         try {
             User user = registrationService.registerUser(body.username, body.email, body.password);
             return newSession(user, userData);
@@ -111,7 +110,7 @@ public class AuthController {
             return newSession(user, userData);
         } catch (LoginService.LoginException e) {
             // TODO log
-            return ResponseEntity.status(e.code).body(e.cause);
+            return ResponseEntity.status(e.status).body(e.cause);
         }
     }
 
@@ -129,19 +128,18 @@ public class AuthController {
     ) {
         if (authorizedUser.isPresent()) {
             // TODO log.warn IS
-            return ResponseEntity.status(HttpServletResponse.SC_CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         if (parsedUserToken.isEmpty())
-            // TODO заменить все HttpServletResponse статусы на HttpStatus
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         Opt<UserTokenAndUserId> userTokenAndUserId = sessionsService.refreshToken(parsedUserToken.get());
         if (userTokenAndUserId.isEmpty())
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         Opt<User> userO = userService.find(userTokenAndUserId.get().userId());
         if (userO.isEmpty()) {
             // TODO log.error что-то не так у сервиса
-            return ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         return fromCookies(List.of(
                 cookieProvider.createRefreshCookie(userTokenAndUserId.get().userToken()),
@@ -155,9 +153,9 @@ public class AuthController {
             Opt<ParsedUserToken> parsedUserToken
     ) {
         if (parsedUserToken.isEmpty())
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         if (!sessionsService.logout(parsedUserToken.get()))
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return fromCookies(List.of(
                 cookieProvider.clearRefreshCookie(),
                 cookieProvider.clearAccessCookie()
@@ -170,10 +168,10 @@ public class AuthController {
             Opt<ParsedUserToken> parsedUserToken
     ) {
         if (parsedUserToken.isEmpty())
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         Opt<Session> currentSession = sessionsService.getSession(parsedUserToken.get());
         if (currentSession.isEmpty())
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(
                 sessionsService.getAllValidSessions(currentSession.get().userId())
                         .stream()
@@ -200,9 +198,9 @@ public class AuthController {
 
     ) {
         if (parsedUserToken.isEmpty())
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         if (authorizedUser.isEmpty())
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         Opt<Session> currentSession = sessionsService.getSession(parsedUserToken.get());
         Opt<Session> session = sessionsService.getSession(body.id());

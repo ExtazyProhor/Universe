@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -70,7 +71,7 @@ public class UserDataFilter extends OncePerRequestFilter { // TODO CSRF security
     }
 
     public void unauthorized(HttpServletResponse response) {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // TODO другой тип
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
     }
