@@ -1,7 +1,6 @@
 package ru.prohor.universe.jocasta.morphia;
 
 import dev.morphia.query.filters.Filter;
-import dev.morphia.query.updates.UpdateOperator;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.PaginationResult;
 import ru.prohor.universe.jocasta.core.collections.Paginator;
@@ -76,11 +75,6 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     @Override
     public void save(List<T> entities) {
         entities.forEach(this::save);
-    }
-
-    @Override
-    public void update(Filter filter, UpdateOperator updateOperator) {
-        throw UNSUPPORTED_FILTER;
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.mongodb.client.model.Sorts;
 import dev.morphia.Datastore;
 import dev.morphia.annotations.Entity;
 import dev.morphia.query.filters.Filter;
-import dev.morphia.query.updates.UpdateOperator;
 import dev.morphia.transactions.MorphiaSession;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -101,13 +100,6 @@ public class AbstractMongoMorphiaRepository<T, W> {
 
     void save(List<W> entities) {
         datastore.save(entities.stream().map(unwrapFunction).toList());
-    }
-
-    @SuppressWarnings("all")
-    void update(Filter filter, UpdateOperator updateOperator) {
-        datastore.find(type)
-                .filter(filter)
-                .update(updateOperator).execute();
     }
 
     void deleteById(ObjectId id) {

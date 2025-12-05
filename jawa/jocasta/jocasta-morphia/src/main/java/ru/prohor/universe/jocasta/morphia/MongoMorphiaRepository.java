@@ -2,7 +2,6 @@ package ru.prohor.universe.jocasta.morphia;
 
 import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filter;
-import dev.morphia.query.updates.UpdateOperator;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
@@ -71,11 +70,6 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
     @Override
     public void save(List<T> entities) {
         repository.save(entities);
-    }
-
-    @Override
-    public void update(Filter filter, UpdateOperator updateOperator) {
-        repository.update(filter, updateOperator);
     }
 
     @Override

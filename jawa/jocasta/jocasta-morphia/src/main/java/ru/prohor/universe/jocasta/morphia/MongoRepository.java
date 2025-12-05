@@ -1,7 +1,6 @@
 package ru.prohor.universe.jocasta.morphia;
 
 import dev.morphia.query.filters.Filter;
-import dev.morphia.query.updates.UpdateOperator;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
@@ -54,8 +53,6 @@ public interface MongoRepository<T> {
     void save(T entity);
 
     void save(List<T> entities);
-
-    void update(Filter filter, UpdateOperator updateOperator);
 
     void deleteById(ObjectId id);
 
