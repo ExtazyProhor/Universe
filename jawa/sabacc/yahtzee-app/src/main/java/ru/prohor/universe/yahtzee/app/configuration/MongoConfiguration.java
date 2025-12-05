@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@Profile("!local & !testing")
+@Profile("stable | canary")
 public class MongoConfiguration {
     @Bean
     public MongoClient mongoClient(
@@ -67,15 +67,11 @@ public class MongoConfiguration {
     }
 
     @Bean
-    @SuppressWarnings("all") // TODO upgrade ubuntu, opt(postgres), mongo, morphia (cfg file)
     public Datastore datastore(
             @Value("${universe.yahtzee.mongo.database}") String database,
             MongoClient mongoClient
     ) {
-        // TODO MapperOptions.builder()
-        Datastore datastore = Morphia.createDatastore(mongoClient, database);
-        datastore.getMapper().mapPackage("ru.prohor.universe.yahtzee.data.entities.dto");
-        return datastore;
+        return Morphia.createDatastore(mongoClient, database);
     }
 
     @Bean

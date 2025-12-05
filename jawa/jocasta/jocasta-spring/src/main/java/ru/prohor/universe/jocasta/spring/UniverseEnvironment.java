@@ -10,10 +10,11 @@ import java.util.stream.Collectors;
 public enum UniverseEnvironment {
     LOCAL,
     STABLE,
-    TESTING;
+    TESTING,
+    CANARY;
 
     public boolean canBeObtainedLocally() {
-        return this == LOCAL || this == TESTING;
+        return this != STABLE;
     }
 
     private static final Map<String, UniverseEnvironment> MAPPER = Arrays.stream(values())
