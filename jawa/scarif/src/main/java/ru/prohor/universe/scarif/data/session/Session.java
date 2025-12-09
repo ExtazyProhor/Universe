@@ -12,7 +12,7 @@ public record Session(
         // TODO https://www.baeldung.com/java-yauaa-user-agent-parsing
         // TODO https://github.com/ua-parser/uap-java
         Opt<String> userAgent,
-        Opt<String> ipAddress,
+        String ipAddress,
         boolean closed,
         Opt<Instant> closedAt
 ) {
@@ -23,7 +23,7 @@ public record Session(
                 DateTimeUtil.unwrap(createdAt),
                 DateTimeUtil.unwrap(expiresAt),
                 userAgent.orElseNull(),
-                ipAddress.orElseNull(),
+                ipAddress,
                 closed,
                 closedAt.map(DateTimeUtil::unwrap).orElseNull()
         );
@@ -36,7 +36,7 @@ public record Session(
                 DateTimeUtil.wrap(sessionDto.getCreatedAt()),
                 DateTimeUtil.wrap(sessionDto.getExpiresAt()),
                 Opt.ofNullable(sessionDto.getUserAgent()),
-                Opt.ofNullable(sessionDto.getIpAddress()),
+                sessionDto.getIpAddress(),
                 sessionDto.isClosed(),
                 Opt.ofNullable(sessionDto.getClosedAt()).map(DateTimeUtil::wrap)
         );

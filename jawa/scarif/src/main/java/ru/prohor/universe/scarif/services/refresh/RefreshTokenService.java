@@ -30,7 +30,6 @@ public class RefreshTokenService {
     }
 
     public Tokens generateTokens() {
-        // TODO сделать генерацию не по времени (ИБ)
         long id = snowflakeIdGenerator.nextId();
         byte[] token = new byte[refreshTokenSizeBytes];
         random.nextBytes(token);

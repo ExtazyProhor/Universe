@@ -2,6 +2,8 @@ package ru.prohor.universe.scarif.services;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,8 @@ import java.util.List;
 @Transactional
 @Service
 public class SessionsService {
+    private static final Logger log = LoggerFactory.getLogger(SessionsService.class);
+
     private final Duration refreshTokenTtl;
     private final JpaRefreshTokenMethods refreshTokenMethods;
     private final SnowflakeIdGenerator snowflakeIdGenerator;
@@ -42,7 +46,6 @@ public class SessionsService {
         this.sessionMethods = sessionMethods;
     }
 
-    @Transactional(readOnly = true)
     public List<Session> getAllValidSessions(long userId) {
         return sessionMethods.findByUserIdAndClosedFalseAndExpiresAtAfter(userId, DateTimeUtil.unwrap(Instant.now()))
                 .stream()
@@ -53,50 +56,48 @@ public class SessionsService {
     // TODO Лимит одновременных сессий
     public String createNewSession(long userId, String userAgent, String ipAddress) {
         Instant now = Instant.now();
-        Tokens tokens = refreshTokenService.generateTokens();
-
         Session session = new Session(
                 snowflakeIdGenerator.nextId(),
                 userId,
                 now,
                 now.plus(refreshTokenTtl),
                 Opt.ofNullable(userAgent),
-                Opt.ofNullable(ipAddress),
+                ipAddress,
                 false,
                 Opt.empty()
         );
         sessionMethods.save(session.toDto());
 
-        RefreshToken token = new RefreshToken(
-                tokens.id(),
-                tokens.token(),
+        Tokens tokens = refreshTokenService.generateTokens();
+        createNewRefreshToken(
+                tokens,
                 session,
-                now,
-                false,
-                Opt.empty()
+                Instant.now()
         );
-        refreshTokenMethods.save(token.toDto());
         return tokens.userToken();
     }
 
     public Opt<UserTokenAndUserId> refreshToken(ParsedUserToken userToken) {
         Opt<RefreshToken> refreshToken = validateParsedUserToken(userToken);
+        if (refreshToken.isEmpty())
+            return Opt.empty();
         refreshTokenMethods.save(revoke(refreshToken.get()).toDto());
-        Tokens tokens = refreshTokenService.generateTokens();
 
-        RefreshToken newRefreshToken = new RefreshToken(
-                tokens.id(),
-                tokens.token(),
+        Tokens tokens = refreshTokenService.generateTokens();
+        createNewRefreshToken(
+                tokens,
                 refreshToken.get().session(),
-                Instant.now(),
-                false,
-                Opt.empty()
+                Instant.now()
         );
-        refreshTokenMethods.save(newRefreshToken.toDto());
         return Opt.of(new UserTokenAndUserId(
                 refreshToken.get().session().userId(),
                 tokens.userToken()
         ));
+    }
+
+    private void createNewRefreshToken(Tokens tokens, Session session, Instant createAt) {
+        RefreshToken token = new RefreshToken(tokens.id(), tokens.token(), session, createAt, false, Opt.empty());
+        refreshTokenMethods.save(token.toDto());
     }
 
     public Opt<Session> getSession(long id) {
@@ -122,28 +123,31 @@ public class SessionsService {
     private Opt<RefreshToken> validateParsedUserToken(ParsedUserToken userToken) {
         Opt<RefreshToken> refreshTokenO = findRefreshToken(userToken.id());
         if (refreshTokenO.isEmpty()) {
-            // TODO log warn IS (id несуществующего токена)
+            log.warn("[IS] refresh token cookie contains id of a non-existent refresh token");
             return Opt.empty();
         }
         RefreshToken refreshToken = refreshTokenO.get();
         if (!userToken.tokenValidator().test(refreshToken)) {
-            // TODO log warn IS (поддельный validation token)
+            log.warn("[IS] fake validation token");
             return Opt.empty();
         }
         if (refreshToken.revoked()) {
-            // TODO log warn IS
-            // Если кто-то попытается использовать старый токен - это подозрительно
-            // Можно для безопасности при этом инвалидировать все сессии пользователя
+            log.warn(
+                    "[IS] user with id {} is trying to use a revoked token with id {}",
+                    refreshToken.session().userId(),
+                    refreshToken.id()
+            );
             return Opt.empty();
         }
-        if (refreshToken.session().closed()) {
+        Session session = refreshToken.session();
+        if (session.closed()) {
             return Opt.empty();
         }
-        if (refreshToken.session().expiresAt().isBeforeNow()) {
-            // TODO log debug / trace
+        if (session.expiresAt().isBeforeNow()) {
+            log.debug("session {} of user with id {} has expired", session.id(), session.userId());
             return Opt.empty();
         }
-        return Opt.of(refreshToken);
+        return refreshTokenO;
     }
 
     private Opt<RefreshToken> findRefreshToken(long id) {

@@ -1,5 +1,7 @@
 package ru.prohor.universe.scarif.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,11 @@ import ru.prohor.universe.scarif.data.session.Session;
 import ru.prohor.universe.scarif.data.user.User;
 import ru.prohor.universe.scarif.services.CookieProvider;
 import ru.prohor.universe.scarif.services.LoginService;
-import ru.prohor.universe.scarif.services.RateLimitService;
+import ru.prohor.universe.scarif.services.ratelimit.LoginIpRateLimiter;
 import ru.prohor.universe.scarif.services.RegistrationService;
 import ru.prohor.universe.scarif.services.SessionsService;
 import ru.prohor.universe.scarif.services.UserService;
+import ru.prohor.universe.scarif.services.ratelimit.RegisterIpRateLimiter;
 import ru.prohor.universe.scarif.services.refresh.ParsedUserToken;
 import ru.prohor.universe.scarif.services.refresh.UserTokenAndUserId;
 
@@ -31,8 +34,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+
+    private final RegisterIpRateLimiter registerIpRateLimiter;
     private final RegistrationService registrationService;
-    private final RateLimitService rateLimitService;
+    private final LoginIpRateLimiter loginIpRateLimiter;
     private final SessionsService sessionsService;
     private final CookieProvider cookieProvider;
     private final LoginService loginService;
@@ -40,16 +46,18 @@ public class AuthController {
     private final UserService userService;
 
     public AuthController(
+            RegisterIpRateLimiter registerIpRateLimiter,
             RegistrationService registrationService,
-            RateLimitService rateLimitService,
+            LoginIpRateLimiter loginIpRateLimiter,
             SessionsService sessionsService,
             CookieProvider cookieProvider,
             LoginService loginService,
             JwtProvider jwtProvider,
             UserService userService
     ) {
+        this.registerIpRateLimiter = registerIpRateLimiter;
         this.registrationService = registrationService;
-        this.rateLimitService = rateLimitService;
+        this.loginIpRateLimiter = loginIpRateLimiter;
         this.sessionsService = sessionsService;
         this.cookieProvider = cookieProvider;
         this.loginService = loginService;
@@ -68,13 +76,14 @@ public class AuthController {
             @RequestAttribute(name = AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY)
             Opt<AuthorizedUser> authorizedUser
     ) {
-        if (!rateLimitService.isRegisterAllowed(userData.ip().orElseNull()))
+        if (!registerIpRateLimiter.isAllowed(userData.ip()))
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
 
         if (parsedUserToken.isPresent() || authorizedUser.isPresent())
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         try {
             User user = registrationService.registerUser(body.username, body.email, body.password);
+            registerIpRateLimiter.reset(userData.ip());
             return newSession(user, userData);
         } catch (RegistrationService.RegistrationException e) {
             return ResponseEntity.badRequest().body(e.cause);
@@ -98,7 +107,7 @@ public class AuthController {
             @RequestAttribute(name = AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY)
             Opt<AuthorizedUser> authorizedUser
     ) {
-        if (!rateLimitService.isLoginAllowed(userData.ip().orElseNull()))
+        if (!loginIpRateLimiter.isAllowed(userData.ip()))
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build(); // TODO CAPTCHA, 2FA (TOTP)
 
         if (parsedUserToken.isPresent() || authorizedUser.isPresent())
@@ -106,10 +115,10 @@ public class AuthController {
 
         try {
             User user = loginService.authenticateUser(body.login, body.password);
-            rateLimitService.loginReset(userData.ip().orElseNull());
+            loginIpRateLimiter.reset(userData.ip());
             return newSession(user, userData);
         } catch (LoginService.LoginException e) {
-            // TODO log
+            log.debug("exception at loginService", e);
             return ResponseEntity.status(e.status).body(e.cause);
         }
     }
@@ -127,7 +136,7 @@ public class AuthController {
             Opt<AuthorizedUser> authorizedUser
     ) {
         if (authorizedUser.isPresent()) {
-            // TODO log.warn IS
+            log.warn("[SB] endpoint /refresh was called manually, access token already present");
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         if (parsedUserToken.isEmpty())
@@ -138,8 +147,11 @@ public class AuthController {
 
         Opt<User> userO = userService.find(userTokenAndUserId.get().userId());
         if (userO.isEmpty()) {
-            // TODO log.error что-то не так у сервиса
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            log.error(
+                    "Token was successfully refreshed, but the owner (user) of this token was not found, userId = {}",
+                    userTokenAndUserId.get().userId()
+            );
+            return clearCookies(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return fromCookies(List.of(
                 cookieProvider.createRefreshCookie(userTokenAndUserId.get().userToken()),
@@ -156,10 +168,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         if (!sessionsService.logout(parsedUserToken.get()))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return fromCookies(List.of(
-                cookieProvider.clearRefreshCookie(),
-                cookieProvider.clearAccessCookie()
-        )); // TODO redirect to login
+        return clearCookies(); // TODO redirect to login
     }
 
     @GetMapping("/get_sessions")
@@ -176,7 +185,7 @@ public class AuthController {
                 sessionsService.getAllValidSessions(currentSession.get().userId())
                         .stream()
                         .map(session -> new SessionResponseBody(
-                                session.ipAddress().orElseNull(),
+                                session.ipAddress(),
                                 session.userAgent().orElseNull(),
                                 session.id(),
                                 DateTimeUtil.toReadableString(session.createdAt()),
@@ -210,18 +219,12 @@ public class AuthController {
 
         if (session.get().id() != currentSession.get().id())
             return ResponseEntity.ok().build();
-        return fromCookies(List.of(
-                cookieProvider.clearRefreshCookie(),
-                cookieProvider.clearAccessCookie()
-        ));
+        return clearCookies();
     }
 
     @GetMapping("/clear_cookies")
     public ResponseEntity<?> closeSession() {
-        return fromCookies(List.of(
-                cookieProvider.clearRefreshCookie(),
-                cookieProvider.clearAccessCookie()
-        ));
+        return clearCookies();
     }
 
     public record CloseSessionRequestBody(long id) {}
@@ -230,7 +233,7 @@ public class AuthController {
         String token = sessionsService.createNewSession(
                 user.id(),
                 userData.userAgent().orElseNull(),
-                userData.ip().orElseNull()
+                userData.ip()
         );
         return fromCookies(List.of(
                 cookieProvider.createRefreshCookie(token),
@@ -239,7 +242,25 @@ public class AuthController {
     }
 
     private ResponseEntity<?> fromCookies(List<String> cookies) {
-        return ResponseEntity.ok().headers(
+        return fromCookies(cookies, HttpStatus.OK);
+    }
+
+    private ResponseEntity<?> clearCookies() {
+        return clearCookies(HttpStatus.OK);
+    }
+
+    private ResponseEntity<?> clearCookies(HttpStatus status) {
+        return fromCookies(
+                List.of(
+                        cookieProvider.clearRefreshCookie(),
+                        cookieProvider.clearAccessCookie()
+                ),
+                status
+        );
+    }
+
+    private ResponseEntity<?> fromCookies(List<String> cookies, HttpStatus status) {
+        return ResponseEntity.status(status).headers(
                 new HttpHeaders(MultiValueMap.fromMultiValue(Map.of(
                         HttpHeaders.SET_COOKIE,
                         cookies
