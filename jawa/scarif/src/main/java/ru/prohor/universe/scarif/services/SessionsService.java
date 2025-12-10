@@ -141,6 +141,7 @@ public class SessionsService {
         }
         Session session = refreshToken.session();
         if (session.closed()) {
+            log.debug("user-token refers to a closed session");
             return Opt.empty();
         }
         if (session.expiresAt().isBeforeNow()) {

@@ -16,7 +16,7 @@ public class ValidationService {
     private static final int MAX_PWD_LEN = 64;
 
     private final EmailValidator EMAIL_VALIDATOR = EmailValidator.getInstance();
-    private final Predicate<String> USERNAME_MATCHER = Pattern.compile("[a-zA-Z0-9]{3,16}").asMatchPredicate();
+    private final Predicate<String> USERNAME_MATCHER = Pattern.compile("[a-zA-Z][a-zA-Z0-9]{2,15}").asMatchPredicate();
     private final List<Tuple2<Predicate<String>, String>> PASSWORD_MATCHERS;
 
     public ValidationService() {
