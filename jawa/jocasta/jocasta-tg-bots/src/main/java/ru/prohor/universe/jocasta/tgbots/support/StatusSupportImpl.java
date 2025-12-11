@@ -36,8 +36,7 @@ public class StatusSupportImpl<K, V> extends FeatureSupportImpl<Update, K, Statu
         if (nullableChatId == null)
             return true;
 
-        long[] chatId = {nullableChatId};
-        Opt<BotStatus<K, V>> status = statusStorageService.getStatus(chatId[0]);
+        Opt<BotStatus<K, V>> status = statusStorageService.getStatus(nullableChatId);
         if (status.isEmpty())
             return true;
 
