@@ -1,8 +1,9 @@
-package ru.prohor.universe.bobafett;
+package ru.prohor.universe.bobafett.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.prohor.universe.bobafett.BobaFettBot;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
 import ru.prohor.universe.jocasta.tgbots.RegisterBot;
 

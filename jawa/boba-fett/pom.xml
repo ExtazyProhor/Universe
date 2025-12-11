@@ -20,5 +20,15 @@
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-spring</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-morphia</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
