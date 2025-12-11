@@ -20,6 +20,6 @@
         <module>jocasta-joda-time</module>
         <module>jocasta-tg-bots</module>
         <module>jocasta-morphia</module>
-        <module>jocasta-jackson-joda-time</module>
+        <module>jocasta-spring-configurations</module>
     </modules>
 </project>
