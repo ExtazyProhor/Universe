@@ -4,6 +4,7 @@ import dev.morphia.query.filters.Filter;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
+import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +50,8 @@ public interface MongoRepository<T> {
     }
 
     List<T> find(Filter filter);
+
+    List<T> find(Filter filter, MonoPredicate<T> manualFilter);
 
     void save(T entity);
 

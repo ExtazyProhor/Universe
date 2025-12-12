@@ -5,6 +5,7 @@ import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.PaginationResult;
 import ru.prohor.universe.jocasta.core.collections.Paginator;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,6 +66,14 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     @Override
     public List<T> find(Filter filter) {
         throw UNSUPPORTED_FILTER;
+    }
+
+    @Override
+    public List<T> find(Filter filter, MonoPredicate<T> manualFilter) {
+        return collection.values()
+                .stream()
+                .filter(manualFilter)
+                .toList();
     }
 
     @Override

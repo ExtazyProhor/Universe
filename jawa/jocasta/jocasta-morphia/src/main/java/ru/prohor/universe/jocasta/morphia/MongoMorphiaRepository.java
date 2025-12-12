@@ -4,6 +4,7 @@ import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filter;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 
 import java.util.List;
 import java.util.function.Function;
@@ -59,6 +60,11 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
 
     @Override
     public List<T> find(Filter filter) {
+        return repository.find(filter);
+    }
+
+    @Override
+    public List<T> find(Filter filter, MonoPredicate<T> manualFilter) {
         return repository.find(filter);
     }
 
