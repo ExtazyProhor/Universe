@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-morphia</artifactId>
+            <artifactId>jocasta-morphia-configuration</artifactId>
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>

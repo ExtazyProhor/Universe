@@ -341,6 +341,11 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-morphia-configuration</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
                 <artifactId>jocasta-spring-test</artifactId>
                 <version>final</version>
                 <scope>test</scope>
