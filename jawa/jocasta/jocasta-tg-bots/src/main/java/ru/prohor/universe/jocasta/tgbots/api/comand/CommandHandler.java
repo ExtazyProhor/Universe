@@ -1,7 +1,7 @@
 package ru.prohor.universe.jocasta.tgbots.api.comand;
 
-import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.tgbots.api.ActionHandler;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
@@ -19,7 +19,9 @@ public interface CommandHandler extends ActionHandler<String> {
     /**
      * @return command description
      */
-    String description();
+    default Opt<String> description() {
+        return Opt.empty();
+    }
 
     /**
      * @param message          telegram api message

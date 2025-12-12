@@ -2,6 +2,7 @@ package ru.prohor.universe.yoda.bot.handlers.command;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 import ru.prohor.universe.yoda.bot.Text;
@@ -16,7 +17,7 @@ public class HelpCommandHandler implements CommandHandler {
 
     public HelpCommandHandler(List<CommandHandler> commandHandlers) {
         List<CommandHandler> mutable = new ArrayList<>(commandHandlers);
-        mutable.add(this);
+        mutable.addFirst(this);
         this.commandHandlers = mutable;
     }
 
@@ -26,8 +27,8 @@ public class HelpCommandHandler implements CommandHandler {
     }
 
     @Override
-    public String description() {
-        return Text.CommandDescriptions.help();
+    public Opt<String> description() {
+        return Opt.of(Text.CommandDescriptions.help());
     }
 
     @Override
