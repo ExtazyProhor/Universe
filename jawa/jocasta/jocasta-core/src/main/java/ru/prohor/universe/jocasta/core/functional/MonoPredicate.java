@@ -1,7 +1,9 @@
 package ru.prohor.universe.jocasta.core.functional;
 
+import java.util.function.Predicate;
+
 @FunctionalInterface
-public interface MonoPredicate<T1> {
+public interface MonoPredicate<T1> extends Predicate<T1> {
     boolean test(T1 t1);
 
     default MonoPredicate<T1> and(MonoPredicate<? super T1> other) {

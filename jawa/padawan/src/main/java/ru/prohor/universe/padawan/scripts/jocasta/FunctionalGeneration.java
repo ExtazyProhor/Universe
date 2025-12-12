@@ -111,7 +111,9 @@ public class FunctionalGeneration {
         StringBuilder builder = new StringBuilder();
         builder.append("package ru.prohor.universe.jocasta.core.functional;\n\n");
 
-        if (size > 1)
+        if (size == 1)
+            builder.append("import java.util.function.Predicate;\n\n");
+        else if (size > 1)
             builder.append("import java.util.Objects;\n\n");
         builder.append("@FunctionalInterface\n");
         builder.append("public interface ");
@@ -122,6 +124,8 @@ public class FunctionalGeneration {
         if (generic.length() == 2)
             generic = "";
         builder.append(generic);
+        if (size == 1)
+            builder.append(" extends Predicate<T1>");
         builder.append(" {\n");
         builder.append(IntStream.range(1, size + 1).mapToObj(i -> "T" + i + " t" + i).collect(Collectors.joining(
                 ", ",
