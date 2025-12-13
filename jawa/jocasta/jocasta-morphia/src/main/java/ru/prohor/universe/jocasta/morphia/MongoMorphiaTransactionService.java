@@ -1,6 +1,7 @@
 package ru.prohor.universe.jocasta.morphia;
 
 import dev.morphia.Datastore;
+import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 
 public class MongoMorphiaTransactionService implements MongoTransactionService {
@@ -22,6 +23,23 @@ public class MongoMorphiaTransactionService implements MongoTransactionService {
             // TODO log
             e.printStackTrace();
             return MongoTransactionResult.error();
+        }
+    }
+
+    @Override
+    public boolean withTransaction(MonoConsumer<MongoTransaction> transaction) {
+        try {
+            datastore.withTransaction(
+                    session -> {
+                        transaction.accept(new MongoMorphiaTransaction(session));
+                        return Boolean.TRUE;
+                    }
+            );
+            return true;
+        } catch (Exception e) {
+            // TODO log
+            e.printStackTrace();
+            return false;
         }
     }
 }
