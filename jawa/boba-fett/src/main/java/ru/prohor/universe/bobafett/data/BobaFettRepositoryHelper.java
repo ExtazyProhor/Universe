@@ -15,7 +15,6 @@ public class BobaFettRepositoryHelper {
     public static Opt<BobaFettUser> findByChatId(MongoRepository<BobaFettUser> repository, long chatId) {
         List<BobaFettUser> users = findUsers(repository, chatId);
         if (users.size() != 1) {
-            // TODO log err unexpected count of users with chatId = $chatId
             return Opt.empty();
         }
         return Opt.of(users.getFirst());

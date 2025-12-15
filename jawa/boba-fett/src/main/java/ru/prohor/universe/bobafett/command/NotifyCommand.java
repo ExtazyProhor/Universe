@@ -53,6 +53,7 @@ public class NotifyCommand implements CommandHandler {
             MongoRepository<BobaFettUser> transactional = tx.wrap(usersRepository);
             Opt<BobaFettUser> user = BobaFettRepositoryHelper.findByChatId(transactional, chatId);
             if (user.isEmpty()) {
+                // TODO log err unexpected count of users with chatId = $chatId
                 return;
             }
             transactional.save(user.get().toBuilder().status(Opt.of(new UserStatus(

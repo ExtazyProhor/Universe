@@ -28,8 +28,10 @@ public class MongoStatusStorage implements ValuedStatusStorage<String, String> {
             MongoRepository<BobaFettUser> transactional = tx.wrap(repository);
 
             Opt<BobaFettUser> userO = BobaFettRepositoryHelper.findByChatId(transactional, chatId);
-            if (userO.isEmpty())
+            if (userO.isEmpty()) {
+                // TODO log err unexpected count of users with chatId = $chatId
                 return Opt.empty();
+            }
             BobaFettUser user = userO.get();
             Opt<UserStatus> status = user.status();
             if (status.isEmpty())
