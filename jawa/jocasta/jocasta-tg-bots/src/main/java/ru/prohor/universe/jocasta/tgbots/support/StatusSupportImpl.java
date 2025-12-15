@@ -4,26 +4,24 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
-import ru.prohor.universe.jocasta.tgbots.api.status.BotStatus;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
-import ru.prohor.universe.jocasta.tgbots.api.status.StatusStorageService;
+import ru.prohor.universe.jocasta.tgbots.api.status.StatusStorage;
 
 import java.util.List;
 
 /**
  * @param <K> status key
- * @param <V> status value
  */
-public class StatusSupportImpl<K, V> extends FeatureSupportImpl<Update, K, StatusHandler<K, V>> {
-    private final StatusStorageService<K, V> statusStorageService;
+public class StatusSupportImpl<K> extends FeatureSupportImpl<Update, K, StatusHandler<K>> {
+    private final StatusStorage<K> statusStorage;
 
     public StatusSupportImpl(
-            StatusStorageService<K, V> statusStorageService,
-            List<StatusHandler<K, V>> handlers,
+            StatusStorage<K> statusStorage,
+            List<StatusHandler<K>> handlers,
             TriFunction<Update, K, FeedbackExecutor, Boolean> unknownKeyHandler
     ) {
         super(handlers, unknownKeyHandler);
-        this.statusStorageService = statusStorageService;
+        this.statusStorage = statusStorage;
     }
 
     @Override
@@ -36,14 +34,14 @@ public class StatusSupportImpl<K, V> extends FeatureSupportImpl<Update, K, Statu
         if (nullableChatId == null)
             return true;
 
-        Opt<BotStatus<K, V>> status = statusStorageService.getStatus(nullableChatId);
+        Opt<K> status = statusStorage.getStatus(nullableChatId);
         if (status.isEmpty())
             return true;
 
         return useHandler(
                 update,
-                status.get().key(),
-                handler -> handler.handle(status.get().value(), update, feedbackExecutor),
+                status.get(),
+                handler -> handler.handle(update, feedbackExecutor),
                 feedbackExecutor
         );
     }

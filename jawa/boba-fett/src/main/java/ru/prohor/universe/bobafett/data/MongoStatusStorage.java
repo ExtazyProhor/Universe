@@ -7,11 +7,10 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionResult;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
-import ru.prohor.universe.jocasta.tgbots.api.status.BotStatus;
-import ru.prohor.universe.jocasta.tgbots.api.status.StatusStorageService;
+import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusStorage;
 
 @Service
-public class MongoStatusStorage implements StatusStorageService<String, String> {
+public class MongoStatusStorage implements ValuedStatusStorage<String, String> {
     private final MongoRepository<BobaFettUser> repository;
     private final MongoTransactionService transactionService;
 
@@ -24,8 +23,8 @@ public class MongoStatusStorage implements StatusStorageService<String, String> 
     }
 
     @Override
-    public Opt<BotStatus<String, String>> getStatus(long chatId) {
-        MongoTransactionResult<Opt<BotStatus<String, String>>> result = transactionService.withTransaction(tx -> {
+    public Opt<ValuedStatus<String, String>> getStatus(long chatId) {
+        MongoTransactionResult<Opt<ValuedStatus<String, String>>> result = transactionService.withTransaction(tx -> {
             MongoRepository<BobaFettUser> transactional = tx.wrap(repository);
 
             Opt<BobaFettUser> userO = BobaFettRepositoryHelper.findByChatId(transactional, chatId);
@@ -36,7 +35,7 @@ public class MongoStatusStorage implements StatusStorageService<String, String> 
             if (status.isEmpty())
                 return Opt.empty();
             transactional.save(user.toBuilder().status(Opt.empty()).build());
-            return user.status().map(it -> new BotStatus<>(
+            return user.status().map(it -> new ValuedStatus<>(
                     it.key(),
                     it.value()
             ));

@@ -4,11 +4,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.jocasta.tgbots.api.ActionHandler;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
-public interface StatusHandler<K> extends ActionHandler<K> {
+public interface ValuedStatusHandler<K, V> extends ActionHandler<K> {
     /**
+     * @param value            value of status
      * @param update           telegram api update
      * @param feedbackExecutor interface for sending feedback to users
      * @return a flag indicating whether to continue update processing
      */
-    boolean handle(Update update, FeedbackExecutor feedbackExecutor);
+    boolean handle(V value, Update update, FeedbackExecutor feedbackExecutor);
 }

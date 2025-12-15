@@ -2,6 +2,7 @@ package ru.prohor.universe.bobafett.data;
 
 import dev.morphia.query.filters.Filters;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.fieldref.FieldReference;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 
@@ -11,13 +12,13 @@ public class BobaFettRepositoryHelper {
     private BobaFettRepositoryHelper() {}
 
     // TODO custom filters like "eq"
-    public static BobaFettUser findByChatId(MongoRepository<BobaFettUser> repository, long chatId) {
+    public static Opt<BobaFettUser> findByChatId(MongoRepository<BobaFettUser> repository, long chatId) {
         List<BobaFettUser> users = findUsers(repository, chatId);
         if (users.size() != 1) {
             // TODO log err unexpected count of users with chatId = $chatId
-            throw new IllegalStateException("unexpected count of users with chatId = " + chatId);
+            return Opt.empty();
         }
-        return users.getFirst();
+        return Opt.of(users.getFirst());
     }
 
     public static boolean containsByChatId(MongoRepository<BobaFettUser> repository, long chatId) {

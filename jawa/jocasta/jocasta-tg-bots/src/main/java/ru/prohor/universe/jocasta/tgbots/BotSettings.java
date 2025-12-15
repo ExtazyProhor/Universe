@@ -8,12 +8,15 @@ import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
-import ru.prohor.universe.jocasta.tgbots.api.status.StatusStorageService;
+import ru.prohor.universe.jocasta.tgbots.api.status.StatusStorage;
+import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusHandler;
+import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusStorage;
 import ru.prohor.universe.jocasta.tgbots.support.CallbackSupportImpl;
 import ru.prohor.universe.jocasta.tgbots.support.FeatureSupport;
 import ru.prohor.universe.jocasta.tgbots.support.FeatureUnsupported;
 import ru.prohor.universe.jocasta.tgbots.support.CommandSupportImpl;
 import ru.prohor.universe.jocasta.tgbots.support.StatusSupportImpl;
+import ru.prohor.universe.jocasta.tgbots.support.ValuedStatusSupportImpl;
 
 import java.util.List;
 
@@ -83,8 +86,11 @@ public final class BotSettings {
         }
 
         /**
-         * @param statusStorageService implementation of statuses storage
+         * Statuses that support both normal and valued statuses
+         *
+         * @param valuedStatusStorage  implementation of valued statuses storage
          * @param statusHandlers       status handlers
+         * @param valuedStatusHandlers valued status handlers
          * @param unknownStatusHandler handler for unknown status, accepts unknown status key and feedback executor,
          *                             returns flag indicating whether to continue update processing
          * @param <K>                  status key type
@@ -92,11 +98,36 @@ public final class BotSettings {
          * @return this builder
          */
         public <K, V> Builder withStatusSupport(
-                StatusStorageService<K, V> statusStorageService,
-                List<StatusHandler<K, V>> statusHandlers,
+                ValuedStatusStorage<K, V> valuedStatusStorage,
+                List<StatusHandler<K>> statusHandlers,
+                List<ValuedStatusHandler<K, V>> valuedStatusHandlers,
                 TriFunction<Update, K, FeedbackExecutor, Boolean> unknownStatusHandler
         ) {
-            statusSupport = new StatusSupportImpl<>(statusStorageService, statusHandlers, unknownStatusHandler);
+            statusSupport = new ValuedStatusSupportImpl<>(
+                    statusHandlers,
+                    valuedStatusHandlers,
+                    unknownStatusHandler,
+                    valuedStatusStorage
+            );
+            return this;
+        }
+
+        /**
+         * Statuses that only support statuses without values
+         *
+         * @param statusStorage        implementation of statuses storage
+         * @param statusHandlers       status handlers
+         * @param unknownStatusHandler handler for unknown status, accepts unknown status key and feedback executor,
+         *                             returns flag indicating whether to continue update processing
+         * @param <K>                  status key type
+         * @return this builder
+         */
+        public <K> Builder withStatusSupport(
+                StatusStorage<K> statusStorage,
+                List<StatusHandler<K>> statusHandlers,
+                TriFunction<Update, K, FeedbackExecutor, Boolean> unknownStatusHandler
+        ) {
+            statusSupport = new StatusSupportImpl<>(statusStorage, statusHandlers, unknownStatusHandler);
             return this;
         }
 

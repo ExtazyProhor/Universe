@@ -15,6 +15,7 @@ import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
+import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusHandler;
 
 import java.util.List;
 
@@ -47,13 +48,14 @@ public class TgConfiguration {
             @Value("${universe.boba-fett.bot-username}") String username,
             List<CommandHandler> commandHandlers,
             List<CallbackHandler> callbackHandlers,
-            List<StatusHandler<String, String>> statusHandlers,
+            List<ValuedStatusHandler<String, String>> valuedStatusHandlers,
+            List<StatusHandler<String>> statusHandlers,
             MongoStatusStorage mongoStatusStorage
     ) {
         return BotSettings.builder(token, username)
                 .withCommandSupport(commandHandlers, UNKNOWN_COMMAND)
                 .withCallbackSupport(callbackHandlers, UNKNOWN_CALLBACK)
-                .withStatusSupport(mongoStatusStorage, statusHandlers, UNKNOWN_STATUS)
+                .withStatusSupport(mongoStatusStorage, statusHandlers, valuedStatusHandlers, UNKNOWN_STATUS)
                 .build();
     }
 
