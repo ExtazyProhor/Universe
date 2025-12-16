@@ -4,13 +4,11 @@ import lombok.Builder;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.bobafett.data.dto.BobaFettUserDto;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.core.features.fieldref.Name;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 
 @Builder(toBuilder = true)
 public record BobaFettUser(
         ObjectId id,
-        @Name("chat_id")
         long chatId,
         String chatType,
         Opt<String> chatName,
