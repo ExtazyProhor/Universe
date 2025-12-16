@@ -13,6 +13,7 @@ import ru.prohor.universe.jocasta.tgbots.BotSettings;
 import ru.prohor.universe.jocasta.tgbots.RegisterBot;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
+import ru.prohor.universe.jocasta.tgbots.api.callback.ValuedCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
 import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusHandler;
@@ -47,6 +48,7 @@ public class TgConfiguration {
             @Value("${universe.boba-fett.bot-token}") String token,
             @Value("${universe.boba-fett.bot-username}") String username,
             List<CommandHandler> commandHandlers,
+            List<ValuedCallbackHandler> valuedCallbackHandlers,
             List<CallbackHandler> callbackHandlers,
             List<ValuedStatusHandler<String, String>> valuedStatusHandlers,
             List<StatusHandler<String>> statusHandlers,
@@ -54,7 +56,7 @@ public class TgConfiguration {
     ) {
         return BotSettings.builder(token, username)
                 .withCommandSupport(commandHandlers, UNKNOWN_COMMAND)
-                .withCallbackSupport(callbackHandlers, UNKNOWN_CALLBACK)
+                .withCallbackSupport(callbackHandlers, valuedCallbackHandlers, UNKNOWN_CALLBACK)
                 .withStatusSupport(mongoStatusStorage, statusHandlers, valuedStatusHandlers, UNKNOWN_STATUS)
                 .build();
     }

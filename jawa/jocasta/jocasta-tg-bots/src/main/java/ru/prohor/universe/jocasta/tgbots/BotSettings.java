@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
+import ru.prohor.universe.jocasta.tgbots.api.callback.ValuedCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusStorage;
@@ -16,6 +17,7 @@ import ru.prohor.universe.jocasta.tgbots.support.FeatureSupport;
 import ru.prohor.universe.jocasta.tgbots.support.FeatureUnsupported;
 import ru.prohor.universe.jocasta.tgbots.support.CommandSupportImpl;
 import ru.prohor.universe.jocasta.tgbots.support.StatusSupportImpl;
+import ru.prohor.universe.jocasta.tgbots.support.ValuedCallbackSupportImpl;
 import ru.prohor.universe.jocasta.tgbots.support.ValuedStatusSupportImpl;
 
 import java.util.List;
@@ -72,6 +74,26 @@ public final class BotSettings {
         }
 
         /**
+         * Support both normal and valued callbacks
+         *
+         * @param handlers               callback handlers
+         * @param valuedHandlers         valued callback handlers
+         * @param unknownCallbackHandler handler for unknown callback, accepts unknown callback and feedback executor,
+         *                               returns flag indicating whether to continue update processing
+         * @return this builder
+         */
+        public Builder withCallbackSupport(
+                List<CallbackHandler> handlers,
+                List<ValuedCallbackHandler> valuedHandlers,
+                TriFunction<CallbackQuery, String, FeedbackExecutor, Boolean> unknownCallbackHandler
+        ) {
+            callbackSupport = new ValuedCallbackSupportImpl(handlers, valuedHandlers, unknownCallbackHandler);
+            return this;
+        }
+
+        /**
+         * Only support callbacks without values
+         *
          * @param handlers               callback handlers
          * @param unknownCallbackHandler handler for unknown callback, accepts unknown callback and feedback executor,
          *                               returns flag indicating whether to continue update processing
@@ -86,7 +108,7 @@ public final class BotSettings {
         }
 
         /**
-         * Statuses that support both normal and valued statuses
+         * Support both normal and valued statuses
          *
          * @param valuedStatusStorage  implementation of valued statuses storage
          * @param statusHandlers       status handlers
@@ -113,7 +135,7 @@ public final class BotSettings {
         }
 
         /**
-         * Statuses that only support statuses without values
+         * Only support statuses without values
          *
          * @param statusStorage        implementation of statuses storage
          * @param statusHandlers       status handlers
