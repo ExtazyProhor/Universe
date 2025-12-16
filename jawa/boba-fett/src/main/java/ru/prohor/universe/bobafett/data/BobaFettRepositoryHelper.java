@@ -2,6 +2,7 @@ package ru.prohor.universe.bobafett.data;
 
 import dev.morphia.query.filters.Filters;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
+import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.fieldref.FieldReference;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
@@ -20,6 +21,19 @@ public class BobaFettRepositoryHelper {
         return Opt.of(users.getFirst());
     }
 
+    public static List<CustomHoliday> findCustomHolidaysByChatId(
+            MongoRepository<CustomHoliday> repository,
+            long chatId
+    ) {
+        return repository.find(
+                Filters.eq(
+                        ((FieldReference<CustomHoliday>) CustomHoliday::chatId).name(),
+                        chatId
+                ),
+                holiday -> holiday.chatId() == chatId
+        );
+    }
+
     public static boolean containsByChatId(MongoRepository<BobaFettUser> repository, long chatId) {
         return !findUsers(repository, chatId).isEmpty();
     }
@@ -27,14 +41,10 @@ public class BobaFettRepositoryHelper {
     private static List<BobaFettUser> findUsers(MongoRepository<BobaFettUser> repository, long chatId) {
         return repository.find(
                 Filters.eq(
-                        extractFieldName(BobaFettUser::chatId),
+                        ((FieldReference<BobaFettUser>) BobaFettUser::chatId).name(),
                         chatId
                 ),
                 user -> user.chatId() == chatId
         );
-    }
-
-    private static String extractFieldName(FieldReference<BobaFettUser> fieldReference) {
-        return fieldReference.name();
     }
 }
