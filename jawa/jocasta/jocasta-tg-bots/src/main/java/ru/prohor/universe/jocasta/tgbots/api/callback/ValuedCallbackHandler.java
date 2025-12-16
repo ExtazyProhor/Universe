@@ -24,4 +24,8 @@ public interface ValuedCallbackHandler extends ActionHandler<String> {
      * @return a flag indicating whether to continue update processing
      */
     boolean handle(String callbackPayload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor);
+
+    default String makeCallback(String payload) {
+        return prefix() + "." + payload;
+    }
 }
