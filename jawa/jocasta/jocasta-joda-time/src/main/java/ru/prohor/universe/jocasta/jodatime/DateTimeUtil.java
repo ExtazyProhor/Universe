@@ -93,4 +93,8 @@ public class DateTimeUtil {
     public static String russianMonth(int month) {
         return Month.of(month).getDisplayName(TextStyle.FULL, RUSSIAN_LOCALE);
     }
+
+    public static DateTimeZone zoneMoscow() {
+        return MOSCOW_ZONE;
+    }
 }

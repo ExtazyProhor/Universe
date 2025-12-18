@@ -1,0 +1,93 @@
+package ru.prohor.universe.bobafett.feature.holidays;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.joda.time.LocalDate;
+import org.springframework.stereotype.Service;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+@Service
+public class RegularHolidaysProviderImpl implements RegularHolidaysProvider {
+    private static final TypeReference<List<HolidaysMonth>> MONTHS_TYPE_REFERENCE = new TypeReference<>() {};
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Path holidaysDir;
+
+    private int lastYear = LocalDate.now(DateTimeUtil.zoneMoscow()).getYear();
+    private HolidaysYear current;
+    private HolidaysYear next;
+
+    public RegularHolidaysProviderImpl(Path holidaysDir) {
+        this.holidaysDir = holidaysDir;
+        updateYear();
+    }
+
+    @Override
+    public List<String> getForDate(int currentYear, LocalDate date) {
+        checkYear(currentYear);
+        HolidaysYear sourceYear;
+        if (date.getYear() == lastYear)
+            sourceYear = current;
+        else if (date.getYear() == lastYear + 1)
+            sourceYear = next;
+        else
+            throw new IllegalArgumentException("The holiday date year must be the current or next year");
+        return getFromSource(sourceYear, date);
+    }
+
+    private synchronized List<String> getFromSource(HolidaysYear sourceYear, LocalDate date) {
+        return sourceYear
+                .month(date.getMonthOfYear() - 1)
+                .day(date.getDayOfMonth() - 1)
+                .holidays();
+    }
+
+    private synchronized void checkYear(int currentYear) {
+        if (currentYear == lastYear) {
+            return;
+        }
+        int diff = currentYear - lastYear;
+        if (diff < 0) {
+            throw new IllegalArgumentException(
+                    "Year cannot change in reverse order, last year = " + lastYear + ", current = " + currentYear
+            );
+        }
+        this.lastYear = currentYear;
+        updateYear();
+    }
+
+    private void updateYear() {
+        try {
+            this.current = loadHolidaysYear(lastYear);
+            this.next = loadHolidaysYear(lastYear + 1);
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading holidays year", e);
+        }
+    }
+
+    private HolidaysYear loadHolidaysYear(int year) throws IOException {
+        List<HolidaysMonth> months = objectMapper.readValue(
+                Files.readString(holidaysDir.resolve(year + ".json")),
+                MONTHS_TYPE_REFERENCE
+        );
+        return new HolidaysYear(months);
+    }
+
+    private record HolidaysYear(List<HolidaysMonth> months) {
+        public HolidaysMonth month(int index) {
+            return months.get(index);
+        }
+    }
+
+    private record HolidaysMonth(List<HolidaysDay> days) {
+        public HolidaysDay day(int index) {
+            return days.get(index);
+        }
+    }
+
+    private record HolidaysDay(List<String> holidays) {}
+}

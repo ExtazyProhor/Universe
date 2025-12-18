@@ -28,6 +28,7 @@ public class Distributor {
         int minute = now.getMinuteOfHour();
         if (!availableMinutes.contains(minute)) {
             // TODO log warn
+            return;
         }
         tasks.forEach(task -> task.distribute(feedbackExecutor, hour, minute));
     }
