@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.morphia;
+package ru.prohor.universe.jocasta.morphia.impl;
 
 import dev.morphia.query.filters.Filter;
 import org.bson.types.ObjectId;
@@ -6,6 +6,8 @@ import ru.prohor.universe.jocasta.core.collections.PaginationResult;
 import ru.prohor.universe.jocasta.core.collections.Paginator;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
+import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
 
 import java.util.Collections;
 import java.util.HashMap;

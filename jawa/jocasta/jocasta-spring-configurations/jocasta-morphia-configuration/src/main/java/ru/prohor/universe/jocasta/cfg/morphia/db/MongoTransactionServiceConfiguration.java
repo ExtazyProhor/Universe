@@ -3,7 +3,7 @@ package ru.prohor.universe.jocasta.cfg.morphia.db;
 import dev.morphia.Datastore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.prohor.universe.jocasta.morphia.MongoMorphiaTransactionService;
+import ru.prohor.universe.jocasta.morphia.impl.MongoMorphiaTransactionService;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 
 @Configuration

@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.morphia;
+package ru.prohor.universe.jocasta.morphia.impl;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -12,6 +12,8 @@ import dev.morphia.transactions.MorphiaSession;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.morphia.MongoDatabaseException;
+import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
 
 import java.util.ArrayList;
 import java.util.List;

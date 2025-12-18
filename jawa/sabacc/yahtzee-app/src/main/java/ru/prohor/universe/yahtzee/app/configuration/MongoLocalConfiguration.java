@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.jocasta.cfg.morphia.MongoInMemoryConfiguration;
-import ru.prohor.universe.jocasta.morphia.MongoInMemoryRepository;
+import ru.prohor.universe.jocasta.morphia.impl.MongoInMemoryRepository;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Image;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;

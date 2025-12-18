@@ -1,4 +1,7 @@
-package ru.prohor.universe.jocasta.morphia;
+package ru.prohor.universe.jocasta.morphia.impl;
+
+import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.MongoTransaction;
 
 public class MongoInMemoryTransaction implements MongoTransaction {
     @Override

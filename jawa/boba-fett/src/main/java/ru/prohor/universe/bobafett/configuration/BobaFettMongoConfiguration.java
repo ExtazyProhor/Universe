@@ -10,7 +10,7 @@ import ru.prohor.universe.bobafett.data.dto.CustomHolidayDto;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
 import ru.prohor.universe.jocasta.cfg.morphia.MongoInstanceConfiguration;
-import ru.prohor.universe.jocasta.morphia.MongoMorphiaRepository;
+import ru.prohor.universe.jocasta.morphia.impl.MongoMorphiaRepository;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 
 @Configuration

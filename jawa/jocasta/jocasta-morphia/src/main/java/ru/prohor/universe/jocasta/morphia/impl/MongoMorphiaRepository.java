@@ -1,10 +1,13 @@
-package ru.prohor.universe.jocasta.morphia;
+package ru.prohor.universe.jocasta.morphia.impl;
 
 import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filter;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
+import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
+import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
 
 import java.util.List;
 import java.util.function.Function;
@@ -34,8 +37,9 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
             Datastore datastore,
             Class<T> type
     ) {
-        Function<T, T> noWrap = t -> t;
-        return new MongoMorphiaRepository<>(new AbstractMongoMorphiaRepository<>(datastore, type, noWrap, noWrap));
+        return new MongoMorphiaRepository<>(
+                new AbstractMongoMorphiaRepository<>(datastore, type, Function.identity(), Function.identity())
+        );
     }
 
     @Override
