@@ -1,8 +1,8 @@
 package ru.prohor.universe.bobafett.feature.holidays.callback;
 
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
+import ru.prohor.universe.bobafett.command.GetIdCommand;
 import ru.prohor.universe.bobafett.data.MongoStatusStorage;
 import ru.prohor.universe.bobafett.feature.holidays.status.WaitImportChatId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
@@ -14,10 +14,17 @@ import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusStorage;
 public class ImportHolidaysInitCallback implements CallbackHandler {
     private final MongoStatusStorage mongoStatusStorage;
     private final WaitImportChatId waitImportChatId;
+    private final String idRequestMessage;
 
-    public ImportHolidaysInitCallback(MongoStatusStorage mongoStatusStorage, WaitImportChatId waitImportChatId) {
+    public ImportHolidaysInitCallback(
+            MongoStatusStorage mongoStatusStorage,
+            WaitImportChatId waitImportChatId,
+            GetIdCommand getIdCommand
+    ) {
         this.mongoStatusStorage = mongoStatusStorage;
         this.waitImportChatId = waitImportChatId;
+        this.idRequestMessage = "Напишите ID пользователя, у которого вы хотите импортировать " +
+                "праздники (узнать ID можно командой " + getIdCommand.command() + ")";
     }
 
     @Override
@@ -32,13 +39,7 @@ public class ImportHolidaysInitCallback implements CallbackHandler {
                 chatId,
                 new ValuedStatusStorage.ValuedStatus<>(waitImportChatId.key(), Opt.empty())
         );
-        EditMessageText editMessageText = EditMessageText.builder()
-                .text("Напишите ID пользователя, у которого вы хотите импортировать " +
-                        "праздники (узнать ID можно командой /id)")
-                .messageId(message.getMessageId())
-                .chatId(chatId)
-                .build();
-        feedbackExecutor.editMessageText(editMessageText);
+        feedbackExecutor.editMessageText(chatId, message.getMessageId(), idRequestMessage);
         return false;
     }
 }

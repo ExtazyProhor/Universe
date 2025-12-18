@@ -1,7 +1,6 @@
 package ru.prohor.universe.bobafett.feature.holidays.callback;
 
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
@@ -23,13 +22,12 @@ public class GetHolidaysInitCallback implements CallbackHandler {
 
     @Override
     public boolean handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
-        EditMessageText editMessageText = EditMessageText.builder()
-                .text(START_MESSAGE)
-                .messageId(message.getMessageId())
-                .chatId(message.getChatId())
-                .replyMarkup(getHolidaysCallback.getKeyboard())
-                .build();
-        feedbackExecutor.editMessageText(editMessageText);
+        feedbackExecutor.editMessageText(
+                message.getChatId(),
+                message.getMessageId(),
+                START_MESSAGE,
+                getHolidaysCallback.getKeyboard()
+        );
         return false;
     }
 }
