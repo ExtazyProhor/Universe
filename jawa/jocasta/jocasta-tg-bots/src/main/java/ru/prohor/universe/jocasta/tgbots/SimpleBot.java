@@ -1,9 +1,11 @@
 package ru.prohor.universe.jocasta.tgbots;
 
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.prohor.universe.jocasta.tgbots.support.FeatureSupport;
 
 public abstract class SimpleBot extends DeafBot {
@@ -42,6 +44,7 @@ public abstract class SimpleBot extends DeafBot {
             }
             if (update.hasCallbackQuery()) {
                 CallbackQuery callback = update.getCallbackQuery();
+                suppressTimer(callback);
                 if (callbackSupport.handle(callback, feedbackExecutor))
                     onCallback(callback);
                 return;
@@ -54,5 +57,11 @@ public abstract class SimpleBot extends DeafBot {
         } catch (Exception e) {
             onHandlingException(e);
         }
+    }
+
+    private void suppressTimer(CallbackQuery callback) throws TelegramApiException {
+        AnswerCallbackQuery answer = new AnswerCallbackQuery();
+        answer.setCallbackQueryId(callback.getId());
+        execute(answer);
     }
 }
