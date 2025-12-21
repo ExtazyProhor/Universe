@@ -7,12 +7,21 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-@FunctionalInterface
-public interface TypedFieldReference<T, R> extends Serializable {
-    @SuppressWarnings("unused")
-    R get(T source);
+public sealed interface FieldRef<T, R>
+        extends Serializable, FieldProperties<T, R>
+        permits FieldReference, OptFieldReference {
 
+    @Override
+    default String name(String delimiter) {
+        return extractFieldName();
+    }
+
+    @Override
     default String name() {
+        return extractFieldName();
+    }
+
+    private String extractFieldName() {
         try {
             Method write = this.getClass().getDeclaredMethod("writeReplace");
             write.setAccessible(true);

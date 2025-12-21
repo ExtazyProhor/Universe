@@ -9,8 +9,7 @@ import ru.prohor.universe.bobafett.data.pojo.DistributionTime;
 import ru.prohor.universe.bobafett.data.pojo.HolidaysSubscriptionOptions;
 import ru.prohor.universe.bobafett.feature.holidays.DistributionDays;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.core.features.fieldref.FieldReference;
-import ru.prohor.universe.jocasta.core.features.fieldref.InnerFieldReference;
+import ru.prohor.universe.jocasta.core.features.fieldref.FR;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
@@ -19,21 +18,24 @@ import java.util.List;
 import java.util.Set;
 
 public class BobaFettRepositoryHelper {
-    private static final String HOUR_KEY = InnerFieldReference.createO(BobaFettUser::holidaysSubscriptionOptions)
+    private static final String HOUR_KEY = FR.chainO(BobaFettUser::holidaysSubscriptionOptions)
             .then(HolidaysSubscriptionOptions::dailyDistributionTime)
             .then(DistributionTime::hour)
             .name();
-    private static final String MINUTE_KEY = InnerFieldReference.createO(BobaFettUser::holidaysSubscriptionOptions)
+    private static final String MINUTE_KEY = FR.chainO(BobaFettUser::holidaysSubscriptionOptions)
             .then(HolidaysSubscriptionOptions::dailyDistributionTime)
             .then(DistributionTime::minute)
             .name();
-    private static final String IS_ACTIVE_KEY = InnerFieldReference.createO(BobaFettUser::holidaysSubscriptionOptions)
+    private static final String IS_ACTIVE_KEY = FR.chainO(BobaFettUser::holidaysSubscriptionOptions)
             .then(HolidaysSubscriptionOptions::subscriptionIsActive)
             .name();
 
-    private static final String CHAT_ID_KEY = FieldReference.name(CustomHoliday::chatId);
-    private static final String MONTH_KEY = FieldReference.name(CustomHoliday::month);
-    private static final String DAY_KEY = FieldReference.name(CustomHoliday::dayOfMonth);
+    private static final String HOLIDAYS_SUBSCRIPTION_OPTIONS_KEY = FR.wrap(BobaFettUser::holidaysSubscriptionOptions)
+            .name();
+    private static final String BOBA_FETT_USER_CHAT_ID_KEY = FR.wrap(BobaFettUser::chatId).name();
+    private static final String CUSTOM_HOLIDAY_CHAT_ID_KEY = FR.wrap(CustomHoliday::chatId).name();
+    private static final String MONTH_KEY = FR.wrap(CustomHoliday::month).name();
+    private static final String DAY_KEY = FR.wrap(CustomHoliday::dayOfMonth).name();
 
     private BobaFettRepositoryHelper() {}
 
@@ -52,7 +54,7 @@ public class BobaFettRepositoryHelper {
             int minute
     ) {
         Filter filter = Filters.and(
-                Filters.exists(FieldReference.name(BobaFettUser::holidaysSubscriptionOptions)),
+                Filters.exists(HOLIDAYS_SUBSCRIPTION_OPTIONS_KEY),
                 Filters.eq(HOUR_KEY, hour),
                 Filters.eq(MINUTE_KEY, minute),
                 Filters.eq(IS_ACTIVE_KEY, true)
@@ -78,7 +80,7 @@ public class BobaFettRepositoryHelper {
                         makeFilterForLocalDate(distributionDays.tomorrow()),
                         makeFilterForLocalDate(distributionDays.dayAfterTomorrow())
                 ),
-                Filters.in(CHAT_ID_KEY, forIds)
+                Filters.in(CUSTOM_HOLIDAY_CHAT_ID_KEY, forIds)
         );
         MonoPredicate<CustomHoliday> manualFilter = holiday -> {
             if (!forIds.contains(holiday.chatId()))
@@ -99,7 +101,7 @@ public class BobaFettRepositoryHelper {
         LocalDate dateTime = LocalDate.now(DateTimeUtil.zoneMoscow()).plusDays(7);
         Filter filter = Filters.and(
                 makeFilterForLocalDate(dateTime),
-                Filters.in(CHAT_ID_KEY, forIds)
+                Filters.in(CUSTOM_HOLIDAY_CHAT_ID_KEY, forIds)
         );
         MonoPredicate<CustomHoliday> manualFilter = holiday -> forIds.contains(holiday.chatId())
                 && isHolidaySuitableForDate(holiday, dateTime);
@@ -122,10 +124,7 @@ public class BobaFettRepositoryHelper {
             long chatId
     ) {
         return repository.find(
-                Filters.eq(
-                        ((FieldReference<CustomHoliday>) CustomHoliday::chatId).name(),
-                        chatId
-                ),
+                Filters.eq(CUSTOM_HOLIDAY_CHAT_ID_KEY, chatId),
                 holiday -> holiday.chatId() == chatId
         );
     }
@@ -136,10 +135,7 @@ public class BobaFettRepositoryHelper {
 
     private static List<BobaFettUser> findUsers(MongoRepository<BobaFettUser> repository, long chatId) {
         return repository.find(
-                Filters.eq(
-                        ((FieldReference<BobaFettUser>) BobaFettUser::chatId).name(),
-                        chatId
-                ),
+                Filters.eq(BOBA_FETT_USER_CHAT_ID_KEY, chatId),
                 user -> user.chatId() == chatId
         );
     }

@@ -1,18 +1,13 @@
 package ru.prohor.universe.jocasta.core.features.fieldref;
 
-/**
- * <h3>Usage</h3>
- * <pre>
- *     {@code
- *     public static <T> String name(PropertyRef<T> ref) {
- *         return ref.name();
- *     }
- *     }
- * </pre>
- */
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
+
 @FunctionalInterface
-public interface FieldReference<T> extends TypedFieldReference<T, Object> {
-    static <T> String name(FieldReference<T> fieldRef) {
-        return fieldRef.name();
+public non-sealed interface FieldReference<T, R> extends FieldRef<T, R> {
+    R get(T source);
+
+    @Override
+    default Opt<R> getO(T source) {
+        return Opt.of(get(source));
     }
 }
