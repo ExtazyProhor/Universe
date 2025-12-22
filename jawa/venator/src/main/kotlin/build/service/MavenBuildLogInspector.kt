@@ -32,7 +32,7 @@ class MavenBuildLogInspector {
             .drop(reactorIndex)
             .firstOrNull { it.contains(" FAILURE") }
             ?.substringBefore(" .")
-            ?.substringAfter("INFO ")
+            ?.substringAfter("[INFO] ")
             ?.trim()
     }
 

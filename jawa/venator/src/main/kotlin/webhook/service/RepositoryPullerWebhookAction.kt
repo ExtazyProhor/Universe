@@ -62,9 +62,13 @@ class RepositoryPullerWebhookAction(
             } else {
                 val verboseError = testResult.failedModules
                     .joinToString(separator = "\n\n\n") { module ->
-                        "${module.modulePath}\n\n${module.failedTests.joinToString("\n")}"
+                        val failedTests = module.failedTests.joinToString(separator = "\n") { test ->
+                            val header = "${test.className}${test.methodName.ifEmpty { null }?.let { ".$it" }}"
+                            "$header\n${test.message}\n${test.stackTrace}"
+                        }
+                        "${module.modulePath}\n\n$failedTests"
                     }
-                notifier.failure("${testResult.failedModules.size} modules failed:\n$verboseError")
+                notifier.failure("${testResult.failedModules.size} modules failed:\n```\n$verboseError\n```")
             }
         }
     }
