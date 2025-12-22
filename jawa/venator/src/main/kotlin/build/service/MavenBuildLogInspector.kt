@@ -13,7 +13,7 @@ class MavenBuildLogInspector {
                 modulePath = failedModule,
                 failedTests = listOf(
                     FailedTest(
-                        className = "<build>",
+                        className = "build",
                         methodName = "",
                         message = "Build failure",
                         stackTrace = errorBlock
