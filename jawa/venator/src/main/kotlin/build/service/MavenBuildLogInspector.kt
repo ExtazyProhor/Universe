@@ -14,7 +14,7 @@ class MavenBuildLogInspector {
                 failedTests = listOf(
                     FailedTest(
                         className = "<build>",
-                        methodName = "<phase>",
+                        methodName = "",
                         message = "Build failure",
                         stackTrace = errorBlock
                     )
