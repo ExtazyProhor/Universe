@@ -194,7 +194,7 @@ case "$1" in
     build)  build_service ;;
     test)  test_service ;;
     *)
-        echo "${RED}usage: venator [status | start | stop | restart | build | test]${RESET}"
+        echo "${RED}usage: $SERVICE_NAME [status | start | stop | restart | build | test]${RESET}"
         exit 1
     ;;
 esac
