@@ -8,6 +8,7 @@ import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
+import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
 
 import java.util.List;
 import java.util.function.Function;
@@ -63,8 +64,8 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
     }
 
     @Override
-    public List<T> find(Filter filter) {
-        return repository.find(filter);
+    public List<T> find(MongoFilter<T> filter) {
+        return repository.find(filter.morphia());
     }
 
     @Override

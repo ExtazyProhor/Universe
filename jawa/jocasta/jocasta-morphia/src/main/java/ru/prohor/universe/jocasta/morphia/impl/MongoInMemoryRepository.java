@@ -8,6 +8,7 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
+import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,9 +18,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 public class MongoInMemoryRepository<T> implements MongoRepository<T> {
-    private static final UnsupportedOperationException UNSUPPORTED_FILTER = new UnsupportedOperationException(
-            "Cannot use Mongo filter in memory"
-    );
     private static final UnsupportedOperationException UNSUPPORTED_TEXT_SEARCH = new UnsupportedOperationException(
             "Cannot use text search without textSearchPredicate"
     );
@@ -66,8 +64,8 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     }
 
     @Override
-    public List<T> find(Filter filter) {
-        throw UNSUPPORTED_FILTER;
+    public List<T> find(MongoFilter<T> filter) {
+        return collection.values().stream().filter(element -> filter.inMemory().test(element)).toList();
     }
 
     @Override
