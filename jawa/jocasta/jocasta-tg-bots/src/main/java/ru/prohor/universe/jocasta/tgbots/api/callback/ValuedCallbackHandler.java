@@ -26,6 +26,8 @@ public interface ValuedCallbackHandler extends ActionHandler<String> {
     boolean handle(String callbackPayload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor);
 
     default String makeCallback(String payload) {
+        if (payload.contains("."))
+            throw new IllegalArgumentException("Callback payload must not contains dots ('.')");
         return prefix() + "." + payload;
     }
 }
