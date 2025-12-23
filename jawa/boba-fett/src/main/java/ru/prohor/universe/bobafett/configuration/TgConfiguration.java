@@ -1,5 +1,6 @@
 package ru.prohor.universe.bobafett.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import ru.prohor.universe.jocasta.tgbots.BotSettings;
 import ru.prohor.universe.jocasta.tgbots.RegisterBot;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
+import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.ValuedCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
@@ -47,17 +49,19 @@ public class TgConfiguration {
     public BotSettings botSettings(
             @Value("${universe.boba-fett.bot-token}") String token,
             @Value("${universe.boba-fett.bot-username}") String username,
-            List<CommandHandler> commandHandlers,
-            List<ValuedCallbackHandler> valuedCallbackHandlers,
-            List<CallbackHandler> callbackHandlers,
-            List<ValuedStatusHandler<String, String>> valuedStatusHandlers,
-            List<StatusHandler<String>> statusHandlers,
-            MongoStatusStorage mongoStatusStorage
+            List<CommandHandler> commands,
+            List<ValuedCallbackHandler> valuedCallbacks,
+            List<JsonCallbackHandler<?>> jsonCallbacks,
+            List<CallbackHandler> callbacks,
+            List<ValuedStatusHandler<String, String>> valuedStatuses,
+            List<StatusHandler<String>> statuses,
+            MongoStatusStorage mongoStatusStorage,
+            ObjectMapper objectMapper
     ) {
         return BotSettings.builder(token, username)
-                .withCommandSupport(commandHandlers, UNKNOWN_COMMAND)
-                .withCallbackSupport(callbackHandlers, valuedCallbackHandlers, UNKNOWN_CALLBACK)
-                .withStatusSupport(mongoStatusStorage, statusHandlers, valuedStatusHandlers, UNKNOWN_STATUS)
+                .withCommandSupport(commands, UNKNOWN_COMMAND)
+                .withCallbackSupport(callbacks, valuedCallbacks, jsonCallbacks, objectMapper, UNKNOWN_CALLBACK)
+                .withStatusSupport(mongoStatusStorage, statuses, valuedStatuses, UNKNOWN_STATUS)
                 .build();
     }
 

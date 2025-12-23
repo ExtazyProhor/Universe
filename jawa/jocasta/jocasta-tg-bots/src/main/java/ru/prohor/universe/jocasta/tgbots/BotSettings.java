@@ -1,11 +1,13 @@
 package ru.prohor.universe.jocasta.tgbots;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
+import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.ValuedCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
@@ -16,6 +18,7 @@ import ru.prohor.universe.jocasta.tgbots.support.CallbackSupportImpl;
 import ru.prohor.universe.jocasta.tgbots.support.FeatureSupport;
 import ru.prohor.universe.jocasta.tgbots.support.FeatureUnsupported;
 import ru.prohor.universe.jocasta.tgbots.support.CommandSupportImpl;
+import ru.prohor.universe.jocasta.tgbots.support.JsonCallbackSupportImpl;
 import ru.prohor.universe.jocasta.tgbots.support.StatusSupportImpl;
 import ru.prohor.universe.jocasta.tgbots.support.ValuedCallbackSupportImpl;
 import ru.prohor.universe.jocasta.tgbots.support.ValuedStatusSupportImpl;
@@ -70,6 +73,34 @@ public final class BotSettings {
                 TriFunction<Message, String, FeedbackExecutor, Boolean> unknownCommandHandler
         ) {
             commandSupport = new CommandSupportImpl(username, commandHandlers, unknownCommandHandler);
+            return this;
+        }
+
+        /**
+         * Support normal, valued and json callbacks
+         *
+         * @param handlers               callback handlers
+         * @param valuedHandlers         valued callback handlers
+         * @param jsonHandlers           json callback handlers
+         * @param objectMapper           json mapper
+         * @param unknownCallbackHandler handler for unknown callback, accepts unknown callback and feedback executor,
+         *                               returns flag indicating whether to continue update processing
+         * @return this builder
+         */
+        public Builder withCallbackSupport(
+                List<CallbackHandler> handlers,
+                List<ValuedCallbackHandler> valuedHandlers,
+                List<JsonCallbackHandler<?>> jsonHandlers,
+                ObjectMapper objectMapper,
+                TriFunction<CallbackQuery, String, FeedbackExecutor, Boolean> unknownCallbackHandler
+        ) {
+            callbackSupport = new JsonCallbackSupportImpl(
+                    handlers,
+                    valuedHandlers,
+                    jsonHandlers,
+                    objectMapper,
+                    unknownCallbackHandler
+            );
             return this;
         }
 
