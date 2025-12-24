@@ -1,4 +1,4 @@
-package ru.prohor.universe.bobafett.feature.holidays.callback;
+package ru.prohor.universe.bobafett.callback;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
