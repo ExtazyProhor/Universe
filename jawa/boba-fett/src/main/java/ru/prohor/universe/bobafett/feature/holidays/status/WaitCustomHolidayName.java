@@ -1,32 +1,26 @@
 package ru.prohor.universe.bobafett.feature.holidays.status;
 
-import org.bson.types.ObjectId;
+import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.prohor.universe.bobafett.command.CancelCommandHandler;
-import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
-import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.bobafett.command.Commands;
+import ru.prohor.universe.bobafett.feature.holidays.CustomHolidaysService;
+import ru.prohor.universe.bobafett.status.Statuses;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusHandler;
 
-import java.time.LocalDate;
-
 @Service
+// TODO json Valued Status Handler
 public class WaitCustomHolidayName implements ValuedStatusHandler<String, String> {
-    private final MongoRepository<CustomHoliday> customHolidaysRepository;
-    private final CancelCommandHandler cancelCommandHandler;
+    private final CustomHolidaysService customHolidaysService;
 
-    public WaitCustomHolidayName(
-            MongoRepository<CustomHoliday> customHolidaysRepository,
-            CancelCommandHandler cancelCommandHandler
-    ) {
-        this.customHolidaysRepository = customHolidaysRepository;
-        this.cancelCommandHandler = cancelCommandHandler;
+    public WaitCustomHolidayName(CustomHolidaysService customHolidaysService) {
+        this.customHolidaysService = customHolidaysService;
     }
 
     @Override
     public String key() {
-        return "holidays/wait-name";
+        return Statuses.WAIT_CUSTOM_HOLIDAY_NAME;
     }
 
     @Override
@@ -36,36 +30,21 @@ public class WaitCustomHolidayName implements ValuedStatusHandler<String, String
         }
         long chatId = update.getMessage().getChatId();
         String customHolidayName = update.getMessage().getText();
-        if (customHolidayName.equals(cancelCommandHandler.command())) {
+        if (customHolidayName.equals(Commands.CANCEL)) {
             feedbackExecutor.sendMessage(chatId, "Создание собственного праздника отменено");
             return false;
         }
 
-        if (customHolidayName.length() > 50) {
-            feedbackExecutor.sendMessage(chatId, lengthLimit(customHolidayName.length()));
-            return false;
-        }
-
-        CustomHoliday customHoliday = createCustomHoliday(chatId, value, customHolidayName);
-        customHolidaysRepository.save(customHoliday);
-        feedbackExecutor.sendMessage(chatId, "Праздник \"" + customHolidayName + "\" успешно добавлен");
-        return false;
-    }
-
-    private String lengthLimit(int length) {
-        return "Название праздника превышает лимит в 50 символов - оно содержит " +
-                length + " знаков. Напишите название заново или отмените " +
-                "добавление с помощью команды " + cancelCommandHandler.command();
-    }
-
-    private CustomHoliday createCustomHoliday(long chatId, String date, String name) {
-        LocalDate localDate = LocalDate.parse(date);
-        return new CustomHoliday(
-                ObjectId.get(),
+        LocalDate date = LocalDate.parse(value);
+        feedbackExecutor.sendMessage(
                 chatId,
-                localDate.getMonthValue(),
-                localDate.getDayOfMonth(),
-                name
+                customHolidaysService.addNewCustomHolidayIfNotExists(
+                        chatId,
+                        date.getDayOfMonth(),
+                        date.getMonthOfYear(),
+                        customHolidayName
+                )
         );
+        return false;
     }
 }

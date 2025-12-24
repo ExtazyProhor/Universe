@@ -3,7 +3,7 @@ package ru.prohor.universe.bobafett.feature.holidays.status;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.prohor.universe.bobafett.command.CancelCommandHandler;
+import ru.prohor.universe.bobafett.command.Commands;
 import ru.prohor.universe.bobafett.data.BobaFettRepositoryHelper;
 import ru.prohor.universe.bobafett.data.MongoStatusStorage;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
@@ -26,20 +26,17 @@ public class WaitImportChatId implements StatusHandler<String> {
             Неправильный формат ID, должно быть целое число.
             Напишите ID заново или отмените импорт праздников с помощью команды /cancel""";
 
-    private final CancelCommandHandler cancelCommandHandler;
     private final MongoStatusStorage mongoStatusStorage;
     private final MongoRepository<BobaFettUser> bobaFettUsersRepository;
     private final MongoRepository<CustomHoliday> customHolidaysRepository;
     private final MongoTransactionService mongoTransactionService;
 
     public WaitImportChatId(
-            CancelCommandHandler cancelCommandHandler,
             MongoStatusStorage mongoStatusStorage,
             MongoRepository<BobaFettUser> bobaFettUsersRepository,
             MongoRepository<CustomHoliday> customHolidaysRepository,
             MongoTransactionService mongoTransactionService
     ) {
-        this.cancelCommandHandler = cancelCommandHandler;
         this.mongoStatusStorage = mongoStatusStorage;
         this.bobaFettUsersRepository = bobaFettUsersRepository;
         this.customHolidaysRepository = customHolidaysRepository;
@@ -59,7 +56,7 @@ public class WaitImportChatId implements StatusHandler<String> {
         long chatId = update.getMessage().getChatId();
         String importChatId = update.getMessage().getText();
 
-        if (importChatId.equals(cancelCommandHandler.command())) {
+        if (importChatId.equals(Commands.CANCEL)) {
             feedbackExecutor.sendMessage(chatId, "Импорт праздников отменен");
             return false;
         }

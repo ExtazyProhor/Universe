@@ -62,9 +62,8 @@ public class StartCommand implements CommandHandler {
         if (success) {
             feedbackExecutor.sendMessage(
                     chatId,
-                    "Привет, " +
-                            name +
-                            "! Чтобы узнать что я могу, используй команду /commands или меню слева от поля ввода"
+                    "Привет, " + name + "! Чтобы узнать что я могу, используй команду "
+                            + Commands.COMMANDS + " или меню слева от поля ввода"
             );
         } else {
             feedbackExecutor.sendMessage(

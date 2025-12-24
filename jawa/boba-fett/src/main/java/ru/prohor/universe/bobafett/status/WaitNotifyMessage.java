@@ -2,7 +2,7 @@ package ru.prohor.universe.bobafett.status;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.prohor.universe.bobafett.command.CancelCommandHandler;
+import ru.prohor.universe.bobafett.command.Commands;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
 
@@ -11,12 +11,6 @@ import java.util.List;
 
 @Service
 public class WaitNotifyMessage implements StatusHandler<String> {
-    private final CancelCommandHandler cancelCommandHandler;
-
-    public WaitNotifyMessage(CancelCommandHandler cancelCommandHandler) {
-        this.cancelCommandHandler = cancelCommandHandler;
-    }
-
     @Override
     public String key() {
         return "admin/wait-notify-message";
@@ -29,7 +23,7 @@ public class WaitNotifyMessage implements StatusHandler<String> {
         }
         long chatId = update.getMessage().getChatId();
         String message = update.getMessage().getText();
-        if (message.equals(cancelCommandHandler.key())) {
+        if (message.equals(Commands.CANCEL)) {
             feedbackExecutor.sendMessage(chatId, "Отправка сообщения отменена");
             return false;
         }
