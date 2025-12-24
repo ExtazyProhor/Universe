@@ -104,11 +104,11 @@ public class AbstractMongoMorphiaRepository<T, W> {
         datastore.save(entities.stream().map(unwrapFunction).toList());
     }
 
-    boolean deleteById(ObjectId id) {
-        if (session.isEmpty())
-            return collection.deleteOne(Filters.eq(ID, id)).getDeletedCount() != 0;
-        else
-            return collection.deleteOne(session.get(), Filters.eq(ID, id)).getDeletedCount() != 0;
+    Opt<W> deleteById(ObjectId id) {
+        T deleted = datastore.find(type)
+                .filter(dev.morphia.query.filters.Filters.eq(ID, id))
+                .findAndDelete();
+        return Opt.ofNullable(deleted).map(wrapFunction);
     }
 
     List<W> findByText(String text) {

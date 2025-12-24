@@ -84,7 +84,7 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
     }
 
     @Override
-    public boolean deleteById(ObjectId id) {
+    public Opt<T> deleteById(ObjectId id) {
         return repository.deleteById(id);
     }
 

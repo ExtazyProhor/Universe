@@ -87,8 +87,8 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     }
 
     @Override
-    public boolean deleteById(ObjectId id) {
-        return collection.remove(id) != null;
+    public Opt<T> deleteById(ObjectId id) {
+        return Opt.ofNullable(collection.remove(id));
     }
 
     @Override

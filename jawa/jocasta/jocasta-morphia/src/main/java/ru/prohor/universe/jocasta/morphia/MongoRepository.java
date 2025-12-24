@@ -59,7 +59,7 @@ public interface MongoRepository<T> {
 
     void save(List<T> entities);
 
-    boolean deleteById(ObjectId id);
+    Opt<T> deleteById(ObjectId id);
 
     List<T> findByText(String text);
 
