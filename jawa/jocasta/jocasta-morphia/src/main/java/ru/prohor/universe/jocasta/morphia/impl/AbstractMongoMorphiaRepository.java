@@ -104,11 +104,11 @@ public class AbstractMongoMorphiaRepository<T, W> {
         datastore.save(entities.stream().map(unwrapFunction).toList());
     }
 
-    void deleteById(ObjectId id) {
+    boolean deleteById(ObjectId id) {
         if (session.isEmpty())
-            collection.deleteOne(Filters.eq(ID, id));
+            return collection.deleteOne(Filters.eq(ID, id)).getDeletedCount() != 0;
         else
-            collection.deleteOne(session.get(), Filters.eq(ID, id));
+            return collection.deleteOne(session.get(), Filters.eq(ID, id)).getDeletedCount() != 0;
     }
 
     List<W> findByText(String text) {

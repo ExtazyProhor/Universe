@@ -87,8 +87,8 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     }
 
     @Override
-    public void deleteById(ObjectId id) {
-        collection.remove(id);
+    public boolean deleteById(ObjectId id) {
+        return collection.remove(id) != null;
     }
 
     @Override
