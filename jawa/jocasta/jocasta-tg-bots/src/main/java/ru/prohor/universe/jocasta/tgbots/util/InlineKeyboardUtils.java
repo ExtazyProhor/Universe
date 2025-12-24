@@ -9,6 +9,7 @@ import java.util.List;
 public class InlineKeyboardUtils {
     private InlineKeyboardUtils() {}
 
+    // TODO make it by Tuple2 or Maps
     public static InlineKeyboardMarkup getInlineKeyboard(
             List<List<String>> buttonText,
             List<List<String>> buttonCallback
@@ -31,6 +32,7 @@ public class InlineKeyboardUtils {
         return markup;
     }
 
+    // TODO make it by Tuple2 or Maps
     public static InlineKeyboardMarkup getColumnInlineKeyboard(
             List<String> buttonText,
             List<String> buttonCallback

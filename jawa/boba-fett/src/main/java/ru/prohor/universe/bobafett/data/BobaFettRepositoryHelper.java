@@ -69,6 +69,7 @@ public class BobaFettRepositoryHelper {
         return repository.find(filter, manualFilter);
     }
 
+    // TODO make CustomHolidaysProvider with new MongoFilters
     public static List<CustomHoliday> findCustomHolidaysForDistribution(
             MongoRepository<CustomHoliday> repository,
             Set<Long> forIds,
@@ -91,6 +92,20 @@ public class BobaFettRepositoryHelper {
                 return true;
             return isHolidaySuitableForDate(holiday, distributionDays.dayAfterTomorrow());
         };
+        return repository.find(filter, manualFilter);
+    }
+
+    public static List<CustomHoliday> findCustomHolidays(
+            MongoRepository<CustomHoliday> repository,
+            Long chatId,
+            LocalDate date
+    ) {
+        Filter filter = Filters.and(
+                makeFilterForLocalDate(date),
+                Filters.eq(CUSTOM_HOLIDAY_CHAT_ID_KEY, chatId)
+        );
+        MonoPredicate<CustomHoliday> manualFilter = holiday ->
+                holiday.chatId() == chatId && isHolidaySuitableForDate(holiday, date);
         return repository.find(filter, manualFilter);
     }
 

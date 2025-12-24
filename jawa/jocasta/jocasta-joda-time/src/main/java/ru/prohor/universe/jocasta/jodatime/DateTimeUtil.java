@@ -22,6 +22,10 @@ public class DateTimeUtil {
     private static final DateTimeFormatter DIGIT_FORMATTER = DateTimeFormat
             .forPattern("HH:mm:ss dd-MM-yyyy")
             .withZone(MOSCOW_ZONE);
+    private static final DateTimeFormatter RUSSIAN_FULL_FORMATTER = DateTimeFormat
+            .forPattern("d MMMM yyyy")
+            .withZone(MOSCOW_ZONE)
+            .withLocale(RUSSIAN_LOCALE);
 
     /**
      * Instant
@@ -92,6 +96,14 @@ public class DateTimeUtil {
     @Nonnull
     public static String russianMonth(int month) {
         return Month.of(month).getDisplayName(TextStyle.FULL, RUSSIAN_LOCALE);
+    }
+
+    /**
+     * for example, <code>23 декабря 2025</code>
+     */
+    @Nonnull
+    public static String russianFullDate(LocalDate date) {
+        return RUSSIAN_FULL_FORMATTER.print(date);
     }
 
     public static DateTimeZone zoneMoscow() {

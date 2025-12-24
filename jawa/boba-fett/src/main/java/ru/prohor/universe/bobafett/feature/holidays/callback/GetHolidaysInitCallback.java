@@ -26,7 +26,7 @@ public class GetHolidaysInitCallback implements CallbackHandler {
                 message.getChatId(),
                 message.getMessageId(),
                 START_MESSAGE,
-                getHolidaysCallback.getKeyboard()
+                getHolidaysCallback.keyboard
         );
         return false;
     }

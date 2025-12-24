@@ -22,20 +22,20 @@ public class HolidaysDistributor implements DistributionTask {
     private final MongoRepository<BobaFettUser> bobaFettUsersRepository;
     private final MongoRepository<CustomHoliday> customHolidaysRepository;
     private final HolidaysMessageFormatter holidaysMessageFormatter;
-    private final RegularHolidaysProvider regularHolidaysProvider;
+    private final HolidaysService holidaysService;
 
     public HolidaysDistributor(
             MongoTransactionService mongoTransactionService,
             MongoRepository<BobaFettUser> bobaFettUsersRepository,
             MongoRepository<CustomHoliday> customHolidaysRepository,
             HolidaysMessageFormatter holidaysMessageFormatter,
-            RegularHolidaysProvider regularHolidaysProvider
+            HolidaysService holidaysService
     ) {
         this.mongoTransactionService = mongoTransactionService;
         this.bobaFettUsersRepository = bobaFettUsersRepository;
         this.customHolidaysRepository = customHolidaysRepository;
         this.holidaysMessageFormatter = holidaysMessageFormatter;
-        this.regularHolidaysProvider = regularHolidaysProvider;
+        this.holidaysService = holidaysService;
     }
 
     @Override
@@ -85,13 +85,10 @@ public class HolidaysDistributor implements DistributionTask {
 
                 feedbackExecutor.sendMessage(
                         chatId,
-                        holidaysMessageFormatter.format(
+                        holidaysService.getHolidaysMessageForDate(
                                 date,
-                                structuredCustomHolidays.getHolidays(chatId, indent),
-                                regularHolidaysProvider.getForDate(
-                                        distributionDays.today().getYear(),
-                                        date
-                                )
+                                distributionDays.today().getYear(),
+                                structuredCustomHolidays.getHolidays(chatId, indent)
                         )
                 );
 

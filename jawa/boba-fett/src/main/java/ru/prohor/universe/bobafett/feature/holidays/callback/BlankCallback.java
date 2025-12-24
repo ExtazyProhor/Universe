@@ -1,0 +1,19 @@
+package ru.prohor.universe.bobafett.feature.holidays.callback;
+
+import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
+import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
+import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
+
+@Service
+public class BlankCallback implements CallbackHandler {
+    @Override
+    public String callback() {
+        return "blank";
+    }
+
+    @Override
+    public boolean handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
+        return false;
+    }
+}
