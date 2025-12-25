@@ -1,8 +1,10 @@
 package ru.prohor.universe.bobafett.data.pojo;
 
+import lombok.Builder;
 import ru.prohor.universe.bobafett.data.dto.HolidaysSubscriptionOptionsDto;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 
+@Builder(toBuilder = true)
 public record HolidaysSubscriptionOptions(
         DistributionTime dailyDistributionTime,
         int indentationOfDays,
