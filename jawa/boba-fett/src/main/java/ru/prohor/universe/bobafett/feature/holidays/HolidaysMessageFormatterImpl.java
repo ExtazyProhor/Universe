@@ -1,12 +1,14 @@
 package ru.prohor.universe.bobafett.feature.holidays;
 
 import org.joda.time.LocalDate;
+import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class HolidaysMessageFormatterImpl implements HolidaysMessageFormatter {
     @Override
     public String format(LocalDate date, Opt<List<String>> customHolidays, List<String> holidays) {

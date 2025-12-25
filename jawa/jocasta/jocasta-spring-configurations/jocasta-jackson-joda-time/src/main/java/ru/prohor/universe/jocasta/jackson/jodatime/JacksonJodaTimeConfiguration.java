@@ -17,7 +17,7 @@ import ru.prohor.universe.jocasta.spring.configuration.JacksonConfiguration;
 @Import(JacksonConfiguration.class)
 public class JacksonJodaTimeConfiguration {
     @Bean
-    public Module objectMapper() {
+    public Module jodaModule() {
         SimpleModule jodaModule = new SimpleModule();
 
         jodaModule.addSerializer(Instant.class, new InstantSerializer());

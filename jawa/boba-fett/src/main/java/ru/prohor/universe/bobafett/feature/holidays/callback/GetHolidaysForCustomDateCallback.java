@@ -28,7 +28,7 @@ public class GetHolidaysForCustomDateCallback extends JsonCallbackHandler<Payloa
             ObjectMapper objectMapper,
             MongoRepository<CustomHoliday> customHolidaysRepository
     ) {
-        super("holidays/get", Payload.class, objectMapper);
+        super("holidays/get-custom-date", Payload.class, objectMapper);
         this.holidaysService = holidaysService;
         this.customHolidaysRepository = customHolidaysRepository;
     }
