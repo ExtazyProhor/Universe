@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import ru.prohor.universe.bobafett.callback.Callbacks;
 import ru.prohor.universe.bobafett.data.MongoStatusStorage;
 import ru.prohor.universe.bobafett.feature.holidays.date.ChangeDateKeyboardUtils;
 import ru.prohor.universe.bobafett.feature.holidays.date.Payload;
@@ -30,7 +31,7 @@ public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload
             ObjectMapper objectMapper,
             MongoStatusStorage mongoStatusStorage
     ) {
-        super("holidays/choose-date", Payload.class, objectMapper);
+        super(Callbacks.CHOOSE_CUSTOM_HOLIDAY_DATE, Payload.class, objectMapper);
         this.mongoStatusStorage = mongoStatusStorage;
     }
 

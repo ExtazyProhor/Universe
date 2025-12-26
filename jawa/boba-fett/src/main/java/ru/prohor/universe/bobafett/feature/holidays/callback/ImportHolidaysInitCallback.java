@@ -2,6 +2,7 @@ package ru.prohor.universe.bobafett.feature.holidays.callback;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
+import ru.prohor.universe.bobafett.callback.Callbacks;
 import ru.prohor.universe.bobafett.command.Commands;
 import ru.prohor.universe.bobafett.data.MongoStatusStorage;
 import ru.prohor.universe.bobafett.feature.holidays.status.WaitImportChatId;
@@ -28,7 +29,7 @@ public class ImportHolidaysInitCallback implements CallbackHandler {
 
     @Override
     public String callback() {
-        return "holidays/init-import";
+        return Callbacks.IMPORT_HOLIDAYS_INIT;
     }
 
     @Override

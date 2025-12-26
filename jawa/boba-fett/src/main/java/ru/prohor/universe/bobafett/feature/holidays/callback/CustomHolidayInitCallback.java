@@ -2,6 +2,7 @@ package ru.prohor.universe.bobafett.feature.holidays.callback;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
+import ru.prohor.universe.bobafett.callback.Callbacks;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
 
@@ -18,7 +19,7 @@ public class CustomHolidayInitCallback implements CallbackHandler {
 
     @Override
     public String callback() {
-        return "holidays/init-custom";
+        return Callbacks.CUSTOM_HOLIDAY_INIT;
     }
 
     @Override

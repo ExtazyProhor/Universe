@@ -6,6 +6,7 @@ import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import ru.prohor.universe.bobafett.callback.Callbacks;
 import ru.prohor.universe.bobafett.data.BobaFettRepositoryHelper;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
 import ru.prohor.universe.bobafett.feature.holidays.HolidaysService;
@@ -29,7 +30,7 @@ public class GetHolidaysCallback extends JsonCallbackHandler<GetHolidaysCallback
             GetHolidaysForCustomDateCallback getHolidaysForCustomDateCallback,
             MongoRepository<CustomHoliday> customHolidaysRepository
     ) {
-        super("holidays/get", Payload.class, objectMapper);
+        super(Callbacks.GET_HOLIDAYS, Payload.class, objectMapper);
         this.holidaysService = holidaysService;
         this.getHolidaysForCustomDateCallback = getHolidaysForCustomDateCallback;
         this.customHolidaysRepository = customHolidaysRepository;

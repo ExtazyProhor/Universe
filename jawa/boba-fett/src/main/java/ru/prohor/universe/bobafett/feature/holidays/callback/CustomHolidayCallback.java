@@ -40,7 +40,7 @@ public class CustomHolidayCallback extends JsonCallbackHandler<CustomHolidayCall
             ChooseCustomHolidayDateCallback chooseCustomHolidayDateCallback,
             CustomHolidaysService customHolidaysService
     ) {
-        super("holidays/custom-holiday", Payload.class, objectMapper);
+        super(Callbacks.CUSTOM_HOLIDAY, Payload.class, objectMapper);
         this.chooseCustomHolidayDateCallback = chooseCustomHolidayDateCallback;
         this.customHolidaysService = customHolidaysService;
     }

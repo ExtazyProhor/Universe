@@ -8,6 +8,7 @@ import ru.prohor.universe.bobafett.data.BobaFettRepositoryHelper;
 import ru.prohor.universe.bobafett.data.MongoStatusStorage;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
+import ru.prohor.universe.bobafett.status.Statuses;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.tuple.Tuple3;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
@@ -45,7 +46,7 @@ public class WaitImportChatId implements StatusHandler<String> {
 
     @Override
     public String key() {
-        return "holidays/wait-import-id";
+        return Statuses.WAIT_IMPORT_CHAT_ID;
     }
 
     @Override

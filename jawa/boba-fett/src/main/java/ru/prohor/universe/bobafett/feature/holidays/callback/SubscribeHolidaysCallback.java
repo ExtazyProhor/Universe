@@ -39,7 +39,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
             MongoTransactionService transactionService,
             MongoRepository<BobaFettUser> usersRepository
     ) {
-        super("holidays/subscribe", Payload.class, objectMapper);
+        super(Callbacks.SUBSCRIBE_HOLIDAYS, Payload.class, objectMapper);
         this.transactionService = transactionService;
         this.usersRepository = usersRepository;
     }
