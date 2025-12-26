@@ -7,10 +7,9 @@ import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import com.fasterxml.jackson.databind.type.ReferenceType;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
-import java.util.Optional;
-
-public class Jdk8Serializers extends Serializers.Base {
+public class JocastaCoreSerializers extends Serializers.Base {
     @Override
     public JsonSerializer<?> findReferenceSerializer(
             SerializationConfig config,
@@ -20,10 +19,10 @@ public class Jdk8Serializers extends Serializers.Base {
             JsonSerializer<Object> contentValueSerializer
     ) {
         Class<?> raw = refType.getRawClass();
-        if (!Optional.class.isAssignableFrom(raw))
+        if (!Opt.class.isAssignableFrom(raw))
             return null;
         boolean staticTyping = (contentTypeSerializer == null) && config.isEnabled(MapperFeature.USE_STATIC_TYPING);
-        return new OptionalSerializer(
+        return new OptSerializer(
                 refType,
                 staticTyping,
                 contentTypeSerializer,

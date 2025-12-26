@@ -1,16 +1,18 @@
 package ru.prohor.universe.jocasta.jackson.jodatime.jdk8;
 
-import java.util.Optional;
-
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ValueInstantiator;
 import com.fasterxml.jackson.databind.deser.std.ReferenceTypeDeserializer;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
-public class OptionalDeserializer extends ReferenceTypeDeserializer<Optional<?>> {
+public class OptDeserializer extends ReferenceTypeDeserializer<Opt<?>> {
     private final static boolean DEFAULT_READ_ABSENT_AS_NULL = false;
 
-    public OptionalDeserializer(
+    public OptDeserializer(
             JavaType fullType,
             ValueInstantiator instantiator,
             TypeDeserializer typeDeserializer,
@@ -20,8 +22,8 @@ public class OptionalDeserializer extends ReferenceTypeDeserializer<Optional<?>>
     }
 
     @Override
-    public OptionalDeserializer withResolved(TypeDeserializer typeDeserializer, JsonDeserializer<?> deserializer) {
-        return new OptionalDeserializer(
+    public OptDeserializer withResolved(TypeDeserializer typeDeserializer, JsonDeserializer<?> deserializer) {
+        return new OptDeserializer(
                 _fullType,
                 _valueInstantiator,
                 typeDeserializer,
@@ -30,8 +32,8 @@ public class OptionalDeserializer extends ReferenceTypeDeserializer<Optional<?>>
     }
 
     @Override
-    public Optional<?> getNullValue(DeserializationContext context) throws JsonMappingException {
-        return Optional.ofNullable(_valueDeserializer.getNullValue(context));
+    public Opt<?> getNullValue(DeserializationContext context) throws JsonMappingException {
+        return Opt.ofNullable(_valueDeserializer.getNullValue(context));
     }
 
     @Override
@@ -47,17 +49,17 @@ public class OptionalDeserializer extends ReferenceTypeDeserializer<Optional<?>>
     }
 
     @Override
-    public Optional<?> referenceValue(Object contents) {
-        return Optional.ofNullable(contents);
+    public Opt<?> referenceValue(Object contents) {
+        return Opt.ofNullable(contents);
     }
 
     @Override
-    public Object getReferenced(Optional<?> reference) {
-        return reference.orElse(null);
+    public Object getReferenced(Opt<?> reference) {
+        return reference.orElseNull();
     }
 
     @Override
-    public Optional<?> updateReference(Optional<?> reference, Object contents) {
-        return Optional.ofNullable(contents);
+    public Opt<?> updateReference(Opt<?> reference, Object contents) {
+        return Opt.ofNullable(contents);
     }
 }

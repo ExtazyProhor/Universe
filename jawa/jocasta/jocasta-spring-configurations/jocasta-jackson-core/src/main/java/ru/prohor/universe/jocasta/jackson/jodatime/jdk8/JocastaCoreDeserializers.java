@@ -7,10 +7,9 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 import com.fasterxml.jackson.databind.type.ReferenceType;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
-import java.util.Optional;
-
-public class Jdk8Deserializers extends Deserializers.Base {
+public class JocastaCoreDeserializers extends Deserializers.Base {
     @Override
     public JsonDeserializer<?> findReferenceDeserializer(
             ReferenceType refType,
@@ -19,9 +18,9 @@ public class Jdk8Deserializers extends Deserializers.Base {
             TypeDeserializer contentTypeDeserializer,
             JsonDeserializer<?> contentDeserializer
     ) {
-        if (!refType.hasRawClass(Optional.class))
+        if (!refType.hasRawClass(Opt.class))
             return null;
-        return new OptionalDeserializer(
+        return new OptDeserializer(
                 refType,
                 null,
                 contentTypeDeserializer,
@@ -35,9 +34,9 @@ public class Jdk8Deserializers extends Deserializers.Base {
             DeserializationConfig config,
             BeanDescription beanDesc
     ) {
-        if (!type.hasRawClass(Optional.class))
+        if (!type.hasRawClass(Opt.class))
             return null;
-        JavaType refType = config.constructType(Optional.class);
-        return new OptionalDeserializer(refType, null, null, null);
+        JavaType refType = config.constructType(Opt.class);
+        return new OptDeserializer(refType, null, null, null);
     }
 }

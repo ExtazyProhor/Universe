@@ -1,15 +1,15 @@
 package ru.prohor.universe.jocasta.jackson.jodatime.jdk8;
 
-import java.util.Optional;
-
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.BeanProperty;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer;
 import com.fasterxml.jackson.databind.type.ReferenceType;
 import com.fasterxml.jackson.databind.util.NameTransformer;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
-public class OptionalSerializer extends ReferenceTypeSerializer<Optional<?>> {
-    public OptionalSerializer(
+public class OptSerializer extends ReferenceTypeSerializer<Opt<?>> {
+    public OptSerializer(
             ReferenceType fullType,
             boolean staticTyping,
             TypeSerializer typeSerializer,
@@ -18,8 +18,8 @@ public class OptionalSerializer extends ReferenceTypeSerializer<Optional<?>> {
         super(fullType, staticTyping, typeSerializer, serializer);
     }
 
-    private OptionalSerializer(
-            OptionalSerializer base,
+    private OptSerializer(
+            OptSerializer base,
             BeanProperty property,
             TypeSerializer typeSerializer,
             JsonSerializer<?> serializer,
@@ -31,13 +31,13 @@ public class OptionalSerializer extends ReferenceTypeSerializer<Optional<?>> {
     }
 
     @Override
-    protected ReferenceTypeSerializer<Optional<?>> withResolved(
+    protected ReferenceTypeSerializer<Opt<?>> withResolved(
             BeanProperty property,
             TypeSerializer typeSerializer,
             JsonSerializer<?> serializer,
             NameTransformer unwrapper
     ) {
-        return new OptionalSerializer(
+        return new OptSerializer(
                 this,
                 property,
                 typeSerializer,
@@ -49,11 +49,11 @@ public class OptionalSerializer extends ReferenceTypeSerializer<Optional<?>> {
     }
 
     @Override
-    public ReferenceTypeSerializer<Optional<?>> withContentInclusion(
+    public ReferenceTypeSerializer<Opt<?>> withContentInclusion(
             Object suppressableValue,
             boolean suppressNulls
     ) {
-        return new OptionalSerializer(
+        return new OptSerializer(
                 this,
                 _property,
                 _valueTypeSerializer,
@@ -65,18 +65,17 @@ public class OptionalSerializer extends ReferenceTypeSerializer<Optional<?>> {
     }
 
     @Override
-    protected boolean _isValuePresent(Optional<?> value) {
+    protected boolean _isValuePresent(Opt<?> value) {
         return value.isPresent();
     }
 
     @Override
-    protected Object _getReferenced(Optional<?> value) {
-        assert value.isPresent(); // TODO remove
+    protected Object _getReferenced(Opt<?> value) {
         return value.get();
     }
 
     @Override
-    protected Object _getReferencedIfPresent(Optional<?> value) {
-        return value.orElse(null);
+    protected Object _getReferencedIfPresent(Opt<?> value) {
+        return value.orElseNull();
     }
 }
