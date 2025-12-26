@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.prohor.universe.bobafett.callback.Callbacks;
+import ru.prohor.universe.jocasta.core.collections.common.Bool;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.tgbots.util.InlineKeyboardUtils;
@@ -54,17 +55,17 @@ public class ChangeDateKeyboardUtils {
             case DAY -> Period.days(payload.count());
             case MONTH -> Period.months(payload.count());
         };
-        return payload.increase() ? date.plus(period) : date.minus(period);
+        return payload.increase().unwrap() ? date.plus(period) : date.minus(period);
     }
 
     private static String change(
             LocalDate date,
             TimeUnit timeUnit,
             Integer count,
-            Boolean increase,
+            boolean increase,
             MonoFunction<Payload, String> callbackMaker
     ) {
-        return callbackMaker.apply(new Payload(Option.CHANGE_DATE, date, timeUnit, count, increase));
+        return callbackMaker.apply(new Payload(Option.CHANGE_DATE, date, timeUnit, count, Bool.of(increase)));
     }
 
     private static String apply(LocalDate date, MonoFunction<Payload, String> callbackMaker) {

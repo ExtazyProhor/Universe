@@ -7,9 +7,13 @@ import ru.prohor.universe.jocasta.core.collections.common.Bool;
 
 import java.io.IOException;
 
+/**
+ * Allows to save from 3 to 4 bytes (depending on the values - <code>true</code> or <code>false</code>)
+ * when serializing to JSON
+ */
 public class BoolDeserializer extends JsonDeserializer<Bool> {
     @Override
     public Bool deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-        return new Bool(parser.getValueAsInt() != 0);
+        return Bool.of(parser.getValueAsInt() != 0);
     }
 }
