@@ -26,6 +26,10 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-jackson-morphia</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-morphia-configuration</artifactId>
         </dependency>
 

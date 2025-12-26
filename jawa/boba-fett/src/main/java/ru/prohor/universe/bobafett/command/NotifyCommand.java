@@ -2,7 +2,6 @@ package ru.prohor.universe.bobafett.command;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.prohor.universe.bobafett.data.BobaFettRepositoryHelper;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
@@ -44,8 +43,7 @@ public class NotifyCommand implements CommandHandler {
 
     @Override
     public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
-        Chat chat = message.getChat();
-        long chatId = chat.getId();
+        long chatId = message.getChatId();
         if (!adminChatsIds.contains(chatId))
             return false;
 
