@@ -28,6 +28,10 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-spring-web</artifactId>
         </dependency>
         <dependency>
