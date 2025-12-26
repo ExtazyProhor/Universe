@@ -3,6 +3,7 @@ package ru.prohor.universe.bobafett.feature.holidays;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.LocalDate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Service
 public class RegularHolidaysProviderImpl implements RegularHolidaysProvider {
-    private static final TypeReference<List<HolidaysMonth>> MONTHS_TYPE_REFERENCE = new TypeReference<>() {};
+    private static final TypeReference<List<List<HolidaysDay>>> TYPE_REFERENCE = new TypeReference<>() {};
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Path holidaysDir;
 
@@ -21,8 +22,10 @@ public class RegularHolidaysProviderImpl implements RegularHolidaysProvider {
     private HolidaysYear current;
     private HolidaysYear next;
 
-    public RegularHolidaysProviderImpl(Path holidaysDir) {
-        this.holidaysDir = holidaysDir;
+    public RegularHolidaysProviderImpl(
+            @Value("${universe.boba-fett.holidays-path}") String holidaysDir
+    ) {
+        this.holidaysDir = Path.of(holidaysDir);
         updateYear();
     }
 
@@ -70,11 +73,11 @@ public class RegularHolidaysProviderImpl implements RegularHolidaysProvider {
     }
 
     private HolidaysYear loadHolidaysYear(int year) throws IOException {
-        List<HolidaysMonth> months = objectMapper.readValue(
+        List<List<HolidaysDay>> months = objectMapper.readValue(
                 Files.readString(holidaysDir.resolve(year + ".json")),
-                MONTHS_TYPE_REFERENCE
+                TYPE_REFERENCE
         );
-        return new HolidaysYear(months);
+        return new HolidaysYear(months.stream().map(HolidaysMonth::new).toList());
     }
 
     private record HolidaysYear(List<HolidaysMonth> months) {
@@ -89,5 +92,5 @@ public class RegularHolidaysProviderImpl implements RegularHolidaysProvider {
         }
     }
 
-    private record HolidaysDay(List<String> holidays) {}
+    private record HolidaysDay(List<String> holidays, int day) {}
 }
