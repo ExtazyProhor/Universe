@@ -64,4 +64,6 @@ public interface MongoRepository<T extends MongoEntityPojo<?>> {
     List<T> findByText(String text);
 
     MongoTextSearchResult<T> findByText(String text, int page, int pageSize);
+
+    Class<T> type();
 }

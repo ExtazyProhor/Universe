@@ -26,18 +26,21 @@ public class MongoInMemoryRepository<T extends MongoEntityPojo<?>> implements Mo
     private final Map<ObjectId, T> collection;
     private final Function<T, ObjectId> idExtractor;
     private final Opt<BiPredicate<T, String>> textSearchPredicate;
+    private final Class<T> type;
 
-    public MongoInMemoryRepository(Function<T, ObjectId> idExtractor) {
-        this(idExtractor, null);
+    public MongoInMemoryRepository(Function<T, ObjectId> idExtractor, Class<T> type) {
+        this(idExtractor, null, type);
     }
 
     public MongoInMemoryRepository(
             Function<T, ObjectId> idExtractor,
-            BiPredicate<T, String> textSearchPredicate
+            BiPredicate<T, String> textSearchPredicate,
+            Class<T> type
     ) {
         this.collection = Collections.synchronizedMap(new HashMap<>());
         this.idExtractor = idExtractor;
         this.textSearchPredicate = Opt.ofNullable(textSearchPredicate);
+        this.type = type;
     }
 
     @Override
@@ -114,5 +117,10 @@ public class MongoInMemoryRepository<T extends MongoEntityPojo<?>> implements Mo
                 paginationResult.page(),
                 paginationResult.lastPage()
         );
+    }
+
+    @Override
+    public Class<T> type() {
+        return type;
     }
 }

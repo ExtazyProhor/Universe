@@ -16,11 +16,11 @@ import ru.prohor.universe.jocasta.morphia.impl.MongoInMemoryRepository;
 public class BobaFettMongoLocalConfiguration {
     @Bean
     public MongoRepository<BobaFettUser> bobaFettUserRepository() {
-        return new MongoInMemoryRepository<>(BobaFettUser::id);
+        return new MongoInMemoryRepository<>(BobaFettUser::id, BobaFettUser.class);
     }
 
     @Bean
     public MongoRepository<CustomHoliday> customHolidayRepository() {
-        return new MongoInMemoryRepository<>(CustomHoliday::id);
+        return new MongoInMemoryRepository<>(CustomHoliday::id, CustomHoliday.class);
     }
 }

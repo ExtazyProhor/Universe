@@ -18,24 +18,25 @@ import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
 public class MongoLocalConfiguration {
     @Bean
     public MongoRepository<Image> imageRepository() {
-        return new MongoInMemoryRepository<>(Image::id);
+        return new MongoInMemoryRepository<>(Image::id, Image.class);
     }
 
     @Bean
     public MongoRepository<OfflineGame> offlineGameRepository() {
-        return new MongoInMemoryRepository<>(OfflineGame::id);
+        return new MongoInMemoryRepository<>(OfflineGame::id, OfflineGame.class);
     }
 
     @Bean
     public MongoRepository<OfflineRoom> offlineRoomRepository() {
-        return new MongoInMemoryRepository<>(OfflineRoom::id);
+        return new MongoInMemoryRepository<>(OfflineRoom::id, OfflineRoom.class);
     }
 
     @Bean
     public MongoRepository<Player> playerRepository() {
         return new MongoInMemoryRepository<>(
                 Player::id,
-                (player, s) -> player.username().equalsIgnoreCase(s) || player.displayName().equalsIgnoreCase(s)
+                (player, s) -> player.username().equalsIgnoreCase(s) || player.displayName().equalsIgnoreCase(s),
+                Player.class
         );
     }
 }

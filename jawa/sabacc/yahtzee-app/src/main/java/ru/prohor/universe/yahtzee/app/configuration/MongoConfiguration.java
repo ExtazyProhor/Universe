@@ -23,21 +23,31 @@ import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
 public class MongoConfiguration {
     @Bean
     public MongoRepository<Image> imageRepository(Datastore datastore) {
-        return MongoMorphiaRepository.createRepository(datastore, ImageDto.class, Image::fromDto);
+        return MongoMorphiaRepository.createRepository(datastore, Image.class, ImageDto.class, Image::fromDto);
     }
 
     @Bean
     public MongoRepository<OfflineGame> offlineGameRepository(Datastore datastore) {
-        return MongoMorphiaRepository.createRepository(datastore, OfflineGameDto.class, OfflineGame::fromDto);
+        return MongoMorphiaRepository.createRepository(
+                datastore,
+                OfflineGame.class,
+                OfflineGameDto.class,
+                OfflineGame::fromDto
+        );
     }
 
     @Bean
     public MongoRepository<OfflineRoom> offlineRoomRepository(Datastore datastore) {
-        return MongoMorphiaRepository.createRepository(datastore, OfflineRoomDto.class, OfflineRoom::fromDto);
+        return MongoMorphiaRepository.createRepository(
+                datastore,
+                OfflineRoom.class,
+                OfflineRoomDto.class,
+                OfflineRoom::fromDto
+        );
     }
 
     @Bean
     public MongoRepository<Player> playerRepository(Datastore datastore) {
-        return MongoMorphiaRepository.createRepository(datastore, PlayerDto.class, Player::fromDto);
+        return MongoMorphiaRepository.createRepository(datastore, Player.class, PlayerDto.class, Player::fromDto);
     }
 }

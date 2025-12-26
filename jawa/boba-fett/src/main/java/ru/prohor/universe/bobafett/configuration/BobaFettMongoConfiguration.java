@@ -19,11 +19,21 @@ import ru.prohor.universe.jocasta.morphia.MongoRepository;
 public class BobaFettMongoConfiguration {
     @Bean
     public MongoRepository<BobaFettUser> bobaFettUserRepository(Datastore datastore) {
-        return MongoMorphiaRepository.createRepository(datastore, BobaFettUserDto.class, BobaFettUser::fromDto);
+        return MongoMorphiaRepository.createRepository(
+                datastore,
+                BobaFettUser.class,
+                BobaFettUserDto.class,
+                BobaFettUser::fromDto
+        );
     }
 
     @Bean
     public MongoRepository<CustomHoliday> customHolidayRepository(Datastore datastore) {
-        return MongoMorphiaRepository.createRepository(datastore, CustomHolidayDto.class, CustomHoliday::fromDto);
+        return MongoMorphiaRepository.createRepository(
+                datastore,
+                CustomHoliday.class,
+                CustomHolidayDto.class,
+                CustomHoliday::fromDto
+        );
     }
 }

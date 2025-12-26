@@ -14,23 +14,24 @@ import java.util.List;
 import java.util.function.Function;
 
 public class MongoMorphiaRepository<T extends MongoEntityPojo<?>> implements MongoRepository<T> {
+    private final Class<T> type;
     final AbstractMongoMorphiaRepository<?, T> repository;
 
-    MongoMorphiaRepository(AbstractMongoMorphiaRepository<?, T> repository) {
+    MongoMorphiaRepository(AbstractMongoMorphiaRepository<?, T> repository, Class<T> type) {
         this.repository = repository;
+        this.type = type;
     }
 
     public static <E, W extends MongoEntityPojo<E>> MongoMorphiaRepository<W> createRepository(
             Datastore datastore,
-            Class<E> type,
+            Class<W> wrapperType,
+            Class<E> dtoType,
             Function<E, W> wrapFunction
     ) {
-        return new MongoMorphiaRepository<>(new AbstractMongoMorphiaRepository<>(
-                datastore,
-                type,
-                wrapFunction,
-                W::toDto
-        ));
+        return new MongoMorphiaRepository<>(
+                new AbstractMongoMorphiaRepository<>(datastore, dtoType, wrapFunction, W::toDto),
+                wrapperType
+        );
     }
 
     // TODO tests
@@ -39,7 +40,8 @@ public class MongoMorphiaRepository<T extends MongoEntityPojo<?>> implements Mon
             Class<T> type
     ) {
         return new MongoMorphiaRepository<>(
-                new AbstractMongoMorphiaRepository<>(datastore, type, Function.identity(), Function.identity())
+                new AbstractMongoMorphiaRepository<>(datastore, type, Function.identity(), Function.identity()),
+                type
         );
     }
 
@@ -96,5 +98,10 @@ public class MongoMorphiaRepository<T extends MongoEntityPojo<?>> implements Mon
     @Override
     public MongoTextSearchResult<T> findByText(String text, int page, int pageSize) {
         return repository.findByText(text, page, pageSize);
+    }
+
+    @Override
+    public Class<T> type() {
+        return type;
     }
 }
