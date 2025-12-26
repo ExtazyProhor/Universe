@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jackson.jodatime.jdk8;
+package ru.prohor.universe.jocasta.jackson.jodatime;
 
 import java.lang.reflect.Type;
 

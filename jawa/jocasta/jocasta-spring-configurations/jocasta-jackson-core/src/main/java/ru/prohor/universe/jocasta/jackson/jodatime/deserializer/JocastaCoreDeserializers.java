@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jackson.jodatime.jdk8;
+package ru.prohor.universe.jocasta.jackson.jodatime.deserializer;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
