@@ -321,6 +321,11 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-jackson-morphia</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
                 <artifactId>jocasta-tg-bots</artifactId>
                 <version>final</version>
             </dependency>

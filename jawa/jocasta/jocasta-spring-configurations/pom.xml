@@ -16,5 +16,6 @@
     <modules>
         <module>jocasta-jackson-joda-time</module>
         <module>jocasta-morphia-configuration</module>
+        <module>jocasta-jackson-morphia</module>
     </modules>
 </project>
