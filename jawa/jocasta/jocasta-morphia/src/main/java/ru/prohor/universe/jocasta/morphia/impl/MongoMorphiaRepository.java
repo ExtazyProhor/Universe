@@ -13,7 +13,7 @@ import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
 import java.util.List;
 import java.util.function.Function;
 
-public class MongoMorphiaRepository<T> implements MongoRepository<T> {
+public class MongoMorphiaRepository<T extends MongoEntityPojo<?>> implements MongoRepository<T> {
     final AbstractMongoMorphiaRepository<?, T> repository;
 
     MongoMorphiaRepository(AbstractMongoMorphiaRepository<?, T> repository) {
@@ -34,7 +34,7 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
     }
 
     // TODO tests
-    public static <T> MongoMorphiaRepository<T> createRepository(
+    public static <T extends MongoEntityPojo<?>> MongoMorphiaRepository<T> createRepository(
             Datastore datastore,
             Class<T> type
     ) {
