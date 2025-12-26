@@ -26,6 +26,8 @@ public class DateTimeUtil {
             .forPattern("d MMMM yyyy")
             .withZone(MOSCOW_ZONE)
             .withLocale(RUSSIAN_LOCALE);
+    private static final DateTimeFormatter LOCAL_TIME_WITHOUT_MILLIS = DateTimeFormat
+            .forPattern("HH:mm:ss");
 
     /**
      * Instant
@@ -106,6 +108,15 @@ public class DateTimeUtil {
         return RUSSIAN_FULL_FORMATTER.print(date);
     }
 
+    /**
+     * for example, <code>12:15:34</code>
+     */
+    @Nonnull
+    public static String formatWithoutMillis(LocalTime time) {
+        return LOCAL_TIME_WITHOUT_MILLIS.print(time);
+    }
+
+    @Nonnull
     public static DateTimeZone zoneMoscow() {
         return MOSCOW_ZONE;
     }

@@ -12,6 +12,7 @@ import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.DistributionTime;
 import ru.prohor.universe.bobafett.data.pojo.HolidaysSubscriptionOptions;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
@@ -85,8 +86,9 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
                 feedbackExecutor.editMessageText(
                         chatId,
                         messageId,
-                        "Настройки успешно применены. В " + payload.hour + ":" + payload.minute
-                                + " каждый день будет приходить " + "список праздников " + INDENT_TEXT[payload.indent]
+                        "Настройки успешно применены. В " + payload.hour + ":" +
+                                (payload.minute == 0 ? "00" : payload.minute) +
+                                " каждый день будет приходить " + "список праздников " + INDENT_TEXT[payload.indent]
                 );
             }
         }
@@ -152,7 +154,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
     private InlineKeyboardMarkup makeSettingsKeyboard(LocalTime time, int indent) {
         return InlineKeyboardUtils.getInlineKeyboard(
                 List.of(
-                        List.of("Установить время: " + time),
+                        List.of("Установить время: " + DateTimeUtil.formatWithoutMillis(time)),
                         TIME_TEXT,
                         List.of("тот же день " + indentText(indent, 0)),
                         List.of("день после " + indentText(indent, 1)),

@@ -4,6 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
 import ru.prohor.universe.jocasta.tgbots.SimpleBot;
 
@@ -14,12 +15,14 @@ public class BobaFettBot extends SimpleBot {
 
     @Override
     public void onHandlingException(Exception e) {
-
+        // TODO
+        Sneaky.throwUnchecked(e);
     }
 
     @Override
     public void onSendingException(Exception e, String chatId) {
-
+        // TODO
+        Sneaky.throwUnchecked(e);
     }
 
     @Override

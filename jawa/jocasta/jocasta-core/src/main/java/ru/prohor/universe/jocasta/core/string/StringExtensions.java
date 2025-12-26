@@ -17,4 +17,10 @@ public class StringExtensions {
         }
         return builder.toString();
     }
+
+    public static String fillToLength(String str, char ch, int target) {
+        if (str.length() >= target)
+            return str;
+        return String.valueOf(ch).repeat(target - str.length()) + str;
+    }
 }
