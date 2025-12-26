@@ -3,10 +3,13 @@ package ru.prohor.universe.jocasta.tgbots.api.callback;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
+import ru.prohor.universe.jocasta.core.string.StringExtensions;
 import ru.prohor.universe.jocasta.tgbots.api.ActionHandler;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
 public abstract class JsonCallbackHandler<T> implements ActionHandler<String> {
+    private static final int MAX_CALLBACK_LENGTH = 64;
+
     /**
      * The type of class that is mapped to JSON
      */
@@ -46,7 +49,13 @@ public abstract class JsonCallbackHandler<T> implements ActionHandler<String> {
         String payloadString = Sneaky.execute(() -> objectMapper.writeValueAsString(payload));
         if (payloadString.contains("."))
             throw new IllegalArgumentException("Callback payload must not contains dots ('.')");
-        return prefix + "." + payloadString;
+        String callback = prefix + "." + payloadString;
+        int len = StringExtensions.utf8Length(callback);
+        if (len <= MAX_CALLBACK_LENGTH)
+            return callback;
+        throw new IllegalArgumentException(
+                "callback exceeds the maximum size of " + MAX_CALLBACK_LENGTH + " bytes and is " + len + " bytes"
+        );
     }
 
     public final boolean handle(
