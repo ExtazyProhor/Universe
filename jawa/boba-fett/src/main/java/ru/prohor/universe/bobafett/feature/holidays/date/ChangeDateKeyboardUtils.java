@@ -19,11 +19,13 @@ public class ChangeDateKeyboardUtils {
     public static InlineKeyboardMarkup makeKeyboardForDate(
             LocalDate date,
             String cancelText,
-            MonoFunction<Payload, String> callbackMaker
+            MonoFunction<Payload, String> callbackMaker,
+            boolean full
     ) {
+        String dateFormatted = full ? DateTimeUtil.russianFullDate(date) : DateTimeUtil.russianDateWithoutYear(date);
         return InlineKeyboardUtils.getInlineKeyboard(
                 List.of(
-                        List.of(DateTimeUtil.russianFullDate(date)),
+                        List.of(dateFormatted),
                         DAY_ROW_TEXT,
                         MONTH_ROW_TEXT,
                         ACCEPT_ROW,

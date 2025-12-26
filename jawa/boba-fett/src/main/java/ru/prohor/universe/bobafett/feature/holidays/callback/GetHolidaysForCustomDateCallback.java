@@ -66,7 +66,7 @@ public class GetHolidaysForCustomDateCallback extends JsonCallbackHandler<Payloa
                 chatId,
                 messageId,
                 CHOOSE_DATE_MESSAGE,
-                ChangeDateKeyboardUtils.makeKeyboardForDate(date, CANCEL_GET_HOLIDAYS, this::makeCallback)
+                ChangeDateKeyboardUtils.makeKeyboardForDate(date, CANCEL_GET_HOLIDAYS, this::makeCallback, true)
         );
     }
 

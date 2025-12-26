@@ -25,6 +25,6 @@ public class HolidaysMessageFormatterImpl implements HolidaysMessageFormatter {
     }
 
     private String formatHolidaysList(List<String> holidays) {
-        return holidays.stream().map(x -> "– " + x).collect(Collectors.joining("\n"));
+        return holidays.stream().sorted().map(x -> "– " + x).collect(Collectors.joining("\n"));
     }
 }

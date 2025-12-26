@@ -57,7 +57,7 @@ public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload
                         chatId,
                         messageId,
                         CHOOSE_HOLIDAY_DATE,
-                        ChangeDateKeyboardUtils.makeKeyboardForDate(date, CANCEL_HOLIDAY_CREATION, this::makeCallback)
+                        keyboard(date)
                 );
             }
             // TODO check null-keyboard
@@ -67,16 +67,21 @@ public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload
     }
 
     public EditMessageText createEditMessage(LocalDate date, long chatId, int messageId) {
-        InlineKeyboardMarkup keyboard = ChangeDateKeyboardUtils.makeKeyboardForDate(
-                date,
-                CANCEL_HOLIDAY_CREATION,
-                this::makeCallback
-        );
+        InlineKeyboardMarkup keyboard = keyboard(date);
         return EditMessageText.builder()
                 .text(CHOOSE_HOLIDAY_DATE)
                 .chatId(chatId)
                 .messageId(messageId)
                 .replyMarkup(keyboard)
                 .build();
+    }
+
+    private InlineKeyboardMarkup keyboard(LocalDate date) {
+        return ChangeDateKeyboardUtils.makeKeyboardForDate(
+                date,
+                CANCEL_HOLIDAY_CREATION,
+                this::makeCallback,
+                false
+        );
     }
 }

@@ -26,6 +26,10 @@ public class DateTimeUtil {
             .forPattern("d MMMM yyyy")
             .withZone(MOSCOW_ZONE)
             .withLocale(RUSSIAN_LOCALE);
+    private static final DateTimeFormatter RUSSIAN_WITHOUT_YEAR_FORMATTER = DateTimeFormat
+            .forPattern("d MMMM")
+            .withZone(MOSCOW_ZONE)
+            .withLocale(RUSSIAN_LOCALE);
     private static final DateTimeFormatter LOCAL_TIME_WITHOUT_MILLIS = DateTimeFormat
             .forPattern("HH:mm:ss");
 
@@ -106,6 +110,14 @@ public class DateTimeUtil {
     @Nonnull
     public static String russianFullDate(LocalDate date) {
         return RUSSIAN_FULL_FORMATTER.print(date);
+    }
+
+    /**
+     * for example, <code>23 декабря</code>
+     */
+    @Nonnull
+    public static String russianDateWithoutYear(LocalDate date) {
+        return RUSSIAN_WITHOUT_YEAR_FORMATTER.print(date);
     }
 
     /**

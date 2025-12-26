@@ -30,6 +30,8 @@ public class WaitCustomHolidayName implements ValuedStatusHandler<String, String
         }
         long chatId = update.getMessage().getChatId();
         String customHolidayName = update.getMessage().getText();
+        if (customHolidayName.startsWith("/"))
+            return true;
         if (customHolidayName.equals(Commands.CANCEL)) {
             feedbackExecutor.sendMessage(chatId, "Создание собственного праздника отменено");
             return false;
