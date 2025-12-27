@@ -21,14 +21,14 @@ public class Distributor {
         this.feedbackExecutor = bot.getFeedbackExecutor();
     }
 
-    @Scheduled(cron = "0 0/15 * * * ?")
+    @Scheduled(cron = "0 0/15 * * * ?", zone = "Europe/Moscow")
     public void execute() {
         LocalDateTime now = LocalDateTime.now();
         int hour = now.getHourOfDay();
         int minute = now.getMinuteOfHour();
         if (!availableMinutes.contains(minute)) {
             // TODO log warn
-            return;
+            throw new RuntimeException("Minute value is not available: " + minute);
         }
         tasks.forEach(task -> task.distribute(feedbackExecutor, hour, minute));
     }

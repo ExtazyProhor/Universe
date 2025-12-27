@@ -64,6 +64,7 @@ public class CustomHolidaysService {
     }
 
     private String lengthLimit(int length) {
+        // TODO заново не читается, надо добавлять статус ручками
         return "Название праздника превышает лимит в 50 символов - оно содержит " +
                 length + " знаков. Напишите название заново или отмените " +
                 "добавление с помощью команды " + Commands.CANCEL;
