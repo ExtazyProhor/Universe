@@ -4,9 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.Instant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestConstructor;
 
+@SpringBootTest
+@ContextConfiguration(classes = JacksonJodaTimeConfiguration.class)
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public class JacksonJodaTimeConfigurationTest {
-    private final ObjectMapper objectMapper = new JacksonJodaTimeConfiguration().objectMapper();
+    private final ObjectMapper objectMapper;
+
+    public JacksonJodaTimeConfigurationTest(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Test
     void testShouldSerializeInstantToUnixSeconds() throws Exception {
