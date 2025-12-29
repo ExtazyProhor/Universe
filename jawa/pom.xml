@@ -29,7 +29,6 @@
         <module>yoda</module>
         <module>boba-fett</module>
         <module>hyperspace</module>
-        <module>probe-droid</module>
         <module>venator</module>
     </modules>
 
@@ -353,12 +352,6 @@
                 <groupId>ru.prohor.universe</groupId>
                 <artifactId>jocasta-morphia-configuration</artifactId>
                 <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
-                <artifactId>jocasta-spring-test</artifactId>
-                <version>final</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
