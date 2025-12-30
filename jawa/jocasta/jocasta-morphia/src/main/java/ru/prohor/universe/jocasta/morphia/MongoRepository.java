@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public interface MongoRepository<T extends MongoEntityPojo<?>> {
+public interface MongoRepository<T> {
     List<T> findAll();
 
     long countDocuments();

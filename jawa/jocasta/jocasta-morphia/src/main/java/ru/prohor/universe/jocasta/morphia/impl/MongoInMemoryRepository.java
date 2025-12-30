@@ -6,7 +6,6 @@ import ru.prohor.universe.jocasta.core.collections.PaginationResult;
 import ru.prohor.universe.jocasta.core.collections.Paginator;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
-import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
@@ -18,7 +17,7 @@ import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-public class MongoInMemoryRepository<T extends MongoEntityPojo<?>> implements MongoRepository<T> {
+public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     private static final UnsupportedOperationException UNSUPPORTED_TEXT_SEARCH = new UnsupportedOperationException(
             "Cannot use text search without textSearchPredicate"
     );
