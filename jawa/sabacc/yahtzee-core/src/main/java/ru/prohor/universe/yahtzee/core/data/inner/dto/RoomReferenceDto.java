@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import ru.prohor.universe.yahtzee.core.core.RoomType;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,5 +14,5 @@ public class RoomReferenceDto {
     @Getter
     private ObjectId id;
     @Getter
-    private String type;
+    private RoomType type;
 }
