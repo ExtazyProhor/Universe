@@ -1,25 +1,26 @@
 package ru.prohor.universe.yahtzee.offline.services;
 
 import org.bson.types.ObjectId;
-import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.Enumeration;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.common.Result;
+import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTransaction;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
-import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
-import ru.prohor.universe.yahtzee.core.core.Yahtzee;
-import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.core.core.Combination;
+import ru.prohor.universe.yahtzee.core.core.RoomType;
+import ru.prohor.universe.yahtzee.core.core.Yahtzee;
+import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
+import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
+import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 import ru.prohor.universe.yahtzee.offline.api.CombinationInfo;
-import ru.prohor.universe.yahtzee.offline.api.CreateRoomRequest;
 import ru.prohor.universe.yahtzee.offline.api.CreateRoomErrorResponse;
+import ru.prohor.universe.yahtzee.offline.api.CreateRoomRequest;
 import ru.prohor.universe.yahtzee.offline.api.PlayerInfo;
 import ru.prohor.universe.yahtzee.offline.api.RoomInfoResponse;
 import ru.prohor.universe.yahtzee.offline.api.SaveMoveErrorResponse;
@@ -29,13 +30,10 @@ import ru.prohor.universe.yahtzee.offline.api.TeamInfo;
 import ru.prohor.universe.yahtzee.offline.api.TeamPlayers;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineGame;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.offline.data.inner.OfflineGameSource;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineInterimTeamScores;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineScore;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineTeamScores;
-import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
-import ru.prohor.universe.yahtzee.core.core.RoomType;
-import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -245,14 +243,15 @@ public class OfflineGameService {
     private OfflineGame roomToGame(OfflineRoom room, Player initiator) {
         return new OfflineGame(
                 ObjectId.get(),
-                LocalDate.now(DateTimeZone.UTC),
-                Opt.of(LocalTime.now(DateTimeZone.UTC)),
+                java.time.Instant.now(),
                 room.initiator(),
                 room.teams()
                         .stream()
                         .map(this::offlineTeamScoresMapper)
                         .toList(),
-                initiator.trusted()
+                initiator.trusted(),
+                OfflineGameSource.DIRECT,
+                Opt.of(room.id())
         );
     }
 

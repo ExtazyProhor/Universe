@@ -11,8 +11,14 @@ import org.joda.time.format.DateTimeFormatter;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateTimeUtil {
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        DateTimeZone.setDefault(DateTimeZone.UTC);
+    }
+
     private static final int NANOS_IN_MILLI = 1_000_000;
     private static final Locale RUSSIAN_LOCALE = Locale.forLanguageTag("ru-RU");
     private static final DateTimeZone MOSCOW_ZONE = DateTimeZone.forID("Europe/Moscow");
