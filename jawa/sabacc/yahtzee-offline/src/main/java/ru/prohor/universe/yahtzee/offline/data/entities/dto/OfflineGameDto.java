@@ -25,4 +25,5 @@ public class OfflineGameDto {
     private LocalTime finishTime;
     private ObjectId initiator;
     private List<OfflineTeamScoresDto> teams;
+    private boolean trusted;
 }

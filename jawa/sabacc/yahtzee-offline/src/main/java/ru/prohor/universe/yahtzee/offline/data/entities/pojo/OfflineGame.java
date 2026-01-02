@@ -16,7 +16,8 @@ public record OfflineGame(
         LocalDate date,
         Opt<LocalTime> finishTime,
         ObjectId initiator,
-        List<OfflineTeamScores> teams
+        List<OfflineTeamScores> teams,
+        boolean trusted
 ) implements MongoEntityPojo<OfflineGameDto> {
     @Override
     public OfflineGameDto toDto() {
@@ -25,7 +26,8 @@ public record OfflineGame(
                 DateTimeUtil.unwrap(date),
                 finishTime.map(DateTimeUtil::unwrap).orElseNull(),
                 initiator,
-                teams.stream().map(OfflineTeamScores::toDto).toList()
+                teams.stream().map(OfflineTeamScores::toDto).toList(),
+                trusted
         );
     }
 
@@ -35,7 +37,8 @@ public record OfflineGame(
                 DateTimeUtil.wrap(game.getDate()),
                 Opt.ofNullable(game.getFinishTime()).map(DateTimeUtil::wrap),
                 game.getInitiator(),
-                game.getTeams().stream().map(OfflineTeamScores::fromDto).toList()
+                game.getTeams().stream().map(OfflineTeamScores::fromDto).toList(),
+                game.isTrusted()
         );
     }
 }

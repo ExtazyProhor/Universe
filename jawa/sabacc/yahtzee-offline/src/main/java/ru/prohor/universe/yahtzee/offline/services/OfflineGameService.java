@@ -226,7 +226,8 @@ public class OfflineGameService {
             transactionalRoomRepository.save(room);
             OfflineInterimTeamScores nextMovingTeam = room.teams().get(newMovingTeamIndex);
             if (nextMovingTeam.scores().size() == Yahtzee.COMBINATIONS) {
-                transactionalGameRepository.save(roomToGame(room));
+                Player initiator = transactionalPlayerRepository.ensuredFindById(room.initiator());
+                transactionalGameRepository.save(roomToGame(room, initiator));
                 return ResponseEntity.ok(new SaveMoveResponse(null, true));
             }
 
@@ -241,7 +242,7 @@ public class OfflineGameService {
         return ResponseEntity.badRequest().body(new SaveMoveErrorResponse(error));
     }
 
-    private OfflineGame roomToGame(OfflineRoom room) {
+    private OfflineGame roomToGame(OfflineRoom room, Player initiator) {
         return new OfflineGame(
                 ObjectId.get(),
                 LocalDate.now(DateTimeZone.UTC),
@@ -250,7 +251,8 @@ public class OfflineGameService {
                 room.teams()
                         .stream()
                         .map(this::offlineTeamScoresMapper)
-                        .toList()
+                        .toList(),
+                initiator.trusted()
         );
     }
 
