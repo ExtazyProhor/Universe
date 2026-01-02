@@ -43,5 +43,5 @@ db.users.createIndex(
 db.users.getIndexes()
 
 db.offline_games.createIndex({ trusted: 1 })
-db.users.getIndexes()
+db.offline_games.getIndexes()
 ```
