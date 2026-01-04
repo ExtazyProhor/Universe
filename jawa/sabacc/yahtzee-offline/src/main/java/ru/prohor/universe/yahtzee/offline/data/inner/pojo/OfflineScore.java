@@ -1,10 +1,11 @@
 package ru.prohor.universe.yahtzee.offline.data.inner.pojo;
 
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
+import ru.prohor.universe.yahtzee.core.core.Combination;
 import ru.prohor.universe.yahtzee.offline.data.inner.dto.OfflineScoreDto;
 
 public record OfflineScore(
-        String combination,
+        Combination combination,
         int value
 ) implements MongoEntityPojo<OfflineScoreDto> {
     @Override

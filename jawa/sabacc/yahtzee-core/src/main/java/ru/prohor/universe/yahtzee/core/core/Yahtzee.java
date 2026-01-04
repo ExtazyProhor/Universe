@@ -5,8 +5,8 @@ public class Yahtzee {
     public static final int BONUS_CONDITION = 63;
     public static final int COMBINATIONS = 15;
 
-    public static boolean isSimple(String combination) {
-        return switch (Combination.of(combination)) {
+    public static boolean isSimple(Combination combination) {
+        return switch (combination) {
             case UNITS, TWOS, THREES, FOURS, FIVES, SIXES -> true;
             default -> false;
         };

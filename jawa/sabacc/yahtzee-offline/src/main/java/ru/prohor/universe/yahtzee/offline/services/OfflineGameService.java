@@ -109,7 +109,7 @@ public class OfflineGameService {
                 ),
                 team.scores().stream().map(
                         score -> new CombinationInfo(
-                                Combination.of(score.combination()),
+                                score.combination(),
                                 score.value()
                         )
                 ).toList()
@@ -199,8 +199,8 @@ public class OfflineGameService {
             OfflineInterimTeamScores movingTeam = room.teams().get(room.movingTeamIndex());
             if (!movingTeam.players().contains(mover.id()))
                 return saveMoveError("Moving player does not belong to the current moving team");
-            String combination = body.combination().propertyName();
-            if (movingTeam.scores().stream().anyMatch(score -> score.combination().equals(combination)))
+            Combination combination = body.combination();
+            if (movingTeam.scores().stream().anyMatch(score -> score.combination() == combination))
                 return saveMoveError("Moving team already has combination " + combination);
             if (!movingTeam.players().get(movingTeam.movingPlayerIndex()).equals(mover.id()))
                 return saveMoveError(
@@ -208,7 +208,7 @@ public class OfflineGameService {
                                 .get(movingTeam.movingPlayerIndex())
                 );
             List<OfflineScore> scores = new ArrayList<>(movingTeam.scores());
-            scores.add(new OfflineScore(body.combination().propertyName(), body.value()));
+            scores.add(new OfflineScore(body.combination(), body.value()));
             int newMovingPlayerIndex = movingTeam.movingPlayerIndex() + 1;
             if (newMovingPlayerIndex == movingTeam.players().size())
                 newMovingPlayerIndex = 0;

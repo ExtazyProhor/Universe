@@ -34,12 +34,4 @@ public enum Combination {
     YAHTZEE,
     @JsonProperty("chance")
     CHANCE;
-
-    public String propertyName() {
-        return name().toLowerCase();
-    }
-
-    public static Combination of(String propertyName) {
-        return valueOf(propertyName.toUpperCase());
-    }
 }
