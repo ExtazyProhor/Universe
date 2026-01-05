@@ -12,6 +12,25 @@ public class Yahtzee {
         };
     }
 
+    public static boolean isVariable(Combination combination) {
+        return switch (combination) {
+            case PAIR, TWO_PAIRS, THREE_OF_KIND, FOUR_OF_KIND, CHANCE -> true;
+            default -> false;
+        };
+    }
+
+    public static int getSimpleCombinationDenomination(Combination combination) {
+        return switch (combination) {
+            case UNITS -> 1;
+            case TWOS -> 2;
+            case THREES -> 3;
+            case FOURS -> 4;
+            case FIVES -> 5;
+            case SIXES -> 6;
+            default -> throw new IllegalArgumentException(combination + " is not simple");
+        };
+    }
+
     public static boolean isValidCombinationValue(Combination combination, int value) {
         return switch (combination) {
             case UNITS -> simple(value, 1);

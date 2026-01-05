@@ -33,5 +33,5 @@ public enum Combination {
     @JsonProperty("yahtzee")
     YAHTZEE,
     @JsonProperty("chance")
-    CHANCE;
+    CHANCE
 }

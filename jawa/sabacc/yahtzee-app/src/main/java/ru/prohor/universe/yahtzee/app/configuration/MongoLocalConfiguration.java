@@ -11,6 +11,7 @@ import ru.prohor.universe.yahtzee.core.data.entities.pojo.Image;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineGame;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
+import ru.prohor.universe.yahtzee.stats.model.OfflineStats;
 
 @Configuration
 @Profile("local | testing")
@@ -38,5 +39,10 @@ public class MongoLocalConfiguration {
                 (player, s) -> player.username().equalsIgnoreCase(s) || player.displayName().equalsIgnoreCase(s),
                 Player.class
         );
+    }
+
+    @Bean
+    public MongoRepository<OfflineStats> offlineStatsRepository() {
+        return new MongoInMemoryRepository<>(OfflineStats::getId, OfflineStats.class);
     }
 }

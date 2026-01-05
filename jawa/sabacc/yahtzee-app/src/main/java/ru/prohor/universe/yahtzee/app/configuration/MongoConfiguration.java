@@ -16,6 +16,7 @@ import ru.prohor.universe.yahtzee.offline.data.entities.dto.OfflineGameDto;
 import ru.prohor.universe.yahtzee.offline.data.entities.dto.OfflineRoomDto;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineGame;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
+import ru.prohor.universe.yahtzee.stats.model.OfflineStats;
 
 @Configuration
 @Profile("stable | canary")
@@ -49,5 +50,10 @@ public class MongoConfiguration {
     @Bean
     public MongoRepository<Player> playerRepository(Datastore datastore) {
         return MongoMorphiaRepository.createRepository(datastore, Player.class, PlayerDto.class, Player::fromDto);
+    }
+
+    @Bean
+    public MongoRepository<OfflineStats> offlineStatsRepository(Datastore datastore) {
+        return MongoMorphiaRepository.createRepository(datastore, OfflineStats.class);
     }
 }
