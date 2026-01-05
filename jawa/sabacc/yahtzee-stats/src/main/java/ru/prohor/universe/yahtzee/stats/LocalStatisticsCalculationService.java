@@ -34,6 +34,7 @@ import java.util.stream.IntStream;
 @Service
 public class LocalStatisticsCalculationService implements StatisticsCalculationService {
     private final static int TOP = 10;
+    private final static int CALIBRATION_GAMES = 10;
 
     private final MongoRepository<OfflineGame> offlineGameRepository;
     private final MongoRepository<OfflineStats> offlineStatsRepository;
@@ -54,6 +55,9 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
         List<FlattenedGame> teams = games.stream()
                 .flatMap(game -> game.teams().stream().map(team -> new FlattenedGame(game, team)))
                 .toList();
+        Map<ObjectId, Long> gamesCount = teams.stream()
+                .flatMap(team -> team.teamScores.players().stream())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
         List<OfflineTeamScores> teamScores = teams.stream()
                 .map(FlattenedGame::teamScores)
                 .filter(team -> team.scores().isPresent())
@@ -61,7 +65,6 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
         List<OfflineScore> scores = teamScores.stream()
                 .flatMap(team -> team.scores().get().stream())
                 .toList();
-        Set<Integer> presentValues = teams.stream().map(game -> game.teamScores.total()).collect(Collectors.toSet());
         OfflineStats stats = new OfflineStats(
                 ObjectId.get(),
                 Instant.now(),
@@ -70,15 +73,15 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 teams.size(),
                 teamScores.size(),
                 (float) teams.stream().mapToInt(game -> game.teamScores.total()).average().orElse(0),
-                calculateGamesCount(teams),
-                calculateAverage(teams),
+                calculateGamesCount(gamesCount),
+                calculateAverage(teams, gamesCount),
                 calculateMaximum(teams),
                 calculateMinimum(teams),
                 calculatePersonalMaximum(teams),
                 calculateTotalDistribution(teams),
                 calculateSimpleDistribution(teamScores),
-                calculateMostFrequentTotalScoresStats(presentValues),
-                calculateMissingValues(presentValues),
+                calculateMostFrequentTotalScores(teams),
+                calculateMissingValues(teams),
                 calculateSimpleDiceAverage(scores),
                 calculateSimpleDiceDistribution(scores),
                 calculateVariableCombinationAverage(scores),
@@ -88,22 +91,23 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
         return Opt.of(stats);
     }
 
-    private List<GamesCountStats> calculateGamesCount(List<FlattenedGame> teams) {
-        return teams.stream()
-                .flatMap(team -> team.teamScores.players().stream())
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet()
+    private List<GamesCountStats> calculateGamesCount(Map<ObjectId, Long> gamesCount) {
+        Comparator<Map.Entry<ObjectId, Long>> comparator = Map.Entry.<ObjectId, Long>comparingByValue()
+                .reversed()
+                .thenComparing(Map.Entry.comparingByKey());
+        return gamesCount.entrySet()
                 .stream()
-                .sorted(Map.Entry.<ObjectId, Long>comparingByValue().reversed())
+                .sorted(comparator)
                 .limit(TOP)
                 .map(entry -> new GamesCountStats(entry.getKey(), entry.getValue().intValue()))
                 .toList();
     }
 
-    private List<AverageStats> calculateAverage(List<FlattenedGame> teams) {
+    private List<AverageStats> calculateAverage(List<FlattenedGame> teams, Map<ObjectId, Long> gamesCount) {
         return teams.stream()
                 .map(FlattenedGame::teamScores)
                 .flatMap(team -> team.players().stream().map(player -> new Tuple2<>(player, team.total())))
+                .filter(tuple -> gamesCount.get(tuple.get1()) >= CALIBRATION_GAMES)
                 .collect(Collectors.groupingBy(Tuple2::get1, Collectors.toList()))
                 .entrySet()
                 .stream()
@@ -111,6 +115,8 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                         entry.getKey(),
                         (float) entry.getValue().stream().mapToInt(Tuple2::get2).average().orElse(0)
                 ))
+                .sorted(Comparator.comparing(AverageStats::getValue).reversed())
+                .limit(TOP)
                 .toList();
     }
 
@@ -195,7 +201,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .map(entry -> new ScoresDistributionStats(
                         entry.getKey(),
                         entry.getValue().size(),
-                        entry.getValue().size() / count * 100
+                        entry.getValue().size() * 100f / count
                 ))
                 .sorted(Comparator.comparing(ScoresDistributionStats::getValue))
                 .toList();
@@ -222,20 +228,23 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .toList();
     }
 
-    private List<MostFrequentTotalScoresStats> calculateMostFrequentTotalScoresStats(Set<Integer> presentValues) {
+    private List<MostFrequentTotalScoresStats> calculateMostFrequentTotalScores(List<FlattenedGame> teams) {
         Comparator<Map.Entry<Integer, Long>> comparator = Map.Entry.<Integer, Long>comparingByValue()
                 .reversed()
                 .thenComparing(Map.Entry.comparingByKey());
-        return presentValues.stream()
+        return teams.stream()
+                .map(game -> game.teamScores.total())
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
                 .stream()
                 .sorted(comparator)
+                .limit(TOP)
                 .map(entry -> new MostFrequentTotalScoresStats(entry.getKey(), entry.getValue().intValue()))
                 .toList();
     }
 
-    private List<Integer> calculateMissingValues(Set<Integer> presentValues) {
+    private List<Integer> calculateMissingValues(List<FlattenedGame> teams) {
+        Set<Integer> presentValues = teams.stream().map(game -> game.teamScores.total()).collect(Collectors.toSet());
         int maximum = presentValues.stream().mapToInt(i -> i).max().orElse(0);
         int minimum = presentValues.stream().mapToInt(i -> i).min().orElse(0);
         return IntStream.range(minimum, maximum).filter(i -> !presentValues.contains(i)).boxed().toList();
@@ -280,7 +289,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                                     .map(scoreEntry -> new SimpleDicePerCountDistribution(
                                             scoreEntry.getKey() / denomination,
                                             scoreEntry.getValue().intValue(),
-                                            scoreEntry.getValue().intValue() / count
+                                            scoreEntry.getValue().intValue() * 100f / count
                                     ))
                                     .sorted(Comparator.comparing(SimpleDicePerCountDistribution::getDice))
                                     .toList()
