@@ -20,5 +20,6 @@
         <module>yahtzee-online</module>
         <module>yahtzee-core</module>
         <module>kryonet</module>
+        <module>yahtzee-stats</module>
     </modules>
 </project>
