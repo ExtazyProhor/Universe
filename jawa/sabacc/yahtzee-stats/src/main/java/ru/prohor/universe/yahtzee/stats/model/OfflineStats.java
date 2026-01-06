@@ -1,12 +1,9 @@
 package ru.prohor.universe.yahtzee.stats.model;
 
-import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.stats.model.inner.AverageStats;
 import ru.prohor.universe.yahtzee.stats.model.inner.BoundStats;
 import ru.prohor.universe.yahtzee.stats.model.inner.FloatCombinationStats;
@@ -19,48 +16,76 @@ import ru.prohor.universe.yahtzee.stats.model.inner.SimpleDiceDistributionStats;
 import java.time.Instant;
 import java.util.List;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity("offline_stats")
-public class OfflineStats {
-    @Id
-    private ObjectId id;
-    @Property("generated_at")
-    private Instant generatedAt;
-    @Property("top_limit")
-    private int topLimit;
-    @Property("games_total")
-    private int gamesTotal;
-    @Property("individual_results_total")
-    private int individualResultsTotal;
-    @Property("individual_results_with_scores_total")
-    private int individualResultsWithScoresTotal;
-    @Property("overall_average")
-    private float overallAverage;
+public record OfflineStats(
+        @Id ObjectId id,
+        @Property("generated_at") Instant generatedAt,
+        @Property("top_limit") int topLimit,
+        @Property("games_total") int gamesTotal,
+        @Property("individual_results_total") int individualResultsTotal,
+        @Property("individual_results_with_scores_total") int individualResultsWithScoresTotal,
+        @Property("overall_average") float overallAverage,
+        @Property("games_count") List<GamesCountStats> gamesCount,
+        List<AverageStats> average,
+        List<BoundStats> maximum,
+        List<BoundStats> minimum,
+        @Property("personal_maximum") List<PersonalMaximumStats> personalMaximum,
+        @Property("total_distribution") List<ScoresDistributionStats> totalDistribution,
+        @Property("simple_distribution") List<ScoresDistributionStats> simpleDistribution,
+        @Property("most_frequent_total_scores") List<MostFrequentTotalScoresStats> mostFrequentTotalScores,
+        @Property("missing_values") List<Integer> missingValues,
+        @Property("simple_dice_average") List<FloatCombinationStats> simpleDiceAverage,
+        @Property("simple_dice_distribution") List<SimpleDiceDistributionStats> simpleDiceDistribution,
+        @Property("variable_combination_average") List<FloatCombinationStats> variableCombinationAverage,
+        @Property("complex_combination_success_percent") List<FloatCombinationStats> complexCombinationSuccessPercent
+) implements MongoEntityPojo<OfflineStatsDto> {
+    @Override
+    public OfflineStatsDto toDto() {
+        return new OfflineStatsDto(
+                id,
+                generatedAt,
+                topLimit,
+                gamesTotal,
+                individualResultsTotal,
+                individualResultsWithScoresTotal,
+                overallAverage,
+                gamesCount,
+                average,
+                maximum,
+                minimum,
+                personalMaximum,
+                totalDistribution,
+                simpleDistribution,
+                mostFrequentTotalScores,
+                missingValues,
+                simpleDiceAverage,
+                simpleDiceDistribution,
+                variableCombinationAverage,
+                complexCombinationSuccessPercent
+        );
+    }
 
-    @Property("games_count")
-    private List<GamesCountStats> gamesCount;
-    private List<AverageStats> average;
-    private List<BoundStats> maximum;
-    private List<BoundStats> minimum;
-    @Property("personal_maximum")
-    private List<PersonalMaximumStats> personalMaximum;
-
-    @Property("total_distribution")
-    private List<ScoresDistributionStats> totalDistribution;
-    @Property("simple_distribution")
-    private List<ScoresDistributionStats> simpleDistribution;
-    @Property("most_frequent_total_scores")
-    private List<MostFrequentTotalScoresStats> mostFrequentTotalScores;
-    @Property("missing_values")
-    private List<Integer> missingValues;
-    @Property("simple_dice_average")
-    private List<FloatCombinationStats> simpleDiceAverage;
-    @Property("simple_dice_distribution")
-    private List<SimpleDiceDistributionStats> simpleDiceDistribution;
-    @Property("variable_combination_average")
-    private List<FloatCombinationStats> variableCombinationAverage;
-    @Property("complex_combination_success_percent")
-    private List<FloatCombinationStats> complexCombinationSuccessPercent;
+    public static OfflineStats fromDto(OfflineStatsDto stats) {
+        return new OfflineStats(
+                stats.getId(),
+                stats.getGeneratedAt(),
+                stats.getTopLimit(),
+                stats.getGamesTotal(),
+                stats.getIndividualResultsTotal(),
+                stats.getIndividualResultsWithScoresTotal(),
+                stats.getOverallAverage(),
+                stats.getGamesCount(),
+                stats.getAverage(),
+                stats.getMaximum(),
+                stats.getMinimum(),
+                stats.getPersonalMaximum(),
+                stats.getTotalDistribution(),
+                stats.getSimpleDistribution(),
+                stats.getMostFrequentTotalScores(),
+                stats.getMissingValues(),
+                stats.getSimpleDiceAverage(),
+                stats.getSimpleDiceDistribution(),
+                stats.getVariableCombinationAverage(),
+                stats.getComplexCombinationSuccessPercent()
+        );
+    }
 }

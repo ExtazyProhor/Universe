@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 
 public class AbstractMongoMorphiaRepository<T, W> {
     private static final String NO_ENTITY = "entity does not exists, but was found";
@@ -169,5 +168,9 @@ public class AbstractMongoMorphiaRepository<T, W> {
                         () -> new MongoDatabaseException(NO_ENTITY)
                 )
         ).into(new ArrayList<>());
+    }
+
+    MongoCollection<Document> getCollection() {
+        return collection;
     }
 }

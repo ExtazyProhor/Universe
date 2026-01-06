@@ -1,7 +1,9 @@
 package ru.prohor.universe.jocasta.morphia.impl;
 
+import com.mongodb.client.MongoCollection;
 import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filter;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
@@ -109,5 +111,9 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
     @Override
     public Class<T> type() {
         return type;
+    }
+
+    public MongoCollection<Document> getCollection() {
+        return repository.getCollection();
     }
 }
