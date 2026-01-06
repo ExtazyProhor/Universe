@@ -9,6 +9,7 @@ import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
+import ru.prohor.universe.jocasta.morphia.query.MongoQuery;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     private static final UnsupportedOperationException UNSUPPORTED_TEXT_SEARCH = new UnsupportedOperationException(
@@ -69,6 +71,20 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     @Override
     public List<T> find(MongoFilter<T> filter) {
         return collection.values().stream().filter(element -> filter.inMemory().test(element)).toList();
+    }
+
+    @Override
+    public List<T> find(MongoQuery<T> query) {
+        Stream<T> stream = collection.values().stream();
+        if (query.getFilter().isPresent())
+            stream = stream.filter(element -> query.getFilter().get().inMemory().test(element));
+        if (query.getSort().isPresent())
+            stream = stream.sorted(query.getSort().get().inMemory());
+        if (query.getSkip().isPresent())
+            stream = stream.skip(query.getSkip().get());
+        if (query.getLimit().isPresent())
+            stream = stream.limit(query.getLimit().get());
+        return stream.toList();
     }
 
     @Override

@@ -6,6 +6,7 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
+import ru.prohor.universe.jocasta.morphia.query.MongoQuery;
 
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +52,8 @@ public interface MongoRepository<T> {
     }
 
     List<T> find(MongoFilter<T> filter);
+
+    List<T> find(MongoQuery<T> query);
 
     @Deprecated
     List<T> find(Filter filter, MonoPredicate<T> manualFilter);

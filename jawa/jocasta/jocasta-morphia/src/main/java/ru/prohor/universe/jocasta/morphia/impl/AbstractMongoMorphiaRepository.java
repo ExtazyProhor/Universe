@@ -7,6 +7,8 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import dev.morphia.Datastore;
 import dev.morphia.annotations.Entity;
+import dev.morphia.query.FindOptions;
+import dev.morphia.query.Query;
 import dev.morphia.query.filters.Filter;
 import dev.morphia.transactions.MorphiaSession;
 import org.bson.Document;
@@ -14,11 +16,13 @@ import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoDatabaseException;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
+import ru.prohor.universe.jocasta.morphia.query.MongoQuery;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 public class AbstractMongoMorphiaRepository<T, W> {
     private static final String NO_ENTITY = "entity does not exists, but was found";
@@ -96,6 +100,16 @@ public class AbstractMongoMorphiaRepository<T, W> {
         return datastore.find(type).filter(filter).stream().map(wrapFunction).toList();
     }
 
+    List<W> find(MongoQuery<W> query) {
+        FindOptions findOptions = new FindOptions();
+        query.getSort().ifPresent(sort -> findOptions.sort(sort.morphia()));
+        query.getSkip().ifPresent(findOptions::skip);
+        query.getLimit().ifPresent(findOptions::limit);
+        Query<T> morphiaQuery = datastore.find(type, findOptions);
+        query.getFilter().ifPresent(filter -> morphiaQuery.filter(filter.morphia()));
+        return morphiaQuery.stream().map(wrapFunction).toList();
+    }
+
     void save(W entity) {
         datastore.save(unwrapFunction.apply(entity));
     }
@@ -150,6 +164,7 @@ public class AbstractMongoMorphiaRepository<T, W> {
         findIterable = paging.apply(findIterable);
 
         return findIterable.map(
+                // TODO remove unnecessary DB request
                 document -> findById(document.getObjectId(ID)).orElseThrow(
                         () -> new MongoDatabaseException(NO_ENTITY)
                 )
