@@ -8,7 +8,9 @@ import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import java.util.Arrays;
 import java.util.List;
 
-public class MongoFilters {
+public final class MongoFilters {
+    private MongoFilters() {}
+
     public static <T, R> MongoFilter<T> eq(FieldProperties<T, R> fieldProperties, R value) {
         return new MongoFilter<>() {
             @Override
