@@ -87,13 +87,15 @@ public class AllClassesToOneFile {
     private static void mergeFiles(Path rootDir, Path outputFile, Predicate<Path> filter) {
         Sneaky.execute(() -> {
             try (Stream<Path> paths = Files.walk(rootDir)) {
-                Files.deleteIfExists(outputFile);
+                if (!Files.exists(outputFile))
+                    Files.createFile(outputFile);
                 paths.filter(Files::isRegularFile)
                         .filter(filter)
                         .forEach(path -> Sneaky.execute(() -> {
+                            String header = "### " + path.getFileName().toString() + "\n\n";
                             Files.writeString(
                                     outputFile,
-                                    Files.readString(path, StandardCharsets.UTF_8),
+                                    header + Files.readString(path, StandardCharsets.UTF_8) + "\n",
                                     StandardCharsets.UTF_8,
                                     StandardOpenOption.APPEND
                             );
