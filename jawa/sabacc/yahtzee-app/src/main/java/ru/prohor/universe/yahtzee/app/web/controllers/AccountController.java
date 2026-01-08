@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.yahtzee.app.web.api.ColorInfo;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 import ru.prohor.universe.yahtzee.app.services.AccountService;
@@ -50,10 +51,7 @@ public class AccountController {
     public record InfoResponse(
             String username,
             String name,
-            @JsonProperty("random_color")
-            boolean randomColor, // if true, color and contrast are absent
-            String color, // format: "ff0000", hex, without alpha
-            String contrast, // format: "ff0000", hex, without alpha, 
+            ColorInfo color,
             @JsonProperty("image_id")
             String imageId,
             RoomInfo room, // optional

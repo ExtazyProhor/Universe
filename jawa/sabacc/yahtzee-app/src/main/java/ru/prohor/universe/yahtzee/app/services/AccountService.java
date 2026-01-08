@@ -16,6 +16,7 @@ import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.yahtzee.app.services.images.ImagesService;
+import ru.prohor.universe.yahtzee.app.web.api.ColorInfo;
 import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
 import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
@@ -98,9 +99,7 @@ public class AccountService {
         return new AccountController.InfoResponse(
                 player.username(),
                 player.displayName(),
-                color.isEmpty(),
-                color.isPresent() ? color.get().background() : null,
-                color.isPresent() ? color.get().text() : null,
+                ColorInfo.of(color),
                 player.imageId().toHexString(),
                 generalRoomsService.findRoom(player.currentRoom()).map(
                         room -> new AccountController.RoomInfo(
