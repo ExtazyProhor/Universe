@@ -9,6 +9,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.time.Month;
+import java.time.ZoneId;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -21,6 +22,7 @@ public class DateTimeUtil {
 
     private static final int NANOS_IN_MILLI = 1_000_000;
     private static final Locale RUSSIAN_LOCALE = Locale.forLanguageTag("ru-RU");
+    private static final ZoneId MOSCOW_ZONE_ID = ZoneId.of("Europe/Moscow");
     private static final DateTimeZone MOSCOW_ZONE = DateTimeZone.forID("Europe/Moscow");
     private static final DateTimeFormatter BASE_FORMATTER = DateTimeFormat
             .forStyle("SM")
@@ -28,6 +30,9 @@ public class DateTimeUtil {
     private static final DateTimeFormatter DIGIT_FORMATTER = DateTimeFormat
             .forPattern("HH:mm:ss dd-MM-yyyy")
             .withZone(MOSCOW_ZONE);
+    private static final java.time.format.DateTimeFormatter JAVA_DIGIT_FORMATTER = java.time.format.DateTimeFormatter
+            .ofPattern("HH:mm:ss dd-MM-yyyy")
+            .withZone(MOSCOW_ZONE_ID);
     private static final DateTimeFormatter RUSSIAN_FULL_FORMATTER = DateTimeFormat
             .forPattern("d MMMM yyyy")
             .withZone(MOSCOW_ZONE)
@@ -96,6 +101,10 @@ public class DateTimeUtil {
         return instant.toString(BASE_FORMATTER);
     }
 
+    @Nonnull
+    public static String toReadableString(@Nonnull java.time.Instant instant) {
+        return JAVA_DIGIT_FORMATTER.format(instant);
+    }
 
     /**
      * for example, <code>15:33:42 16-12-2025</code>
