@@ -65,6 +65,22 @@ public interface MongoRepository<T> {
 
     Opt<T> deleteById(ObjectId id);
 
+    default T safeUpdate(ObjectId id, MonoFunction<T, T> updateFunction) {
+        return this.withTransaction(tx -> {
+            T updated = updateFunction.apply(tx.ensuredFindById(id));
+            tx.save(updated);
+            return updated;
+        });
+    }
+
+    default Opt<T> safeUpdateO(ObjectId id, MonoFunction<Opt<T>, Opt<T>> updateFunction) {
+        return this.withTransaction(tx -> {
+            Opt<T> updated = updateFunction.apply(tx.findById(id));
+            updated.ifPresent(tx::save);
+            return updated;
+        });
+    }
+
     List<T> findByText(String text);
 
     MongoTextSearchResult<T> findByText(String text, int page, int pageSize);
