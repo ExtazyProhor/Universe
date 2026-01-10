@@ -15,7 +15,7 @@ public class MongoMorphiaTransaction implements MongoTransaction {
     @Override
     public <T extends MongoEntityPojo<?>> MongoRepository<T> wrap(MongoRepository<T> repository) {
         if (repository instanceof MongoMorphiaRepository<T> morphia)
-            return new MongoMorphiaRepository<>(morphia.repository.copy(session), repository.type());
+            return morphia.wrapWithTransaction(session);
         throw new IllegalArgumentException("MongoMorphiaTransaction must consume MongoMorphiaRepository");
     }
 }

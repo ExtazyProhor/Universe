@@ -3,9 +3,12 @@ package ru.prohor.universe.jocasta.morphia.impl;
 import com.mongodb.client.MongoCollection;
 import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filter;
+import dev.morphia.transactions.MorphiaSession;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
+import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
@@ -20,7 +23,7 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
     private final Class<T> type;
     final AbstractMongoMorphiaRepository<?, T> repository;
 
-    MongoMorphiaRepository(AbstractMongoMorphiaRepository<?, T> repository, Class<T> type) {
+    private MongoMorphiaRepository(AbstractMongoMorphiaRepository<?, T> repository, Class<T> type) {
         this.repository = repository;
         this.type = type;
     }
@@ -115,5 +118,23 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
 
     public MongoCollection<Document> getCollection() {
         return repository.getCollection();
+    }
+
+    @Override
+    public <E> E withTransaction(MonoFunction<MongoRepository<T>, E> transaction) {
+        return repository.withTransaction(session -> {
+            return transaction.apply(wrapWithTransaction(session));
+        });
+    }
+
+    @Override
+    public void withTransaction(MonoConsumer<MongoRepository<T>> transaction) {
+        repository.withTransaction(session -> {
+            transaction.accept(wrapWithTransaction(session));
+        });
+    }
+
+    MongoRepository<T> wrapWithTransaction(MorphiaSession session) {
+        return new MongoMorphiaRepository<>(repository.copy(session), type());
     }
 }

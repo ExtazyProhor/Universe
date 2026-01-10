@@ -14,6 +14,8 @@ import dev.morphia.transactions.MorphiaSession;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
+import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.morphia.MongoDatabaseException;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
 import ru.prohor.universe.jocasta.morphia.query.MongoQuery;
@@ -172,5 +174,16 @@ public class AbstractMongoMorphiaRepository<T, W> {
 
     MongoCollection<Document> getCollection() {
         return collection;
+    }
+
+    <E> E withTransaction(MonoFunction<MorphiaSession, E> transaction) {
+        return datastore.withTransaction(transaction::apply);
+    }
+
+    void withTransaction(MonoConsumer<MorphiaSession> transaction) {
+        datastore.withTransaction(session -> {
+            transaction.accept(session);
+            return Boolean.TRUE;
+        });
     }
 }

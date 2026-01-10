@@ -3,6 +3,7 @@ package ru.prohor.universe.jocasta.morphia;
 import dev.morphia.query.filters.Filter;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
@@ -69,4 +70,8 @@ public interface MongoRepository<T> {
     MongoTextSearchResult<T> findByText(String text, int page, int pageSize);
 
     Class<T> type();
+
+    <E> E withTransaction(MonoFunction<MongoRepository<T>, E> transaction);
+
+    void withTransaction(MonoConsumer<MongoRepository<T>> transaction);
 }

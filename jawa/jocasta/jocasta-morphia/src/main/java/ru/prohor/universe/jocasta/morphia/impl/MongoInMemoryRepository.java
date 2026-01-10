@@ -5,6 +5,8 @@ import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.PaginationResult;
 import ru.prohor.universe.jocasta.core.collections.Paginator;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
+import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
@@ -137,5 +139,15 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     @Override
     public Class<T> type() {
         return type;
+    }
+
+    @Override
+    public <E> E withTransaction(MonoFunction<MongoRepository<T>, E> transaction) {
+        return transaction.apply(this);
+    }
+
+    @Override
+    public void withTransaction(MonoConsumer<MongoRepository<T>> transaction) {
+        transaction.accept(this);
     }
 }
