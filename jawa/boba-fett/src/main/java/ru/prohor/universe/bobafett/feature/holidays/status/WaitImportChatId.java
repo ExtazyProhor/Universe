@@ -4,10 +4,10 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.bobafett.command.Commands;
-import ru.prohor.universe.bobafett.data.BobaFettRepositoryHelper;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
 import ru.prohor.universe.bobafett.data.pojo.UserStatus;
+import ru.prohor.universe.bobafett.feature.holidays.CustomHolidaysService;
 import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.bobafett.status.Statuses;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
@@ -29,17 +29,20 @@ public class WaitImportChatId implements StatusHandler<String> {
             Напишите ID заново или отмените импорт праздников с помощью команды /cancel""";
 
     private final BobaFettUserService bobaFettUserService;
+    private final CustomHolidaysService customHolidaysService;
     private final MongoRepository<BobaFettUser> bobaFettUsersRepository;
     private final MongoRepository<CustomHoliday> customHolidaysRepository;
     private final MongoTransactionService mongoTransactionService;
 
     public WaitImportChatId(
             BobaFettUserService bobaFettUserService,
+            CustomHolidaysService customHolidaysService,
             MongoRepository<BobaFettUser> bobaFettUsersRepository,
             MongoRepository<CustomHoliday> customHolidaysRepository,
             MongoTransactionService mongoTransactionService
     ) {
         this.bobaFettUserService = bobaFettUserService;
+        this.customHolidaysService = customHolidaysService;
         this.bobaFettUsersRepository = bobaFettUsersRepository;
         this.customHolidaysRepository = customHolidaysRepository;
         this.mongoTransactionService = mongoTransactionService;
@@ -85,17 +88,11 @@ public class WaitImportChatId implements StatusHandler<String> {
 
     private String importHolidays(MongoTransaction tx, long sourceChatId, long chatId) {
         MongoRepository<CustomHoliday> transactional = tx.wrap(customHolidaysRepository);
-        List<CustomHoliday> holidaysToImport = BobaFettRepositoryHelper.findCustomHolidaysByChatId(
-                transactional,
-                sourceChatId
-        );
+        List<CustomHoliday> holidaysToImport = customHolidaysService.findCustomHolidays(transactional, sourceChatId);
         if (holidaysToImport.isEmpty()) {
             return "У пользователя с указанным ID нет собственных праздников";
         }
-        List<CustomHoliday> existing = BobaFettRepositoryHelper.findCustomHolidaysByChatId(
-                transactional,
-                chatId
-        );
+        List<CustomHoliday> existing = customHolidaysService.findCustomHolidays(transactional, chatId);
         Set<Tuple3<String, Integer, Integer>> existingHolidaysKeys = existing.stream()
                 .map(this::toTuple)
                 .collect(Collectors.toSet());

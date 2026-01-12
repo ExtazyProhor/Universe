@@ -92,8 +92,7 @@ public class CustomHolidayCallback extends JsonCallbackHandler<CustomHolidayCall
         String message = deleted.isPresent()
                 ? "Праздник " + getCustomHolidayDescription(deleted.get()) + " удален"
                 : "Праздник уже удален";
-        // TODO check null-keyboard
-        feedbackExecutor.editMessageText(chatId, messageId, message/*, null*/);
+        feedbackExecutor.editMessageText(chatId, messageId, message);
     }
 
     private void deleteCustomHoliday(int page, long chatId, int messageId, FeedbackExecutor feedbackExecutor) {
@@ -188,8 +187,7 @@ public class CustomHolidayCallback extends JsonCallbackHandler<CustomHolidayCall
     }
 
     private void hasNotHolidays(long chatId, int messageId, FeedbackExecutor feedbackExecutor) {
-        // TODO check null-keyboard
-        feedbackExecutor.editMessageText(chatId, messageId, "У вас еще нет собственных праздников"/*, null*/);
+        feedbackExecutor.editMessageText(chatId, messageId, "У вас еще нет собственных праздников");
     }
 
     private void cancelDeletingCustomHoliday(long chatId, int messageId, FeedbackExecutor feedbackExecutor) {

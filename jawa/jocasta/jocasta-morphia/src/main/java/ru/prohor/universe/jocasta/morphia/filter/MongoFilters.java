@@ -6,6 +6,7 @@ import ru.prohor.universe.jocasta.core.features.fieldref.FieldProperties;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public final class MongoFilters {
@@ -111,16 +112,16 @@ public final class MongoFilters {
         };
     }
 
-    public static <T, R> MongoFilter<T> in(FieldProperties<T, R> fieldProperties, List<R> list) {
+    public static <T, R> MongoFilter<T> in(FieldProperties<T, R> fieldProperties, Collection<R> collection) {
         return new MongoFilter<>() {
             @Override
             public MonoPredicate<T> inMemory() {
-                return t -> fieldProperties.getO(t).map(list::contains).orElse(false);
+                return t -> fieldProperties.getO(t).map(collection::contains).orElse(false);
             }
 
             @Override
             public Filter morphia() {
-                return Filters.in(fieldProperties.name(), list);
+                return Filters.in(fieldProperties.name(), collection);
             }
         };
     }

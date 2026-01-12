@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import ru.prohor.universe.bobafett.callback.Callbacks;
 import ru.prohor.universe.bobafett.command.Commands;
-import ru.prohor.universe.bobafett.data.BobaFettRepositoryHelper;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
+import ru.prohor.universe.bobafett.feature.holidays.DistributionDataProvider;
 import ru.prohor.universe.bobafett.feature.holidays.HolidaysService;
 import ru.prohor.universe.bobafett.feature.holidays.date.ChangeDateKeyboardUtils;
 import ru.prohor.universe.bobafett.feature.holidays.date.Payload;
@@ -21,15 +21,18 @@ public class GetHolidaysForCustomDateCallback extends JsonCallbackHandler<Payloa
     private static final String CANCEL_GET_HOLIDAYS = "Отменить";
     private static final String CHOOSE_DATE_MESSAGE = "Выберите дату праздников (этого или следующего года)";
 
+    private final DistributionDataProvider distributionDataProvider;
     private final HolidaysService holidaysService;
     private final MongoRepository<CustomHoliday> customHolidaysRepository;
 
     public GetHolidaysForCustomDateCallback(
+            DistributionDataProvider distributionDataProvider,
             HolidaysService holidaysService,
             ObjectMapper objectMapper,
             MongoRepository<CustomHoliday> customHolidaysRepository
     ) {
         super(Callbacks.GET_HOLIDAYS_FOR_CUSTOM_DATE, Payload.class, objectMapper);
+        this.distributionDataProvider = distributionDataProvider;
         this.holidaysService = holidaysService;
         this.customHolidaysRepository = customHolidaysRepository;
     }
@@ -77,7 +80,7 @@ public class GetHolidaysForCustomDateCallback extends JsonCallbackHandler<Payloa
                 holidaysService.getHolidaysMessageForDate(
                         date,
                         LocalDate.now(DateTimeUtil.zoneMoscow()).getYear(),
-                        BobaFettRepositoryHelper.findCustomHolidays(customHolidaysRepository, chatId, date)
+                        distributionDataProvider.findCustomHolidays(customHolidaysRepository, chatId, date)
                 )
         );
     }

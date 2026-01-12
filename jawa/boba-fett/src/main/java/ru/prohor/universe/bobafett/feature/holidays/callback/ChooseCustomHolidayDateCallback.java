@@ -58,8 +58,7 @@ public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload
                         keyboard(date)
                 );
             }
-            // TODO check null-keyboard
-            case CANCEL -> feedbackExecutor.editMessageText(chatId, messageId, HOLIDAY_CREATION_CANCELED/*, null*/);
+            case CANCEL -> feedbackExecutor.editMessageText(chatId, messageId, HOLIDAY_CREATION_CANCELED);
         }
         return false;
     }

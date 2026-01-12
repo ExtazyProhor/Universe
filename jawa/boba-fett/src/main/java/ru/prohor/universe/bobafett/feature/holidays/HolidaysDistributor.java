@@ -2,19 +2,12 @@ package ru.prohor.universe.bobafett.feature.holidays;
 
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.bobafett.data.BobaFettRepositoryHelper;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
-import ru.prohor.universe.bobafett.data.pojo.DistributionTime;
-import ru.prohor.universe.bobafett.data.pojo.HolidaysSubscriptionOptions;
 import ru.prohor.universe.bobafett.distribution.DistributionTask;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.core.features.fieldref.FR;
-import ru.prohor.universe.jocasta.core.features.fieldref.FieldProperties;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
-import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
-import ru.prohor.universe.jocasta.morphia.filter.MongoFilters;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
 import java.util.List;
@@ -24,20 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class HolidaysDistributor implements DistributionTask {
-    private static final FieldProperties<BobaFettUser, ?> HOLIDAYS_SUBSCRIPTION_OPTIONS_KEY = FR
-            .wrap(BobaFettUser::holidaysSubscriptionOptions);
-    private static final FieldProperties<BobaFettUser, Integer> HOUR_KEY = FR
-            .chainO(BobaFettUser::holidaysSubscriptionOptions)
-            .then(HolidaysSubscriptionOptions::dailyDistributionTime)
-            .then(DistributionTime::hour);
-    private static final FieldProperties<BobaFettUser, Integer> MINUTE_KEY = FR
-            .chainO(BobaFettUser::holidaysSubscriptionOptions)
-            .then(HolidaysSubscriptionOptions::dailyDistributionTime)
-            .then(DistributionTime::minute);
-    private static final FieldProperties<BobaFettUser, Boolean> IS_ACTIVE_KEY = FR
-            .chainO(BobaFettUser::holidaysSubscriptionOptions)
-            .then(HolidaysSubscriptionOptions::subscriptionIsActive);
-
+    private final DistributionDataProvider distributionDataProvider;
     private final MongoTransactionService mongoTransactionService;
     private final MongoRepository<BobaFettUser> bobaFettUsersRepository;
     private final MongoRepository<CustomHoliday> customHolidaysRepository;
@@ -45,12 +25,14 @@ public class HolidaysDistributor implements DistributionTask {
     private final HolidaysService holidaysService;
 
     public HolidaysDistributor(
+            DistributionDataProvider distributionDataProvider,
             MongoTransactionService mongoTransactionService,
             MongoRepository<BobaFettUser> bobaFettUsersRepository,
             MongoRepository<CustomHoliday> customHolidaysRepository,
             HolidaysMessageFormatter holidaysMessageFormatter,
             HolidaysService holidaysService
     ) {
+        this.distributionDataProvider = distributionDataProvider;
         this.mongoTransactionService = mongoTransactionService;
         this.bobaFettUsersRepository = bobaFettUsersRepository;
         this.customHolidaysRepository = customHolidaysRepository;
@@ -64,7 +46,7 @@ public class HolidaysDistributor implements DistributionTask {
             MongoRepository<BobaFettUser> txUsersRepository = tx.wrap(bobaFettUsersRepository);
             MongoRepository<CustomHoliday> txHolidaysRepository = tx.wrap(customHolidaysRepository);
 
-            List<BobaFettUser> users = findUsersToDistribution(
+            List<BobaFettUser> users = distributionDataProvider.findUsersToDistribution(
                     txUsersRepository,
                     hour,
                     minute
@@ -74,12 +56,12 @@ public class HolidaysDistributor implements DistributionTask {
 
             Set<Long> forIds = users.stream().map(BobaFettUser::chatId).collect(Collectors.toSet());
             DistributionDays distributionDays = DistributionDays.create();
-            List<CustomHoliday> holidays = BobaFettRepositoryHelper.findCustomHolidaysForDistribution(
+            List<CustomHoliday> holidays = distributionDataProvider.findCustomHolidaysForDistribution(
                     txHolidaysRepository,
                     forIds,
                     distributionDays
             ); // TODO делать одним запросом
-            List<CustomHoliday> holidaysForReminder = BobaFettRepositoryHelper.findCustomHolidaysForReminder(
+            List<CustomHoliday> holidaysForReminder = distributionDataProvider.findCustomHolidaysForReminder(
                     txHolidaysRepository,
                     forIds
             );
@@ -120,20 +102,6 @@ public class HolidaysDistributor implements DistributionTask {
                 );
             }
         });
-    }
-
-    private List<BobaFettUser> findUsersToDistribution(
-            MongoRepository<BobaFettUser> repository,
-            int hour,
-            int minute
-    ) {
-        MongoFilter<BobaFettUser> filter = MongoFilters.and(
-                MongoFilters.exists(HOLIDAYS_SUBSCRIPTION_OPTIONS_KEY),
-                MongoFilters.eq(HOUR_KEY, hour),
-                MongoFilters.eq(MINUTE_KEY, minute),
-                MongoFilters.eq(IS_ACTIVE_KEY, true)
-        );
-        return repository.find(filter);
     }
 
     private static class StructuredCustomHolidays {

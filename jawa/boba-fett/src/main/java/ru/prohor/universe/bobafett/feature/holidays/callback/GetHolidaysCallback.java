@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.prohor.universe.bobafett.callback.Callbacks;
-import ru.prohor.universe.bobafett.data.BobaFettRepositoryHelper;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
+import ru.prohor.universe.bobafett.feature.holidays.DistributionDataProvider;
 import ru.prohor.universe.bobafett.feature.holidays.HolidaysService;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
@@ -20,17 +20,20 @@ import java.util.List;
 
 @Service
 public class GetHolidaysCallback extends JsonCallbackHandler<GetHolidaysCallback.Payload> {
+    private final DistributionDataProvider distributionDataProvider;
     private final HolidaysService holidaysService;
     private final GetHolidaysForCustomDateCallback getHolidaysForCustomDateCallback;
     private final MongoRepository<CustomHoliday> customHolidaysRepository;
 
     public GetHolidaysCallback(
+            DistributionDataProvider distributionDataProvider,
             HolidaysService holidaysService,
             ObjectMapper objectMapper,
             GetHolidaysForCustomDateCallback getHolidaysForCustomDateCallback,
             MongoRepository<CustomHoliday> customHolidaysRepository
     ) {
         super(Callbacks.GET_HOLIDAYS, Payload.class, objectMapper);
+        this.distributionDataProvider = distributionDataProvider;
         this.holidaysService = holidaysService;
         this.getHolidaysForCustomDateCallback = getHolidaysForCustomDateCallback;
         this.customHolidaysRepository = customHolidaysRepository;
@@ -83,7 +86,7 @@ public class GetHolidaysCallback extends JsonCallbackHandler<GetHolidaysCallback
                 holidaysService.getHolidaysMessageForDate(
                         date,
                         today.getYear(),
-                        BobaFettRepositoryHelper.findCustomHolidays(customHolidaysRepository, chatId, date)
+                        distributionDataProvider.findCustomHolidays(customHolidaysRepository, chatId, date)
                 )
         );
     }

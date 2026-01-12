@@ -3,7 +3,6 @@ package ru.prohor.universe.bobafett.feature.holidays;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.command.Commands;
-import ru.prohor.universe.bobafett.data.BobaFettRepositoryHelper;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.fieldref.FR;
@@ -60,7 +59,15 @@ public class CustomHolidaysService {
     }
 
     public List<CustomHoliday> findCustomHolidays(long chatId) {
-        return BobaFettRepositoryHelper.findCustomHolidaysByChatId(customHolidaysRepository, chatId);
+        return customHolidaysRepository.find(filterByChatId(chatId));
+    }
+
+    public List<CustomHoliday> findCustomHolidays(MongoRepository<CustomHoliday> repository, long chatId) {
+        return repository.find(filterByChatId(chatId));
+    }
+
+    private MongoFilter<CustomHoliday> filterByChatId(long chatId) {
+        return MongoFilters.eq(FR.wrap(CustomHoliday::chatId), chatId);
     }
 
     private String lengthLimit(int length) {
