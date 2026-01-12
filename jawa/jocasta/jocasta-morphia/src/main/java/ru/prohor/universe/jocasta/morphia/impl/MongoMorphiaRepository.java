@@ -2,14 +2,12 @@ package ru.prohor.universe.jocasta.morphia.impl;
 
 import com.mongodb.client.MongoCollection;
 import dev.morphia.Datastore;
-import dev.morphia.query.filters.Filter;
 import dev.morphia.transactions.MorphiaSession;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
-import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
@@ -79,11 +77,6 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
     @Override
     public List<T> find(MongoQuery<T> query) {
         return repository.find(query);
-    }
-
-    @Override
-    public List<T> find(Filter filter, MonoPredicate<T> manualFilter) {
-        return repository.find(filter);
     }
 
     @Override
