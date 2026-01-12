@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.bobafett.BobaFettBot;
 import ru.prohor.universe.bobafett.data.MongoStatusStorage;
+import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
 import ru.prohor.universe.jocasta.tgbots.RegisterBot;
@@ -66,7 +67,11 @@ public class TgConfiguration {
     }
 
     @Bean
-    public BobaFettBot bobaFettBot(BotSettings settings) {
-        return RegisterBot.register(new BobaFettBot(settings));
+    public BobaFettBot bobaFettBot(
+            BobaFettUserService bobaFettUserService,
+            ObjectMapper objectMapper,
+            BotSettings settings
+    ) {
+        return RegisterBot.register(new BobaFettBot(bobaFettUserService, objectMapper, settings));
     }
 }

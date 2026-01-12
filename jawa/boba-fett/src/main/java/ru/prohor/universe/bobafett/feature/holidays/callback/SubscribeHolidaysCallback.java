@@ -7,14 +7,13 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.prohor.universe.bobafett.callback.Callbacks;
-import ru.prohor.universe.bobafett.data.BobaFettRepositoryHelper;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.DistributionTime;
 import ru.prohor.universe.bobafett.data.pojo.HolidaysSubscriptionOptions;
+import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
-import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.util.InlineKeyboardUtils;
@@ -31,16 +30,16 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
     private static final int DEFAULT_MINUTE = 0;
     private static final int DEFAULT_INDENT = 0;
 
-    private final MongoTransactionService transactionService;
+    private final BobaFettUserService bobaFettUserService;
     private final MongoRepository<BobaFettUser> usersRepository;
 
     public SubscribeHolidaysCallback(
             ObjectMapper objectMapper,
-            MongoTransactionService transactionService,
+            BobaFettUserService bobaFettUserService,
             MongoRepository<BobaFettUser> usersRepository
     ) {
         super(Callbacks.SUBSCRIBE_HOLIDAYS, Payload.class, objectMapper);
-        this.transactionService = transactionService;
+        this.bobaFettUserService = bobaFettUserService;
         this.usersRepository = usersRepository;
     }
 
@@ -50,7 +49,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
         int messageId = message.getMessageId();
         switch (payload.option) {
             case SETTINGS -> {
-                BobaFettUser user = BobaFettRepositoryHelper.findByChatId(usersRepository, chatId).orElseThrow();
+                BobaFettUser user = bobaFettUserService.ensureFindByChatId(usersRepository, chatId);
                 HolidaysSubscriptionOptions options = user.holidaysSubscriptionOptions().orElseThrow();
                 settingSubscription(
                         feedbackExecutor,
@@ -77,12 +76,10 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
                         payload.indent,
                         true
                 );
-                transactionService.withTransaction(tx -> {
-                    MongoRepository<BobaFettUser> wrapped = tx.wrap(usersRepository);
-                    BobaFettUser user = BobaFettRepositoryHelper.findByChatId(wrapped, chatId).orElseThrow();
-                    user = user.toBuilder().holidaysSubscriptionOptions(Opt.of(options)).build();
-                    wrapped.save(user);
-                });
+                bobaFettUserService.safeUpdate(
+                        chatId,
+                        user -> user.toBuilder().holidaysSubscriptionOptions(Opt.of(options)).build()
+                );
                 feedbackExecutor.editMessageText(
                         chatId,
                         messageId,
@@ -96,7 +93,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
     }
 
     public void sendMenu(long chatId, int messageId, FeedbackExecutor feedbackExecutor) {
-        boolean subscribed = BobaFettRepositoryHelper.findByChatId(usersRepository, chatId)
+        boolean subscribed = bobaFettUserService.findByChatId(usersRepository, chatId)
                 .flatMapO(BobaFettUser::holidaysSubscriptionOptions)
                 .map(HolidaysSubscriptionOptions::subscriptionIsActive)
                 .orElse(false);
@@ -109,9 +106,8 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
     }
 
     private void subscribeControl(boolean isSubscribe, long chatId, int messageId, FeedbackExecutor feedbackExecutor) {
-        transactionService.withTransaction(tx -> {
-            MongoRepository<BobaFettUser> wrapped = tx.wrap(usersRepository);
-            BobaFettUser user = BobaFettRepositoryHelper.findByChatId(wrapped, chatId).orElseThrow();
+        usersRepository.withTransaction(tx -> {
+            BobaFettUser user = bobaFettUserService.ensureFindByChatId(tx, chatId);
             Opt<HolidaysSubscriptionOptions> options = user.holidaysSubscriptionOptions();
             if (options.isEmpty()) {
                 settingSubscription(
@@ -126,7 +122,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
             }
             options = options.map(it -> it.toBuilder().subscriptionIsActive(isSubscribe).build());
             user = user.toBuilder().holidaysSubscriptionOptions(options).build();
-            wrapped.save(user);
+            tx.save(user);
             feedbackExecutor.editMessageText(
                     chatId,
                     messageId,

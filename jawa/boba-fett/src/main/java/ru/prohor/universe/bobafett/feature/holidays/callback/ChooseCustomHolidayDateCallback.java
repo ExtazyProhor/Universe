@@ -7,14 +7,14 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.prohor.universe.bobafett.callback.Callbacks;
-import ru.prohor.universe.bobafett.data.MongoStatusStorage;
+import ru.prohor.universe.bobafett.data.pojo.UserStatus;
 import ru.prohor.universe.bobafett.feature.holidays.date.ChangeDateKeyboardUtils;
 import ru.prohor.universe.bobafett.feature.holidays.date.Payload;
+import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.bobafett.status.Statuses;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
-import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusStorage;
 
 @Service
 public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload> {
@@ -24,15 +24,14 @@ public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload
     private static final String CHOOSE_HOLIDAY_DATE = "Укажите дату вашего праздника";
     private static final int LEAP_YEAR = 2024;
 
-
-    private final MongoStatusStorage mongoStatusStorage;
+    private final BobaFettUserService bobaFettUserService;
 
     public ChooseCustomHolidayDateCallback(
             ObjectMapper objectMapper,
-            MongoStatusStorage mongoStatusStorage
+            BobaFettUserService bobaFettUserService
     ) {
         super(Callbacks.CHOOSE_CUSTOM_HOLIDAY_DATE, Payload.class, objectMapper);
-        this.mongoStatusStorage = mongoStatusStorage;
+        this.bobaFettUserService = bobaFettUserService;
     }
 
     @Override
@@ -42,9 +41,8 @@ public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload
 
         switch (payload.option()) {
             case APPLY -> {
-                mongoStatusStorage.setStatus(
-                        chatId,
-                        new ValuedStatusStorage.ValuedStatus<>(
+                bobaFettUserService.setStatus(
+                        chatId, new UserStatus(
                                 Statuses.WAIT_CUSTOM_HOLIDAY_NAME,
                                 Opt.of(payload.date().toString())
                         )
