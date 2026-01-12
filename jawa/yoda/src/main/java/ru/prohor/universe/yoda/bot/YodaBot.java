@@ -5,7 +5,6 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
 import ru.prohor.universe.jocasta.tgbots.SimpleBot;
 import ru.prohor.universe.yoda.log.FileLogger;
@@ -25,8 +24,8 @@ public class YodaBot extends SimpleBot {
     }
 
     @Override
-    public void onSendingException(Exception e, String chatId) {
-        logger.log(LogLevel.ERROR, "error while sending", e);
+    public void onSendingException(Exception e, long chatId) {
+        logger.log(LogLevel.ERROR, "error while sending to chatId=" + chatId, e);
     }
 
     @Override
@@ -53,17 +52,12 @@ public class YodaBot extends SimpleBot {
     }
 
     @Override
-    public void onUserDeactivated(TelegramApiException e, String chatId) {
-        logger.log(LogLevel.WARN, "chatId=" + chatId, e); // TODO
+    public void onForbidden(String response, long chatId) {
+        logger.log(LogLevel.WARN, "forbidden for chatId=" + chatId + ", " + response); // TODO
     }
 
     @Override
-    public void onBotBlockedByUser(TelegramApiException e, String chatId) {
-        logger.log(LogLevel.WARN, "chatId=" + chatId, e); // TODO
-    }
-
-    @Override
-    public void onGroupWasUpgradedToSupergroup(TelegramApiException e, String chatId) {
-        logger.log(LogLevel.WARN, "chatId=" + chatId, e); // TODO
+    public void onMigrateToSuperGroup(long oldChatId, long newChatId) {
+        logger.log(LogLevel.WARN, "migrate from " + oldChatId + " to " + newChatId); // TODO
     }
 }

@@ -36,11 +36,19 @@ public abstract class SimpleBot extends DeafBot {
             if (!statusSupport.handle(update, feedbackExecutor))
                 return;
 
-            if (update.hasMessage() && update.getMessage().hasText()) {
+            if (update.hasMessage()) {
                 Message message = update.getMessage();
-                if (commandSupport.handle(message, feedbackExecutor))
-                    onMessage(message);
-                return;
+                if (message.getMigrateToChatId() != null) {
+                    long oldChatId = message.getChatId();
+                    long newChatId = message.getMigrateToChatId();
+                    onMigrateToSuperGroup(oldChatId, newChatId);
+                    return;
+                }
+                if (message.hasText()) {
+                    if (commandSupport.handle(message, feedbackExecutor))
+                        onMessage(message);
+                    return;
+                }
             }
             if (update.hasCallbackQuery()) {
                 CallbackQuery callback = update.getCallbackQuery();
