@@ -91,16 +91,20 @@ public class AllClassesToOneFile {
                     Files.createFile(outputFile);
                 paths.filter(Files::isRegularFile)
                         .filter(filter)
-                        .forEach(path -> Sneaky.execute(() -> {
-                            String header = "### " + path.getFileName().toString() + "\n\n";
-                            Files.writeString(
-                                    outputFile,
-                                    header + Files.readString(path, StandardCharsets.UTF_8) + "\n",
-                                    StandardCharsets.UTF_8,
-                                    StandardOpenOption.APPEND
-                            );
-                        }));
+                        .forEach(path -> write(path, outputFile));
             }
+        });
+    }
+
+    private static void write(Path path, Path outputFile) {
+        Sneaky.execute(() -> {
+            String header = "### " + path.getFileName().toString() + "\n\n";
+            Files.writeString(
+                    outputFile,
+                    header + Files.readString(path, StandardCharsets.UTF_8) + "\n",
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.APPEND
+            );
         });
     }
 }

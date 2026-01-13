@@ -80,17 +80,17 @@ public class Contest_19036 {
                     int before = (int) usedOffsets.stream().filter(o -> o < currentOffset).count();
                     newAlarms = currentAlarms + (currentPeriod - lastPeriod - 1) * usedOffsets.size() + 1 + before;
                     if (newAlarms <= alarmsToWakeUp) {
-                        if (newAlarms == alarmsToWakeUp)
+                        if (newAlarms == alarmsToWakeUp) {
                             writer.write(String.valueOf(offset));
-                        else {
-                            int[] after = usedOffsets.stream()
-                                    .filter(o -> o > currentOffset)
-                                    .mapToInt(t -> t)
-                                    .sorted()
-                                    .toArray();
-                            int result = currentPeriod * period + after[alarmsToWakeUp - newAlarms - 1];
-                            writer.write(String.valueOf(result));
+                            return;
                         }
+                        int[] after = usedOffsets.stream()
+                                .filter(o -> o > currentOffset)
+                                .mapToInt(t -> t)
+                                .sorted()
+                                .toArray();
+                        int result = currentPeriod * period + after[alarmsToWakeUp - newAlarms - 1];
+                        writer.write(String.valueOf(result));
                         return;
                     }
                     break;

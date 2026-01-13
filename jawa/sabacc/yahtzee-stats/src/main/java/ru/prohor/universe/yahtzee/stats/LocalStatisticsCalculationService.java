@@ -256,18 +256,20 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .collect(Collectors.groupingBy(OfflineScore::combination, Collectors.toList()))
                 .entrySet()
                 .stream()
-                .map(entry -> {
-                    int denomination = Yahtzee.getSimpleCombinationDenomination(entry.getKey());
-                    return new FloatCombinationStats(
-                            entry.getKey(),
-                            (float) entry.getValue()
-                                    .stream()
-                                    .mapToInt(score -> score.value() / denomination)
-                                    .average()
-                                    .orElse(0)
-                    );
-                })
+                .map(this::mapFloatCombinationStats)
                 .toList();
+    }
+
+    private FloatCombinationStats mapFloatCombinationStats(Map.Entry<Combination, List<OfflineScore>> entry) {
+        int denomination = Yahtzee.getSimpleCombinationDenomination(entry.getKey());
+        return new FloatCombinationStats(
+                entry.getKey(),
+                (float) entry.getValue()
+                        .stream()
+                        .mapToInt(score -> score.value() / denomination)
+                        .average()
+                        .orElse(0)
+        );
     }
 
     private List<SimpleDiceDistributionStats> calculateSimpleDiceDistribution(List<OfflineScore> scores) {

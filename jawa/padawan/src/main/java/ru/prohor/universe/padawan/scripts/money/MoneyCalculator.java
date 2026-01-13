@@ -58,10 +58,7 @@ public class MoneyCalculator {
             while (minusIterator.hasNext()) {
                 PersonWithBalance personFromMinus = minusIterator.next();
                 if (personFromMinus.balance() == person.balance()) {
-                    System.out.println(
-                            personFromMinus.person() + " должен заплатить " + person.balance()
-                                    + " человеку_ " + person.person()
-                    );
+                    print(personFromMinus, person.balance(), person);
                     plusIterator.remove();
                     minusIterator.remove();
                     break;
@@ -74,29 +71,30 @@ public class MoneyCalculator {
             PersonWithBalance minusPerson = minus.poll();
             assert plusPerson != null && minusPerson != null;
             if (plusPerson.balance() == minusPerson.balance()) {
-                System.out.println(
-                        minusPerson.person() + " должен заплатить " + plusPerson.balance()
-                                + " человеку " + plusPerson.person()
-                );
+                print(minusPerson, plusPerson.balance(), plusPerson);
                 continue;
             }
             if (plusPerson.balance() < minusPerson.balance()) {
                 minusPerson = new PersonWithBalance(minusPerson.person(), minusPerson.balance() - plusPerson.balance());
                 minus.add(minusPerson);
-                System.out.println(
-                        minusPerson.person() + " должен заплатить " + plusPerson.balance()
-                                + " человеку " + plusPerson.person()
-                );
+                print(minusPerson, plusPerson.balance(), plusPerson);
             } else {
                 plusPerson = new PersonWithBalance(plusPerson.person(), plusPerson.balance() - minusPerson.balance());
                 plus.add(plusPerson);
-                System.out.println(
-                        minusPerson.person() + " должен заплатить " + minusPerson.balance()
-                                + " человеку " + plusPerson.person()
-                );
+                print(minusPerson, minusPerson.balance(), plusPerson);
             }
         }
 
         assert plus.isEmpty() && minus.isEmpty();
+    }
+
+    private static void print(PersonWithBalance who, int balance, PersonWithBalance toWhom) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(who.person());
+        builder.append(" должен заплатить ");
+        builder.append(balance);
+        builder.append(" человеку ");
+        builder.append(toWhom.person());
+        System.out.println(builder);
     }
 }

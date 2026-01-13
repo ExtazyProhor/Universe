@@ -74,10 +74,7 @@ public class HolidaysDistributor implements DistributionTask {
             Map<Long, List<String>> holidaysForReminderByChatId = holidaysForReminder.stream().collect(
                     Collectors.groupingBy(
                             CustomHoliday::chatId,
-                            Collectors.mapping(
-                                    CustomHoliday::holidayName,
-                                    Collectors.toList()
-                            )
+                            Collectors.mapping(CustomHoliday::holidayName, Collectors.toList())
                     )
             );
 
