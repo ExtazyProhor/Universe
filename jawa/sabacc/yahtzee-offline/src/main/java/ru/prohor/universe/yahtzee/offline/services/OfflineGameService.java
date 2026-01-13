@@ -77,14 +77,16 @@ public class OfflineGameService {
         return player.currentRoom()
                 .filter(RoomReference::isTactileOffline)
                 .map(RoomReference::id)
-                .map(roomRepository::ensuredFindById).map(
-                        room -> new RoomInfoResponse(
-                                Enumeration.enumerateAndMap(
-                                        room.teams(),
-                                        (i, team) -> teamScoresEnumerationMapper(i, team, room, player)
-                                )
-                        )
-                );
+                .map(roomRepository::ensuredFindById).map(room -> mapRoomInfoResponse(room, player));
+    }
+
+    private RoomInfoResponse mapRoomInfoResponse(OfflineRoom room, Player player) {
+        return new RoomInfoResponse(
+                Enumeration.enumerateAndMap(
+                        room.teams(),
+                        (i, team) -> teamScoresEnumerationMapper(i, team, room, player)
+                )
+        );
     }
 
     public TeamInfo teamScoresEnumerationMapper(

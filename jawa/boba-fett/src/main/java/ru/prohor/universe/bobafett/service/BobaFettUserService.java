@@ -2,6 +2,7 @@ package ru.prohor.universe.bobafett.service;
 
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
+import ru.prohor.universe.bobafett.data.pojo.HolidaysSubscriptionOptions;
 import ru.prohor.universe.bobafett.data.pojo.UserStatus;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.fieldref.FR;
@@ -24,13 +25,14 @@ public class BobaFettUserService {
     public void disableHolidaysSubscription(long chatId) {
         usersRepository.safeUpdate(
                 filterByChatId(chatId),
-                user -> user.toBuilder()
-                        .holidaysSubscriptionOptions(
-                                user.holidaysSubscriptionOptions().map(
-                                        it -> it.toBuilder().subscriptionIsActive(false).build()
-                                )
-                        )
-                        .build()
+                user -> {
+                    Opt<HolidaysSubscriptionOptions> disabled = user.holidaysSubscriptionOptions().map(
+                            it -> it.toBuilder().subscriptionIsActive(false).build()
+                    );
+                    return user.toBuilder()
+                            .holidaysSubscriptionOptions(disabled)
+                            .build();
+                }
         );
     }
 
