@@ -2,9 +2,12 @@ package ru.prohor.universe.bobafett;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.prohor.universe.bobafett.command.StartCommand;
+import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
@@ -13,15 +16,18 @@ import ru.prohor.universe.jocasta.tgbots.SimpleBot;
 public class BobaFettBot extends SimpleBot {
     private final BobaFettUserService bobaFettUserService;
     private final ObjectMapper objectMapper;
+    private final StartCommand startCommand;
 
     public BobaFettBot(
             BobaFettUserService bobaFettUserService,
             ObjectMapper objectMapper,
-            BotSettings settings
+            BotSettings settings,
+            StartCommand startCommand
     ) {
         super(settings);
         this.bobaFettUserService = bobaFettUserService;
         this.objectMapper = objectMapper;
+        this.startCommand = startCommand;
     }
 
     @Override
@@ -49,7 +55,19 @@ public class BobaFettBot extends SimpleBot {
     }
 
     @Override
-    public void onMyChatMember(ChatMemberUpdated chatMemberUpdated) {
+    public void onBotAddedToChat(long chatId, Chat chat) {
+        bobaFettUserService.createIfNotExists(chatId, () -> BobaFettUser.create(chat));
+        startCommand.sendGreeting(chat, feedbackExecutor);
+    }
+
+    @Override
+    public void onBotRemovedFromChat(long chatId, Chat chat) {
+        bobaFettUserService.disableHolidaysSubscription(chatId);
+        // TODO log
+    }
+
+    @Override
+    public void onUnrecognizedChatMember(long chatId, ChatMemberUpdated chatMemberUpdated) {
         // TODO
         Sneaky.execute(
                 () -> System.out.println("my chat member: " + objectMapper.writeValueAsString(chatMemberUpdated))

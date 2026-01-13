@@ -2,6 +2,7 @@ package ru.prohor.universe.jocasta.tgbots;
 
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -26,7 +27,11 @@ public abstract class SimpleBot extends DeafBot {
 
     public abstract void onCallback(CallbackQuery callbackQuery);
 
-    public abstract void onMyChatMember(ChatMemberUpdated chatMemberUpdated);
+    public abstract void onBotAddedToChat(long chatId, Chat chat);
+
+    public abstract void onBotRemovedFromChat(long chatId, Chat chat);
+
+    public abstract void onUnrecognizedChatMember(long chatId, ChatMemberUpdated chatMemberUpdated);
 
     public abstract void onUnknownAction(Update update);
 
@@ -64,6 +69,21 @@ public abstract class SimpleBot extends DeafBot {
             onUnknownAction(update);
         } catch (Exception e) {
             onHandlingException(e);
+        }
+    }
+
+    private void onMyChatMember(ChatMemberUpdated chatMemberUpdated) {
+        String oldStatus = chatMemberUpdated.getOldChatMember().getStatus();
+        String newStatus = chatMemberUpdated.getNewChatMember().getStatus();
+        Chat chat = chatMemberUpdated.getChat();
+        long chatId = chat.getId();
+
+        if (oldStatus.equals("left") && newStatus.equals("member")) {
+            onBotAddedToChat(chatId, chatMemberUpdated.getChat());
+        } else if (newStatus.equals("left") || newStatus.equals("kicked")) {
+            onBotRemovedFromChat(chatId, chat);
+        } else {
+            onUnrecognizedChatMember(chatId, chatMemberUpdated);
         }
     }
 

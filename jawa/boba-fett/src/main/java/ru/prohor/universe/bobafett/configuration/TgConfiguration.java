@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.bobafett.BobaFettBot;
+import ru.prohor.universe.bobafett.command.StartCommand;
 import ru.prohor.universe.bobafett.data.MongoStatusStorage;
 import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.jocasta.core.functional.TriFunction;
@@ -73,8 +74,9 @@ public class TgConfiguration {
     public BobaFettBot bobaFettBot(
             BobaFettUserService bobaFettUserService,
             ObjectMapper objectMapper,
-            BotSettings settings
+            BotSettings settings,
+            StartCommand startCommand
     ) {
-        return RegisterBot.register(new BobaFettBot(bobaFettUserService, objectMapper, settings));
+        return RegisterBot.register(new BobaFettBot(bobaFettUserService, objectMapper, settings, startCommand));
     }
 }
