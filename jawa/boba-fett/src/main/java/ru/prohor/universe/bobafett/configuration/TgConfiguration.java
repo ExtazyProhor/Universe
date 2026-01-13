@@ -30,10 +30,13 @@ public class TgConfiguration {
     private static final TriFunction<Update, String, FeedbackExecutor, Boolean> UNKNOWN_STATUS;
 
     static {
-        UNKNOWN_COMMAND = ((message, command, feedbackExecutor) -> {
-            // TODO log trace unknown command from chat ...
+        UNKNOWN_COMMAND = (message, command, feedbackExecutor) -> {
+            feedbackExecutor.sendMessage(
+                    message.getChatId(),
+                    "Неизвестная команда. Посмотреть список доступных команд - /commands"
+            );
             return false;
-        });
+        };
 
         UNKNOWN_CALLBACK = ((callback, s, feedbackExecutor) -> {
             // TODO log error unknown callback from chat ...

@@ -66,7 +66,11 @@ public class BobaFettUserService {
     }
 
     public void setStatus(long chatId, UserStatus status) {
-        usersRepository.withTransaction(tx -> {
+        setStatus(usersRepository, chatId, status);
+    }
+
+    public void setStatus(MongoRepository<BobaFettUser> repository, long chatId, UserStatus status) {
+        repository.withTransaction(tx -> {
             Opt<BobaFettUser> user = findByChatId(tx, chatId);
             user.ifPresent(
                     it -> tx.save(it.toBuilder().status(Opt.of(status)).build())

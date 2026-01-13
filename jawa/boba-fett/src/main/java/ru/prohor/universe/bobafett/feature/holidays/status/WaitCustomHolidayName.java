@@ -4,18 +4,17 @@ import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.bobafett.command.Commands;
-import ru.prohor.universe.bobafett.feature.holidays.CustomHolidaysService;
+import ru.prohor.universe.bobafett.feature.holidays.CustomHolidaysCreator;
 import ru.prohor.universe.bobafett.status.Statuses;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusHandler;
 
 @Service
-// TODO json Valued Status Handler
 public class WaitCustomHolidayName implements ValuedStatusHandler<String, String> {
-    private final CustomHolidaysService customHolidaysService;
+    private final CustomHolidaysCreator customHolidaysCreator;
 
-    public WaitCustomHolidayName(CustomHolidaysService customHolidaysService) {
-        this.customHolidaysService = customHolidaysService;
+    public WaitCustomHolidayName(CustomHolidaysCreator customHolidaysCreator) {
+        this.customHolidaysCreator = customHolidaysCreator;
     }
 
     @Override
@@ -40,10 +39,9 @@ public class WaitCustomHolidayName implements ValuedStatusHandler<String, String
         LocalDate date = LocalDate.parse(value);
         feedbackExecutor.sendMessage(
                 chatId,
-                customHolidaysService.addNewCustomHolidayIfNotExists(
+                customHolidaysCreator.addNewCustomHolidayIfNotExists(
                         chatId,
-                        date.getDayOfMonth(),
-                        date.getMonthOfYear(),
+                        date,
                         customHolidayName
                 )
         );

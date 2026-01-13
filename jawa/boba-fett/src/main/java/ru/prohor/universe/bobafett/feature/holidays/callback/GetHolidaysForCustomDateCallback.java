@@ -48,12 +48,10 @@ public class GetHolidaysForCustomDateCallback extends JsonCallbackHandler<Payloa
                 LocalDate date = fixDate(ChangeDateKeyboardUtils.calculateChangedDate(payload));
                 editMessageByChooseHolidaysDate(messageId, chatId, date, feedbackExecutor);
             }
-            // TODO check null-keyboard
             case CANCEL -> feedbackExecutor.editMessageText(
                     chatId,
                     messageId,
-                    "Если заходите узнать праздники на определенную дату, используйте команду " + Commands.HOLIDAYS/*,
-                    null*/
+                    "Если заходите узнать праздники на определенную дату, используйте команду " + Commands.HOLIDAYS
             );
         }
         return false;

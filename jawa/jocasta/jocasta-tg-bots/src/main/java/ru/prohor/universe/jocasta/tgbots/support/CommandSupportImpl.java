@@ -31,7 +31,7 @@ public class CommandSupportImpl extends FeatureSupportImpl<Message, String, Comm
                 return false;
             text = text.substring(0, atIndex);
         }
-        // log trace text
+        // TODO log trace text (it is not private, ony started with slash)
         return useHandler(
                 message,
                 text,
