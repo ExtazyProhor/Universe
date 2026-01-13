@@ -13,6 +13,7 @@ import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,16 +109,21 @@ public class HolidaysDistributor implements DistributionTask {
         private final Map<Long, Map<Integer, List<String>>> holidaysByChatId;
 
         public StructuredCustomHolidays(DistributionDays distributionDays, List<CustomHoliday> customHolidays) {
-            this.holidaysByChatId = customHolidays.stream().collect(
+            this.holidaysByChatId = customHolidays.stream().collect(collector(distributionDays));
+        }
+
+        private Collector<CustomHoliday, ?, Map<Long, Map<Integer, List<String>>>> collector(
+                DistributionDays distributionDays
+        ) {
+            Collector<CustomHoliday, ?, List<String>> collector = Collectors.mapping(
+                    CustomHoliday::holidayName,
+                    Collectors.toList()
+            );
+            return Collectors.groupingBy(
+                    CustomHoliday::chatId,
                     Collectors.groupingBy(
-                            CustomHoliday::chatId,
-                            Collectors.groupingBy(
-                                    distributionDays::getIndent,
-                                    Collectors.mapping(
-                                            CustomHoliday::holidayName,
-                                            Collectors.toList()
-                                    )
-                            )
+                            distributionDays::getIndent,
+                            collector
                     )
             );
         }

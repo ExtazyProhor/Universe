@@ -276,26 +276,42 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .collect(Collectors.groupingBy(OfflineScore::combination, Collectors.toList()))
                 .entrySet()
                 .stream()
-                .map(entry -> {
-                    float count = entry.getValue().size();
-                    int denomination = Yahtzee.getSimpleCombinationDenomination(entry.getKey());
-                    return new SimpleDiceDistributionStats(
-                            entry.getKey(),
-                            entry.getValue()
-                                    .stream()
-                                    .collect(Collectors.groupingBy(OfflineScore::value, Collectors.counting()))
-                                    .entrySet()
-                                    .stream()
-                                    .map(scoreEntry -> new SimpleDicePerCountDistribution(
-                                            scoreEntry.getKey() / denomination,
-                                            scoreEntry.getValue().intValue(),
-                                            scoreEntry.getValue().intValue() * 100f / count
-                                    ))
-                                    .sorted(Comparator.comparing(SimpleDicePerCountDistribution::getDice))
-                                    .toList()
-                    );
-                })
+                .map(this::mapSimpleDiceDistributionStats)
                 .toList();
+    }
+
+    private SimpleDiceDistributionStats mapSimpleDiceDistributionStats(
+            Map.Entry<Combination, List<OfflineScore>> entry
+    ) {
+        float count = entry.getValue().size();
+        int denomination = Yahtzee.getSimpleCombinationDenomination(entry.getKey());
+        return new SimpleDiceDistributionStats(
+                entry.getKey(),
+                entry.getValue()
+                        .stream()
+                        .collect(Collectors.groupingBy(OfflineScore::value, Collectors.counting()))
+                        .entrySet()
+                        .stream()
+                        .map(scoreEntry -> mapSimpleDicePerCountDistribution(
+                                scoreEntry,
+                                denomination,
+                                count
+                        ))
+                        .sorted(Comparator.comparing(SimpleDicePerCountDistribution::getDice))
+                        .toList()
+        );
+    }
+
+    private SimpleDicePerCountDistribution mapSimpleDicePerCountDistribution(
+            Map.Entry<Integer, Long> scoreEntry,
+            int denomination,
+            float count
+    ) {
+        return new SimpleDicePerCountDistribution(
+                scoreEntry.getKey() / denomination,
+                scoreEntry.getValue().intValue(),
+                scoreEntry.getValue().intValue() * 100f / count
+        );
     }
 
     private List<FloatCombinationStats> calculateVariableCombinationAverage(List<OfflineScore> scores) {
