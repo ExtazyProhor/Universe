@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 public class CartesianProduct {
     private CartesianProduct() {}
@@ -61,6 +62,10 @@ public class CartesianProduct {
         private CartesianProductOfTwoRanges(Range range1, Range range2) {
             this.range1 = range1;
             this.range2 = range2;
+        }
+
+        public <T> Stream<T> mapToStream(DiFunction<Integer, Integer, T> mapper) {
+            return map(mapper).stream();
         }
 
         public <T> List<T> map(DiFunction<Integer, Integer, T> mapper) {
