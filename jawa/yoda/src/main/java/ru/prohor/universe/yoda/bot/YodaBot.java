@@ -2,6 +2,7 @@ package ru.prohor.universe.yoda.bot;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -44,7 +45,19 @@ public class YodaBot extends SimpleBot {
     public void onCallback(CallbackQuery callbackQuery) {}
 
     @Override
-    public void onMyChatMember(ChatMemberUpdated chatMemberUpdated) {}
+    public void onBotAddedToChat(long chatId, Chat chat) {
+        // TODO
+    }
+
+    @Override
+    public void onBotRemovedFromChat(long chatId, Chat chat) {
+        // TODO
+    }
+
+    @Override
+    public void onUnrecognizedChatMember(long chatId, ChatMemberUpdated chatMemberUpdated) {
+        logger.log(LogLevel.WARN, "unrecognized chatMember: " + chatMemberUpdated); // TODO
+    }
 
     @Override
     public void onUnknownAction(Update update) {
