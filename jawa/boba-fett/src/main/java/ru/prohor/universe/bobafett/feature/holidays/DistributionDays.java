@@ -8,7 +8,6 @@ public record DistributionDays(
         LocalDate today,
         LocalDate tomorrow,
         LocalDate dayAfterTomorrow
-        // TODO через неделю для единого запроса
 ) {
     public static DistributionDays create() {
         LocalDate today = LocalDate.now(DateTimeUtil.zoneMoscow());

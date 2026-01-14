@@ -61,7 +61,7 @@ public class HolidaysDistributor implements DistributionTask {
                     txHolidaysRepository,
                     forIds,
                     distributionDays
-            ); // TODO делать одним запросом
+            );
             List<CustomHoliday> holidaysForReminder = distributionDataProvider.findCustomHolidaysForReminder(
                     txHolidaysRepository,
                     forIds
