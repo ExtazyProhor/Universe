@@ -1,7 +1,5 @@
 package ru.prohor.universe.scarif.services;
 
-import org.joda.time.Duration;
-import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.scarif.data.refresh.JpaRefreshTokenMethods;
 import ru.prohor.universe.scarif.data.refresh.RefreshToken;
 import ru.prohor.universe.scarif.data.session.JpaSessionMethods;
@@ -19,6 +16,8 @@ import ru.prohor.universe.scarif.services.refresh.RefreshTokenService;
 import ru.prohor.universe.scarif.services.refresh.Tokens;
 import ru.prohor.universe.scarif.services.refresh.UserTokenAndUserId;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 @Transactional
@@ -39,7 +38,7 @@ public class SessionsService {
             RefreshTokenService refreshTokenService,
             JpaSessionMethods sessionMethods
     ) {
-        this.refreshTokenTtl = Duration.standardDays(refreshTokenTtlDays);
+        this.refreshTokenTtl = Duration.ofDays(refreshTokenTtlDays);
         this.refreshTokenMethods = refreshTokenMethods;
         this.snowflakeIdGenerator = snowflakeIdGenerator;
         this.refreshTokenService = refreshTokenService;
@@ -47,7 +46,7 @@ public class SessionsService {
     }
 
     public List<Session> getAllValidSessions(long userId) {
-        return sessionMethods.findByUserIdAndClosedFalseAndExpiresAtAfter(userId, DateTimeUtil.unwrap(Instant.now()))
+        return sessionMethods.findByUserIdAndClosedFalseAndExpiresAtAfter(userId, Instant.now())
                 .stream()
                 .map(Session::fromDto)
                 .toList();
@@ -144,7 +143,7 @@ public class SessionsService {
             log.debug("user-token refers to a closed session");
             return Opt.empty();
         }
-        if (session.expiresAt().isBeforeNow()) {
+        if (session.expiresAt().isBefore(Instant.now())) {
             log.debug("session {} of user with id {} has expired", session.id(), session.userId());
             return Opt.empty();
         }
