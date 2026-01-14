@@ -31,7 +31,7 @@ public class DateTimeUtil {
             .forPattern("HH:mm:ss dd-MM-yyyy")
             .withZone(MOSCOW_ZONE);
     private static final java.time.format.DateTimeFormatter JAVA_DIGIT_FORMATTER = java.time.format.DateTimeFormatter
-            .ofPattern("HH:mm:ss dd-MM-yyyy")
+            .ofPattern("dd.MM.yyyy, HH:mm:ss")
             .withZone(MOSCOW_ZONE_ID);
     private static final DateTimeFormatter RUSSIAN_FULL_FORMATTER = DateTimeFormat
             .forPattern("d MMMM yyyy")

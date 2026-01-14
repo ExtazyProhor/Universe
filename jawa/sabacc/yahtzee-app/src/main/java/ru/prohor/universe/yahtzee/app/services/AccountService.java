@@ -1,7 +1,6 @@
 package ru.prohor.universe.yahtzee.app.services;
 
 import org.bson.types.ObjectId;
-import org.joda.time.Instant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +21,7 @@ import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

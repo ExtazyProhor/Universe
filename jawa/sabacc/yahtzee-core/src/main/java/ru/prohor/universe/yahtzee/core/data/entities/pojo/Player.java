@@ -2,13 +2,12 @@ package ru.prohor.universe.yahtzee.core.data.entities.pojo;
 
 import lombok.Builder;
 import org.bson.types.ObjectId;
-import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.core.data.entities.dto.PlayerDto;
 import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +41,7 @@ public record Player(
                 friends,
                 currentRoom.map(RoomReference::toDto).orElseNull(),
                 imageId,
-                DateTimeUtil.unwrap(createdAt),
+                createdAt,
                 trusted,
                 outcomingRequests,
                 incomingRequests
@@ -60,7 +59,7 @@ public record Player(
                 player.getFriends(),
                 Opt.ofNullable(player.getCurrentRoom()).map(RoomReference::fromDto),
                 player.getImageId(),
-                DateTimeUtil.wrap(player.getCreatedAt()),
+                player.getCreatedAt(),
                 player.isTrusted(),
                 player.getOutcomingRequests(),
                 player.getIncomingRequests()

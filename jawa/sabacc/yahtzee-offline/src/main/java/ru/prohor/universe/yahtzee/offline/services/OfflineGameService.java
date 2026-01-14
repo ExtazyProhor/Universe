@@ -1,7 +1,6 @@
 package ru.prohor.universe.yahtzee.offline.services;
 
 import org.bson.types.ObjectId;
-import org.joda.time.Instant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,6 +34,7 @@ import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineInterimTeamScor
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineScore;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineTeamScores;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
