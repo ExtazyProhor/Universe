@@ -307,11 +307,6 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>jocasta-joda-time</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
                 <artifactId>scarif-jwt</artifactId>
                 <version>final</version>
             </dependency>

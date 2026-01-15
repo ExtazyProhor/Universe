@@ -3,9 +3,8 @@ package ru.prohor.universe.scarif;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import ru.prohor.universe.jocasta.jackson.jodatime.JacksonJodaTimeConfiguration;
-import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.hyperspace.jwt.ScarifJwtConfiguration;
+import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
 import ru.prohor.universe.jocasta.springweb.ExcludeControllersComponentScan;
@@ -17,7 +16,6 @@ import ru.prohor.universe.jocasta.springweb.ExcludeControllersComponentScan;
         SnowflakeConfiguration.class,
         HolocronConfiguration.class,
         ScarifJwtConfiguration.class,
-        JacksonJodaTimeConfiguration.class,
 })
 public class ScarifMain {
     public static void main(String[] args) {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil
+import ru.prohor.universe.jocasta.core.utils.DateTimeUtil
 import ru.prohor.universe.jocasta.spring.UniverseEnvironment
 import ru.prohor.universe.venator.shared.Notifier
 import ru.prohor.universe.venator.webhook.model.ApiResponse

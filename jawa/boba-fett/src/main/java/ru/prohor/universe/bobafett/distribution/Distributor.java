@@ -3,7 +3,7 @@ package ru.prohor.universe.bobafett.distribution;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.BobaFettBot;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
 import java.time.LocalTime;

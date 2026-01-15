@@ -1,7 +1,7 @@
 package ru.prohor.universe.bobafett.feature.holidays;
 
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 
 import java.time.LocalDate;
 

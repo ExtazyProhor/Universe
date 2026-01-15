@@ -2,7 +2,7 @@ package ru.prohor.universe.bobafett.feature.holidays;
 
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 
 import java.time.LocalDate;
 import java.util.List;

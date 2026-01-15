@@ -4,7 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import ru.prohor.universe.bobafett.callback.Callbacks;
 import ru.prohor.universe.jocasta.core.collections.common.Bool;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 import ru.prohor.universe.jocasta.tgbots.util.InlineKeyboardUtils;
 
 import java.time.LocalDate;

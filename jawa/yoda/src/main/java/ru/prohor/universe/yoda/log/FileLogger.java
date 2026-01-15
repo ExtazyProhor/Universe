@@ -1,7 +1,7 @@
 package ru.prohor.universe.yoda.log;
 
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

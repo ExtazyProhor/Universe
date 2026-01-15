@@ -7,7 +7,7 @@ import ru.prohor.universe.bobafett.data.pojo.DistributionTime;
 import ru.prohor.universe.bobafett.data.pojo.HolidaysSubscriptionOptions;
 import ru.prohor.universe.jocasta.core.features.fieldref.FR;
 import ru.prohor.universe.jocasta.core.features.fieldref.FieldProperties;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilters;

@@ -11,7 +11,7 @@ import ru.prohor.universe.bobafett.data.pojo.DistributionTime;
 import ru.prohor.universe.bobafett.data.pojo.HolidaysSubscriptionOptions;
 import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;

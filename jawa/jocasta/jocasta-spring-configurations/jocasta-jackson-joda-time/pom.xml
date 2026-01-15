@@ -16,10 +16,6 @@
     <dependencies>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-joda-time</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-spring</artifactId>
         </dependency>
         <dependency>

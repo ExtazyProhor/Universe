@@ -10,7 +10,7 @@ import ru.prohor.universe.bobafett.feature.holidays.DistributionDataProvider;
 import ru.prohor.universe.bobafett.feature.holidays.HolidaysService;
 import ru.prohor.universe.bobafett.feature.holidays.date.ChangeDateKeyboardUtils;
 import ru.prohor.universe.bobafett.feature.holidays.date.Payload;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
