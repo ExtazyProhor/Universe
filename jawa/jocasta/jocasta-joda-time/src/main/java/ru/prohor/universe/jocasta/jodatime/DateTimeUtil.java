@@ -22,7 +22,7 @@ public class DateTimeUtil {
 
     private static final int NANOS_IN_MILLI = 1_000_000;
     private static final Locale RUSSIAN_LOCALE = Locale.forLanguageTag("ru-RU");
-    private static final ZoneId MOSCOW_ZONE_ID = ZoneId.of("Europe/Moscow");
+    public static final ZoneId MOSCOW_ZONE_ID = ZoneId.of("Europe/Moscow");
     private static final DateTimeZone MOSCOW_ZONE = DateTimeZone.forID("Europe/Moscow");
     private static final DateTimeFormatter BASE_FORMATTER = DateTimeFormat
             .forStyle("SM")
@@ -37,12 +37,18 @@ public class DateTimeUtil {
             .forPattern("d MMMM yyyy")
             .withZone(MOSCOW_ZONE)
             .withLocale(RUSSIAN_LOCALE);
+    private static final java.time.format.DateTimeFormatter JAVA_RUSSIAN_FULL_FORMATTER =
+            java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy", RUSSIAN_LOCALE);
     private static final DateTimeFormatter RUSSIAN_WITHOUT_YEAR_FORMATTER = DateTimeFormat
             .forPattern("d MMMM")
             .withZone(MOSCOW_ZONE)
             .withLocale(RUSSIAN_LOCALE);
+    private static final java.time.format.DateTimeFormatter JAVA_RUSSIAN_WITHOUT_YEAR_FORMATTER =
+            java.time.format.DateTimeFormatter.ofPattern("d MMMM", RUSSIAN_LOCALE);
     private static final DateTimeFormatter LOCAL_TIME_WITHOUT_MILLIS = DateTimeFormat
             .forPattern("HH:mm:ss");
+    private static final java.time.format.DateTimeFormatter JAVA_LOCAL_TIME_WITHOUT_MILLIS = java.time.format.DateTimeFormatter
+            .ofPattern("HH:mm:ss");
 
     /**
      * Instant
@@ -128,6 +134,14 @@ public class DateTimeUtil {
     }
 
     /**
+     * for example, <code>23 декабря 2025</code>
+     */
+    @Nonnull
+    public static String russianFullDate(java.time.LocalDate date) {
+        return JAVA_RUSSIAN_FULL_FORMATTER.format(date);
+    }
+
+    /**
      * for example, <code>23 декабря</code>
      */
     @Nonnull
@@ -136,11 +150,27 @@ public class DateTimeUtil {
     }
 
     /**
+     * for example, <code>23 декабря</code>
+     */
+    @Nonnull
+    public static String russianDateWithoutYear(java.time.LocalDate date) {
+        return JAVA_RUSSIAN_WITHOUT_YEAR_FORMATTER.format(date);
+    }
+
+    /**
      * for example, <code>12:15:34</code>
      */
     @Nonnull
     public static String formatWithoutMillis(LocalTime time) {
         return LOCAL_TIME_WITHOUT_MILLIS.print(time);
+    }
+
+    /**
+     * for example, <code>12:15:34</code>
+     */
+    @Nonnull
+    public static String formatWithoutMillis(java.time.LocalTime time) {
+        return JAVA_LOCAL_TIME_WITHOUT_MILLIS.format(time);
     }
 
     @Nonnull
