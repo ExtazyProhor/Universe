@@ -9,6 +9,9 @@ import org.springframework.test.context.TestConstructor;
 import ru.prohor.universe.jocasta.core.collections.common.Bool;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
+import java.time.Instant;
+import java.time.LocalDate;
+
 @SpringBootTest
 @ContextConfiguration(classes = JacksonJocastaCoreConfiguration.class)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
@@ -17,6 +20,72 @@ public class JacksonJocastaCoreConfigurationTest {
 
     public JacksonJocastaCoreConfigurationTest(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+    }
+
+    /**
+     * Instant tests
+     */
+    @Test
+    void shouldSerializeInstantToEpochSeconds() throws Exception {
+        long timestamp = 1705492800L;
+        Instant instant = Instant.ofEpochSecond(timestamp);
+        String json = objectMapper.writeValueAsString(instant);
+        Assertions.assertEquals(String.valueOf(timestamp), json);
+    }
+
+    @Test
+    void shouldDeserializeInstantFromEpochSeconds() throws Exception {
+        String json = "1705492800";
+        Instant instant = objectMapper.readValue(json, Instant.class);
+        Assertions.assertEquals(Instant.ofEpochSecond(Long.parseLong(json)), instant);
+    }
+
+    @Test
+    void shouldSerializeAndDeserializeClassWithInstant() throws Exception {
+        TestClassWithLocalInstant dto = new TestClassWithLocalInstant();
+        dto.createdAt = Instant.ofEpochSecond(1705492800);
+
+        String json = objectMapper.writeValueAsString(dto);
+        TestClassWithLocalInstant restored = objectMapper.readValue(json, TestClassWithLocalInstant.class);
+
+        Assertions.assertEquals(dto.createdAt, restored.createdAt);
+    }
+
+    static class TestClassWithLocalInstant {
+        public Instant createdAt;
+    }
+
+    /**
+     * LocalDate tests
+     */
+    @Test
+    void shouldSerializeLocalDateToIsoString() throws Exception {
+        LocalDate date = LocalDate.of(2026, 1, 15);
+        String json = objectMapper.writeValueAsString(date);
+        Assertions.assertEquals("\"2026-01-15\"", json);
+    }
+
+    @Test
+    void shouldDeserializeLocalDateFromIsoString() throws Exception {
+        String json = "\"2026-01-15\"";
+        LocalDate date = objectMapper.readValue(json, LocalDate.class);
+        Assertions.assertEquals(LocalDate.of(2026, 1, 15), date);
+    }
+
+    @Test
+    void shouldSerializeAndDeserializeClassWithLocalTime() throws Exception {
+        TestClassWithLocalDate dto = new TestClassWithLocalDate();
+        dto.date = LocalDate.of(2026, 1, 15);
+
+        String json = objectMapper.writeValueAsString(dto);
+        TestClassWithLocalDate restored = objectMapper.readValue(json, TestClassWithLocalDate.class);
+
+        Assertions.assertEquals(dto.date, restored.date);
+    }
+
+
+    static class TestClassWithLocalDate {
+        public LocalDate date;
     }
 
     /**
