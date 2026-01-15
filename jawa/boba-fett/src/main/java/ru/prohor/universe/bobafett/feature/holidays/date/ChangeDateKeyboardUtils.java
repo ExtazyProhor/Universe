@@ -22,7 +22,7 @@ public class ChangeDateKeyboardUtils {
             MonoFunction<Payload, String> callbackMaker,
             boolean full
     ) {
-        String dateFormatted = full ? DateTimeUtil.russianFullDate(date) : DateTimeUtil.russianDateWithoutYear(date);
+        String dateFormatted = full ? DateTimeUtil.dateText(date) : DateTimeUtil.dateWithoutYearText(date);
         return InlineKeyboardUtils.getInlineKeyboard(
                 List.of(
                         List.of(dateFormatted),

@@ -90,7 +90,7 @@ class WebhookController(
     private fun onSuccess(payload: WebhookPayload): ResponseEntity<ApiResponse> {
         val login = payload.sender.login
         val commit = payload.headCommit.message
-        val datetime = DateTimeUtil.toDigitsString(Instant.ofEpochSecond(payload.repository.pushedAt * 1000))
+        val datetime = DateTimeUtil.toReadableString(Instant.ofEpochSecond(payload.repository.pushedAt))
         notifier.success("$login pushed new changes to Universe at\n${datetime}.\nLast commit is:\n\n*$commit*")
         val response = ApiResponse("Webhook accepted")
         return ResponseEntity.status(HttpStatus.OK).body(response)

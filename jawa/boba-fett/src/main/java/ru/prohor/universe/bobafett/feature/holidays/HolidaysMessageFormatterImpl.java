@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class HolidaysMessageFormatterImpl implements HolidaysMessageFormatter {
     @Override
     public String format(LocalDate date, Opt<List<String>> customHolidays, List<String> holidays) {
-        String dateHeader = date.getDayOfMonth() + " " + DateTimeUtil.russianMonth(date.getMonthValue());
+        String dateHeader = DateTimeUtil.dateWithoutYearText(date);
         Opt<String> customHolidaysPart = customHolidays.map(this::formatHolidaysList);
         String holidaysPart = formatHolidaysList(holidays);
 

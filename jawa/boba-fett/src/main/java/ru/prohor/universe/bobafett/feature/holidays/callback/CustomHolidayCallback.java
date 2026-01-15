@@ -23,6 +23,7 @@ import java.util.List;
 
 @Service
 public class CustomHolidayCallback extends JsonCallbackHandler<CustomHolidayCallback.Payload> {
+    private static final int LEAP_YEAR = 2024;
     private static final Comparator<CustomHoliday> CUSTOM_HOLIDAYS_COMPARATOR = Comparator
             .comparingInt(CustomHoliday::month)
             .thenComparingInt(CustomHoliday::dayOfMonth)
@@ -75,8 +76,8 @@ public class CustomHolidayCallback extends JsonCallbackHandler<CustomHolidayCall
     }
 
     private static String getCustomHolidayDescription(CustomHoliday holiday) {
-        String month = DateTimeUtil.russianMonth(holiday.month());
-        return holiday.dayOfMonth() + " " + month + " - " + holiday.holidayName();
+        LocalDate date = LocalDate.of(LEAP_YEAR, holiday.month(), holiday.dayOfMonth());
+        return DateTimeUtil.dateWithoutYearText(date)  + " - " + holiday.holidayName();
     }
 
     private void createCustomHoliday(long chatId, int messageId, FeedbackExecutor feedbackExecutor) {

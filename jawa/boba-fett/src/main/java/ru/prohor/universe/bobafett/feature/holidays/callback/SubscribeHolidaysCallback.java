@@ -150,7 +150,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
     private InlineKeyboardMarkup makeSettingsKeyboard(LocalTime time, int indent) {
         return InlineKeyboardUtils.getInlineKeyboard(
                 List.of(
-                        List.of("Установить время: " + DateTimeUtil.formatWithoutMillis(time)),
+                        List.of("Установить время: " + DateTimeUtil.timeWithoutMillis(time)),
                         TIME_TEXT,
                         List.of("тот же день " + indentText(indent, 0)),
                         List.of("день после " + indentText(indent, 1)),
