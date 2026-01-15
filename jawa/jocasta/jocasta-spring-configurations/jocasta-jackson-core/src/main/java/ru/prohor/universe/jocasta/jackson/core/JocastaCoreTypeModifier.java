@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jackson.jodatime;
+package ru.prohor.universe.jocasta.jackson.core;
 
 import java.lang.reflect.Type;
 

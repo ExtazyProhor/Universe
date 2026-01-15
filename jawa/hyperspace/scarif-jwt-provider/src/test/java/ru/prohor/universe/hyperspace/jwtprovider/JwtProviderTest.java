@@ -15,7 +15,7 @@ import ru.prohor.universe.hyperspace.jwt.JwtVerifier;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
 import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
-import ru.prohor.universe.jocasta.jackson.jodatime.JacksonJocastaCoreConfiguration;
+import ru.prohor.universe.jocasta.jackson.core.JacksonJocastaCoreConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
 

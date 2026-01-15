@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jackson.jodatime;
+package ru.prohor.universe.jocasta.jackson.core;
 
 import com.fasterxml.jackson.databind.Module;
 import org.springframework.context.annotation.Bean;

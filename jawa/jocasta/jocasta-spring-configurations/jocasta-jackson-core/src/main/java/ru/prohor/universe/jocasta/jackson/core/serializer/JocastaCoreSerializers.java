@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jackson.jodatime.serializer;
+package ru.prohor.universe.jocasta.jackson.core.serializer;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JsonSerializer;

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.prohor.universe.jocasta.core.security.rsa.PublicKeyProvider;
-import ru.prohor.universe.jocasta.jackson.jodatime.JacksonJocastaCoreConfiguration;
+import ru.prohor.universe.jocasta.jackson.core.JacksonJocastaCoreConfiguration;
 
 @Configuration
 @Import(JacksonJocastaCoreConfiguration.class)
