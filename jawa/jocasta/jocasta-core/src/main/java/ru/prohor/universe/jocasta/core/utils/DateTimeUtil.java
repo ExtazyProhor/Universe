@@ -20,7 +20,7 @@ public class DateTimeUtil {
     private static final DateTimeFormatter TIME_WITHOUT_MILLIS = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     /**
-     * for example, <code>16-12-2025. 15:33:42</code>
+     * for example, <code>16.12.2025, 15:33:42</code>
      */
     @Nonnull
     public static String toReadableString(@Nonnull Instant instant) {
@@ -31,7 +31,7 @@ public class DateTimeUtil {
      * for example, <code>23 декабря 2025</code>
      */
     @Nonnull
-    public static String dateText(LocalDate date) {
+    public static String dateText(@Nonnull LocalDate date) {
         return DATE_TEXT.format(date);
     }
 
@@ -39,7 +39,7 @@ public class DateTimeUtil {
      * for example, <code>23 декабря</code>
      */
     @Nonnull
-    public static String dateWithoutYearText(LocalDate date) {
+    public static String dateWithoutYearText(@Nonnull LocalDate date) {
         return DATE_WITHOUT_YEAR_TEXT.format(date);
     }
 
@@ -47,7 +47,7 @@ public class DateTimeUtil {
      * for example, <code>12:15:34</code>
      */
     @Nonnull
-    public static String timeWithoutMillis(LocalTime time) {
+    public static String timeWithoutMillis(@Nonnull LocalTime time) {
         return TIME_WITHOUT_MILLIS.format(time);
     }
 }
