@@ -1,7 +1,6 @@
 package ru.prohor.universe.bobafett.feature.holidays;
 
 import org.bson.types.ObjectId;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.command.Commands;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
@@ -15,6 +14,8 @@ import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilters;
+
+import java.time.LocalDate;
 
 @Service
 public class CustomHolidaysCreator {
@@ -55,7 +56,7 @@ public class CustomHolidaysCreator {
             }
 
             int day = date.getDayOfMonth();
-            int month = date.getMonthOfYear();
+            int month = date.getMonthValue();
 
             MongoFilter<CustomHoliday> filter = MongoFilters.and(
                     MongoFilters.eq(FR.wrap(CustomHoliday::chatId), chatId),

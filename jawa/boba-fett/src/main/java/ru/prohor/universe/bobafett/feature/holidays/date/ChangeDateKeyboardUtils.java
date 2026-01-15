@@ -1,7 +1,5 @@
 package ru.prohor.universe.bobafett.feature.holidays.date;
 
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.prohor.universe.bobafett.callback.Callbacks;
 import ru.prohor.universe.jocasta.core.collections.common.Bool;
@@ -9,6 +7,8 @@ import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.tgbots.util.InlineKeyboardUtils;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 public class ChangeDateKeyboardUtils {
@@ -54,8 +54,8 @@ public class ChangeDateKeyboardUtils {
     public static LocalDate calculateChangedDate(Payload payload) {
         LocalDate date = payload.date();
         Period period = switch (payload.timeUnit()) {
-            case DAY -> Period.days(payload.count());
-            case MONTH -> Period.months(payload.count());
+            case DAY -> Period.ofDays(payload.count());
+            case MONTH -> Period.ofMonths(payload.count());
         };
         return payload.increase().unwrap() ? date.plus(period) : date.minus(period);
     }

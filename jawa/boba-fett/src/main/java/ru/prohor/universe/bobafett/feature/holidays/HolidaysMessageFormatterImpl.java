@@ -1,10 +1,10 @@
 package ru.prohor.universe.bobafett.feature.holidays;
 
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class HolidaysMessageFormatterImpl implements HolidaysMessageFormatter {
     @Override
     public String format(LocalDate date, Opt<List<String>> customHolidays, List<String> holidays) {
-        String dateHeader = date.getDayOfMonth() + " " + DateTimeUtil.russianMonth(date.getMonthOfYear());
+        String dateHeader = date.getDayOfMonth() + " " + DateTimeUtil.russianMonth(date.getMonthValue());
         Opt<String> customHolidaysPart = customHolidays.map(this::formatHolidaysList);
         String holidaysPart = formatHolidaysList(holidays);
 

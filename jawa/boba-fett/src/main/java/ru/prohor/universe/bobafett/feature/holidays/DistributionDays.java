@@ -1,8 +1,9 @@
 package ru.prohor.universe.bobafett.feature.holidays;
 
-import org.joda.time.LocalDate;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+
+import java.time.LocalDate;
 
 public record DistributionDays(
         LocalDate today,
@@ -10,7 +11,7 @@ public record DistributionDays(
         LocalDate dayAfterTomorrow
 ) {
     public static DistributionDays create() {
-        LocalDate today = LocalDate.now(DateTimeUtil.zoneMoscow());
+        LocalDate today = LocalDate.now(DateTimeUtil.MOSCOW_ZONE_ID);
         return new DistributionDays(
                 today,
                 today.plusDays(1),
@@ -40,6 +41,6 @@ public record DistributionDays(
     }
 
     private boolean compare(LocalDate date, int day, int month) {
-        return date.getDayOfMonth() == day && date.getMonthOfYear() == month;
+        return date.getDayOfMonth() == day && date.getMonthValue() == month;
     }
 }

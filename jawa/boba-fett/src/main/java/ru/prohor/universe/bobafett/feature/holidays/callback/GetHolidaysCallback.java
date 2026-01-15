@@ -2,7 +2,6 @@ package ru.prohor.universe.bobafett.feature.holidays.callback;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -16,6 +15,7 @@ import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.util.InlineKeyboardUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -43,7 +43,7 @@ public class GetHolidaysCallback extends JsonCallbackHandler<GetHolidaysCallback
     protected boolean handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
-        LocalDate today = LocalDate.now(DateTimeUtil.zoneMoscow());
+        LocalDate today = LocalDate.now(DateTimeUtil.MOSCOW_ZONE_ID);
         switch (payload.option) {
             case TODAY -> editMessage(messageId, chatId, today, today, feedbackExecutor);
             case TOMORROW -> editMessage(messageId, chatId, today.plusDays(1), today, feedbackExecutor);

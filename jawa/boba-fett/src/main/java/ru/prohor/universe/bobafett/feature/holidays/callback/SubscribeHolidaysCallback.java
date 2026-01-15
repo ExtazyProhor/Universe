@@ -2,7 +2,6 @@ package ru.prohor.universe.bobafett.feature.holidays.callback;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.time.LocalTime;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -18,6 +17,7 @@ import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.util.InlineKeyboardUtils;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -143,7 +143,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
                 chatId,
                 messageId,
                 SETTINGS_MESSAGE,
-                makeSettingsKeyboard(new LocalTime(hour, minute), indent)
+                makeSettingsKeyboard(LocalTime.of(hour, minute), indent)
         );
     }
 
@@ -168,12 +168,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
                         List.of(indent(time, indent, 0)),
                         List.of(indent(time, indent, 1)),
                         List.of(indent(time, indent, 2)),
-                        List.of(makeCallback(new Payload(
-                                Option.CONFIRM,
-                                time.getHourOfDay(),
-                                time.getMinuteOfHour(),
-                                indent
-                        )))
+                        List.of(makeCallback(Payload.create(Option.CONFIRM, time, indent)))
                 )
         );
     }
@@ -183,23 +178,13 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
     }
 
     private String time(LocalTime time, int indent) {
-        return makeCallback(new Payload(
-                Option.CHANGE_OPTIONS,
-                time.getHourOfDay(),
-                time.getMinuteOfHour(),
-                indent
-        ));
+        return makeCallback(Payload.create(Option.CHANGE_OPTIONS, time, indent));
     }
 
     private String indent(LocalTime time, int indent, int target) {
         if (indent == target)
             return Callbacks.BLANK;
-        return makeCallback(new Payload(
-                Option.CHANGE_OPTIONS,
-                time.getHourOfDay(),
-                time.getMinuteOfHour(),
-                target
-        ));
+        return makeCallback(Payload.create(Option.CHANGE_OPTIONS, time, target));
     }
 
     private final InlineKeyboardMarkup menuKeyboardSubscribed = InlineKeyboardUtils.getColumnInlineKeyboard(
@@ -229,6 +214,10 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
     ) {
         private static Payload create(Option option) {
             return new Payload(option, null, null, null);
+        }
+
+        private static Payload create(Option option, LocalTime time, int indent) {
+            return new Payload(option, time.getHour(), time.getMinute(), indent);
         }
     }
 

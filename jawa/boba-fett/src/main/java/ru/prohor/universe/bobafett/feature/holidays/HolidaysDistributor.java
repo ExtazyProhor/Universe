@@ -1,6 +1,5 @@
 package ru.prohor.universe.bobafett.feature.holidays;
 
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
@@ -10,6 +9,7 @@ import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

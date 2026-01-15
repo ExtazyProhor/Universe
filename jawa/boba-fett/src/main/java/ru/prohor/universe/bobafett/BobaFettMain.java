@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import ru.prohor.universe.jocasta.jackson.core.JacksonJocastaCoreConfiguration;
-import ru.prohor.universe.jocasta.jackson.jodatime.JacksonJodaTimeConfiguration;
 import ru.prohor.universe.jocasta.jackson.morphia.JacksonMorphiaConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
@@ -17,7 +16,6 @@ import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
 @Import({
         JocastaAutoConfiguration.class,
         HolocronConfiguration.class,
-        JacksonJodaTimeConfiguration.class,
         JacksonMorphiaConfiguration.class,
         JacksonJocastaCoreConfiguration.class,
 })

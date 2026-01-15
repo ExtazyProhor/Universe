@@ -1,8 +1,8 @@
 package ru.prohor.universe.bobafett.feature.holidays;
 
-import org.joda.time.LocalDate;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface HolidaysMessageFormatter {

@@ -1,7 +1,6 @@
 package ru.prohor.universe.bobafett.feature.holidays.callback;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import ru.prohor.universe.bobafett.callback.Callbacks;
@@ -15,6 +14,8 @@ import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
+
+import java.time.LocalDate;
 
 @Service
 public class GetHolidaysForCustomDateCallback extends JsonCallbackHandler<Payload> {
@@ -77,14 +78,14 @@ public class GetHolidaysForCustomDateCallback extends JsonCallbackHandler<Payloa
                 messageId,
                 holidaysService.getHolidaysMessageForDate(
                         date,
-                        LocalDate.now(DateTimeUtil.zoneMoscow()).getYear(),
+                        LocalDate.now(DateTimeUtil.MOSCOW_ZONE_ID).getYear(),
                         distributionDataProvider.findCustomHolidays(customHolidaysRepository, chatId, date)
                 )
         );
     }
 
     private LocalDate fixDate(LocalDate date) {
-        int thisYear = LocalDate.now(DateTimeUtil.zoneMoscow()).getYear();
+        int thisYear = LocalDate.now(DateTimeUtil.MOSCOW_ZONE_ID).getYear();
         if (date.getYear() > thisYear + 1)
             return date.withYear(thisYear + 1);
         if (date.getYear() < thisYear)

@@ -1,11 +1,12 @@
 package ru.prohor.universe.bobafett.distribution;
 
-import org.joda.time.LocalDateTime;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.BobaFettBot;
+import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,11 +24,11 @@ public class Distributor {
 
     @Scheduled(cron = "0 0/15 * * * ?", zone = "Europe/Moscow")
     public void execute() {
-        LocalDateTime now = LocalDateTime.now();
-        int hour = now.getHourOfDay();
-        int minute = now.getMinuteOfHour();
+        LocalTime now = LocalTime.now(DateTimeUtil.MOSCOW_ZONE_ID);
+        int hour = now.getHour();
+        int minute = now.getMinute();
         if (!availableMinutes.contains(minute)) {
-            // TODO log warn
+            // TODO log err
             throw new RuntimeException("Minute value is not available: " + minute);
         }
         tasks.forEach(task -> task.distribute(feedbackExecutor, hour, minute));

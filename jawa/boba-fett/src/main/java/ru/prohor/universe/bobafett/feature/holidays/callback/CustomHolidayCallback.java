@@ -2,7 +2,6 @@ package ru.prohor.universe.bobafett.feature.holidays.callback;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -17,6 +16,7 @@ import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.util.InlineKeyboardUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -81,7 +81,7 @@ public class CustomHolidayCallback extends JsonCallbackHandler<CustomHolidayCall
 
     private void createCustomHoliday(long chatId, int messageId, FeedbackExecutor feedbackExecutor) {
         feedbackExecutor.editMessageText(chooseCustomHolidayDateCallback.createEditMessage(
-                LocalDate.now(DateTimeUtil.zoneMoscow()),
+                LocalDate.now(DateTimeUtil.MOSCOW_ZONE_ID),
                 chatId,
                 messageId
         ));

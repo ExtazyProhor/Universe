@@ -1,6 +1,5 @@
 package ru.prohor.universe.bobafett.feature.holidays;
 
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
@@ -13,6 +12,7 @@ import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilters;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -85,7 +85,7 @@ public class DistributionDataProvider {
             MongoRepository<CustomHoliday> repository,
             Set<Long> forIds
     ) {
-        LocalDate dateTime = LocalDate.now(DateTimeUtil.zoneMoscow()).plusDays(7);
+        LocalDate dateTime = LocalDate.now(DateTimeUtil.MOSCOW_ZONE_ID).plusDays(7);
         MongoFilter<CustomHoliday> filter = MongoFilters.and(
                 makeFilterForLocalDate(dateTime),
                 MongoFilters.in(CUSTOM_HOLIDAY_CHAT_ID_KEY, forIds)
@@ -93,13 +93,9 @@ public class DistributionDataProvider {
         return repository.find(filter);
     }
 
-    private boolean isHolidaySuitableForDate(CustomHoliday holiday, LocalDate date) {
-        return holiday.month() == date.getMonthOfYear() && holiday.dayOfMonth() == date.getDayOfMonth();
-    }
-
     private MongoFilter<CustomHoliday> makeFilterForLocalDate(LocalDate date) {
         return MongoFilters.and(
-                MongoFilters.eq(MONTH_KEY, date.getMonthOfYear()),
+                MongoFilters.eq(MONTH_KEY, date.getMonthValue()),
                 MongoFilters.eq(DAY_KEY, date.getDayOfMonth())
         );
     }

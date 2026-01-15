@@ -1,7 +1,6 @@
 package ru.prohor.universe.bobafett.feature.holidays.callback;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
@@ -15,6 +14,8 @@ import ru.prohor.universe.bobafett.status.Statuses;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
+
+import java.time.LocalDate;
 
 @Service
 public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload> {

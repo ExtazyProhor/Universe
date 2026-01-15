@@ -2,7 +2,6 @@ package ru.prohor.universe.bobafett.feature.holidays;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
@@ -10,6 +9,7 @@ import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -18,7 +18,7 @@ public class RegularHolidaysProviderImpl implements RegularHolidaysProvider {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Path holidaysDir;
 
-    private int lastYear = LocalDate.now(DateTimeUtil.zoneMoscow()).getYear();
+    private int lastYear = LocalDate.now(DateTimeUtil.MOSCOW_ZONE_ID).getYear();
     private HolidaysYear current;
     private HolidaysYear next;
 
@@ -44,7 +44,7 @@ public class RegularHolidaysProviderImpl implements RegularHolidaysProvider {
 
     private synchronized List<String> getFromSource(HolidaysYear sourceYear, LocalDate date) {
         return sourceYear
-                .month(date.getMonthOfYear() - 1)
+                .month(date.getMonthValue() - 1)
                 .day(date.getDayOfMonth() - 1)
                 .holidays();
     }
