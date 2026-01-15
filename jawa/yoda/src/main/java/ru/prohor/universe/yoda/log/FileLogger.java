@@ -1,6 +1,5 @@
 package ru.prohor.universe.yoda.log;
 
-import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 
@@ -9,6 +8,7 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.Instant;
 
 public class FileLogger {
     private final Path path;

@@ -33,6 +33,9 @@ public class DateTimeUtil {
     private static final java.time.format.DateTimeFormatter JAVA_DIGIT_FORMATTER = java.time.format.DateTimeFormatter
             .ofPattern("dd.MM.yyyy, HH:mm:ss")
             .withZone(MOSCOW_ZONE_ID);
+    private static final java.time.format.DateTimeFormatter JAVA_DIGIT_FORMATTER2 = java.time.format.DateTimeFormatter
+            .ofPattern("HH:mm:ss dd-MM-yyyy")
+            .withZone(MOSCOW_ZONE_ID);
     private static final DateTimeFormatter RUSSIAN_FULL_FORMATTER = DateTimeFormat
             .forPattern("d MMMM yyyy")
             .withZone(MOSCOW_ZONE)
@@ -118,6 +121,14 @@ public class DateTimeUtil {
     @Nonnull
     public static String toDigitsString(@Nonnull Instant instant) {
         return instant.toString(DIGIT_FORMATTER);
+    }
+
+    /**
+     * for example, <code>15:33:42 16-12-2025</code>
+     */
+    @Nonnull
+    public static String toDigitsString(@Nonnull java.time.Instant instant) {
+        return JAVA_DIGIT_FORMATTER2.format(instant);
     }
 
     @Nonnull

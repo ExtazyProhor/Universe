@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import jakarta.servlet.http.HttpServletRequest
-import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -22,6 +21,7 @@ import ru.prohor.universe.venator.webhook.service.IpValidationService
 import ru.prohor.universe.venator.webhook.service.SignatureService
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
+import java.time.Instant
 
 @RestController
 @RequestMapping("/webhook")
@@ -90,7 +90,7 @@ class WebhookController(
     private fun onSuccess(payload: WebhookPayload): ResponseEntity<ApiResponse> {
         val login = payload.sender.login
         val commit = payload.headCommit.message
-        val datetime = DateTimeUtil.toDigitsString(DateTime(payload.repository.pushedAt * 1000).toInstant())
+        val datetime = DateTimeUtil.toDigitsString(Instant.ofEpochSecond(payload.repository.pushedAt * 1000))
         notifier.success("$login pushed new changes to Universe at\n${datetime}.\nLast commit is:\n\n*$commit*")
         val response = ApiResponse("Webhook accepted")
         return ResponseEntity.status(HttpStatus.OK).body(response)
