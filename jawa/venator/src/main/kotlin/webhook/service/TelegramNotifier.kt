@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import ru.prohor.universe.venator.shared.Notifier
-import ru.prohor.universe.venator.telegram.VenatorBot
+import ru.prohor.universe.venator.shared.VenatorBot
 
 @Service
 class TelegramNotifier(
