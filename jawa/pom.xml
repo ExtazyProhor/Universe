@@ -317,11 +317,6 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>jocasta-jackson-joda-time</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
                 <artifactId>jocasta-jackson-morphia</artifactId>
                 <version>final</version>
             </dependency>

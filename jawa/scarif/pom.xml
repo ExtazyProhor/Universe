@@ -28,10 +28,6 @@
             <artifactId>scarif-jwt-provider</artifactId>
         </dependency>
         <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-jackson-joda-time</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
