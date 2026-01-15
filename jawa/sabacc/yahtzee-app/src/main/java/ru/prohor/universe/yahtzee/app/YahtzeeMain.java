@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.prohor.universe.hyperspace.jwt.ScarifJwtConfiguration;
 import ru.prohor.universe.jocasta.jackson.jodatime.JacksonJocastaCoreConfiguration;
-import ru.prohor.universe.jocasta.jackson.jodatime.JacksonJodaTimeConfiguration;
 import ru.prohor.universe.jocasta.jackson.morphia.JacksonMorphiaConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
@@ -19,7 +18,6 @@ import ru.prohor.universe.yahtzee.offline.YahtzeeOfflineConfiguration;
         JocastaAutoConfiguration.class,
         HolocronConfiguration.class,
         ScarifJwtConfiguration.class,
-        JacksonJodaTimeConfiguration.class,
         JacksonMorphiaConfiguration.class,
         JacksonJocastaCoreConfiguration.class,
 
