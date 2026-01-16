@@ -12,8 +12,10 @@ import java.time.Period;
 import java.util.List;
 
 public class ChangeDateKeyboardUtils {
-    private static final List<String> DAY_ROW_TEXT = List.of("-5 дней", "-1 день", "+1 день", "+5 дней");
-    private static final List<String> MONTH_ROW_TEXT = List.of("-3 месяца", "-1 месяц", "+1 месяц", "+3 месяца");
+    private static final List<String> MAJOR_MONTH_ROW_TEXT = List.of("-3 месяца", "+3 месяца");
+    private static final List<String> MINOR_MONTH_ROW_TEXT = List.of("-1 месяц", "+1 месяц");
+    private static final List<String> MAJOR_DAY_ROW_TEXT = List.of("-5 дней", "+5 дней");
+    private static final List<String> MINOR_DAY_ROW_TEXT = List.of("-1 день", "+1 день");
     private static final List<String> ACCEPT_ROW = List.of("Выбрать эту дату");
 
     public static InlineKeyboardMarkup makeKeyboardForDate(
@@ -26,24 +28,30 @@ public class ChangeDateKeyboardUtils {
         return InlineKeyboardUtils.getInlineKeyboard(
                 List.of(
                         List.of(dateFormatted),
-                        DAY_ROW_TEXT,
-                        MONTH_ROW_TEXT,
+                        MAJOR_MONTH_ROW_TEXT,
+                        MINOR_MONTH_ROW_TEXT,
+                        MAJOR_DAY_ROW_TEXT,
+                        MINOR_DAY_ROW_TEXT,
                         ACCEPT_ROW,
                         List.of(cancelText)
                 ),
                 List.of(
                         List.of(Callbacks.BLANK),
                         List.of(
+                                change(date, TimeUnit.MONTH, 3, false, callbackMaker),
+                                change(date, TimeUnit.MONTH, 3, true, callbackMaker)
+                        ),
+                        List.of(
+                                change(date, TimeUnit.MONTH, 1, false, callbackMaker),
+                                change(date, TimeUnit.MONTH, 1, true, callbackMaker)
+                        ),
+                        List.of(
                                 change(date, TimeUnit.DAY, 5, false, callbackMaker),
-                                change(date, TimeUnit.DAY, 1, false, callbackMaker),
-                                change(date, TimeUnit.DAY, 1, true, callbackMaker),
                                 change(date, TimeUnit.DAY, 5, true, callbackMaker)
                         ),
                         List.of(
-                                change(date, TimeUnit.MONTH, 3, false, callbackMaker),
-                                change(date, TimeUnit.MONTH, 1, false, callbackMaker),
-                                change(date, TimeUnit.MONTH, 1, true, callbackMaker),
-                                change(date, TimeUnit.MONTH, 3, true, callbackMaker)
+                                change(date, TimeUnit.DAY, 1, false, callbackMaker),
+                                change(date, TimeUnit.DAY, 1, true, callbackMaker)
                         ),
                         List.of(apply(date, callbackMaker)),
                         List.of(cancel(callbackMaker))

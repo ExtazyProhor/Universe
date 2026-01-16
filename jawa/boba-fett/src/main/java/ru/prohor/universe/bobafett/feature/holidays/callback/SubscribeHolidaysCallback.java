@@ -24,7 +24,9 @@ import java.util.List;
 public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHolidaysCallback.Payload> {
     private static final String SETTINGS_MESSAGE =
             "Выберите время ежедневной рассылки и день праздников, относительно даты рассылки";
-    private static final List<String> TIME_TEXT = List.of("-1:00", "-0:15", "+0:15", "+1:00");
+    private static final List<String> MAJOR_HOURS_TEXT = List.of("-6:00", "+6:00");
+    private static final List<String> MINOR_HOURS_TEXT = List.of("-1:00", "+1:00");
+    private static final List<String> MINUTES_TEXT = List.of("-0:15", "+0:15");
     private static final String[] INDENT_TEXT = {"того же дня", "следующего дня", "после-следующего дня"};
     private static final int DEFAULT_HOUR = 12;
     private static final int DEFAULT_MINUTE = 0;
@@ -151,7 +153,9 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
         return InlineKeyboardUtils.getInlineKeyboard(
                 List.of(
                         List.of("Установить время: " + DateTimeUtil.timeWithoutMillis(time)),
-                        TIME_TEXT,
+                        MAJOR_HOURS_TEXT,
+                        MINOR_HOURS_TEXT,
+                        MINUTES_TEXT,
                         List.of("тот же день " + indentText(indent, 0)),
                         List.of("день после " + indentText(indent, 1)),
                         List.of("через день " + indentText(indent, 2)),
@@ -159,12 +163,9 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
                 ),
                 List.of(
                         List.of(Callbacks.BLANK),
-                        List.of(
-                                time(time.minusHours(1), indent),
-                                time(time.minusMinutes(15), indent),
-                                time(time.plusMinutes(15), indent),
-                                time(time.plusHours(1), indent)
-                        ),
+                        makeTimeRow(time.minusHours(6), time.plusHours(6), indent),
+                        makeTimeRow(time.minusHours(1), time.plusHours(1), indent),
+                        makeTimeRow(time.minusMinutes(15), time.plusMinutes(15), indent),
                         List.of(indent(time, indent, 0)),
                         List.of(indent(time, indent, 1)),
                         List.of(indent(time, indent, 2)),
@@ -175,6 +176,10 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
 
     private String indentText(int indent, int target) {
         return indent == target ? "✅" : "◽";
+    }
+
+    private List<String> makeTimeRow(LocalTime time1, LocalTime time2, int indent) {
+        return List.of(time(time1, indent), time(time2, indent));
     }
 
     private String time(LocalTime time, int indent) {

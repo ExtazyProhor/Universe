@@ -52,12 +52,7 @@ public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload
             }
             case CHANGE_DATE -> {
                 LocalDate date = ChangeDateKeyboardUtils.calculateChangedDate(payload).withYear(LEAP_YEAR);
-                feedbackExecutor.editMessageText(
-                        chatId,
-                        messageId,
-                        CHOOSE_HOLIDAY_DATE,
-                        keyboard(date)
-                );
+                feedbackExecutor.editMessageText(createEditMessage(date, chatId, messageId));
             }
             case CANCEL -> feedbackExecutor.editMessageText(chatId, messageId, HOLIDAY_CREATION_CANCELED);
         }
