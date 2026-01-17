@@ -24,6 +24,7 @@ public class MongoClientConfiguration {
             @Value("${universe.jocasta.mongo.read-timeout:#{2000}}") int readTimeout,
             @Value("${universe.jocasta.mongo.host}") String host,
             @Value("${universe.jocasta.mongo.port:#{27017}}") int port,
+            @Value("${universe.jocasta.mongo.replica-set:#{rs0}}") String replicaSetName,
             @Value("${universe.jocasta.mongo.user}") String user,
             @Value("${universe.jocasta.mongo.password}") String password,
             @Value("${universe.jocasta.mongo.database}") String database
@@ -38,9 +39,10 @@ public class MongoClientConfiguration {
                     builder.minSize(minConnections);
                     builder.maxSize(maxConnections);
                 })
-                .applyToClusterSettings(builder -> builder.hosts(
-                        List.of(new ServerAddress(host, port))
-                ))
+                .applyToClusterSettings(builder -> {
+                    builder.hosts(List.of(new ServerAddress(host, port)));
+                    builder.requiredReplicaSetName(replicaSetName);
+                })
                 .uuidRepresentation(UuidRepresentation.STANDARD)
                 .credential(MongoCredential.createCredential(
                         user,
