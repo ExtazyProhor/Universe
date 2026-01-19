@@ -16,6 +16,15 @@ class TelegramNotifier(
         send("\u274c $message")
     }
 
+    override fun failure(message: String, fileContent: String, fileName: String) {
+        bot.feedbackExecutor.sendDocument(
+            notifiableChatId,
+            fileContent,
+            fileName,
+            message
+        )
+    }
+
     override fun info(message: String) {
         send(message)
     }

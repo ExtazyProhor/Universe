@@ -68,7 +68,11 @@ class RepositoryPullerWebhookAction(
                         }
                         "${module.modulePath}\n\n```\n$failedTests\n```"
                     }
-                notifier.failure("${testResult.failedModules.size} modules failed:\n$verboseError")
+                notifier.failure(
+                    message = "${testResult.failedModules.size} modules failed",
+                    fileContent = verboseError,
+                    fileName = "test-report.md"
+                )
             }
         }
     }
