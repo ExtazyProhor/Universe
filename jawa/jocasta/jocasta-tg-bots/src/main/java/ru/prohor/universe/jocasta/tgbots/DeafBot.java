@@ -1,6 +1,7 @@
 package ru.prohor.universe.jocasta.tgbots;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -47,6 +48,18 @@ public abstract class DeafBot extends TelegramLongPollingBot {
                             execute(message);
                         }),
                         message.getChatId()
+                );
+            }
+
+            @Override
+            public synchronized void sendDocument(SendDocument document) {
+                executeSending(
+                        () -> execute(document),
+                        Opt.of(chatId -> {
+                            document.setChatId(chatId);
+                            execute(document);
+                        }),
+                        document.getChatId()
                 );
             }
         };
