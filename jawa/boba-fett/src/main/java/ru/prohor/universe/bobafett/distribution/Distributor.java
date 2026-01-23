@@ -1,5 +1,7 @@
 package ru.prohor.universe.bobafett.distribution;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.BobaFettBot;
@@ -13,6 +15,8 @@ import java.util.Set;
 
 @Service
 public class Distributor {
+    private static final Logger log = LoggerFactory.getLogger(Distributor.class);
+
     private final Set<Integer> availableMinutes = new HashSet<>(Set.of(0, 15, 30, 45));
     private final List<DistributionTask> tasks;
     private final FeedbackExecutor feedbackExecutor;
@@ -28,8 +32,8 @@ public class Distributor {
         int hour = now.getHour();
         int minute = now.getMinute();
         if (!availableMinutes.contains(minute)) {
-            // TODO log err
-            throw new RuntimeException("Minute value is not available: " + minute);
+            log.error("invalid minute value: '{}'", minute);
+            return;
         }
         tasks.forEach(task -> task.distribute(feedbackExecutor, hour, minute));
     }

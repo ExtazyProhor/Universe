@@ -1,24 +1,22 @@
 package ru.prohor.universe.bobafett.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
+import ru.prohor.universe.bobafett.service.ObjectsEncoder;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
 @Service
 public class UnknownInputHandlers {
     private static final Logger log = LoggerFactory.getLogger(UnknownInputHandlers.class);
 
-    private final ObjectMapper objectMapper;
+    private final ObjectsEncoder objectsEncoder;
 
-    public UnknownInputHandlers(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public UnknownInputHandlers(ObjectsEncoder objectsEncoder) {
+        this.objectsEncoder = objectsEncoder;
     }
 
     public boolean handleUnknownCommand(Message message, String command, FeedbackExecutor feedbackExecutor) {
@@ -44,12 +42,7 @@ public class UnknownInputHandlers {
             String statusKey,
             @SuppressWarnings("unused") FeedbackExecutor feedbackExecutor
     ) {
-        log.error("unknown status '{}'. Full update - base64('{}')", statusKey, encodeUpdate(update));
+        log.error("unknown status '{}'. Full update - base64('{}')", statusKey, objectsEncoder.encode(update));
         return false;
-    }
-
-    private String encodeUpdate(Update update) {
-        String json = Sneaky.execute(() -> objectMapper.writeValueAsString(update));
-        return Base64.encodeBase64String(json.getBytes());
     }
 }
