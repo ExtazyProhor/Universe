@@ -20,10 +20,9 @@ public class SubscribeHolidaysInitCallback implements CallbackHandler {
     }
 
     @Override
-    public boolean handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
+    public void handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
         subscribeHolidaysCallback.sendMenu(chatId, messageId, feedbackExecutor);
-        return false;
     }
 }

@@ -9,11 +9,9 @@ import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
 public class BlankCallback implements CallbackHandler {
     @Override
     public String callback() {
-        return "blank";
+        return Callbacks.BLANK;
     }
 
     @Override
-    public boolean handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
-        return false;
-    }
+    public void handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {}
 }

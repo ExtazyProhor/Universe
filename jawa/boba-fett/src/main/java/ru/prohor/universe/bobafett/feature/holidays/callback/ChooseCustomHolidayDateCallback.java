@@ -36,7 +36,7 @@ public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload
     }
 
     @Override
-    protected boolean handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
+    protected void handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
 
@@ -56,7 +56,6 @@ public class ChooseCustomHolidayDateCallback extends JsonCallbackHandler<Payload
             }
             case CANCEL -> feedbackExecutor.editMessageText(chatId, messageId, HOLIDAY_CREATION_CANCELED);
         }
-        return false;
     }
 
     public EditMessageText createEditMessage(LocalDate date, long chatId, int messageId) {

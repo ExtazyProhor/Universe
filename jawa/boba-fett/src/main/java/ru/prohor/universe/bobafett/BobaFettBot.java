@@ -2,10 +2,8 @@ package ru.prohor.universe.bobafett;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.bobafett.command.StartCommand;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
@@ -41,16 +39,6 @@ public class BobaFettBot extends SimpleBot {
     @Override
     public void onSendingException(Exception e, long chatId) {
         log.error("sending exception", e);
-    }
-
-    @Override
-    public void onMessage(Message message) {
-        log.trace("unknown message: '{}'", objectsEncoder.encode(message));
-    }
-
-    @Override
-    public void onCallback(CallbackQuery callbackQuery) {
-        log.trace("unknown callback: '{}'", objectsEncoder.encode(callbackQuery));
     }
 
     @Override

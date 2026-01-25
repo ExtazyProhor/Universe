@@ -10,7 +10,7 @@ import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 public class CancelCommandHandler implements CommandHandler {
     @Override
     public String command() {
-        return "/cancel";
+        return Commands.CANCEL;
     }
 
     @Override
@@ -19,8 +19,7 @@ public class CancelCommandHandler implements CommandHandler {
     }
 
     @Override
-    public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
+    public void handle(Message message, FeedbackExecutor feedbackExecutor) {
         feedbackExecutor.sendMessage(message.getChatId(), "Отменять нечего");
-        return false;
     }
 }

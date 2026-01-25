@@ -53,13 +53,12 @@ public class HolidaysCommand implements CommandHandler {
     }
 
     @Override
-    public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
+    public void handle(Message message, FeedbackExecutor feedbackExecutor) {
         SendMessage sendMessage = SendMessage.builder()
                 .text(START_MESSAGE)
                 .replyMarkup(keyboard)
                 .chatId(message.getChatId())
                 .build();
         feedbackExecutor.sendMessage(sendMessage);
-        return false;
     }
 }

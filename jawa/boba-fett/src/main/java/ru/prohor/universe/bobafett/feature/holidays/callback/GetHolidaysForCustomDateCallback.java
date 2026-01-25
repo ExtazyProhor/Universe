@@ -39,7 +39,7 @@ public class GetHolidaysForCustomDateCallback extends JsonCallbackHandler<Payloa
     }
 
     @Override
-    protected boolean handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
+    protected void handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
 
@@ -55,7 +55,6 @@ public class GetHolidaysForCustomDateCallback extends JsonCallbackHandler<Payloa
                     "Если заходите узнать праздники на определенную дату, используйте команду " + Commands.HOLIDAYS
             );
         }
-        return false;
     }
 
     public void editMessageByChooseHolidaysDate(

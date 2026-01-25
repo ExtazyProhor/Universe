@@ -33,11 +33,10 @@ public class ImportHolidaysInitCallback implements CallbackHandler {
     }
 
     @Override
-    public boolean handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
+    public void handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         UserStatus status = new UserStatus(waitImportChatId.key(), Opt.empty());
         bobaFettUserService.setStatus(chatId, status);
         feedbackExecutor.editMessageText(chatId, message.getMessageId(), ID_REQUEST_MESSAGE);
-        return false;
     }
 }

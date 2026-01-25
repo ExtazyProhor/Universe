@@ -23,13 +23,12 @@ public class CustomHolidayInitCallback implements CallbackHandler {
     }
 
     @Override
-    public boolean handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
+    public void handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
         feedbackExecutor.editMessageText(
                 message.getChatId(),
                 message.getMessageId(),
                 TEXT,
                 customHolidayCallback.keyboard
         );
-        return false;
     }
 }

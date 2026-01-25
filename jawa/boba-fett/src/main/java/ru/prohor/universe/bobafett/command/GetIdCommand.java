@@ -19,9 +19,8 @@ public class GetIdCommand implements CommandHandler {
     }
 
     @Override
-    public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
+    public void handle(Message message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         feedbackExecutor.sendMessage(chatId, String.valueOf(chatId));
-        return false;
     }
 }

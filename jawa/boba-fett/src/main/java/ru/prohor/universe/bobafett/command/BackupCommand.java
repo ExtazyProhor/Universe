@@ -39,10 +39,10 @@ public class BackupCommand implements CommandHandler {
     }
 
     @Override
-    public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
+    public void handle(Message message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         if (!adminChatsIds.contains(chatId))
-            return false;
+            return;
 
         Map<String, List<?>> backup = mongoForceBackupService.backup();
         Opt<String> json = Opt.tryOrNull(() -> writer.writeValueAsString(backup))
@@ -53,6 +53,5 @@ public class BackupCommand implements CommandHandler {
                 .parseMode(ParseMode.MARKDOWNV2)
                 .build();
         feedbackExecutor.sendMessage(sendMessage);
-        return false;
     }
 }

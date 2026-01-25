@@ -46,7 +46,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
     }
 
     @Override
-    protected boolean handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
+    protected void handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
         switch (payload.option) {
@@ -91,7 +91,6 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
                 );
             }
         }
-        return false;
     }
 
     public void sendMenu(long chatId, int messageId, FeedbackExecutor feedbackExecutor) {

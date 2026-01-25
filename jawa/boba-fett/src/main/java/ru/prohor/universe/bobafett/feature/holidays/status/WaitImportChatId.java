@@ -16,6 +16,7 @@ import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTransaction;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
+import ru.prohor.universe.jocasta.tgbots.api.status.StatusFlow;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
 
 import java.util.List;
@@ -54,16 +55,16 @@ public class WaitImportChatId implements StatusHandler<String> {
     }
 
     @Override
-    public boolean handle(Update update, FeedbackExecutor feedbackExecutor) {
+    public StatusFlow handle(Update update, FeedbackExecutor feedbackExecutor) {
         if (!update.hasMessage() || !update.getMessage().hasText()) {
-            return true;
+            return StatusFlow.CONTINUE;
         }
         long chatId = update.getMessage().getChatId();
         String importChatId = update.getMessage().getText();
 
         if (importChatId.equals(Commands.CANCEL)) {
             feedbackExecutor.sendMessage(chatId, "Импорт праздников отменен");
-            return false;
+            return StatusFlow.EXIT;
         }
 
         long importChatIdLong;
@@ -72,7 +73,7 @@ public class WaitImportChatId implements StatusHandler<String> {
         } catch (NumberFormatException e) {
             bobaFettUserService.setStatus(chatId, new UserStatus(key(), Opt.empty()));
             feedbackExecutor.sendMessage(chatId, ILLEGAL_ID_FORMAT);
-            return false;
+            return StatusFlow.EXIT;
         }
 
         mongoTransactionService.withTransaction(tx -> {
@@ -83,7 +84,7 @@ public class WaitImportChatId implements StatusHandler<String> {
             }
             feedbackExecutor.sendMessage(chatId, importHolidays(tx, importChatIdLong, chatId));
         });
-        return false;
+        return StatusFlow.EXIT;
     }
 
     private String importHolidays(MongoTransaction tx, long sourceChatId, long chatId) {

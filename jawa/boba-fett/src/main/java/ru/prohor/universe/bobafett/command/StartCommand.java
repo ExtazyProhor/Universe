@@ -22,12 +22,10 @@ public class StartCommand implements CommandHandler {
     }
 
     @Override
-    public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
+    public void handle(Message message, FeedbackExecutor feedbackExecutor) {
         Chat chat = message.getChat();
         sendGreeting(chat, feedbackExecutor);
         bobaFettUserService.createIfNotExists(chat.getId(), () -> BobaFettUser.create(chat));
-
-        return false;
     }
 
     public void sendGreeting(Chat chat, FeedbackExecutor feedbackExecutor) {

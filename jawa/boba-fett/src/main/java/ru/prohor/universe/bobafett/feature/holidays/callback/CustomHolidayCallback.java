@@ -60,7 +60,7 @@ public class CustomHolidayCallback extends JsonCallbackHandler<CustomHolidayCall
     );
 
     @Override
-    protected boolean handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
+    protected void handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
         switch (payload.option) {
@@ -72,7 +72,6 @@ public class CustomHolidayCallback extends JsonCallbackHandler<CustomHolidayCall
             case SCROLL_DELETE -> deleteCustomHoliday(payload.nextPage, chatId, messageId, feedbackExecutor);
             case DELETE_BY_ID -> deleteCustomHolidayById(payload.customHolidayId, chatId, messageId, feedbackExecutor);
         }
-        return false;
     }
 
     private static String getCustomHolidayDescription(CustomHoliday holiday) {

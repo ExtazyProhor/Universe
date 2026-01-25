@@ -22,14 +22,12 @@ public class CommandsList implements CommandHandler {
 
     @Override
     public String command() {
-        return "/commands";
+        return Commands.COMMANDS;
     }
 
     @Override
-    public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
-        if (commandsListMessage.isEmpty())
-            return false;
-        feedbackExecutor.sendMessage(message.getChatId(), commandsListMessage);
-        return false;
+    public void handle(Message message, FeedbackExecutor feedbackExecutor) {
+        if (!commandsListMessage.isEmpty())
+            feedbackExecutor.sendMessage(message.getChatId(), commandsListMessage);
     }
 }

@@ -36,13 +36,12 @@ public class NotifyCommand implements CommandHandler {
     }
 
     @Override
-    public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
+    public void handle(Message message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         if (!adminChatsIds.contains(chatId))
-            return false;
+            return;
 
         bobaFettUserService.setStatus(chatId, new UserStatus(waitNotifyMessage.key(), Opt.empty()));
         feedbackExecutor.sendMessage(chatId, "На первой строчке chatId через запятую, все остальное - сообщение");
-        return false;
     }
 }

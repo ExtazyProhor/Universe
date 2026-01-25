@@ -40,7 +40,7 @@ public class GetHolidaysCallback extends JsonCallbackHandler<GetHolidaysCallback
     }
 
     @Override
-    protected boolean handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
+    protected void handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
         LocalDate today = LocalDate.now(DateTimeUtil.MOSCOW_ZONE_ID);
@@ -55,7 +55,6 @@ public class GetHolidaysCallback extends JsonCallbackHandler<GetHolidaysCallback
                     feedbackExecutor
             );
         }
-        return false;
     }
 
     public final InlineKeyboardMarkup keyboard = InlineKeyboardUtils.getColumnInlineKeyboard(

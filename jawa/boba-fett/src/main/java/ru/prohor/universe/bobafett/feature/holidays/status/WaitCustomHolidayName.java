@@ -6,6 +6,7 @@ import ru.prohor.universe.bobafett.command.Commands;
 import ru.prohor.universe.bobafett.feature.holidays.CustomHolidaysCreator;
 import ru.prohor.universe.bobafett.status.Statuses;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
+import ru.prohor.universe.jocasta.tgbots.api.status.StatusFlow;
 import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusHandler;
 
 import java.time.LocalDate;
@@ -24,17 +25,17 @@ public class WaitCustomHolidayName implements ValuedStatusHandler<String, String
     }
 
     @Override
-    public boolean handle(String value, Update update, FeedbackExecutor feedbackExecutor) {
+    public StatusFlow handle(String value, Update update, FeedbackExecutor feedbackExecutor) {
         if (!update.hasMessage() || !update.getMessage().hasText()) {
-            return true;
+            return StatusFlow.CONTINUE;
         }
         long chatId = update.getMessage().getChatId();
         String customHolidayName = update.getMessage().getText();
         if (customHolidayName.startsWith("/"))
-            return true;
+            return StatusFlow.CONTINUE;
         if (customHolidayName.equals(Commands.CANCEL)) {
             feedbackExecutor.sendMessage(chatId, "Создание собственного праздника отменено");
-            return false;
+            return StatusFlow.EXIT;
         }
 
         LocalDate date = LocalDate.parse(value);
@@ -46,6 +47,6 @@ public class WaitCustomHolidayName implements ValuedStatusHandler<String, String
                         customHolidayName
                 )
         );
-        return false;
+        return StatusFlow.EXIT;
     }
 }
