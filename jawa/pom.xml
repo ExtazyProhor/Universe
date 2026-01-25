@@ -348,6 +348,36 @@
                 <artifactId>jocasta-morphia-configuration</artifactId>
                 <version>final</version>
             </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>boba-fett</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>sabacc</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>scarif</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>venator</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>yoda</artifactId>
+                <version>final</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
