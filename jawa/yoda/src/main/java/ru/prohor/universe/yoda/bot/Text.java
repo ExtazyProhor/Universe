@@ -12,7 +12,7 @@ public class Text {
 
     /**
      * Описания для команд (используется в команде /help
-     * {@link ru.prohor.universe.yoda.bot.handlers.command.HelpCommandHandler})
+     * {@link ru.prohor.universe.yoda.bot.handlers.command.HelpCommandHandler HelpCommandHandler})
      */
     public static class CommandDescriptions {
         public static String start() {
@@ -25,14 +25,18 @@ public class Text {
     }
 
     /**
-     * Ответы на вызовы команд ({@link ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler})
+     * Ответы на вызовы команд ({@link ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler CommandHandler})
      */
     public static class CommandReplies {
+        public static String nonCommand(String text) {
+            return format("Я не знаю что делать с сообщением \"{}\"", text);
+        }
+
         public static String start() {
             return "Приветствую! Помогать с занятиями вам буду я";
         }
 
-        public static String unknown()  {
+        public static String unknown() {
             return "Неизвестная команда. Список доступных команд - /help";
         }
     }

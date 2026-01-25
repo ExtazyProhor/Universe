@@ -20,8 +20,7 @@ public class StartCommandHandler implements CommandHandler {
     }
 
     @Override
-    public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
+    public void handle(Message message, FeedbackExecutor feedbackExecutor) {
         feedbackExecutor.sendMessage(message.getChatId(), Text.CommandReplies.start());
-        return false;
     }
 }

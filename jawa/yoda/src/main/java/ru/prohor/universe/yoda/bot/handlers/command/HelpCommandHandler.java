@@ -32,13 +32,12 @@ public class HelpCommandHandler implements CommandHandler {
     }
 
     @Override
-    public boolean handle(Message message, FeedbackExecutor feedbackExecutor) {
+    public void handle(Message message, FeedbackExecutor feedbackExecutor) {
         feedbackExecutor.sendMessage(
                 message.getChatId(),
                 commandHandlers.stream()
                         .map(cmd -> cmd.command() + " - " + cmd.description())
                         .collect(Collectors.joining("\n")) // TODO
         );
-        return false;
     }
 }
