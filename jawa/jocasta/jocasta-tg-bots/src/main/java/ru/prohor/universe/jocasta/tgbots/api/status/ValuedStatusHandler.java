@@ -9,7 +9,7 @@ public interface ValuedStatusHandler<K, V> extends ActionHandler<K> {
      * @param value            value of status
      * @param update           telegram api update
      * @param feedbackExecutor interface for sending feedback to users
-     * @return a flag indicating whether to continue update processing
+     * @return a {@link StatusFlow status flow} flag indicating whether to continue update processing
      */
-    boolean handle(V value, Update update, FeedbackExecutor feedbackExecutor);
+    StatusFlow handle(V value, Update update, FeedbackExecutor feedbackExecutor);
 }

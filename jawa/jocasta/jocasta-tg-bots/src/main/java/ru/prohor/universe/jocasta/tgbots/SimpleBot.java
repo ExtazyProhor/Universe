@@ -7,12 +7,14 @@ import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.prohor.universe.jocasta.tgbots.api.status.StatusFlow;
 import ru.prohor.universe.jocasta.tgbots.support.FeatureSupport;
+import ru.prohor.universe.jocasta.tgbots.support.StatusSupport;
 
 public abstract class SimpleBot extends DeafBot {
     private final FeatureSupport<Message> commandSupport;
     private final FeatureSupport<CallbackQuery> callbackSupport;
-    private final FeatureSupport<Update> statusSupport;
+    private final StatusSupport statusSupport;
 
     protected SimpleBot(BotSettings settings) {
         super(settings.auth);
@@ -22,10 +24,6 @@ public abstract class SimpleBot extends DeafBot {
     }
 
     public abstract void onHandlingException(Exception e);
-
-    public abstract void onMessage(Message message);
-
-    public abstract void onCallback(CallbackQuery callbackQuery);
 
     public abstract void onBotAddedToChat(long chatId, Chat chat);
 
@@ -38,7 +36,7 @@ public abstract class SimpleBot extends DeafBot {
     @Override
     public final void onUpdateReceived(Update update) {
         try {
-            if (!statusSupport.handle(update, feedbackExecutor))
+            if (statusSupport.handle(update, feedbackExecutor) == StatusFlow.EXIT)
                 return;
 
             if (update.hasMessage()) {
@@ -50,16 +48,14 @@ public abstract class SimpleBot extends DeafBot {
                     return;
                 }
                 if (message.hasText()) {
-                    if (commandSupport.handle(message, feedbackExecutor))
-                        onMessage(message);
+                    commandSupport.handle(message, feedbackExecutor);
                     return;
                 }
             }
             if (update.hasCallbackQuery()) {
                 CallbackQuery callback = update.getCallbackQuery();
                 suppressTimer(callback);
-                if (callbackSupport.handle(callback, feedbackExecutor))
-                    onCallback(callback);
+                callbackSupport.handle(callback, feedbackExecutor);
                 return;
             }
             if (update.hasMyChatMember()) {

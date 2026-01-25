@@ -19,7 +19,6 @@ public interface CallbackHandler extends ActionHandler<String> {
     /**
      * @param message          telegram api message
      * @param feedbackExecutor interface for sending feedback to users
-     * @return a flag indicating whether to continue update processing
      */
-    boolean handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor);
+    void handle(MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor);
 }

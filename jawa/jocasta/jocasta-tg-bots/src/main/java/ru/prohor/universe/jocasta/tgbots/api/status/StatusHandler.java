@@ -8,7 +8,7 @@ public interface StatusHandler<K> extends ActionHandler<K> {
     /**
      * @param update           telegram api update
      * @param feedbackExecutor interface for sending feedback to users
-     * @return a flag indicating whether to continue update processing
+     * @return a {@link StatusFlow status flow} flag indicating whether to continue update processing
      */
-    boolean handle(Update update, FeedbackExecutor feedbackExecutor);
+    StatusFlow handle(Update update, FeedbackExecutor feedbackExecutor);
 }

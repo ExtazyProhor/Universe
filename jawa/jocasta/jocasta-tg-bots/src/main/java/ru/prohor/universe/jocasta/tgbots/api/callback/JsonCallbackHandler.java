@@ -41,9 +41,8 @@ public abstract class JsonCallbackHandler<T> implements ActionHandler<String> {
      * @param payload          callback payload
      * @param message          telegram api message
      * @param feedbackExecutor interface for sending feedback to users
-     * @return a flag indicating whether to continue update processing
      */
-    protected abstract boolean handle(T payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor);
+    protected abstract void handle(T payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor);
 
     public final String makeCallback(T payload) {
         String payloadString = Sneaky.execute(() -> objectMapper.writeValueAsString(payload));
@@ -58,15 +57,15 @@ public abstract class JsonCallbackHandler<T> implements ActionHandler<String> {
         );
     }
 
-    public final boolean handle(
+    public final void handle(
             String payloadString,
             ObjectMapper objectMapper,
             MaybeInaccessibleMessage message,
             FeedbackExecutor feedbackExecutor
     ) {
-        return Sneaky.execute(() -> {
+        Sneaky.execute(() -> {
             T payload = objectMapper.readValue(payloadString, type);
-            return handle(payload, message, feedbackExecutor);
+            handle(payload, message, feedbackExecutor);
         });
     }
 }

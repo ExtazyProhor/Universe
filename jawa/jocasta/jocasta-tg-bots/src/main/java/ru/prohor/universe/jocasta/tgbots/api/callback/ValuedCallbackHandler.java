@@ -21,9 +21,8 @@ public interface ValuedCallbackHandler extends ActionHandler<String> {
      * @param callbackPayload  callback payload
      * @param message          telegram api message
      * @param feedbackExecutor interface for sending feedback to users
-     * @return a flag indicating whether to continue update processing
      */
-    boolean handle(String callbackPayload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor);
+    void handle(String callbackPayload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor);
 
     default String makeCallback(String payload) {
         if (payload.contains("."))

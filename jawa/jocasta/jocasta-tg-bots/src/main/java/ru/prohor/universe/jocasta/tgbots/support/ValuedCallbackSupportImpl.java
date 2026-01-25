@@ -4,9 +4,9 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
-import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.api.ActionHandler;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
+import ru.prohor.universe.jocasta.tgbots.api.UnknownActionKeyHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.ValuedCallbackHandler;
 
@@ -20,9 +20,9 @@ public class ValuedCallbackSupportImpl extends AbstractValuedCallbackSupportImpl
     public ValuedCallbackSupportImpl(
             List<CallbackHandler> handlers,
             List<ValuedCallbackHandler> valuedHandlers,
-            TriFunction<CallbackQuery, String, FeedbackExecutor, Boolean> unknownCallbackHandler
+            UnknownActionKeyHandler<CallbackQuery, String> unknownCallbackPrefixHandler
     ) {
-        super(handlers, unknownCallbackHandler);
+        super(handlers, unknownCallbackPrefixHandler);
         this.valuedHandlers = valuedHandlers.stream().collect(Collectors.toMap(
                 ActionHandler::key,
                 MonoFunction.identity()
@@ -30,14 +30,15 @@ public class ValuedCallbackSupportImpl extends AbstractValuedCallbackSupportImpl
     }
 
     @Override
-    protected Opt<Boolean> handle(
+    protected boolean handle(
             String prefix,
             String payload,
             MaybeInaccessibleMessage message,
             FeedbackExecutor feedbackExecutor
     ) {
-        return Opt.ofNullable(valuedHandlers.get(prefix)).map(
-                handler -> handler.handle(payload, message, feedbackExecutor)
-        );
+        return Opt.ofNullable(valuedHandlers.get(prefix)).map(handler -> {
+            handler.handle(payload, message, feedbackExecutor);
+            return true;
+        }).orElse(false);
     }
 }

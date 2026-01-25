@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.core.functional.TriFunction;
 import ru.prohor.universe.jocasta.tgbots.api.ActionHandler;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
+import ru.prohor.universe.jocasta.tgbots.api.UnknownActionKeyHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.ValuedCallbackHandler;
@@ -25,9 +25,9 @@ public class JsonCallbackSupportImpl extends AbstractValuedCallbackSupportImpl {
             List<ValuedCallbackHandler> valuedHandlers,
             List<JsonCallbackHandler<?>> jsonHandlers,
             ObjectMapper objectMapper,
-            TriFunction<CallbackQuery, String, FeedbackExecutor, Boolean> unknownCallbackHandler
+            UnknownActionKeyHandler<CallbackQuery, String> unknownCallbackPrefixHandler
     ) {
-        super(handlers, unknownCallbackHandler);
+        super(handlers, unknownCallbackPrefixHandler);
         Map<String, Class<?>> duplicates = new HashMap<>();
         this.valuedHandlers = new HashMap<>();
         this.jsonHandlers = new HashMap<>();
@@ -56,18 +56,22 @@ public class JsonCallbackSupportImpl extends AbstractValuedCallbackSupportImpl {
     }
 
     @Override
-    protected Opt<Boolean> handle(
+    protected boolean handle(
             String prefix,
             String payload,
             MaybeInaccessibleMessage message,
             FeedbackExecutor feedbackExecutor
     ) {
-        Opt<Boolean> valued = Opt.ofNullable(valuedHandlers.get(prefix)).map(
-                handler -> handler.handle(payload, message, feedbackExecutor)
-        );
-        Opt<Boolean> json = Opt.ofNullable(jsonHandlers.get(prefix)).map(
-                handler -> handler.handle(payload, objectMapper, message, feedbackExecutor)
-        );
-        return valued.orElse(json);
+        Opt<ValuedCallbackHandler> valuedHandler = Opt.ofNullable(valuedHandlers.get(prefix));
+        if (valuedHandler.isPresent()) {
+            valuedHandler.get().handle(payload, message, feedbackExecutor);
+            return true;
+        }
+        Opt<JsonCallbackHandler<?>> jsonHandler = Opt.ofNullable(jsonHandlers.get(prefix));
+        if (jsonHandler.isPresent()) {
+            jsonHandler.get().handle(payload, objectMapper, message, feedbackExecutor);
+            return true;
+        }
+        return false;
     }
 }
