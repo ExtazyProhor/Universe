@@ -10,7 +10,6 @@ import ru.prohor.universe.jocasta.tgbots.api.UnknownActionKeyHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.NonCommandMessageHandler;
 import ru.prohor.universe.yoda.bot.YodaBot;
-import ru.prohor.universe.yoda.log.FileLogger;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class TgConfiguration {
     }
 
     @Bean
-    public YodaBot yodaBot(BotSettings settings, FileLogger logger) {
-        return RegisterBot.register(new YodaBot(settings, logger));
+    public YodaBot yodaBot(BotSettings settings) {
+        return RegisterBot.register(new YodaBot(settings));
     }
 }
