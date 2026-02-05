@@ -36,7 +36,8 @@ public class HelpCommandHandler implements CommandHandler {
         feedbackExecutor.sendMessage(
                 message.getChatId(),
                 commandHandlers.stream()
-                        .map(cmd -> cmd.command() + " - " + cmd.description())
+                        .filter(cmd -> cmd.description().isPresent())
+                        .map(cmd -> cmd.command() + " - " + cmd.description().get())
                         .collect(Collectors.joining("\n")) // TODO
         );
     }
