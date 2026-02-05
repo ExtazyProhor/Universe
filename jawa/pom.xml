@@ -355,12 +355,17 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>jocasta</artifactId>
+                <artifactId>kryonet</artifactId>
                 <version>final</version>
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>sabacc</artifactId>
+                <artifactId>yahtzee-app</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>yahtzee-legacy</artifactId>
                 <version>final</version>
             </dependency>
             <dependency>

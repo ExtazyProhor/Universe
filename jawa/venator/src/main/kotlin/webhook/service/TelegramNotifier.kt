@@ -21,7 +21,7 @@ class TelegramNotifier(
             notifiableChatId,
             fileContent,
             fileName,
-            message
+            "\u274c $message"
         )
     }
 

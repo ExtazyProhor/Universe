@@ -20,11 +20,15 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta</artifactId>
+            <artifactId>kryonet</artifactId>
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>sabacc</artifactId>
+            <artifactId>yahtzee-app</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>yahtzee-legacy</artifactId>
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
