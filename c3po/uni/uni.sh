@@ -9,13 +9,16 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-SCRIPT_NAME="$BASE_DIR/$1.sh"
+CMD="$1"
+shift
+
+SCRIPT_NAME="$BASE_DIR/$CMD.sh"
 
 if [ -f "$SCRIPT_NAME" ]; then
   if [ ! -x "$SCRIPT_NAME" ]; then
     chmod +x "$SCRIPT_NAME"
   fi
-  "$SCRIPT_NAME"
+  "$SCRIPT_NAME" "$@"
 else
-  echo "${RED}$1.sh not found${RESET}"
+  echo "${RED}$CMD.sh not found${RESET}"
 fi
