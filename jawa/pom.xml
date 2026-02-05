@@ -380,7 +380,12 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>yoda</artifactId>
+                <artifactId>yoda-bot</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>yoda-app</artifactId>
                 <version>final</version>
             </dependency>
         </dependencies>

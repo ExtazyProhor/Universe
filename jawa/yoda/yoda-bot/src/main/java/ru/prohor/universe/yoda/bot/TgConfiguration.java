@@ -1,4 +1,4 @@
-package ru.prohor.universe.yoda.configuration;
+package ru.prohor.universe.yoda.bot;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +9,6 @@ import ru.prohor.universe.jocasta.tgbots.RegisterBot;
 import ru.prohor.universe.jocasta.tgbots.api.UnknownActionKeyHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 import ru.prohor.universe.jocasta.tgbots.api.comand.NonCommandMessageHandler;
-import ru.prohor.universe.yoda.bot.YodaBot;
 
 import java.util.List;
 

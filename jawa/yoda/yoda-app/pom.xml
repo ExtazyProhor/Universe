@@ -5,16 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.prohor.universe</groupId>
-        <artifactId>jawa</artifactId>
+        <artifactId>yoda</artifactId>
         <version>final</version>
     </parent>
 
-    <artifactId>yoda</artifactId>
-    <packaging>pom</packaging>
-    <name>yoda</name>
+    <artifactId>yoda-app</artifactId>
+    <packaging>jar</packaging>
+    <name>yoda-app</name>
 
-    <modules>
-        <module>yoda-bot</module>
-        <module>yoda-app</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>yoda-bot</artifactId>
+        </dependency>
+    </dependencies>
 </project>

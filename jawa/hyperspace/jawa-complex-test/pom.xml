@@ -40,7 +40,7 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>yoda</artifactId>
+            <artifactId>yoda-app</artifactId>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
