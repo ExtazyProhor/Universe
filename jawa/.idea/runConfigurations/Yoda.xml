@@ -4,7 +4,7 @@
       <env name="HOLOCRON_JSON" value="$HOLOCRON_JSON$" />
       <env name="UNIVERSE_HOME" value="$UNIVERSE_HOME$" />
     </envs>
-    <option name="MAIN_CLASS_NAME" value="ru.prohor.universe.yoda.app.YodaMain" />
+    <option name="MAIN_CLASS_NAME" value="ru.prohor.universe.yoda.app.YodaKt" />
     <module name="yoda-app" />
     <method v="2">
       <option name="Make" enabled="true" />

@@ -19,4 +19,24 @@
             <artifactId>yoda-bot</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>venator</finalName>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>ru.prohor.universe.yoda.app.YodaKt</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
