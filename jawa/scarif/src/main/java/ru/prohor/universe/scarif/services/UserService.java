@@ -18,7 +18,7 @@ public class UserService {
     public UserService(
             SnowflakeIdGenerator snowflakeIdGenerator,
             JpaUsersMethods usersMethods
-            ) {
+    ) {
         this.snowflakeIdGenerator = snowflakeIdGenerator;
         this.usersMethods = usersMethods;
     }
@@ -56,7 +56,7 @@ public class UserService {
         return usersMethods.existsByEmail(email);
     }
 
-    public boolean existsByUsername(String username) {
-        return usersMethods.existsByUsername(username);
+    public boolean existsByEmailOrUsername(String email, String username) {
+        return usersMethods.existsByEmailOrUsername(email, username);
     }
 }

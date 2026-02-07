@@ -11,5 +11,5 @@ public interface JpaUsersMethods extends JpaRepository<UserDto, Long> {
 
     Optional<UserDto> findByUsername(String username);
 
-    boolean existsByUsername(String username);
+    boolean existsByEmailOrUsername(String email, String username);
 }

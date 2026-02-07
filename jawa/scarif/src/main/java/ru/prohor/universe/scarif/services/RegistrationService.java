@@ -1,6 +1,7 @@
 package ru.prohor.universe.scarif.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.scarif.data.user.User;
 
@@ -22,6 +23,7 @@ public class RegistrationService {
         this.userService = userService;
     }
 
+    @Transactional
     public User registerUser(
             String username,
             String email,
@@ -33,11 +35,7 @@ public class RegistrationService {
         if (err.isPresent())
             throw new RegistrationException(new RegistrationClientError(err.get()));
 
-        if (userService.existsByEmail(email))
-            throw new RegistrationException(new RegistrationNonUniqueEmailError(true));
-        if (userService.existsByUsername(username))
-            throw new RegistrationException(new RegistrationNonUniqueUsernameError(true));
-
+        checkUserExistence(email, username);
         User user = userService.createUser(
                 username,
                 email,
@@ -45,6 +43,16 @@ public class RegistrationService {
         );
         userService.register(user);
         return user;
+    }
+
+    private void checkUserExistence(String email, String username) throws RegistrationException {
+        if (userService.existsByEmailOrUsername(email, username)) {
+            if (userService.existsByEmail(email)) {
+                throw new RegistrationException(new RegistrationNonUniqueEmailError(true));
+            } else {
+                throw new RegistrationException(new RegistrationNonUniqueUsernameError(true));
+            }
+        }
     }
 
     public static class RegistrationException extends Exception {
