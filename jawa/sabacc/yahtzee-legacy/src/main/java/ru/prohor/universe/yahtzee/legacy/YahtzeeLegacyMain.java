@@ -26,12 +26,6 @@ import ru.prohor.universe.jocasta.springweb.configuration.StaticResourcesHandler
 })
 public class YahtzeeLegacyMain {
     public static void main(String[] args) {
-        ApplicationContext context = SpringApplication.run(YahtzeeLegacyMain.class, args);
-        printUrl(context.getBean(UniverseEnvironment.class));
-    }
-
-    private static void printUrl(UniverseEnvironment environment) {
-        if (environment == UniverseEnvironment.LOCAL)
-            System.out.println("http://localhost:7003");
+        SpringApplication.run(YahtzeeLegacyMain.class, args);
     }
 }

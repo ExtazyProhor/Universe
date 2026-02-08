@@ -1,6 +1,7 @@
 package ru.prohor.universe.jocasta.spring.configuration;
 
 import org.fusesource.jansi.Ansi;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
@@ -56,7 +57,10 @@ public class JocastaAutoConfiguration {
     }
 
     @Bean
-    public ApplicationRunner environmentChecker(UniverseEnvironment universeEnvironment) {
+    public ApplicationRunner environmentChecker(
+            @Value("${server.port:#{null}}") Integer port,
+            UniverseEnvironment universeEnvironment
+    ) {
         return args -> {
             // TODO заменить на нормальный логгер
             System.out.println(
@@ -65,6 +69,9 @@ public class JocastaAutoConfiguration {
                             .fgBrightBlue().a(universeEnvironment.name())
                             .reset()
             );
+            if (port != null && universeEnvironment == UniverseEnvironment.LOCAL) {
+                System.out.println("http://localhost:" + port);
+            }
         };
     }
 }
