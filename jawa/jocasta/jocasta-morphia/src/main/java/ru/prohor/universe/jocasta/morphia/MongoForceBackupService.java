@@ -13,7 +13,7 @@ public class MongoForceBackupService {
 
     public Map<String, List<?>> backup() {
         return repositories.stream().collect(Collectors.toMap(
-                repository ->repository.type().getSimpleName(),
+                repository -> repository.type().getSimpleName(),
                 MongoRepository::findAll
 
         ));

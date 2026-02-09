@@ -53,4 +53,14 @@ public interface FeedbackExecutor {
                 .build();
         sendDocument(document);
     }
+
+    default void sendDocument(Long chatId, String content, String fileName) {
+        InputStream inputStream = new ByteArrayInputStream(content.getBytes());
+        InputFile inputFile = new InputFile(inputStream, fileName);
+        SendDocument document = SendDocument.builder()
+                .chatId(chatId)
+                .document(inputFile)
+                .build();
+        sendDocument(document);
+    }
 }
