@@ -44,6 +44,30 @@ public class FFMpegVideoRecoding {
         return secs;
     }
 
+    /**
+     * <pre>
+     * {@code
+     * ffmpeg -i input.mkv \
+     *     -map 0:v:0 -map 0:a:0 \
+     *     -c:v libx264 -profile:v high -level 4.1 -pix_fmt yuv420p \
+     *     -c:a aac -b:a 192k -ac 2 \
+     *     -movflags +faststart \
+     *     output.mp4
+     * }
+     * </pre>
+     */
+    private static void mkvToMp4(String input, String output) throws IOException {
+        String[] cmd = {
+                "ffmpeg", "-i", input, "-map", "0:v:0", "-map", "0:a:0",
+                "-c:v", "libx264", "-profile:v", "high", "-level", "4.1", "-pix_fmt", "yuv420p",
+                "-c:a", "aac", "-b:a", "192k", "-ac", "2",
+                "-movflags", "+faststart",
+                output
+        };
+        ProcessBuilder pb = new ProcessBuilder(cmd).redirectErrorStream(true);
+        pb.start();
+    }
+
     private static void recodeVideos() throws IOException {
         File sourceDir = DOWNLOADS_PATH.resolve("source").toFile();
         File destinationDir = DOWNLOADS_PATH.resolve("destination").toFile();
