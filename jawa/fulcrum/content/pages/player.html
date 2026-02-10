@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Player</title>
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --panel: #020617;
+            --border: #1e293b;
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+            --accent: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .back {
+            color: var(--muted);
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        .back:hover {
+            color: var(--accent);
+        }
+
+        .title {
+            max-width: 70%;
+            text-align: right;
+            font-size: 14px;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 12px;
+            background: black;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div id="back" class="back">← назад</div>
+        <div id="title" class="title"></div>
+    </div>
+
+    <video id="player" controls preload="metadata"></video>
+</div>
+
+<script>
+    function getVideoPath() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("path");
+    }
+
+    function parentPath(path) {
+        const parts = path.split("/").filter(Boolean);
+        parts.pop();
+        return parts.join("/");
+    }
+
+    const videoPath = getVideoPath();
+
+    if (!videoPath) {
+        alert("Video path is missing");
+    } else {
+        const player = document.getElementById("player");
+        const title = document.getElementById("title");
+        const back = document.getElementById("back");
+
+        title.textContent = videoPath.split("/").pop();
+
+        player.src = `/files/${encodeURI(videoPath)}`;
+
+        back.onclick = () => {
+            const parent = parentPath(videoPath);
+            const url = parent
+                ? `/content?path=${encodeURIComponent(parent)}`
+                : `/content`;
+            window.location.href = url;
+        };
+    }
+</script>
+</body>
+</html>

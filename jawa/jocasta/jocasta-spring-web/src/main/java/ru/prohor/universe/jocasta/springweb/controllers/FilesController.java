@@ -9,6 +9,8 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.springweb.ControllersUtils;
 import ru.prohor.universe.jocasta.springweb.StaticResourcesHandler;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -32,6 +34,7 @@ public class FilesController {
     @GetMapping("/files/**")
     public ResponseEntity<FileSystemResource> files(HttpServletRequest request) {
         String path = ControllersUtils.getPathWithoutSlashes(request);
+        path = URLDecoder.decode(path, StandardCharsets.UTF_8);
         try {
             if (redefinedRoot.isPresent()) {
                 Opt<Path> redefinedFileO = resolveOrBadRequest(redefinedRoot.get(), path);

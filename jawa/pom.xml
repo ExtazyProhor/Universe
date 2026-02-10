@@ -30,6 +30,7 @@
         <module>boba-fett</module>
         <module>hyperspace</module>
         <module>venator</module>
+        <module>fulcrum</module>
     </modules>
 
     <dependencyManagement>

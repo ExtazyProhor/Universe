@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Files</title>
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --panel: #020617;
+            --border: #1e293b;
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+            --hover: #1e293b;
+            --accent: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 720px;
+            background: var(--panel);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 20px 16px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .breadcrumb span {
+            cursor: pointer;
+        }
+
+        .breadcrumb span:hover {
+            color: var(--accent);
+        }
+
+        .list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .item:hover {
+            background: var(--hover);
+        }
+
+        .icon {
+            width: 28px;
+            text-align: center;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        .name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .directory .icon {
+            color: #facc15;
+        }
+
+        .file .icon {
+            color: #94a3b8;
+        }
+
+        .back {
+            font-weight: 500;
+        }
+
+        .empty {
+            text-align: center;
+            color: var(--muted);
+            padding: 24px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="breadcrumb" class="breadcrumb"></div>
+    <div id="list" class="list"></div>
+</div>
+
+<script>
+    const listEl = document.getElementById("list");
+    const breadcrumbEl = document.getElementById("breadcrumb");
+
+    function getPath() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("path") || "";
+    }
+
+    function setPath(path) {
+        const query = path ? `?path=${encodeURIComponent(path)}` : "";
+        window.location.search = query;
+    }
+
+    function renderBreadcrumb(path) {
+        breadcrumbEl.innerHTML = "";
+
+        const root = document.createElement("span");
+        root.textContent = "/ root";
+        root.onclick = () => setPath("");
+        breadcrumbEl.appendChild(root);
+
+        if (!path) return;
+
+        let acc = "";
+        path.split("/").forEach(part => {
+            breadcrumbEl.append(" / ");
+
+            acc = acc ? `${acc}/${part}` : part;
+
+            const el = document.createElement("span");
+            el.textContent = part;
+            el.onclick = () => setPath(acc);
+            breadcrumbEl.appendChild(el);
+        });
+    }
+
+    async function load() {
+        const path = getPath();
+        renderBreadcrumb(path);
+
+        const res = await fetch(`/api/content-list?path=${encodeURIComponent(path)}`);
+        if (!res.ok) {
+            listEl.innerHTML = "<div class='empty'>Ошибка загрузки</div>";
+            return;
+        }
+        const entries = await res.json();
+
+        listEl.innerHTML = "";
+
+        if (path) {
+            const back = document.createElement("div");
+            back.className = "item directory back";
+            back.innerHTML = `<div class="icon">↩</div><div class="name">Назад</div>`;
+            back.onclick = () => {
+                const parts = path.split("/").filter(Boolean);
+                parts.pop();
+                setPath(parts.join("/"));
+            };
+            listEl.appendChild(back);
+        }
+
+        if (!entries.length) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "Папка пуста";
+            listEl.appendChild(empty);
+            return;
+        }
+
+        entries.forEach(e => {
+            const item = document.createElement("div");
+            item.className = `item ${e.type}`;
+
+            const fullPath = path ? `${path}/${e.name}` : e.name;
+
+            item.innerHTML = `
+                <div class="icon">${e.type === "directory" ? "📂" : "📄"}</div>
+                <div class="name">${e.name}</div>
+            `;
+
+            item.onclick = () => {
+                if (e.type === "directory") {
+                    setPath(fullPath);
+                } else {
+                    if (e.name.toLowerCase().endsWith('.mp4')) {
+                        window.location.href = `/player?path=${encodeURIComponent(fullPath)}`;
+                    } else {
+                        window.location.href = `/files/${fullPath}`;
+                    }
+                }
+            };
+
+            listEl.appendChild(item);
+        });
+    }
+
+    load();
+</script>
+</body>
+</html>
