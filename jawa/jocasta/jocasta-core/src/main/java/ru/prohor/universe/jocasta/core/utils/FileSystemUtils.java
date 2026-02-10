@@ -33,5 +33,10 @@ public final class FileSystemUtils {
         public File asFile() {
             return new File(path);
         }
+
+        @Override
+        public String toString() {
+            return asString();
+        }
     }
 }

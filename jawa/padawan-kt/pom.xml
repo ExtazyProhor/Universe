@@ -18,6 +18,10 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
