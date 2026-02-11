@@ -58,8 +58,37 @@ public class FFMpegVideoRecoding {
      */
     private static void mkvToMp4(String input, String output) throws IOException {
         String[] cmd = {
-                "ffmpeg", "-i", input, "-map", "0:v:0", "-map", "0:a:0",
+                "ffmpeg", "-i", input,
+                "-map", "0:v:0", "-map", "0:a:0",
                 "-c:v", "libx264", "-profile:v", "high", "-level", "4.1", "-pix_fmt", "yuv420p",
+                "-c:a", "aac", "-b:a", "192k", "-ac", "2",
+                "-movflags", "+faststart",
+                output
+        };
+        ProcessBuilder pb = new ProcessBuilder(cmd).redirectErrorStream(true);
+        pb.start();
+    }
+
+    /**
+     * Если в mkv - уже H.264. Проверить можно:
+     * {@code
+     * ffprobe -hide_banner -i input.mkv
+     * }
+     *
+     * <pre>
+     * {@code
+     * ffmpeg -i input.mkv \
+     *     -c:v copy \
+     *     -c:a aac -b:a 192k -ac 2 \
+     *     -movflags +faststart \
+     *     output.mp4
+     * }
+     * </pre>
+     */
+    private static void mkvToMp4WithoutRecodingVideo(String input, String output) throws IOException {
+        String[] cmd = {
+                "ffmpeg", "-i", input,
+                "-c:v", "copy",
                 "-c:a", "aac", "-b:a", "192k", "-ac", "2",
                 "-movflags", "+faststart",
                 output
