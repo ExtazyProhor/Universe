@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-core</artifactId>
+            <artifactId>jocasta-spring-web</artifactId>
         </dependency>
     </dependencies>
 
