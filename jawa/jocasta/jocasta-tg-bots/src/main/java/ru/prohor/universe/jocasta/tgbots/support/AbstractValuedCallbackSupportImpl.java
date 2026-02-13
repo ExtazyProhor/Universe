@@ -33,15 +33,14 @@ public abstract class AbstractValuedCallbackSupportImpl implements FeatureSuppor
         String callbackData = callback.getData();
         int dotIndex = callbackData.indexOf('.');
         if (dotIndex == -1) {
-            Opt.ofNullable(handlers.get(callbackData))
-                    .ifPresentOrElse(
-                            handler -> handler.handle(callback.getMessage(), feedbackExecutor),
-                            () -> unknownCallbackPrefixHandler.handleUnknownActionKey(
-                                    callback,
-                                    callbackData,
-                                    feedbackExecutor
-                            )
-                    );
+            Opt.ofNullable(handlers.get(callbackData)).ifPresentOrElse(
+                    handler -> handler.handle(callback.getMessage(), feedbackExecutor),
+                    () -> unknownCallbackPrefixHandler.handleUnknownActionKey(
+                            callback,
+                            callbackData,
+                            feedbackExecutor
+                    )
+            );
             return;
         }
         if (dotIndex != callbackData.lastIndexOf('.')) {
