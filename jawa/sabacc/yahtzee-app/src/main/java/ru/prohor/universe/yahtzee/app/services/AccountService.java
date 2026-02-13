@@ -168,15 +168,15 @@ public class AccountService {
         return player.toBuilder().friends(friendsIds).build();
     }
 
-    public ProfileController.FriendsResponse getFriends(Player player, long page) {
+    public AccountController.FriendsResponse getFriends(Player player, long page) {
         PaginationResult<ObjectId> paginationResult = Paginator.richPaginateOrLastPage(
                 player.friends().stream().sorted().toList(), page, PAGE_SIZE
         );
-        return new ProfileController.FriendsResponse(
+        return new AccountController.FriendsResponse(
                 playerRepository.ensuredFindAllByIds(paginationResult.values())
                         .stream()
                         .sorted(Comparator.comparing(Player::id))
-                        .map(p -> new ProfileController.Friend(
+                        .map(p -> new AccountController.Friend(
                                 p.id().toHexString(),
                                 p.username(),
                                 p.displayName(),

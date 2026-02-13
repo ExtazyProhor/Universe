@@ -153,41 +153,6 @@ public class ProfileController {
         return accountService.deleteFriend(player.get(), id);
     }
 
-    @PostMapping("/friends")
-    public ResponseEntity<FriendsResponse> friends(
-            @RequestAttribute(Player.ATTRIBUTE_KEY)
-            Opt<Player> player,
-            @Valid
-            @RequestBody
-            FriendsRequest body
-    ) {
-        if (player.isEmpty())
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return ResponseEntity.ok(accountService.getFriends(player.get(), body.page()));
-    }
-
-    public record FriendsRequest(
-            @Min(0) @Max(1000)
-            int page // starts from 0, page_size = 5 items
-    ) {}
-
-    public record FriendsResponse(
-            // max 5 in response, use pagination
-            List<Friend> friends,
-            int page, // may differ for the requested value, starts from 0
-            @JsonProperty("max_page")
-            int maxPage // may differ for the requested value
-    ) {}
-
-    public record Friend(
-            String id,
-            String username,
-            String name,
-            @JsonProperty("image_id")
-            String imageId,
-            boolean inGame // if true - can not invite in room
-    ) {}
-
     @PostMapping("/requests")
     public ResponseEntity<RequestsResponse> requests(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
