@@ -17,6 +17,7 @@ import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.yahtzee.app.services.images.ImagesService;
 import ru.prohor.universe.yahtzee.app.web.api.ColorInfo;
 import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
+import ru.prohor.universe.yahtzee.app.web.controllers.ProfileController;
 import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
@@ -112,14 +113,14 @@ public class AccountService {
         );
     }
 
-    public AccountController.FindUsersResponse findUsers(Player player, String name, int page) {
+    public ProfileController.FindUsersResponse findUsers(Player player, String name, int page) {
         Set<ObjectId> friends = new HashSet<>(player.friends());
         MongoTextSearchResult<Player> result = playerRepository.findByText(name, page, PAGE_SIZE);
-        return new AccountController.FindUsersResponse(
+        return new ProfileController.FindUsersResponse(
                 result.entities()
                         .stream()
                         .filter(p -> !p.id().equals(player.id()))
-                        .map(p -> new AccountController.FoundUser(
+                        .map(p -> new ProfileController.FoundUser(
                                 p.id().toHexString(),
                                 p.username(),
                                 p.displayName(),
@@ -167,15 +168,15 @@ public class AccountService {
         return player.toBuilder().friends(friendsIds).build();
     }
 
-    public AccountController.FriendsResponse getFriends(Player player, long page) {
+    public ProfileController.FriendsResponse getFriends(Player player, long page) {
         PaginationResult<ObjectId> paginationResult = Paginator.richPaginateOrLastPage(
                 player.friends().stream().sorted().toList(), page, PAGE_SIZE
         );
-        return new AccountController.FriendsResponse(
+        return new ProfileController.FriendsResponse(
                 playerRepository.ensuredFindAllByIds(paginationResult.values())
                         .stream()
                         .sorted(Comparator.comparing(Player::id))
-                        .map(p -> new AccountController.Friend(
+                        .map(p -> new ProfileController.Friend(
                                 p.id().toHexString(),
                                 p.username(),
                                 p.displayName(),
@@ -188,7 +189,7 @@ public class AccountService {
         );
     }
 
-    public AccountController.RequestsResponse findRequests(Player player, AccountController.RequestsRequest body) {
+    public ProfileController.RequestsResponse findRequests(Player player, ProfileController.RequestsRequest body) {
         List<ObjectId> requests = body.incoming() ? player.incomingRequests() : player.outcomingRequests();
 
         PaginationResult<ObjectId> paginationResult = Paginator.richPaginateOrLastPage(
@@ -199,9 +200,9 @@ public class AccountService {
                 .sorted(Comparator.comparing(Player::id))
                 .toList();
 
-        return new AccountController.RequestsResponse(
+        return new ProfileController.RequestsResponse(
                 players.stream()
-                        .map(p -> new AccountController.PlayerRequestInfo(
+                        .map(p -> new ProfileController.PlayerRequestInfo(
                                 p.id().toHexString(),
                                 p.username(),
                                 p.displayName(),
@@ -235,18 +236,18 @@ public class AccountService {
             Player friend = playerAndFriend.get(objectId);
 
             if (updated.outcomingRequests().contains(objectId))
-                return AccountController.REQUEST_ALREADY_EXISTS;
+                return ProfileController.REQUEST_ALREADY_EXISTS;
             if (updated.friends().contains(objectId))
-                return AccountController.ALREADY_FRIENDS;
+                return ProfileController.ALREADY_FRIENDS;
 
             if (updated.incomingRequests().contains(objectId)) {
                 addFriend(transactional, friend, updated);
-                return AccountController.FRIEND_ADDED;
+                return ProfileController.FRIEND_ADDED;
             }
 
             editRequest(transactional, updated, friend, List::add);
 
-            return AccountController.REQUEST_SENT;
+            return ProfileController.REQUEST_SENT;
         }).asOpt().orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
