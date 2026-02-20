@@ -4,15 +4,16 @@ import kotlin.math.pow
 import kotlin.system.measureTimeMillis
 
 fun main() {
+    // time: 78 ms!
     // time: 231 ms!
     // time: 132100 ms!
     val time = measureTimeMillis {
-        println(ShortStreetSolver.calculate()) // 0.6025279139347077
-        println(LongStreetSolver.calculate()) // 0.24910319742690157
-        println(FullHouseSolver.calculate()) // 0.3588891746684957
-        println(YahtzeeSolver.calculate()) // 0.04602864252569899
+        println(ShortStreetSolver.calculate()) // 0.6025279139347071 / 0.6025279139347077
+        println(LongStreetSolver.calculate()) // 0.2491031974269013 / 0.24910319742690157
+        println(FullHouseSolver.calculate()) // 0.3588891746684954 / 0.3588891746684957
+        println(YahtzeeSolver.calculate()) // 0.04602864252569886 / 0.04602864252569899
     }
-    println("$time ms!")
+    println("time: $time ms!")
 }
 
 object ShortStreetSolver : ComplexCombinationSolver() {
@@ -144,7 +145,7 @@ object YahtzeeSolver : ComplexCombinationSolver() {
 }
 
 abstract class ComplexCombinationSolver {
-    //private val cache = HashMap<State, Long>()
+    private val cache = HashMap<State, Double>()
 
     abstract fun List<Int>.isValid(): Boolean
 
@@ -153,16 +154,15 @@ abstract class ComplexCombinationSolver {
     fun calculate(): Double {
         fun calculateInternal(
             combination: List<Int>? = null,
-            rerollAttempt: Int = 0,
-            diceRolled: Int = 0
-        ): Long {
-            //val state = State(combination, rerollAttempt)
-            //cache[state]?.let { return it }
+            rerollAttempt: Int = 0
+        ): Double {
+            val state = State(combination, rerollAttempt)
+            cache[state]?.let { return it }
             if (combination?.isValid() == true) {
-                return powersOfSix[15 - diceRolled]
+                return 1.0
             }
             if (rerollAttempt == 3) {
-                return 0
+                return 0.0
             }
 
             val heldDice = combination?.holdDiceFor() ?: emptyList()
@@ -170,20 +170,20 @@ abstract class ComplexCombinationSolver {
             val newCombinations = generatedCombinations[diceRerolled]
             val nextRerollAttempt = rerollAttempt + 1
             return newCombinations.sumOf { roll ->
-                roll.weight * calculateInternal(
+                val probability = roll.weight.toDouble() / powersOfSix[diceRerolled]
+                probability * calculateInternal(
                     combination = heldDice + roll.values,
-                    rerollAttempt = nextRerollAttempt,
-                    diceRolled = diceRolled + diceRerolled
+                    rerollAttempt = nextRerollAttempt
                 )
-            }//.also { cache[state] = it }
+            }.also { cache[state] = it }
         }
-        return calculateInternal().toDouble() / powersOfSix[15]
+        return calculateInternal()
     }
 
-    /*private data class State(
+    private data class State(
         val combination: List<Int>?,
         val rerollAttempt: Int
-    )*/
+    )
 
     companion object {
         private val powersOfSix = (0..15).map { 6.toDouble().pow(it).toLong() }
