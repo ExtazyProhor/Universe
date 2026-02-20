@@ -5,7 +5,6 @@ import kotlin.math.pow
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    test()
     val solvers = listOf(
         PairSolver,
         ThreeOfKindSolver,
@@ -24,9 +23,13 @@ fun main() {
             "${solver::class.simpleName?.removeSuffix("Solver")}: time = $time ms, p = $p %"
         )
     }
+    test()
 }
 
 fun test() {
+    compare(0.9992061677589775, PairSolver.calculate())
+    compare(0.7431952700299738, ThreeOfKindSolver.calculate())
+    compare(0.2907935835069176, FourOfKindSolver.calculate())
     compare(0.3588891746684954, FullHouseSolver.calculate())
     compare(0.6025279139347071, ShortStreetSolver.calculate())
     compare(0.2491031974269013, LongStreetSolver.calculate())
