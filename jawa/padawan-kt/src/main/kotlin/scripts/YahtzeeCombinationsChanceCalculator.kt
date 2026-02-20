@@ -14,7 +14,7 @@ fun main() {
         LongStreetSolver,
         YahtzeeSolver
     )
-    for (solver in solvers) {
+    val sum = solvers.sumOf { solver ->
         var p: Double
         val time = measureTimeMillis {
             p = solver.calculate() * 100
@@ -22,7 +22,9 @@ fun main() {
         println(
             "${solver::class.simpleName?.removeSuffix("Solver")}: time = $time ms, p = $p %"
         )
+        time
     }
+    println("sum millis = $sum")
     test()
 }
 
@@ -143,11 +145,13 @@ object ShortStreetSolver : CombinationSolver() {
 
 object LongStreetSolver : CombinationSolver() {
     override fun List<Int>.isValid(): Boolean {
-        val set = toHashSet()
-        if (!set.containsAll(setOf(2, 3, 4, 5))) {
-            return false
+        val c = counts()
+        for (i in 2..5) {
+            if (c[i] == 0) {
+                return false
+            }
         }
-        return set.contains(1) || set.contains(6)
+        return c[1] > 0 || c[6] > 0
     }
 
     override fun List<Int>.holdDiceFor(): List<Int> {
@@ -177,17 +181,25 @@ abstract class SameDiceCombinationSolver : CombinationSolver() {
     abstract val count: Int
 
     override fun List<Int>.isValid(): Boolean {
-        return groupingBy { it }
-            .eachCount()
-            .maxBy { it.value }
-            .let { it.value >= count }
+        val counts = counts()
+        for (i in 1..6)
+            if (counts[i] >= count)
+                return true
+        return false
     }
 
     override fun List<Int>.holdDiceFor(): List<Int> {
-        return groupingBy { it }
-            .eachCount()
-            .maxBy { it.value }
-            .let { entry -> List(entry.value) { entry.key } }
+        val counts = counts()
+        var bestValue = 1
+        var bestCount = counts[1]
+
+        for (i in 2..6) {
+            if (counts[i] > bestCount) {
+                bestValue = i
+                bestCount = counts[i]
+            }
+        }
+        return List(bestCount) { bestValue }
     }
 }
 
@@ -210,7 +222,7 @@ abstract class CombinationSolver {
         combination: List<Int>? = null,
         rerollAttempt: Int = 0
     ): Double {
-        val state = State(combination, rerollAttempt)
+        val state = State(encode(combination), rerollAttempt)
         cache[state]?.let { return it }
         if (combination?.isValid() == true) {
             return 1.0
@@ -233,7 +245,7 @@ abstract class CombinationSolver {
     }
 
     private data class State(
-        val combination: List<Int>?,
+        val encoded: Int,
         val rerollAttempt: Int
     )
 
@@ -265,4 +277,19 @@ private fun generateCombinations(length: Int): Sequence<List<Int>> {
             listOf(value) + list
         }
     }
+}
+
+private fun encode(dice: List<Int>?): Int {
+    if (dice == null) return -1
+    var result = 0
+    dice.sorted().forEachIndexed { i, v ->
+        result = result or (v shl (i * 3))
+    }
+    return result
+}
+
+private fun List<Int>.counts(): IntArray {
+    val counts = IntArray(7)
+    for (v in this) counts[v]++
+    return counts
 }
