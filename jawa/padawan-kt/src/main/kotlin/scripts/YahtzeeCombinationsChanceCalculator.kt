@@ -1,12 +1,18 @@
 package ru.prohor.universe.kt.padawan.scripts
 
 import kotlin.math.pow
+import kotlin.system.measureTimeMillis
 
 fun main() {
-    println(ShortStreetSolver.calculate())
-    println(LongStreetSolver.calculate())
-    println(FullHouseSolver.calculate())
-    println(YahtzeeSolver.calculate())
+    // time: 231 ms!
+    // time: 132100 ms!
+    val time = measureTimeMillis {
+        println(ShortStreetSolver.calculate()) // 0.6025279139347077
+        println(LongStreetSolver.calculate()) // 0.24910319742690157
+        println(FullHouseSolver.calculate()) // 0.3588891746684957
+        println(YahtzeeSolver.calculate()) // 0.04602864252569899
+    }
+    println("$time ms!")
 }
 
 object ShortStreetSolver : ComplexCombinationSolver() {
@@ -138,18 +144,20 @@ object YahtzeeSolver : ComplexCombinationSolver() {
 }
 
 abstract class ComplexCombinationSolver {
-    private val powersOfSix = (0..15).map { 6.toDouble().pow(it).toLong() }
+    //private val cache = HashMap<State, Long>()
 
     abstract fun List<Int>.isValid(): Boolean
 
     abstract fun List<Int>.holdDiceFor(): List<Int>
 
     fun calculate(): Double {
-        fun calculateShortStreetInternal(
+        fun calculateInternal(
             combination: List<Int>? = null,
             rerollAttempt: Int = 0,
             diceRolled: Int = 0
         ): Long {
+            //val state = State(combination, rerollAttempt)
+            //cache[state]?.let { return it }
             if (combination?.isValid() == true) {
                 return powersOfSix[15 - diceRolled]
             }
@@ -159,30 +167,52 @@ abstract class ComplexCombinationSolver {
 
             val heldDice = combination?.holdDiceFor() ?: emptyList()
             val diceRerolled = 5 - heldDice.size
-            val newCombinations = generateCombinations(diceRerolled).map { heldDice + it }
+            val newCombinations = generatedCombinations[diceRerolled]
             val nextRerollAttempt = rerollAttempt + 1
-            return newCombinations.map {
-                calculateShortStreetInternal(
-                    combination = it,
+            return newCombinations.sumOf { roll ->
+                roll.weight * calculateInternal(
+                    combination = heldDice + roll.values,
                     rerollAttempt = nextRerollAttempt,
                     diceRolled = diceRolled + diceRerolled
                 )
-            }.sum()
+            }//.also { cache[state] = it }
         }
-        return calculateShortStreetInternal().toDouble() / powersOfSix[15]
+        return calculateInternal().toDouble() / powersOfSix[15]
     }
 
-    private fun generateCombinations(length: Int): Sequence<List<Int>> {
-        val range = 1..6
+    /*private data class State(
+        val combination: List<Int>?,
+        val rerollAttempt: Int
+    )*/
 
-        if (length <= 0) {
-            return sequenceOf(emptyList())
-        }
+    companion object {
+        private val powersOfSix = (0..15).map { 6.toDouble().pow(it).toLong() }
+    }
+}
 
-        return range.asSequence().flatMap { value ->
-            generateCombinations(length - 1).map { list ->
-                listOf(value) + list
-            }
+private val generatedCombinations = (0..5).map { length ->
+    generateCombinations(length)
+        .map { it.sorted() }
+        .groupingBy { it }
+        .eachCount()
+        .map { (reroll, count) -> Roll(reroll, count) }
+}
+
+private data class Roll(
+    val values: List<Int>,
+    val weight: Int
+)
+
+private fun generateCombinations(length: Int): Sequence<List<Int>> {
+    val range = 1..6
+
+    if (length <= 0) {
+        return sequenceOf(emptyList())
+    }
+
+    return range.asSequence().flatMap { value ->
+        generateCombinations(length - 1).map { list ->
+            listOf(value) + list
         }
     }
 }
