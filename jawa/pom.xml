@@ -268,6 +268,15 @@
                 <version>${kotlin.version}</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core -->
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-coroutines-core</artifactId>
+                <version>1.10.2</version>
+                <type>pom</type>
+                <scope>runtime</scope>
+            </dependency>
+
             <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin -->
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
