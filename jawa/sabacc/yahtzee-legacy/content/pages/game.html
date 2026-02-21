@@ -678,6 +678,18 @@
 <script src="files/js/dice-logic.js"></script>
 <script src="files/js/notification-logic.js"></script>
 <script>
+    // Все ходы
+    // console.table(actionLog);
+
+    // Только сохранённые очки
+    // actionLog.filter(a => a.type === 'save').forEach(a =>
+    //     console.log(`${a.timestamp} | ${a.teamName} | ${a.category} | ${a.score}`)
+    // );
+
+    // Снимок состояния перед последним сбросом
+    // actionLog.filter(a => a.type === 'reset').at(-1)?.scoreSnapshot;
+
+    const actionLog = [];
     let currentRow = null;
     let teamScores = {};
     let currentTeamIndex = null;
@@ -896,6 +908,13 @@
         };
 
         teamScores[teamCategoryKey] = score;
+        logAction('save', {
+            teamCategoryKey,
+            teamIndex: currentTeamIndex,
+            teamName: currentTeamIndex !== null ? teams[currentTeamIndex].name : null,
+            category: currentRow.dataset.category,
+            score
+        });
 
         if (currentTeamIndex !== null) {
             nextTurn();
@@ -941,6 +960,10 @@
     function undoLastAction() {
         if (!lastAction) return;
 
+        logAction('undo', {
+            teamCategoryKey: lastAction.teamCategoryKey,
+            score: teamScores[lastAction.teamCategoryKey]
+        });
         delete teamScores[lastAction.teamCategoryKey];
         currentTurnTeamIndex = lastAction.previousTurnTeamIndex;
         lastAction = null;
@@ -1045,6 +1068,7 @@
     }
 
     function resetGame() {
+        logAction('reset', { scoreSnapshot: { ...teamScores } });
         const dayMs = 24 * 60 * 60 * 1000;
         const elapsed = Date.now() - pageLoadedAt;
 
@@ -1234,6 +1258,14 @@
 
         updateTeamButtons();
         updateScores();
+    }
+
+    function logAction(type, data) {
+        actionLog.push({
+            timestamp: new Date().toISOString(),
+            type,
+            ...data
+        });
     }
 
     async function sendGameResultsToServer() {
