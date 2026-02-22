@@ -10,21 +10,11 @@
     </parent>
 
     <artifactId>yoda</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>yoda</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-tg-bots</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-joda-time</artifactId>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>yoda-bot</module>
+        <module>yoda-app</module>
+    </modules>
 </project>

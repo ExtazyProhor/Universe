@@ -1,10 +1,11 @@
 package ru.prohor.universe.jocasta.morphia;
 
-import dev.morphia.query.filters.Filter;
-import dev.morphia.query.updates.UpdateOperator;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
+import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
+import ru.prohor.universe.jocasta.morphia.query.MongoQuery;
 
 import java.util.HashSet;
 import java.util.List;
@@ -49,17 +50,55 @@ public interface MongoRepository<T> {
         ));
     }
 
-    List<T> find(Filter filter);
+    List<T> find(MongoFilter<T> filter);
+
+    List<T> find(MongoQuery<T> query);
 
     void save(T entity);
 
     void save(List<T> entities);
 
-    void update(Filter filter, UpdateOperator updateOperator);
+    Opt<T> deleteById(ObjectId id);
 
-    void deleteById(ObjectId id);
+    default T safeUpdate(ObjectId id, MonoFunction<T, T> updateFunction) {
+        return this.withTransaction(tx -> {
+            T updated = updateFunction.apply(tx.ensuredFindById(id));
+            tx.save(updated);
+            return updated;
+        });
+    }
+
+    default Opt<T> safeUpdateO(ObjectId id, MonoFunction<Opt<T>, Opt<T>> updateFunction) {
+        return this.withTransaction(tx -> {
+            Opt<T> updated = updateFunction.apply(tx.findById(id));
+            updated.ifPresent(tx::save);
+            return updated;
+        });
+    }
+
+    default void safeUpdate(MongoFilter<T> filter, MonoFunction<T, T> updateFunction) {
+        this.withTransaction(tx -> {
+            List<T> entities = tx.find(filter);
+            List<T> updated = entities.stream().map(updateFunction).toList();
+            tx.save(updated);
+        });
+    }
+
+    default void safeUpdate(MongoQuery<T> query, MonoFunction<T, T> updateFunction) {
+        this.withTransaction(tx -> {
+            List<T> entities = tx.find(query);
+            List<T> updated = entities.stream().map(updateFunction).toList();
+            tx.save(updated);
+        });
+    }
 
     List<T> findByText(String text);
 
     MongoTextSearchResult<T> findByText(String text, int page, int pageSize);
+
+    Class<T> type();
+
+    <E> E withTransaction(MonoFunction<MongoRepository<T>, E> transaction);
+
+    void withTransaction(MonoConsumer<MongoRepository<T>> transaction);
 }

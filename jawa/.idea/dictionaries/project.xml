@@ -1,15 +1,20 @@
 <component name="ProjectDictionaryState">
   <dictionary name="project">
     <words>
+      <w>addr</w>
       <w>boba</w>
       <w>bufsize</w>
       <w>classname</w>
       <w>ctor</w>
       <w>curseforge</w>
       <w>deeplinks</w>
+      <w>dhparam</w>
+      <w>dhparams</w>
       <w>dskip</w>
       <w>extazy</w>
       <w>fett</w>
+      <w>ffff</w>
+      <w>fullchain</w>
       <w>hepta</w>
       <w>hexa</w>
       <w>hmac</w>
@@ -20,13 +25,16 @@
       <w>koltsov</w>
       <w>korriban</w>
       <w>lavka</w>
+      <w>letsencrypt</w>
       <w>oneof</w>
       <w>penta</w>
       <w>postgre</w>
+      <w>privkey</w>
       <w>prohor</w>
       <w>prohorov</w>
       <w>sabacc</w>
       <w>scarif</w>
+      <w>suppressable</w>
       <w>tima</w>
       <w>vasya</w>
       <w>vigenere</w>

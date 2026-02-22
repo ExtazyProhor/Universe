@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>ru.prohor.universe</groupId>
+        <artifactId>hyperspace</artifactId>
+        <version>final</version>
+    </parent>
+
+    <artifactId>jawa-complex-test</artifactId>
+    <packaging>jar</packaging>
+    <name>jawa-complex-test</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>boba-fett</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>kryonet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>yahtzee-app</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>yahtzee-legacy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>scarif</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>venator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>yoda-app</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

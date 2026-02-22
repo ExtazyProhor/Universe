@@ -1,5 +1,6 @@
 package ru.prohor.universe.jocasta.spring.configuration;
 
+import org.fusesource.jansi.Ansi;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
@@ -58,7 +59,12 @@ public class JocastaAutoConfiguration {
     public ApplicationRunner environmentChecker(UniverseEnvironment universeEnvironment) {
         return args -> {
             // TODO заменить на нормальный логгер
-            System.out.println("APPLICATION STARTED WITH ENV=" + universeEnvironment.name());
+            System.out.println(
+                    Ansi.ansi()
+                            .a("\uD83D\uDFE2 ").fgBrightGreen().bold().a("APPLICATION STARTED WITH ENV=")
+                            .fgBrightBlue().a(universeEnvironment.name())
+                            .reset()
+            );
         };
     }
 }

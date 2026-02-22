@@ -16,5 +16,6 @@
     <modules>
         <module>scarif-jwt</module>
         <module>scarif-jwt-provider</module>
+        <module>jawa-complex-test</module>
     </modules>
 </project>

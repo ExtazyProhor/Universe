@@ -4,12 +4,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.time.Duration;
-import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
 import ru.prohor.universe.hyperspace.jwt.JwtPayload;
 import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 
 public class JwtProvider {
@@ -36,7 +36,7 @@ public class JwtProvider {
                 uuid,
                 objectId,
                 username,
-                Instant.now().plus(Duration.standardMinutes(accessTokenTtlMinutes)),
+                Instant.now().plus(Duration.ofMinutes(accessTokenTtlMinutes)),
                 snowflakeIdGenerator.nextId()
         );
         try {

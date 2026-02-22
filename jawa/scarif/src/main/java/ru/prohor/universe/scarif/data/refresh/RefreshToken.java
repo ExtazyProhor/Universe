@@ -1,9 +1,9 @@
 package ru.prohor.universe.scarif.data.refresh;
 
-import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.scarif.data.session.Session;
+
+import java.time.Instant;
 
 public record RefreshToken(
         long id,
@@ -18,9 +18,9 @@ public record RefreshToken(
                 id,
                 token,
                 session.toDto(),
-                DateTimeUtil.unwrap(createdAt),
+                createdAt,
                 revoked,
-                revokedAt.map(DateTimeUtil::unwrap).orElseNull()
+                revokedAt.orElseNull()
         );
     }
 
@@ -29,9 +29,9 @@ public record RefreshToken(
                 refreshTokenDto.getId(),
                 refreshTokenDto.getToken(),
                 Session.fromDto(refreshTokenDto.getSession()),
-                DateTimeUtil.wrap(refreshTokenDto.getCreatedAt()),
+                refreshTokenDto.getCreatedAt(),
                 refreshTokenDto.isRevoked(),
-                Opt.ofNullable(refreshTokenDto.getRevokedAt()).map(DateTimeUtil::wrap)
+                Opt.ofNullable(refreshTokenDto.getRevokedAt())
         );
     }
 }

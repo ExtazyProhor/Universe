@@ -29,7 +29,6 @@
         <module>yoda</module>
         <module>boba-fett</module>
         <module>hyperspace</module>
-        <module>probe-droid</module>
         <module>venator</module>
     </modules>
 
@@ -56,13 +55,6 @@
                 <groupId>jakarta.annotation</groupId>
                 <artifactId>jakarta.annotation-api</artifactId>
                 <version>3.0.0</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>2.14.0</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
@@ -105,6 +97,13 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-xml</artifactId>
                 <version>2.20.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>2.20.1</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
@@ -184,6 +183,20 @@
                 <version>1.21.2</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
+            <dependency>
+                <groupId>org.fusesource.jansi</groupId>
+                <artifactId>jansi</artifactId>
+                <version>2.4.2</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>2.0.17</version>
+            </dependency>
+
 
             <!-- Tests -->
 
@@ -200,7 +213,7 @@
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
-                <version>5.13.1</version>
+                <version>5.14.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -208,7 +221,7 @@
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
-                <version>5.13.1</version>
+                <version>5.14.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -216,7 +229,7 @@
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
-                <version>5.13.1</version>
+                <version>5.14.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -224,14 +237,14 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-commons</artifactId>
-                <version>1.14.0</version>
+                <version>1.14.2</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-engine -->
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-engine</artifactId>
-                <version>1.14.0</version>
+                <version>1.14.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -239,7 +252,7 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-launcher</artifactId>
-                <version>1.14.0</version>
+                <version>1.14.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -287,11 +300,6 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>jocasta-joda-time</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
                 <artifactId>scarif-jwt</artifactId>
                 <version>final</version>
             </dependency>
@@ -302,7 +310,12 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>jocasta-jackson-joda-time</artifactId>
+                <artifactId>jocasta-jackson-morphia</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-jackson-core</artifactId>
                 <version>final</version>
             </dependency>
             <dependency>
@@ -327,9 +340,53 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>jocasta-spring-test</artifactId>
+                <artifactId>yahtzee-stats</artifactId>
                 <version>final</version>
-                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-morphia-configuration</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>boba-fett</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>kryonet</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>yahtzee-app</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>yahtzee-legacy</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>scarif</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>venator</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>yoda-bot</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>yoda-app</artifactId>
+                <version>final</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -349,7 +406,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.9.11,)</version>
+                                    <version>[3.9.9,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>[21,22)</version>

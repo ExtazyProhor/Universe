@@ -8,15 +8,20 @@ import ru.prohor.universe.venator.shared.CommandExecutor
 class MavenService(
     repository: Repository,
     private val executor: CommandExecutor,
-    private val mavenTestsInspector: MavenTestsInspector
+    private val mavenTestsInspector: MavenTestsInspector,
+    private val mavenBuildLogInspector: MavenBuildLogInspector
 ) {
     private val jawa = repository.path.resolve("jawa")
     private val jawaPom = jawa.resolve("pom.xml").toString()
 
     /**
      * `-f` (file), path to pom.xml
+     *
+     * `-B` (batch mode) CI-friendly
+     *
+     * `-e` (errors) verbose execution error messages, full stack traces
      */
-    private val testCommand = listOf("mvn", "-f", jawaPom, "clean", "test")
+    private val testCommand = listOf("mvn", "-f", jawaPom, "-B", "-e", "-DtrimStackTrace=false", "clean", "test")
 
     fun cleanTestAll(): MavenTestResult {
         return runTest(testCommand)
@@ -28,20 +33,28 @@ class MavenService(
      * `-am` (also make), include dependencies
      *
      * `-amd` (also make dependents), include dependents
+     *
+     * `-B` (batch mode) CI-friendly
+     *
+     * `-e` (errors) verbose execution error messages, full stack traces
      */
     fun cleanTest(modulePath: String): MavenTestResult {
-        return runTest(testCommand.plus(listOf("-pl", modulePath, "-am", "-amd")))
+        return runTest(testCommand.plus(listOf("-pl", modulePath, "-B", "-e", "-DtrimStackTrace=false", "-am", "-amd")))
     }
 
     private fun runTest(command: List<String>): MavenTestResult {
-        try {
-            executor.runCommand(command)
+        val result = executor.runCommand(command)
+        if (result.exitCode == 0) {
             return MavenTestResult(true, emptyList())
-        } catch (e: Exception) {
-            // TODO log
-            e.printStackTrace()
-            return MavenTestResult(false, mavenTestsInspector.inspectTestsFailures(jawa))
         }
+        val testFailures = mavenTestsInspector.inspectTestsFailures(jawa)
+
+        if (testFailures.isNotEmpty()) {
+            return MavenTestResult(false, testFailures)
+        }
+
+        val buildFailure = mavenBuildLogInspector.inspect(result.fullOutput())
+        return MavenTestResult(false, buildFailure)
     }
 
     /**
@@ -50,10 +63,26 @@ class MavenService(
      * `-pl` (projects list), path to project
      *
      * `-am` (also make), include dependencies
+     *
+     * `-B` (batch mode) CI-friendly
+     *
+     * `-e` (errors) verbose execution error messages, full stack traces
      */
     fun build(modulePath: String) {
         executor.runCommand(
-            command = listOf("mvn", "-f", jawaPom, "package", "-pl", modulePath, "-am", "-DskipTests")
+            command = listOf(
+                "mvn",
+                "-f",
+                jawaPom,
+                "-B",
+                "-e",
+                "-DtrimStackTrace=false",
+                "package",
+                "-pl",
+                modulePath,
+                "-am",
+                "-DskipTests"
+            )
         )
     }
 }

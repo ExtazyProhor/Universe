@@ -1,6 +1,6 @@
 package ru.prohor.universe.scarif.services;
 
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.scarif.data.user.User;
@@ -35,22 +35,22 @@ public class LoginService {
 
         Opt<String> err = validationService.validatePassword(password, List.of(login)).orElse(testLogin.apply(login));
         if (err.isPresent())
-            throw new LoginException(new LoginClientError(err.get()), HttpServletResponse.SC_BAD_REQUEST);
+            throw new LoginException(new LoginClientError(err.get()), HttpStatus.BAD_REQUEST);
 
         Opt<User> user = isLoginEmail ? userService.findByEmail(login) : userService.findByUsername(login);
         if (user.isEmpty() || !passwordService.matches(password, user.get().password()))
-            throw new LoginException(new LoginInvalidLoginOrPasswordError(true), HttpServletResponse.SC_UNAUTHORIZED);
+            throw new LoginException(new LoginInvalidLoginOrPasswordError(true), HttpStatus.UNAUTHORIZED);
 
         return user.get();
     }
 
     public static class LoginException extends Exception {
         public final LoginError cause;
-        public final int code;
+        public final HttpStatus status;
 
-        public LoginException(LoginError cause, int code) {
+        public LoginException(LoginError cause, HttpStatus status) {
             this.cause = cause;
-            this.code = code;
+            this.status = status;
         }
     }
 

@@ -1,9 +1,17 @@
 package ru.prohor.universe.padawan.scripts;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class FFMpegVideoRecoding {
     private static final String DOWNLOADS = "C:\\Users\\User\\Downloads";
@@ -14,16 +22,14 @@ public class FFMpegVideoRecoding {
     }
 
     private static Float parseResult(String line) {
-        float result;
         try {
             line = line.substring(line.indexOf("time=") + "time=".length());
             line = line.substring(0, line.indexOf(' '));
             String[] parts = line.split(":");
-            result = Integer.parseInt(parts[0]) * 60 * 60 + Integer.parseInt(parts[1]) * 60 + Float.parseFloat(parts[2]);
+            return Integer.parseInt(parts[0]) * 60 * 60 + Integer.parseInt(parts[1]) * 60 + Float.parseFloat(parts[2]);
         } catch (Exception e) {
             return null;
         }
-        return result;
     }
 
     private static Float parseDuration(String line) {

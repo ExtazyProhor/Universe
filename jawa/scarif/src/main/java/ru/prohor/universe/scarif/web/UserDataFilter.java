@@ -4,7 +4,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -20,6 +23,8 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 public class UserDataFilter extends OncePerRequestFilter { // TODO CSRF security
+    private static final Logger log = LoggerFactory.getLogger(UserDataFilter.class);
+
     private final String refreshTokenCookieName;
     private final RefreshTokenService refreshTokenService;
 
@@ -37,13 +42,11 @@ public class UserDataFilter extends OncePerRequestFilter { // TODO CSRF security
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        UserData userData = new UserData(
-                Opt.ofNullable(request.getHeader(Requests.IP_HEADER))
-                        .orElse(Opt.ofNullable(request.getRemoteAddr())),
-                Opt.ofNullable(request.getHeader(Requests.USER_AGENT_HEADER))
-        );
-        // TODO if (userData.ip() == null) log.error
-        // TODO log.trace (userData)
+        String ip = Opt.ofNullable(request.getHeader(Requests.IP_HEADER)).orElseGet(request::getRemoteAddr);
+        Opt<String> userAgent = Opt.ofNullable(request.getHeader(Requests.USER_AGENT_HEADER));
+
+        UserData userData = new UserData(ip, userAgent);
+        log.trace("parse userData from request: {}", userData);
         request.setAttribute(Requests.USER_DATA_ATTRIBUTE_KEY, userData);
 
         Opt<String> optUserToken = CookieUtil.getCookieValue(request, refreshTokenCookieName);
@@ -53,8 +56,7 @@ public class UserDataFilter extends OncePerRequestFilter { // TODO CSRF security
             try {
                 parsedUserToken = Opt.of(refreshTokenService.parseUserToken(userToken));
             } catch (UserTokenParsingException e) {
-                e.printStackTrace();
-                // TODO log.warn (scope IS) / ban
+                log.warn("[IS] error when parsing userToken (refresh cookie)", e);
                 unauthorized(response);
                 return;
             }
@@ -70,7 +72,7 @@ public class UserDataFilter extends OncePerRequestFilter { // TODO CSRF security
     }
 
     public void unauthorized(HttpServletResponse response) {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // TODO другой тип
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
     }

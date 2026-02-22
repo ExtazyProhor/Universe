@@ -1,8 +1,8 @@
 package ru.prohor.universe.scarif.data.session;
 
-import org.joda.time.Instant;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
+
+import java.time.Instant;
 
 public record Session(
         long id,
@@ -12,7 +12,7 @@ public record Session(
         // TODO https://www.baeldung.com/java-yauaa-user-agent-parsing
         // TODO https://github.com/ua-parser/uap-java
         Opt<String> userAgent,
-        Opt<String> ipAddress,
+        String ipAddress,
         boolean closed,
         Opt<Instant> closedAt
 ) {
@@ -20,12 +20,12 @@ public record Session(
         return new SessionDto(
                 id,
                 userId,
-                DateTimeUtil.unwrap(createdAt),
-                DateTimeUtil.unwrap(expiresAt),
+                createdAt,
+                expiresAt,
                 userAgent.orElseNull(),
-                ipAddress.orElseNull(),
+                ipAddress,
                 closed,
-                closedAt.map(DateTimeUtil::unwrap).orElseNull()
+                closedAt.orElseNull()
         );
     }
 
@@ -33,12 +33,12 @@ public record Session(
         return new Session(
                 sessionDto.getId(),
                 sessionDto.getUserId(),
-                DateTimeUtil.wrap(sessionDto.getCreatedAt()),
-                DateTimeUtil.wrap(sessionDto.getExpiresAt()),
+                sessionDto.getCreatedAt(),
+                sessionDto.getExpiresAt(),
                 Opt.ofNullable(sessionDto.getUserAgent()),
-                Opt.ofNullable(sessionDto.getIpAddress()),
+                sessionDto.getIpAddress(),
                 sessionDto.isClosed(),
-                Opt.ofNullable(sessionDto.getClosedAt()).map(DateTimeUtil::wrap)
+                Opt.ofNullable(sessionDto.getClosedAt())
         );
     }
 }

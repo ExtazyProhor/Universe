@@ -4,12 +4,13 @@ import dev.morphia.annotations.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.prohor.universe.yahtzee.core.core.Combination;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class OfflineScoreDto {
-    private String combination;
+    private Combination combination;
     private int value;
 }

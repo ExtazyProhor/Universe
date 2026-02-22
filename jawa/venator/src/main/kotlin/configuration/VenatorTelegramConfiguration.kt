@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import ru.prohor.universe.jocasta.tgbots.BotAuth
 import ru.prohor.universe.jocasta.tgbots.RegisterBot
-import ru.prohor.universe.venator.telegram.VenatorBot
+import ru.prohor.universe.venator.shared.VenatorBot
 
 @Configuration
 class VenatorTelegramConfiguration {

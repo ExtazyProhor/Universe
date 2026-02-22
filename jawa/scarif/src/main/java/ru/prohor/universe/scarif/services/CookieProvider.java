@@ -1,10 +1,11 @@
 package ru.prohor.universe.scarif.services;
 
-import org.joda.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+
+import java.time.Duration;
 
 @Service
 public class CookieProvider {
@@ -38,7 +39,7 @@ public class CookieProvider {
                 token,
                 SCARIF_API_PATH,
                 Opt.empty(),
-                Duration.standardDays(refreshTokenTtlDays).getStandardSeconds()
+                Duration.ofDays(refreshTokenTtlDays).getSeconds()
         );
     }
 
@@ -58,7 +59,7 @@ public class CookieProvider {
                 token,
                 ROOT_PATH,
                 universeDomain,
-                Duration.standardMinutes(accessTokenTtlMinutes).getStandardSeconds()
+                Duration.ofMinutes(accessTokenTtlMinutes).getSeconds()
         );
     }
 

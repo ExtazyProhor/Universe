@@ -1,8 +1,8 @@
 package ru.prohor.universe.hyperspace.jwt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.joda.time.Instant;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public record JwtPayload(

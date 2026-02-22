@@ -11,11 +11,11 @@ public record RoomReference(
 ) implements MongoEntityPojo<RoomReferenceDto> {
     @Override
     public RoomReferenceDto toDto() {
-        return new RoomReferenceDto(id, type.propertyName());
+        return new RoomReferenceDto(id, type);
     }
 
     public static RoomReference fromDto(RoomReferenceDto roomRef) {
-        return new RoomReference(roomRef.getId(), RoomType.of(roomRef.getType()));
+        return new RoomReference(roomRef.getId(), roomRef.getType());
     }
 
     public boolean isTactileOffline() {

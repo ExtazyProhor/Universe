@@ -9,7 +9,6 @@ public interface FeatureSupport<T> {
     /**
      * @param payload          telegram api object to be processed
      * @param feedbackExecutor interface for sending feedback to users
-     * @return a flag indicating whether to continue update processing
      */
-    boolean handle(T payload, FeedbackExecutor feedbackExecutor);
+    void handle(T payload, FeedbackExecutor feedbackExecutor);
 }

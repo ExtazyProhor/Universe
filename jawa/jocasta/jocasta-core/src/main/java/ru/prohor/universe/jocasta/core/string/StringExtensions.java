@@ -17,4 +17,28 @@ public class StringExtensions {
         }
         return builder.toString();
     }
+
+    public static String fillToLength(String str, char ch, int target) {
+        if (str.length() >= target)
+            return str;
+        return String.valueOf(ch).repeat(target - str.length()) + str;
+    }
+
+    public static int utf8Length(String str) {
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            if (ch <= 0x7F) {
+                count++;
+            } else if (ch <= 0x7FF) {
+                count += 2;
+            } else if (Character.isHighSurrogate(ch)) {
+                count += 4;
+                i++; // skip low surrogate
+            } else {
+                count += 3;
+            }
+        }
+        return count;
+    }
 }

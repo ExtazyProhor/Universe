@@ -26,8 +26,4 @@ public enum RoomType {
     public String propertyName() {
         return name().toLowerCase();
     }
-
-    public static RoomType of(String propertyName) {
-        return valueOf(propertyName.toUpperCase());
-    }
 }

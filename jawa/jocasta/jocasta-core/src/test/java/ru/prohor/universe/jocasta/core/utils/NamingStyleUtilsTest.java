@@ -3,9 +3,9 @@ package ru.prohor.universe.jocasta.core.utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import ru.prohor.universe.jocasta.core.collections.common.CartesianProduct;
 
 import java.util.List;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class NamingStyleUtilsTest {
@@ -133,32 +133,33 @@ public class NamingStyleUtilsTest {
             )
     );
 
+    private final NamingStyleUtils.NamingStyle[] styles = NamingStyleUtils.NamingStyle.values();
+
     @Test
     public void testChangeNamingStyles() {
-        NamingStyleUtils.NamingStyle[] styles = NamingStyleUtils.NamingStyle.values();
         Stream<Executable> stream = TEST_ENTRIES.stream().flatMap(
-                testEntry -> IntStream.range(0, styles.length).boxed().flatMap(
-                        i -> IntStream.range(0, styles.length).mapToObj(
-                                j -> {
-                                    String from = testEntry.get(i);
-                                    String should = testEntry.get(j);
-                                    String became = NamingStyleUtils.changeStyle(
-                                            styles[i],
-                                            styles[j],
-                                            from
-                                    );
-                                    String message = "string '%s' became '%s' (should be '%s')"
-                                            .formatted(from, became, should);
-
-                                    return () -> Assertions.assertEquals(
-                                            should,
-                                            became,
-                                            message
-                                    );
-                                }
-                        )
+                testEntry -> CartesianProduct.ofTwoRanges(styles.length).mapToStream(
+                        (i, j) -> createExecutable(testEntry, i, j)
                 )
         );
         Assertions.assertAll(stream);
+    }
+
+    private Executable createExecutable(List<String> testEntry, int i, int j) {
+        String from = testEntry.get(i);
+        String should = testEntry.get(j);
+        String became = NamingStyleUtils.changeStyle(
+                styles[i],
+                styles[j],
+                from
+        );
+        String message = "string '%s' became '%s' (should be '%s')"
+                .formatted(from, became, should);
+
+        return () -> Assertions.assertEquals(
+                should,
+                became,
+                message
+        );
     }
 }

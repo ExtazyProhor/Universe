@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import ru.prohor.universe.venator.shared.Notifier
-import ru.prohor.universe.venator.telegram.VenatorBot
+import ru.prohor.universe.venator.shared.VenatorBot
 
 @Service
 class TelegramNotifier(
@@ -14,6 +14,15 @@ class TelegramNotifier(
 ) : Notifier {
     override fun failure(message: String) {
         send("\u274c $message")
+    }
+
+    override fun failure(message: String, fileContent: String, fileName: String) {
+        bot.feedbackExecutor.sendDocument(
+            notifiableChatId,
+            fileContent,
+            fileName,
+            "\u274c $message"
+        )
     }
 
     override fun info(message: String) {

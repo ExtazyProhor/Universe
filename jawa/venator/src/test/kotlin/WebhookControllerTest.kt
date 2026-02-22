@@ -205,6 +205,10 @@ class WebhookControllerTest(
             wasFailure = true
         }
 
+        override fun failure(message: String, fileContent: String, fileName: String) {
+            wasFailure = true
+        }
+
         override fun info(message: String) {
             wasInfo = true
         }

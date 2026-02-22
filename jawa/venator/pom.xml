@@ -27,10 +27,6 @@
             <artifactId>jocasta-tg-bots</artifactId>
         </dependency>
         <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-joda-time</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
@@ -39,8 +35,8 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-spring-test</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

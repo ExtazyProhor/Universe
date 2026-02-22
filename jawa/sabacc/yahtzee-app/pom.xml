@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-morphia</artifactId>
+            <artifactId>jocasta-morphia-configuration</artifactId>
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
@@ -40,6 +40,10 @@
             <groupId>ru.prohor.universe</groupId>
             <artifactId>yahtzee-online</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>yahtzee-stats</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -48,7 +52,11 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-jackson-joda-time</artifactId>
+            <artifactId>jocasta-jackson-morphia</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>jocasta-jackson-core</artifactId>
         </dependency>
     </dependencies>
 

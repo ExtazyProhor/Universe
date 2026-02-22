@@ -2,50 +2,53 @@ package ru.prohor.universe.jocasta.tgbots.support;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.core.functional.TriFunction;
+import ru.prohor.universe.jocasta.core.functional.MonoFunction;
+import ru.prohor.universe.jocasta.tgbots.api.ActionHandler;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
-import ru.prohor.universe.jocasta.tgbots.api.status.BotStatus;
+import ru.prohor.universe.jocasta.tgbots.api.status.StatusFlow;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
-import ru.prohor.universe.jocasta.tgbots.api.status.StatusStorageService;
+import ru.prohor.universe.jocasta.tgbots.api.status.StatusStorage;
+import ru.prohor.universe.jocasta.tgbots.api.status.UnknownStatusKeyHandler;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @param <K> status key
- * @param <V> status value
  */
-public class StatusSupportImpl<K, V> extends FeatureSupportImpl<Update, K, StatusHandler<K, V>> {
-    private final StatusStorageService<K, V> statusStorageService;
+public class StatusSupportImpl<K> implements StatusSupport {
+    private final UnknownStatusKeyHandler<K> unknownStatusKeyHandler;
+    private final Map<K, StatusHandler<K>> handlers;
+    private final StatusStorage<K> statusStorage;
 
     public StatusSupportImpl(
-            StatusStorageService<K, V> statusStorageService,
-            List<StatusHandler<K, V>> handlers,
-            TriFunction<Update, K, FeedbackExecutor, Boolean> unknownKeyHandler
+            UnknownStatusKeyHandler<K> unknownStatusKeyHandler,
+            List<StatusHandler<K>> handlers,
+            StatusStorage<K> statusStorage
     ) {
-        super(handlers, unknownKeyHandler);
-        this.statusStorageService = statusStorageService;
+        this.unknownStatusKeyHandler = unknownStatusKeyHandler;
+        this.handlers = handlers.stream().collect(Collectors.toMap(ActionHandler::key, MonoFunction.identity()));
+        this.statusStorage = statusStorage;
     }
 
     @Override
-    public boolean handle(Update update, FeedbackExecutor feedbackExecutor) {
+    public StatusFlow handle(Update update, FeedbackExecutor feedbackExecutor) {
         Long nullableChatId = null;
         if (update.hasMessage())
             nullableChatId = update.getMessage().getChatId();
         else if (update.hasCallbackQuery())
             nullableChatId = update.getCallbackQuery().getMessage().getChatId();
         if (nullableChatId == null)
-            return true;
+            return StatusFlow.CONTINUE;
 
-        long[] chatId = {nullableChatId};
-        Opt<BotStatus<K, V>> status = statusStorageService.getStatus(chatId[0]);
-        if (status.isEmpty())
-            return true;
+        Opt<K> statusO = statusStorage.getStatus(nullableChatId);
+        if (statusO.isEmpty())
+            return StatusFlow.CONTINUE;
 
-        return useHandler(
-                update,
-                status.get().key(),
-                handler -> handler.handle(status.get().value(), update, feedbackExecutor),
-                feedbackExecutor
-        );
+        K status = statusO.get();
+        return Opt.ofNullable(handlers.get(status))
+                .map(handler -> handler.handle(update, feedbackExecutor))
+                .orElseGet(() -> unknownStatusKeyHandler.handleUnknownActionKey(update, status, feedbackExecutor));
     }
 }

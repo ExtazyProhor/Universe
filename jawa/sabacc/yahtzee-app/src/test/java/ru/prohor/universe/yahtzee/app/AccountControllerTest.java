@@ -99,11 +99,11 @@ public class AccountControllerTest {
         Assertions.assertNotNull(info);
         Assertions.assertEquals(username, info.name());
         Assertions.assertEquals(username, info.username());
-        Assertions.assertFalse(info.randomColor());
+        Assertions.assertFalse(info.color().randomColor());
 
         String colorPattern = "^[A-Fa-f0-9]{6}$";
-        Assertions.assertTrue(info.color().matches(colorPattern));
-        Assertions.assertTrue(info.contrast().matches(colorPattern));
+        Assertions.assertTrue(info.color().color().matches(colorPattern));
+        Assertions.assertTrue(info.color().contrast().matches(colorPattern));
 
         Assertions.assertDoesNotThrow(() -> new ObjectId(info.imageId()));
         Assertions.assertNull(info.room());

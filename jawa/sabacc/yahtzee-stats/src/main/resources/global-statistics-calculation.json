@@ -1,0 +1,532 @@
+[
+  {
+    "$match": {
+      "trusted": true
+    }
+  },
+  {
+    "$facet": {
+      "games_total": [
+        { "$count": "value" }
+      ],
+
+      "individual_results_total": [
+        { "$unwind": "$teams" },
+        { "$count": "value" }
+      ],
+
+      "individual_results_with_scores_total": [
+        { "$unwind": "$teams" },
+        { "$match": { "teams.scores": { "$ne": null } } },
+        { "$count": "value" }
+      ],
+
+      "personal_maximum": [
+        { "$unwind": "$teams" },
+        {
+          "$match": {
+            "$expr": { "$eq": [{ "$size": "$teams.players" }, 1] }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "player": { "$arrayElemAt": ["$teams.players", 0] },
+            "value": "$teams.total",
+            "date": "$date"
+          }
+        },
+        {
+          "$sort": { "value": -1, "date": -1 }
+        },
+        {
+          "$group": {
+            "_id": "$player",
+            "value": { "$first": "$value" },
+            "date": { "$first": "$date" }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "player": "$_id",
+            "value": 1,
+            "date": 1
+          }
+        },
+        { "$sort": { "value": -1, "player": 1 } },
+        { "$limit": 10 }
+      ],
+
+      "games_count": [
+        { "$unwind": "$teams" },
+        { "$unwind": "$teams.players" },
+        {
+          "$group": {
+            "_id": "$teams.players",
+            "value": { "$sum": 1 }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "player": "$_id",
+            "value": 1
+          }
+        },
+        { "$sort": { "value": -1, "player": 1 } },
+        { "$limit": 10 }
+      ],
+
+      "overall_average": [
+        { "$unwind": "$teams" },
+        {
+          "$group": {
+            "_id": null,
+            "value": { "$avg": "$teams.total" }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "value": 1
+          }
+        }
+      ],
+
+      "average": [
+        { "$unwind": "$teams" },
+        { "$unwind": "$teams.players" },
+        {
+          "$group": {
+            "_id": "$teams.players",
+            "avg": { "$avg": "$teams.total" },
+            "games": { "$sum": 1 }
+          }
+        },
+        {
+          "$match": {
+            "games": { "$gte": 10 }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "player": "$_id",
+            "value": "$avg"
+          }
+        },
+        { "$sort": { "value": -1, "player": 1 } },
+        { "$limit": 10 }
+      ],
+
+      "maximum": [
+        { "$unwind": "$teams" },
+        {
+          "$project": {
+            "_id": 0,
+            "players": "$teams.players",
+            "value": "$teams.total",
+            "date": "$date"
+          }
+        },
+        { "$sort": { "value": -1, "date": -1, "players": 1 } },
+        { "$limit": 10 }
+      ],
+
+      "minimum": [
+        { "$unwind": "$teams" },
+        {
+          "$project": {
+            "_id": 0,
+            "players": "$teams.players",
+            "value": "$teams.total",
+            "date": "$date"
+          }
+        },
+        { "$sort": { "value": 1, "date": -1, "players": 1 } },
+        { "$limit": 10 }
+      ],
+
+      "total_distribution": [
+        { "$unwind": "$teams" },
+        {
+          "$group": {
+            "_id": "$teams.total",
+            "count": { "$sum": 1 }
+          }
+        },
+        { "$sort": { "_id": 1 } }
+      ],
+
+      "simple_distribution": [
+        { "$unwind": "$teams" },
+        { "$match": { "teams.scores": { "$ne": null } } },
+        {
+          "$project": {
+            "simpleTotal": {
+              "$sum": {
+                "$map": {
+                  "input": {
+                    "$filter": {
+                      "input": "$teams.scores",
+                      "as": "score",
+                      "cond": {
+                        "$in": [
+                          "$$score.combination",
+                          ["UNITS","TWOS","THREES","FOURS","FIVES","SIXES"]
+                        ]
+                      }
+                    }
+                  },
+                  "as": "simpleScore",
+                  "in": "$$simpleScore.value"
+                }
+              }
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": "$simpleTotal",
+            "count": { "$sum": 1 }
+          }
+        },
+        { "$sort": { "_id": 1 } }
+      ],
+
+      "most_frequent_total_scores": [
+        { "$unwind": "$teams" },
+        {
+          "$group": {
+            "_id": "$teams.total",
+            "count": { "$sum": 1 }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "total": "$_id",
+            "count": 1
+          }
+        },
+        { "$sort": { "count": -1, "total": 1 } },
+        { "$limit": 10 }
+      ],
+
+      "all_totals": [
+        { "$unwind": "$teams" },
+        {
+          "$group": {
+            "_id": "$teams.total"
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "value": "$_id"
+          }
+        }
+      ],
+
+      "simple_dice_distribution": [
+        { "$unwind": "$teams" },
+        { "$match": { "teams.scores": { "$ne": null } } },
+        { "$unwind": "$teams.scores" },
+        {
+          "$match": {
+            "teams.scores.combination": {
+              "$in": ["UNITS","TWOS","THREES","FOURS","FIVES","SIXES"]
+            }
+          }
+        },
+        {
+          "$addFields": {
+            "nominal": {
+              "$switch": {
+                "branches": [
+                  { "case": { "$eq": ["$teams.scores.combination", "UNITS"] }, "then": 1 },
+                  { "case": { "$eq": ["$teams.scores.combination", "TWOS"] }, "then": 2 },
+                  { "case": { "$eq": ["$teams.scores.combination", "THREES"] }, "then": 3 },
+                  { "case": { "$eq": ["$teams.scores.combination", "FOURS"] }, "then": 4 },
+                  { "case": { "$eq": ["$teams.scores.combination", "FIVES"] }, "then": 5 },
+                  { "case": { "$eq": ["$teams.scores.combination", "SIXES"] }, "then": 6 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$project": {
+            "combination": "$teams.scores.combination",
+            "dice": { "$divide": ["$teams.scores.value", "$nominal"] }
+          }
+        },
+        {
+          "$group": {
+            "_id": {
+              "combination": "$combination",
+              "dice": "$dice"
+            },
+            "count": { "$sum": 1 }
+          }
+        },
+        { "$sort": { "_id.combination": 1, "_id.dice": 1 } }
+      ],
+
+      "simple_dice_average": [
+        { "$unwind": "$teams" },
+        { "$match": { "teams.scores": { "$ne": null } } },
+        { "$unwind": "$teams.scores" },
+        {
+          "$match": {
+            "teams.scores.combination": {
+              "$in": ["UNITS","TWOS","THREES","FOURS","FIVES","SIXES"]
+            }
+          }
+        },
+        {
+          "$addFields": {
+            "nominal": {
+              "$switch": {
+                "branches": [
+                  { "case": { "$eq": ["$teams.scores.combination", "UNITS"] }, "then": 1 },
+                  { "case": { "$eq": ["$teams.scores.combination", "TWOS"] }, "then": 2 },
+                  { "case": { "$eq": ["$teams.scores.combination", "THREES"] }, "then": 3 },
+                  { "case": { "$eq": ["$teams.scores.combination", "FOURS"] }, "then": 4 },
+                  { "case": { "$eq": ["$teams.scores.combination", "FIVES"] }, "then": 5 },
+                  { "case": { "$eq": ["$teams.scores.combination", "SIXES"] }, "then": 6 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": "$teams.scores.combination",
+            "avgDice": {
+              "$avg": {
+                "$divide": ["$teams.scores.value", "$nominal"]
+              }
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "combination": "$_id",
+            "value": "$avgDice"
+          }
+        }
+      ],
+
+      "variable_combination_average": [
+        { "$unwind": "$teams" },
+        { "$match": { "teams.scores": { "$ne": null } } },
+        { "$unwind": "$teams.scores" },
+        {
+          "$match": {
+            "teams.scores.combination": {
+              "$in": ["PAIR","TWO_PAIRS","THREE_OF_KIND","FOUR_OF_KIND","CHANCE"]
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": "$teams.scores.combination",
+            "avgValue": { "$avg": "$teams.scores.value" }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "combination": "$_id",
+            "value": "$avgValue"
+          }
+        }
+      ],
+
+      "complex_combination_success_percent": [
+        { "$unwind": "$teams" },
+        { "$match": { "teams.scores": { "$ne": null } } },
+        { "$unwind": "$teams.scores" },
+        {
+          "$match": {
+            "teams.scores.combination": {
+              "$in": [
+                "PAIR","TWO_PAIRS","THREE_OF_KIND","FOUR_OF_KIND",
+                "FULL_HOUSE","LOW_STRAIGHT","HIGH_STRAIGHT","YAHTZEE"
+              ]
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": "$teams.scores.combination",
+            "total": { "$sum": 1 },
+            "success": {
+              "$sum": {
+                "$cond": [{ "$gt": ["$teams.scores.value", 0] }, 1, 0]
+              }
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "combination": "$_id",
+            "value": {
+              "$multiply": [
+                { "$divide": ["$success", "$total"] },
+                100
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "$addFields": {
+      "games_total": { "$arrayElemAt": ["$games_total.value", 0] },
+      "individual_results_total": { "$arrayElemAt": ["$individual_results_total.value", 0] },
+      "individual_results_with_scores_total": { "$arrayElemAt": ["$individual_results_with_scores_total.value", 0] },
+      "overall_average": { "$arrayElemAt": ["$overall_average.value", 0] },
+
+      "total_distribution": {
+        "$map": {
+          "input": "$total_distribution",
+          "as": "item",
+          "in": {
+            "value": "$$item._id",
+            "count": "$$item.count",
+            "percent": {
+              "$multiply": [
+                { "$divide": ["$$item.count", { "$arrayElemAt": ["$individual_results_total.value", 0] }] },
+                100
+              ]
+            }
+          }
+        }
+      },
+
+      "simple_distribution": {
+        "$map": {
+          "input": "$simple_distribution",
+          "as": "item",
+          "in": {
+            "value": "$$item._id",
+            "count": "$$item.count",
+            "percent": {
+              "$multiply": [
+                { "$divide": ["$$item.count", { "$arrayElemAt": ["$individual_results_with_scores_total.value", 0] }] },
+                100
+              ]
+            }
+          }
+        }
+      },
+
+      "simple_dice_distribution": {
+        "$reduce": {
+          "input": "$simple_dice_distribution",
+          "initialValue": [],
+          "in": {
+            "$let": {
+              "vars": {
+                "existingIdx": {
+                  "$indexOfArray": [
+                    "$$value.combination",
+                    "$$this._id.combination"
+                  ]
+                }
+              },
+              "in": {
+                "$cond": [
+                  { "$eq": ["$$existingIdx", -1] },
+                  {
+                    "$concatArrays": [
+                      "$$value",
+                      [{
+                        "combination": "$$this._id.combination",
+                        "counts": [{
+                          "dice": "$$this._id.dice",
+                          "count": "$$this.count",
+                          "percent": {
+                            "$multiply": [
+                              { "$divide": ["$$this.count", { "$arrayElemAt": ["$individual_results_with_scores_total.value", 0] }] },
+                              100
+                            ]
+                          }
+                        }]
+                      }]
+                    ]
+                  },
+                  {
+                    "$map": {
+                      "input": "$$value",
+                      "as": "elem",
+                      "in": {
+                        "$cond": [
+                          { "$eq": ["$$elem.combination", "$$this._id.combination"] },
+                          {
+                            "combination": "$$elem.combination",
+                            "counts": {
+                              "$concatArrays": [
+                                "$$elem.counts",
+                                [{
+                                  "dice": "$$this._id.dice",
+                                  "count": "$$this.count",
+                                  "percent": {
+                                    "$multiply": [
+                                      { "$divide": ["$$this.count", { "$arrayElemAt": ["$individual_results_with_scores_total.value", 0] }] },
+                                      100
+                                    ]
+                                  }
+                                }]
+                              ]
+                            }
+                          },
+                          "$$elem"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+
+      "missing_values": {
+        "$let": {
+          "vars": {
+            "min": { "$min": "$all_totals.value" },
+            "max": { "$max": "$all_totals.value" }
+          },
+          "in": {
+            "$filter": {
+              "input": { "$range": ["$$min", { "$add": ["$$max", 1] }] },
+              "as": "num",
+              "cond": {
+                "$not": {
+                  "$in": ["$$num", "$all_totals.value"]
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "generated_at": "$$NOW",
+      "top_limit": 10
+    }
+  },
+  {
+    "$project": {
+      "all_totals": 0
+    }
+  },
+  { "$merge": "offline_stats" }
+]

@@ -898,15 +898,6 @@
         teamScores[teamCategoryKey] = score;
 
         if (currentTeamIndex !== null) {
-            const totalCombinations = 15;
-            const completedCombinations = Object.keys(teamScores).filter(key =>
-            key.includes(`-${currentTeamIndex}`)
-            ).length;
-
-            if (Object.keys(teamScores).length === totalCombinations * teams.length) {
-                sendGameResultsToServer();
-            }
-
             nextTurn();
         }
 

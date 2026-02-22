@@ -28,7 +28,7 @@ public record OfflineTeamScores(
                 team.getPlayers(),
                 Opt.ofNullable(team.getScores()).map(s -> s.stream().map(OfflineScore::fromDto).toList()),
                 team.getTotal(),
-                Opt.ofNullable(team.hasBonus())
+                Opt.ofNullable(team.getHasBonus())
         );
     }
 }

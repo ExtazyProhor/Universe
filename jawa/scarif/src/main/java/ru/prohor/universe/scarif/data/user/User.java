@@ -1,9 +1,8 @@
 package ru.prohor.universe.scarif.data.user;
 
 import org.bson.types.ObjectId;
-import org.joda.time.Instant;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public record User(
@@ -25,7 +24,7 @@ public record User(
                 email,
                 password,
                 enabled,
-                DateTimeUtil.unwrap(createdAt)
+                createdAt
         );
     }
 
@@ -38,7 +37,7 @@ public record User(
                 userDto.getEmail(),
                 userDto.getPassword(),
                 userDto.isEnabled(),
-                DateTimeUtil.wrap(userDto.getCreatedAt())
+                userDto.getCreatedAt()
         );
     }
 }

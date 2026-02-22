@@ -25,6 +25,7 @@ class RepositoryPullerWebhookAction(
         if (environment != UniverseEnvironment.STABLE) {
             // TODO log
             println("Env is not stable, skip repo updating")
+            return
         }
         val wasPerformed = repository.tryPerform(
             operation = { universe -> performPulling(payload, universe) },
@@ -59,11 +60,19 @@ class RepositoryPullerWebhookAction(
             if (testResult.success) {
                 notifier.success("Tests were passed successfully")
             } else {
-                val modulesList = testResult.failedModules
-                    .joinToString(separator = "\n") { module ->
-                        module.modulePath
+                val verboseError = testResult.failedModules
+                    .joinToString(separator = "\n\n\n") { module ->
+                        val failedTests = module.failedTests.joinToString(separator = "\n") { test ->
+                            val header = "${test.className}${test.methodName.ifEmpty { null }?.let { ".$it" } ?: ""}"
+                            "$header\n${test.message}\n${test.stackTrace}"
+                        }
+                        "${module.modulePath}\n\n```\n$failedTests\n```"
                     }
-                notifier.failure("${testResult.failedModules.size} modules failed tests:\n$modulesList")
+                notifier.failure(
+                    message = "${testResult.failedModules.size} modules failed",
+                    fileContent = verboseError,
+                    fileName = "test-report.md"
+                )
             }
         }
     }

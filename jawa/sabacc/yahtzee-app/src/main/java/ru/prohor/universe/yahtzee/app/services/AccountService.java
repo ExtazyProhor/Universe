@@ -1,26 +1,27 @@
 package ru.prohor.universe.yahtzee.app.services;
 
 import org.bson.types.ObjectId;
-import org.joda.time.Instant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import ru.prohor.universe.hyperspace.jwt.AuthorizedUser;
 import ru.prohor.universe.jocasta.core.collections.PaginationResult;
 import ru.prohor.universe.jocasta.core.collections.Paginator;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.DiConsumer;
 import ru.prohor.universe.jocasta.core.functional.TriFunction;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
-import ru.prohor.universe.hyperspace.jwt.AuthorizedUser;
+import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.yahtzee.app.services.images.ImagesService;
+import ru.prohor.universe.yahtzee.app.web.api.ColorInfo;
 import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
 import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -98,9 +99,7 @@ public class AccountService {
         return new AccountController.InfoResponse(
                 player.username(),
                 player.displayName(),
-                color.isEmpty(),
-                color.isPresent() ? color.get().background() : null,
-                color.isPresent() ? color.get().text() : null,
+                ColorInfo.of(color),
                 player.imageId().toHexString(),
                 generalRoomsService.findRoom(player.currentRoom()).map(
                         room -> new AccountController.RoomInfo(

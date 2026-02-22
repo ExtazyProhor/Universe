@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Yahtzee (canary)" type="Application" factoryName="Application">
+    <envs>
+      <env name="HOLOCRON_JSON" value="$HOLOCRON_JSON$" />
+      <env name="UNIVERSE_HOME" value="$UNIVERSE_HOME$" />
+      <env name="SPRING_PROFILES_ACTIVE" value="canary" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="ru.prohor.universe.yahtzee.app.YahtzeeMain" />
+    <module name="yahtzee-app" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

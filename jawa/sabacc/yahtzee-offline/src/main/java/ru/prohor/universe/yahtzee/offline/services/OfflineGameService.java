@@ -1,25 +1,25 @@
 package ru.prohor.universe.yahtzee.offline.services;
 
 import org.bson.types.ObjectId;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.Enumeration;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.common.Result;
+import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTransaction;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
-import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
-import ru.prohor.universe.yahtzee.core.core.Yahtzee;
-import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.core.core.Combination;
+import ru.prohor.universe.yahtzee.core.core.RoomType;
+import ru.prohor.universe.yahtzee.core.core.Yahtzee;
+import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
+import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
+import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 import ru.prohor.universe.yahtzee.offline.api.CombinationInfo;
-import ru.prohor.universe.yahtzee.offline.api.CreateRoomRequest;
 import ru.prohor.universe.yahtzee.offline.api.CreateRoomErrorResponse;
+import ru.prohor.universe.yahtzee.offline.api.CreateRoomRequest;
 import ru.prohor.universe.yahtzee.offline.api.PlayerInfo;
 import ru.prohor.universe.yahtzee.offline.api.RoomInfoResponse;
 import ru.prohor.universe.yahtzee.offline.api.SaveMoveErrorResponse;
@@ -29,14 +29,12 @@ import ru.prohor.universe.yahtzee.offline.api.TeamInfo;
 import ru.prohor.universe.yahtzee.offline.api.TeamPlayers;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineGame;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.offline.data.inner.OfflineGameSource;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineInterimTeamScores;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineScore;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineTeamScores;
-import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
-import ru.prohor.universe.yahtzee.core.core.RoomType;
-import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,14 +77,16 @@ public class OfflineGameService {
         return player.currentRoom()
                 .filter(RoomReference::isTactileOffline)
                 .map(RoomReference::id)
-                .map(roomRepository::ensuredFindById).map(
-                        room -> new RoomInfoResponse(
-                                Enumeration.enumerateAndMap(
-                                        room.teams(),
-                                        (i, team) -> teamScoresEnumerationMapper(i, team, room, player)
-                                )
-                        )
-                );
+                .map(roomRepository::ensuredFindById).map(room -> mapRoomInfoResponse(room, player));
+    }
+
+    private RoomInfoResponse mapRoomInfoResponse(OfflineRoom room, Player player) {
+        return new RoomInfoResponse(
+                Enumeration.enumerateAndMap(
+                        room.teams(),
+                        (i, team) -> teamScoresEnumerationMapper(i, team, room, player)
+                )
+        );
     }
 
     public TeamInfo teamScoresEnumerationMapper(
@@ -111,7 +111,7 @@ public class OfflineGameService {
                 ),
                 team.scores().stream().map(
                         score -> new CombinationInfo(
-                                Combination.of(score.combination()),
+                                score.combination(),
                                 score.value()
                         )
                 ).toList()
@@ -201,8 +201,8 @@ public class OfflineGameService {
             OfflineInterimTeamScores movingTeam = room.teams().get(room.movingTeamIndex());
             if (!movingTeam.players().contains(mover.id()))
                 return saveMoveError("Moving player does not belong to the current moving team");
-            String combination = body.combination().propertyName();
-            if (movingTeam.scores().stream().anyMatch(score -> score.combination().equals(combination)))
+            Combination combination = body.combination();
+            if (movingTeam.scores().stream().anyMatch(score -> score.combination() == combination))
                 return saveMoveError("Moving team already has combination " + combination);
             if (!movingTeam.players().get(movingTeam.movingPlayerIndex()).equals(mover.id()))
                 return saveMoveError(
@@ -210,7 +210,7 @@ public class OfflineGameService {
                                 .get(movingTeam.movingPlayerIndex())
                 );
             List<OfflineScore> scores = new ArrayList<>(movingTeam.scores());
-            scores.add(new OfflineScore(body.combination().propertyName(), body.value()));
+            scores.add(new OfflineScore(body.combination(), body.value()));
             int newMovingPlayerIndex = movingTeam.movingPlayerIndex() + 1;
             if (newMovingPlayerIndex == movingTeam.players().size())
                 newMovingPlayerIndex = 0;
@@ -226,7 +226,8 @@ public class OfflineGameService {
             transactionalRoomRepository.save(room);
             OfflineInterimTeamScores nextMovingTeam = room.teams().get(newMovingTeamIndex);
             if (nextMovingTeam.scores().size() == Yahtzee.COMBINATIONS) {
-                transactionalGameRepository.save(roomToGame(room));
+                Player initiator = transactionalPlayerRepository.ensuredFindById(room.initiator());
+                transactionalGameRepository.save(roomToGame(room, initiator));
                 return ResponseEntity.ok(new SaveMoveResponse(null, true));
             }
 
@@ -241,16 +242,18 @@ public class OfflineGameService {
         return ResponseEntity.badRequest().body(new SaveMoveErrorResponse(error));
     }
 
-    private OfflineGame roomToGame(OfflineRoom room) {
+    private OfflineGame roomToGame(OfflineRoom room, Player initiator) {
         return new OfflineGame(
                 ObjectId.get(),
-                LocalDate.now(DateTimeZone.UTC),
-                Opt.of(LocalTime.now(DateTimeZone.UTC)),
+                java.time.Instant.now(),
                 room.initiator(),
                 room.teams()
                         .stream()
                         .map(this::offlineTeamScoresMapper)
-                        .toList()
+                        .toList(),
+                initiator.trusted(),
+                OfflineGameSource.DIRECT,
+                Opt.of(room.id())
         );
     }
 

@@ -11,6 +11,10 @@ abstract class FileSystemComponent(val path: Path) {
         try {
             operation.invoke(path)
             return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // TODO log e
+            return false
         } finally {
             lock.unlock()
         }

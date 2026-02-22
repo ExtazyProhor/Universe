@@ -4,30 +4,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.test.context.TestConstructor;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.prohor.universe.hyperspace.jwt.AuthorizedUser;
 import ru.prohor.universe.hyperspace.jwt.JwtVerifier;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
 import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
-import ru.prohor.universe.jocasta.jackson.jodatime.JacksonJodaTimeConfiguration;
+import ru.prohor.universe.jocasta.jackson.core.JacksonJocastaCoreConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
-import ru.prohor.universe.probe.spring.BaseSpringTest;
-import ru.prohor.universe.probe.spring.TestKeysFromStringProviderConfiguration;
-import ru.prohor.universe.probe.spring.TestPlaceholderProperties;
 
 import java.util.UUID;
 
 @SpringJUnitConfig(classes = {
         HolocronConfiguration.class,
-        JacksonJodaTimeConfiguration.class,
+        JacksonJocastaCoreConfiguration.class,
         SnowflakeConfiguration.class,
 
-        TestPlaceholderProperties.class,
-        TestKeysFromStringProviderConfiguration.class
+        JwtProviderTest.Configuration.class
 })
-public class JwtProviderTest extends BaseSpringTest {
+@TestPropertySource("classpath:application.properties")
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+public class JwtProviderTest {
     private final JwtProvider jwtProvider;
     private final JwtVerifier jwtVerifier;
 
@@ -68,5 +71,21 @@ public class JwtProviderTest extends BaseSpringTest {
         Assertions.assertEquals(uuid, authorizedUser.uuid());
         Assertions.assertEquals(objectId, authorizedUser.objectId());
         Assertions.assertEquals(username, authorizedUser.username());
+    }
+
+    @TestConfiguration
+    public static class Configuration {
+        @Bean
+        public KeysFromStringProvider keysFromStringProvider(
+                @Value("${universe.test.private-key}") String privateKey,
+                @Value("${universe.test.public-key}") String publicKey
+        ) {
+            return new KeysFromStringProvider(privateKey, publicKey);
+        }
+
+        @Bean
+        static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+            return new PropertySourcesPlaceholderConfigurer();
+        }
     }
 }

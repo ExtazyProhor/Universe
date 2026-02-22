@@ -2,10 +2,10 @@ package ru.prohor.universe.yahtzee.core.data.entities.pojo;
 
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
-import org.joda.time.Instant;
-import ru.prohor.universe.jocasta.jodatime.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.core.data.entities.dto.ImageDto;
+
+import java.time.Instant;
 
 public record Image(
         ObjectId id,
@@ -17,7 +17,7 @@ public record Image(
         return new ImageDto(
                 id,
                 content,
-                DateTimeUtil.unwrap(createdAt)
+                createdAt
         );
     }
 
@@ -25,7 +25,7 @@ public record Image(
         return new Image(
                 image.getId(),
                 image.getContent(),
-                DateTimeUtil.wrap(image.getCreatedAt())
+                image.getCreatedAt()
         );
     }
 }

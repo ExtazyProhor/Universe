@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Boba Fett" type="Application" factoryName="Application">
+    <envs>
+      <env name="HOLOCRON_JSON" value="$HOLOCRON_JSON$" />
+      <env name="UNIVERSE_HOME" value="$UNIVERSE_HOME$" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="ru.prohor.universe.bobafett.BobaFettMain" />
+    <module name="boba-fett" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
