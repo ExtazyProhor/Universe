@@ -157,6 +157,9 @@
 
         const res = await fetch(`/api/content-list?path=${encodeURIComponent(path)}`);
         if (!res.ok) {
+            const errorData = await res.json().catch(() => ({ message: "Неизвестная ошибка" }));
+            console.error(`Ошибка ${res.status}:`, errorData);
+
             listEl.innerHTML = "<div class='empty'>Ошибка загрузки</div>";
             return;
         }
