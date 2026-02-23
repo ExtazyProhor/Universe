@@ -32,6 +32,9 @@ class DirectoryContentController(
         if (!resolvedPath.startsWith(contentDirectory)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
+        if (!Files.exists(resolvedPath)) {
+            Files.createDirectories(resolvedPath)
+        }
         if (!Files.isDirectory(resolvedPath)) {
             return ResponseEntity.notFound().build()
         }
