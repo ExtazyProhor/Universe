@@ -23,6 +23,7 @@ import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
 import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
+import ru.prohor.universe.yahtzee.app.web.controllers.ProfileController;
 import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
 
 import java.util.Random;
@@ -115,10 +116,10 @@ public class AccountControllerTest {
         HttpHeaders headers = makeHeadersWithToken();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        AccountController.ChangeNameRequest body = new AccountController.ChangeNameRequest(newName);
+        ProfileController.ChangeNameRequest body = new ProfileController.ChangeNameRequest(newName);
 
         ResponseEntity<Void> response = rest.exchange(
-                "/api/account/change_name",
+                "/api/profile/change_name",
                 HttpMethod.POST,
                 new HttpEntity<>(body, headers),
                 Void.class
@@ -143,9 +144,9 @@ public class AccountControllerTest {
         HttpHeaders headers = makeHeadersWithToken();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        AccountController.ChangeNameRequest body = new AccountController.ChangeNameRequest("ab");
+        ProfileController.ChangeNameRequest body = new ProfileController.ChangeNameRequest("ab");
         ResponseEntity<Void> response = rest.exchange(
-                "/api/account/change_name",
+                "/api/profile/change_name",
                 HttpMethod.POST,
                 new HttpEntity<>(body, headers),
                 Void.class
