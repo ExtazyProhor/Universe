@@ -10,6 +10,7 @@ import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.spring.features.PrettyJsonPrinter;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,8 +49,15 @@ public class MongoForceBackupService {
     }
 
     public void recovery(String jsonBackup) {
-        JsonNode rootNode = Sneaky.execute(() -> objectMapper.readTree(jsonBackup));
-        rootNode.properties().forEach(entry -> {
+        recovery(Sneaky.execute(() -> objectMapper.readTree(jsonBackup)));
+    }
+
+    public void recovery(InputStream inputStream) {
+        recovery(Sneaky.execute(() -> objectMapper.readTree(inputStream)));
+    }
+
+    private void recovery(JsonNode jsonNode) {
+        jsonNode.properties().forEach(entry -> {
             String type = entry.getKey();
             JsonNode entities = entry.getValue();
             MongoRepository<?> repository = repositories.get(type);
