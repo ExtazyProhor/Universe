@@ -6,10 +6,13 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import ru.prohor.universe.jocasta.spring.features.PrettyJsonPrinter;
 
 import java.util.List;
 
 @Configuration
+@Import(PrettyJsonPrinter.class)
 public class JacksonConfiguration {
     @Bean
     public ObjectMapper objectMapper(List<Module> modules) {
