@@ -1,8 +1,11 @@
 package ru.prohor.universe.jocasta.jackson.morphia;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
@@ -43,5 +46,35 @@ public class MongoForceBackupService {
 
     public Opt<String> backupAsPrettyJson() {
         return Opt.tryOrNull(() -> prettyWriter.writeValueAsString(backupAsObjects()));
+    }
+
+    public void recovery(String jsonBackup) {
+        JsonNode rootNode = Sneaky.execute(() -> objectMapper.readTree(jsonBackup));
+        rootNode.properties().forEach(entry -> {
+            String type = entry.getKey();
+            JsonNode entities = entry.getValue();
+            MongoRepository<?> repository = repositories.get(type);
+            if (repository == null || !entities.isArray()) {
+                return;
+            }
+            saveUnchecked(repository, entities);
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends MongoEntityPojo<?>> void saveUnchecked(
+            MongoRepository<?> repository,
+            JsonNode entities
+    ) {
+        saveEntities((MongoRepository<T>) repository, entities);
+    }
+
+    private <T extends MongoEntityPojo<?>> void saveEntities(
+            MongoRepository<T> repository,
+            JsonNode entities
+    ) {
+        CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(List.class, repository.type());
+        List<T> list = Sneaky.execute(() -> objectMapper.readerFor(listType).readValue(entities));
+        repository.save(list);
     }
 }
