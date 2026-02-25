@@ -9,7 +9,10 @@ import org.springframework.context.annotation.Import;
 import ru.prohor.universe.jocasta.spring.configuration.JacksonConfiguration;
 
 @Configuration
-@Import(JacksonConfiguration.class)
+@Import({
+        JacksonConfiguration.class,
+        MongoForceBackupService.class
+})
 public class JacksonMorphiaConfiguration {
     @Bean
     public Module morphiaModule() {

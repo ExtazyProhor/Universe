@@ -12,6 +12,5 @@ import ru.prohor.universe.jocasta.cfg.morphia.db.MongoTransactionServiceConfigur
         MongoClientConfiguration.class,
         DatastoreConfiguration.class,
         MongoTransactionServiceConfiguration.class,
-        MongoSharedConfiguration.class,
 })
 public class MongoInstanceConfiguration {}

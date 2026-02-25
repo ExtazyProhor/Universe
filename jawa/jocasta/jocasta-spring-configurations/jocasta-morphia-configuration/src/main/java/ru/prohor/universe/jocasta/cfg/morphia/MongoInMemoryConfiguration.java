@@ -7,6 +7,5 @@ import ru.prohor.universe.jocasta.cfg.morphia.ram.MongoInMemoryTransactionServic
 @Configuration
 @Import({
         MongoInMemoryTransactionServiceConfiguration.class,
-        MongoSharedConfiguration.class,
 })
 public class MongoInMemoryConfiguration {}
