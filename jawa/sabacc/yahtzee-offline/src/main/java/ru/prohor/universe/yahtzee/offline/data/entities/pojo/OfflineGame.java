@@ -3,6 +3,7 @@ package ru.prohor.universe.yahtzee.offline.data.entities.pojo;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
+import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
 import ru.prohor.universe.yahtzee.offline.data.entities.dto.OfflineGameDto;
 import ru.prohor.universe.yahtzee.offline.data.inner.OfflineGameSource;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineTeamScores;
@@ -17,7 +18,7 @@ public record OfflineGame(
         List<OfflineTeamScores> teams,
         boolean trusted,
         OfflineGameSource source,
-        Opt<ObjectId> room
+        Opt<RoomReference> room
 ) implements MongoEntityPojo<OfflineGameDto> {
     @Override
     public OfflineGameDto toDto() {
@@ -28,7 +29,7 @@ public record OfflineGame(
                 teams.stream().map(OfflineTeamScores::toDto).toList(),
                 trusted,
                 source,
-                room.orElseNull()
+                room.map(RoomReference::toDto).orElseNull()
         );
     }
 
@@ -40,7 +41,7 @@ public record OfflineGame(
                 game.getTeams().stream().map(OfflineTeamScores::fromDto).toList(),
                 game.isTrusted(),
                 game.getSource(),
-                Opt.ofNullable(game.getRoom())
+                Opt.ofNullable(game.getRoom()).map(RoomReference::fromDto)
         );
     }
 }

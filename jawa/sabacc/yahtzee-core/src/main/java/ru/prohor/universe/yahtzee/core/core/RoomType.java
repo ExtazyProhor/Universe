@@ -1,5 +1,8 @@
 package ru.prohor.universe.yahtzee.core.core;
 
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
+
 public enum RoomType {
     /**
      * Тактильные кубики, игра офлайн
@@ -25,5 +28,9 @@ public enum RoomType {
 
     public String propertyName() {
         return name().toLowerCase();
+    }
+
+    public static RoomType getType(Opt<RoomReference> roomReference) {
+        return roomReference.map(RoomReference::type).orElse(RoomType.TACTILE_OFFLINE);
     }
 }

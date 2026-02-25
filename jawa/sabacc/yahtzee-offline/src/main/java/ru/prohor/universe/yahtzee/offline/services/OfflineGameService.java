@@ -246,14 +246,17 @@ public class OfflineGameService {
         return new OfflineGame(
                 ObjectId.get(),
                 java.time.Instant.now(),
-                room.initiator(),
+                initiator.id(),
                 room.teams()
                         .stream()
                         .map(this::offlineTeamScoresMapper)
                         .toList(),
                 initiator.trusted(),
                 OfflineGameSource.DIRECT,
-                Opt.of(room.id())
+                Opt.of(new RoomReference(
+                        room.id(),
+                        room.type()
+                ))
         );
     }
 

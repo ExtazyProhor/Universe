@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import ru.prohor.universe.yahtzee.core.data.inner.dto.RoomReferenceDto;
 import ru.prohor.universe.yahtzee.offline.data.inner.OfflineGameSource;
 import ru.prohor.universe.yahtzee.offline.data.inner.dto.OfflineTeamScoresDto;
 
@@ -24,5 +25,5 @@ public class OfflineGameDto {
     private List<OfflineTeamScoresDto> teams;
     private boolean trusted;
     private OfflineGameSource source;
-    private ObjectId room;
+    private RoomReferenceDto room;
 }
