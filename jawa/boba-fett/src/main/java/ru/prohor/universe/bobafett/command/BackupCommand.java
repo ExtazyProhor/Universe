@@ -5,7 +5,6 @@ import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.prohor.universe.bobafett.service.BackupService;
-import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler;
 
@@ -28,11 +27,9 @@ public class BackupCommand implements CommandHandler {
         if (!backupService.isAdmin(chatId))
             return;
 
-        Opt<String> json = backupService.createBackupJson()
-                .map(it -> "```json\n" + it + "\n```");
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(message.getChatId())
-                .text(json.orElse("Произошла ошибка при создании копии"))
+                .text("```json\n" + backupService.createBackupJson() + "\n```")
                 .parseMode(ParseMode.MARKDOWNV2)
                 .build();
         feedbackExecutor.sendMessage(sendMessage);

@@ -2,7 +2,6 @@ package ru.prohor.universe.bobafett.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.jackson.morphia.MongoForceBackupService;
 
 import java.util.HashSet;
@@ -26,7 +25,7 @@ public class BackupService {
         return adminChatsIds.contains(chatId);
     }
 
-    public Opt<String> createBackupJson() {
+    public String createBackupJson() {
         return mongoForceBackupService.backupAsPrettyJson();
     }
 }

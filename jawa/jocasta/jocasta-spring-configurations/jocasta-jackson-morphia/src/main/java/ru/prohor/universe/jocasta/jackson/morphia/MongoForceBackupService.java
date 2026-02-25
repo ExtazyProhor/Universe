@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
@@ -40,12 +39,12 @@ public class MongoForceBackupService {
         ));
     }
 
-    public Opt<String> backupAsJson() {
-        return Opt.tryOrNull(() -> objectMapper.writeValueAsString(backupAsObjects()));
+    public String backupAsJson() {
+        return Sneaky.execute(() -> objectMapper.writeValueAsString(backupAsObjects()));
     }
 
-    public Opt<String> backupAsPrettyJson() {
-        return Opt.tryOrNull(() -> prettyWriter.writeValueAsString(backupAsObjects()));
+    public String backupAsPrettyJson() {
+        return Sneaky.execute(() -> prettyWriter.writeValueAsString(backupAsObjects()));
     }
 
     public void recovery(String jsonBackup) {
