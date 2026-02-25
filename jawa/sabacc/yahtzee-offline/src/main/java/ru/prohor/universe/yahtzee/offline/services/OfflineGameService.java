@@ -193,10 +193,7 @@ public class OfflineGameService {
             if (!mover.currentRoom().get().equals(updated.currentRoom().get()))
                 return saveMoveError("Player and mover are in different rooms"); // TODO log [SB]
             if (updated.currentRoom().get().type() != RoomType.TACTILE_OFFLINE)
-                return saveMoveError("Illegal room type: " + updated.currentRoom()
-                        .get()
-                        .type()
-                        .propertyName()); // TODO log [SB]
+                return saveMoveError("Illegal room type: " + updated.currentRoom().get().type()); // TODO log [SB]
             OfflineRoom room = transactionalRoomRepository.ensuredFindById(updated.currentRoom().get().id());
             OfflineInterimTeamScores movingTeam = room.teams().get(room.movingTeamIndex());
             if (!movingTeam.players().contains(mover.id()))

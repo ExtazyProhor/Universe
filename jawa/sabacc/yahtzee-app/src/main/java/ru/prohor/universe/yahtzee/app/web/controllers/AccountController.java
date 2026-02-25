@@ -50,7 +50,7 @@ public class AccountController {
     ) {}
 
     public record RoomInfo(
-            String type, // lowercase RoomType
+            String type, // RoomType
             String creation, // datetime
             int teams
     ) {}

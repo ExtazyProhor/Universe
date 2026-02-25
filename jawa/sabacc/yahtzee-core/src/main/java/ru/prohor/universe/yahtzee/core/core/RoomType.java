@@ -26,10 +26,6 @@ public enum RoomType {
      */
     VIRTUAL_OFFLINE;
 
-    public String propertyName() {
-        return name().toLowerCase();
-    }
-
     public static RoomType getType(Opt<RoomReference> roomReference) {
         return roomReference.map(RoomReference::type).orElse(RoomType.TACTILE_OFFLINE);
     }
