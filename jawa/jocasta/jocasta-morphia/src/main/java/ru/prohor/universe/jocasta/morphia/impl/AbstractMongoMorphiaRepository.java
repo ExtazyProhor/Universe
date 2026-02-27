@@ -106,6 +106,7 @@ public class AbstractMongoMorphiaRepository<T, W> {
         query.getSort().ifPresent(sort -> findOptions.sort(sort.morphia()));
         query.getSkip().ifPresent(findOptions::skip);
         query.getLimit().ifPresent(findOptions::limit);
+        query.getReadConcern().ifPresent(findOptions::readConcern);
         Query<T> morphiaQuery = datastore.find(type, findOptions);
         query.getFilter().ifPresent(filter -> morphiaQuery.filter(filter.morphia()));
         return morphiaQuery.stream().map(wrapFunction).toList();
