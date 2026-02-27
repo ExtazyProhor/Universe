@@ -17,4 +17,14 @@ public class MongoInMemoryTransactionService implements MongoTransactionService 
         transaction.accept(new MongoInMemoryTransaction());
         return true;
     }
+
+    @Override
+    public <T> T withCausallyConsistent(MonoFunction<MongoTransaction, T> transaction) {
+        return transaction.apply(new MongoInMemoryTransaction());
+    }
+
+    @Override
+    public void withCausallyConsistent(MonoConsumer<MongoTransaction> transaction) {
+        transaction.accept(new MongoInMemoryTransaction());
+    }
 }
