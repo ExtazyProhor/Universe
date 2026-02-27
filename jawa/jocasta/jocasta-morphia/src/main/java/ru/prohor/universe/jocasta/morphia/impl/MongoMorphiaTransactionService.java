@@ -1,6 +1,8 @@
 package ru.prohor.universe.jocasta.morphia.impl;
 
 import com.mongodb.ClientSessionOptions;
+import com.mongodb.ReadConcern;
+import com.mongodb.TransactionOptions;
 import dev.morphia.Datastore;
 import dev.morphia.transactions.MorphiaSession;
 import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
@@ -12,6 +14,9 @@ import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 public class MongoMorphiaTransactionService implements MongoTransactionService {
     private final ClientSessionOptions causallyConsistentClientSessionOptions = ClientSessionOptions.builder()
             .causallyConsistent(true)
+            .build();
+    private final TransactionOptions snaphotTransactionOptions = TransactionOptions.builder()
+            .readConcern(ReadConcern.SNAPSHOT)
             .build();
     private final Datastore datastore;
 
@@ -52,16 +57,21 @@ public class MongoMorphiaTransactionService implements MongoTransactionService {
     }
 
     @Override
-    public <T> T withCausallyConsistent(MonoFunction<MongoTransaction, T> transaction) {
+    public <T> T withReadSnapshot(MonoFunction<MongoTransaction, T> transaction) {
         try (MorphiaSession session = datastore.startSession(causallyConsistentClientSessionOptions)) {
-            return transaction.apply(new MongoMorphiaTransaction(session));
+            session.startTransaction(snaphotTransactionOptions);
+            T result = transaction.apply(new MongoMorphiaTransaction(session));
+            session.commitTransaction();
+            return result;
         }
     }
 
     @Override
-    public void withCausallyConsistent(MonoConsumer<MongoTransaction> transaction) {
+    public void withReadSnapshot(MonoConsumer<MongoTransaction> transaction) {
         try (MorphiaSession session = datastore.startSession(causallyConsistentClientSessionOptions)) {
+            session.startTransaction(snaphotTransactionOptions);
             transaction.accept(new MongoMorphiaTransaction(session));
+            session.commitTransaction();
         }
     }
 }

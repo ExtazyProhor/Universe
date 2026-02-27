@@ -19,12 +19,12 @@ public class MongoInMemoryTransactionService implements MongoTransactionService 
     }
 
     @Override
-    public <T> T withCausallyConsistent(MonoFunction<MongoTransaction, T> transaction) {
+    public <T> T withReadSnapshot(MonoFunction<MongoTransaction, T> transaction) {
         return transaction.apply(new MongoInMemoryTransaction());
     }
 
     @Override
-    public void withCausallyConsistent(MonoConsumer<MongoTransaction> transaction) {
+    public void withReadSnapshot(MonoConsumer<MongoTransaction> transaction) {
         transaction.accept(new MongoInMemoryTransaction());
     }
 }

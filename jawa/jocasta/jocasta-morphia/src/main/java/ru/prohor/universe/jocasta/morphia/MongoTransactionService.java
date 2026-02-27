@@ -8,7 +8,7 @@ public interface MongoTransactionService {
 
     boolean withTransaction(MonoConsumer<MongoTransaction> transaction);
 
-    <T> T withCausallyConsistent(MonoFunction<MongoTransaction, T> transaction);
+    <T> T withReadSnapshot(MonoFunction<MongoTransaction, T> transaction);
 
-    void withCausallyConsistent(MonoConsumer<MongoTransaction> transaction);
+    void withReadSnapshot(MonoConsumer<MongoTransaction> transaction);
 }
