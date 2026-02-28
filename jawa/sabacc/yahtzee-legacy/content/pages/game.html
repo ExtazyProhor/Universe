@@ -1293,7 +1293,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(gameResults)
-            });
+            }, 1000);
 
             if (response.ok) {
                 showNotification('Результаты сохранены', true);
@@ -1304,6 +1304,22 @@
         } catch (error) {
             console.error('Ошибка сети при отправке результатов игры:', error);
             showNotification('Ошибка сети при сохранении результатов', false);
+        }
+    }
+
+    async function fetchWithTimeout(url, options = {}, timeout = 1000) {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+
+        try {
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+
+            return response;
+        } finally {
+            clearTimeout(id);
         }
     }
 
