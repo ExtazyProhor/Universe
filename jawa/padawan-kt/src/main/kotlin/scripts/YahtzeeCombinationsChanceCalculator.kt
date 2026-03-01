@@ -7,6 +7,7 @@ import kotlin.system.measureTimeMillis
 fun main() {
     val solvers = listOf(
         PairSolver,
+        TwoPairsSolver,
         ThreeOfKindSolver,
         FourOfKindSolver,
         FullHouseSolver,
@@ -30,6 +31,7 @@ fun main() {
 
 fun test() {
     compare(0.9992061677589775, PairSolver.calculate())
+    compare(0.7694711172077416, TwoPairsSolver.calculate())
     compare(0.7431952700299738, ThreeOfKindSolver.calculate())
     compare(0.2907935835069176, FourOfKindSolver.calculate())
     compare(0.3588891746684954, FullHouseSolver.calculate())
@@ -46,6 +48,29 @@ fun compare(expected: Double, actual: Double) {
 
 object PairSolver : SameDiceCombinationSolver() {
     override val count = 2
+}
+
+object TwoPairsSolver : CombinationSolver() {
+    override fun List<Int>.isValid(): Boolean {
+        val counts = counts()
+        for (i in 1..6)
+            if (counts[i] in 4..5)
+                return true
+        var countOfPairs = 0
+        for (i in 1..6)
+            if (counts[i] in 2..3)
+                countOfPairs++
+        return countOfPairs == 2
+    }
+
+    override fun List<Int>.holdDiceFor(): List<Int> {
+        val counts = counts()
+        for (i in 1..6)
+            for (count in 3 downTo 2)
+                if (counts[i] in 2..3)
+                    return List(count) { i }
+        return subList(0, 2)
+    }
 }
 
 object ThreeOfKindSolver : SameDiceCombinationSolver() {
