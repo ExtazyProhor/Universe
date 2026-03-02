@@ -915,6 +915,17 @@
             category: currentRow.dataset.category,
             score
         });
+        if (currentTeamIndex !== null) {
+            fetch('/api/combination', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    teamName: teams[currentTeamIndex].name,
+                    combination: currentRow.dataset.category,
+                    score: score
+                })
+            }).catch(err => console.error('Ошибка логирования комбинации:', err));
+        }
 
         if (currentTeamIndex !== null) {
             nextTurn();

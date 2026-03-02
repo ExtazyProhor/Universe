@@ -38,19 +38,70 @@ public class SaveController {
     private final ZoneId utc = ZoneId.of("UTC");
     private final Path dir;
     private final long notifiableChatId;
+    private final long mutedChatId;
 
     public SaveController(
             ChopperClient chopperClient,
             @Value("${universe.yahtzee.legacy.output-path}")
             String outputPath,
             @Value("${universe.yahtzee-legacy.notifiable-chat-id}")
-            long notifiableChatId
+            long notifiableChatId,
+            @Value("${universe.yahtzee-legacy.muted-chat-id}")
+            long mutedChatId
     ) {
         this.chopperClient = chopperClient;
         this.dir = Path.of(outputPath);
         if (!Files.exists(dir))
             Sneaky.execute(() -> Files.createDirectory(dir));
         this.notifiableChatId = notifiableChatId;
+        this.mutedChatId = mutedChatId;
+    }
+
+    @PostMapping("/combination")
+    public ResponseEntity<String> combination(@RequestBody String jsonData) {
+        try {
+            JsonNode node = objectMapper.readTree(jsonData);
+            String teamName = node.get("teamName").asText();
+            String combination = node.get("combination").asText();
+            int score = node.get("score").asInt();
+
+            String message = teamName + " → " + resolveCombination(combination) + ": " + score;
+            chopperClient.sendMessage(message, mutedChatId, false);
+
+            return ResponseEntity.ok("success");
+        } catch (Exception e) {
+            Sneaky.silent(() -> error(e));
+            return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
+        }
+    }
+
+    private String resolveCombination(String combination) {
+        return switch (combination) {
+            case "units" -> "единицы";
+            case "twos" -> "двойки";
+            case "threes" -> "тройки";
+            case "fours" -> "четверки";
+            case "fives" -> "пятерки";
+            case "sixes" -> "шестерки";
+
+            case "pair" -> "пара";
+            case "two_pairs" -> "две пары";
+            case "three_of_kind" -> "сет";
+            case "four_of_kind" -> "каре";
+            case "full_house" -> "фулл хаус";
+            case "low_straight" -> "малый стрит";
+            case "high_straight" -> "большой стрит";
+            case "yahtzee" -> "яцзы";
+            case "chance" -> "шанс";
+            default -> {
+                chopperClient.sendMessage(
+                        "Illegal name of combination: " + combination,
+                        notifiableChatId,
+                        false
+                );
+                yield combination;
+            }
+        };
     }
 
     @PostMapping("/game")
