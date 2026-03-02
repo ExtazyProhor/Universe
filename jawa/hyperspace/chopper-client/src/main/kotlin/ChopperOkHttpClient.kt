@@ -8,10 +8,8 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.springframework.stereotype.Component
 import java.io.File
 
-@Component
 class ChopperOkHttpClient(
     private val client: OkHttpClient,
     private val baseUrl: String,
@@ -111,7 +109,17 @@ class ChopperOkHttpClient(
             // TODO verbose log
             client.newCall(request)
                 .execute()
-                .use { it.isSuccessful }
+                .use { response ->
+                    val isSuccess = response.isSuccessful
+                    if (!isSuccess) {
+                        // TODO log
+                        println("Request failed: ${request.url}, code: ${response.code}, message: ${response.message}")
+                    }
+                    isSuccess
+                }
+        }.onFailure { exception ->
+            println("Network exception for ${request.url}: ${exception.message}")
+            exception.printStackTrace()
         }.getOrDefault(false)
     }
 }

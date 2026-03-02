@@ -43,7 +43,7 @@ class ChopperController(
         @RequestParam(value = ChopperHelper.FILE_NAME, required = false) fileName: String?,
         @RequestParam(value = ChopperHelper.CAPTION, required = false) caption: String?,
         @RequestParam(value = ChopperHelper.CHAT_ID) chatId: Long,
-        @RequestParam(value = ChopperHelper.CHAT_ID, defaultValue = "false") markdown: Boolean
+        @RequestParam(value = ChopperHelper.MARKDOWN, defaultValue = "false") markdown: Boolean
     ): ResponseEntity<Void> {
         if (apiKey.isInvalid()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()

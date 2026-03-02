@@ -33,15 +33,12 @@ spring.config.import=classpath:chopper-client-stable.properties
 
 Импорт конфигурации:
 
-```java
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
+```kotlin
 @Configuration
-@Import({
-        ChopperClientConfig.class
-})
-public class MyConfiguration {}
+@Import(
+    ChopperClientConfig::class
+)
+class MyConfiguration
 ```
 
 ### Использование
