@@ -46,7 +46,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.prohor.universe.chopper.ChopperKt</mainClass>
+                    <mainClass>ru.prohor.universe.chopper.app.ChopperKt</mainClass>
                 </configuration>
             </plugin>
         </plugins>

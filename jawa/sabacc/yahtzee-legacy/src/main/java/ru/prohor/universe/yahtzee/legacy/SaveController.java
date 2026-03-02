@@ -85,12 +85,12 @@ public class SaveController {
             case "sixes" -> "шестерки";
 
             case "pair" -> "пара";
-            case "two_pairs" -> "две пары";
-            case "three_of_kind" -> "сет";
-            case "four_of_kind" -> "каре";
-            case "full_house" -> "фулл хаус";
-            case "low_straight" -> "малый стрит";
-            case "high_straight" -> "большой стрит";
+            case "two-pairs" -> "две пары";
+            case "three-of-kind" -> "сет";
+            case "four-of-kind" -> "каре";
+            case "full-house" -> "фулл хаус";
+            case "small-straight" -> "малый стрит";
+            case "large-straight" -> "большой стрит";
             case "yahtzee" -> "яцзы";
             case "chance" -> "шанс";
             default -> {
