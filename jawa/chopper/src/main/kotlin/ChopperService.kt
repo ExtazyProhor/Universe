@@ -1,6 +1,7 @@
-package ru.prohor.universe.chopper
+package ru.prohor.universe.chopper.app
 
 import org.springframework.http.ResponseEntity
+import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import org.telegram.telegrambots.meta.api.methods.ParseMode
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument
@@ -8,6 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.InputFile
 import java.io.File
 
+@Service
 class ChopperService(bot: ChopperBot) {
     private val feedbackExecutor = bot.feedbackExecutor
 

@@ -1,4 +1,4 @@
-package ru.prohor.universe.chopper
+package ru.prohor.universe.chopper.app
 
 import ru.prohor.universe.jocasta.tgbots.BotAuth
 import ru.prohor.universe.jocasta.tgbots.DeafBot

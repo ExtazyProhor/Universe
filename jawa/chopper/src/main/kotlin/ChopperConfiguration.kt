@@ -1,4 +1,4 @@
-package ru.prohor.universe.chopper
+package ru.prohor.universe.chopper.app
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
