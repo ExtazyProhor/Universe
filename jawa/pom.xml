@@ -32,6 +32,7 @@
         <module>venator</module>
         <module>fulcrum</module>
         <module>chopper</module>
+        <module>bb-8</module>
     </modules>
 
     <dependencyManagement>
