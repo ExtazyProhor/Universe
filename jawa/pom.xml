@@ -31,6 +31,7 @@
         <module>hyperspace</module>
         <module>venator</module>
         <module>fulcrum</module>
+        <module>chopper</module>
     </modules>
 
     <dependencyManagement>
