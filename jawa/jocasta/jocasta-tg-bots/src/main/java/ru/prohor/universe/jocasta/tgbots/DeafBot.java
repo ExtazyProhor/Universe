@@ -4,6 +4,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
@@ -76,7 +77,7 @@ public abstract class DeafBot extends TelegramLongPollingBot {
         } catch (TelegramApiRequestException e) {
             int code = e.getErrorCode();
             String response = e.getApiResponse();
-            Long newChatId = e.getParameters().getMigrateToChatId();
+            Long newChatId = Opt.ofNullable(e.getParameters()).map(ResponseParameters::getMigrateToChatId).orElseNull();
 
             if (newChatId != null && taskWithNewChatId.isPresent()) {
                 onMigrateToSuperGroup(Long.parseLong(chatId), newChatId);
