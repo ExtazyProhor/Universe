@@ -17,5 +17,6 @@
         <module>scarif-jwt</module>
         <module>scarif-jwt-provider</module>
         <module>jawa-complex-test</module>
+        <module>chopper-client</module>
     </modules>
 </project>
