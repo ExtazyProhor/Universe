@@ -18,6 +18,10 @@
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-spring-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.prohor.universe</groupId>
+            <artifactId>chopper-client</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
