@@ -8,6 +8,7 @@ import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.jocasta.spring.features.PrettyJsonPrinter;
 
 import java.io.InputStream;
@@ -17,11 +18,13 @@ import java.util.stream.Collectors;
 
 public class MongoForceBackupService {
     private final Map<String, MongoRepository<? extends MongoEntityPojo<?>>> repositories;
+    private final MongoTransactionService mongoTransactionService;
     private final ObjectMapper objectMapper;
     private final ObjectWriter prettyWriter;
 
     public MongoForceBackupService(
             List<MongoRepository<? extends MongoEntityPojo<?>>> repositories,
+            MongoTransactionService mongoTransactionService,
             PrettyJsonPrinter prettyJsonPrinter,
             ObjectMapper objectMapper
     ) {
@@ -29,15 +32,18 @@ public class MongoForceBackupService {
                 repository -> repository.type().getSimpleName(),
                 MonoFunction.identity()
         ));
+        this.mongoTransactionService = mongoTransactionService;
         this.objectMapper = objectMapper;
         this.prettyWriter = objectMapper.writer(prettyJsonPrinter);
     }
 
     public Map<String, List<?>> backupAsObjects() {
-        return repositories.entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> entry.getValue().findAll()
-        ));
+        return mongoTransactionService.withReadSnapshot(tx -> {
+            return repositories.entrySet().stream().collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> tx.wrap(entry.getValue()).findAll()
+            ));
+        });
     }
 
     public String backupAsJson() {
