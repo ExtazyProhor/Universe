@@ -12,6 +12,20 @@ import java.util.List;
 public final class MongoFilters {
     private MongoFilters() {}
 
+    public static <T, R> MongoFilter<T> contains(FieldProperties<T, List<R>> fieldProperties, R value) {
+        return new MongoFilter<>() {
+            @Override
+            public MonoPredicate<T> inMemory() {
+                return t -> fieldProperties.getO(t).map(it -> it.contains(value)).orElse(false);
+            }
+
+            @Override
+            public Filter morphia() {
+                return Filters.eq(fieldProperties.name(), value);
+            }
+        };
+    }
+
     public static <T, R> MongoFilter<T> eq(FieldProperties<T, R> fieldProperties, R value) {
         return new MongoFilter<>() {
             @Override
