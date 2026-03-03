@@ -7,9 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestConstructor;
+import ru.prohor.universe.jocasta.morphia.impl.MongoInMemoryTransactionService;
 
 @SpringBootTest
-@ContextConfiguration(classes = JacksonMorphiaConfiguration.class)
+@ContextConfiguration(classes = {
+        JacksonMorphiaConfiguration.class,
+        MongoInMemoryTransactionService.class,
+})
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public class JacksonMorphiaConfigurationTest {
     private final ObjectMapper objectMapper;
