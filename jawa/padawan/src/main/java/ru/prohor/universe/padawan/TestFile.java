@@ -9,7 +9,8 @@ public enum TestFile {
     JSON("json.json"),
     MD("md.md"),
     OUTPUT("output.txt"),
-    TXT("txt.txt");
+    TXT("txt.txt"),
+    YAML("yaml.yaml");
 
     public final String file;
 
