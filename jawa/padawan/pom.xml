@@ -13,6 +13,10 @@
     <packaging>jar</packaging>
     <name>padawan</name>
 
+    <properties>
+        <universe.mainClass>ru.prohor.universe.padawan.PadawanMain</universe.mainClass>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
@@ -74,29 +78,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.7.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <archive>
-                                <manifest>
-                                    <mainClass>
-                                        ru.prohor.universe.padawan.PadawanMain
-                                    </mainClass>
-                                </manifest>
-                            </archive>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                            <finalName>${project.artifactId}</finalName>
-                            <appendAssemblyId>false</appendAssemblyId>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
