@@ -5,7 +5,7 @@ import java.io.InputStream
 import kotlin.sequences.forEach
 
 @Service
-class CommandExecutor() {
+class CommandExecutor {
     fun runCommand(command: List<String>): CommandResult {
         val operation = command.filter { !it.contains("-") && !it.contains("/") }.take(2).joinToString(separator = " ")
         if (operation.isBlank())
