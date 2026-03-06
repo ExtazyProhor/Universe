@@ -691,6 +691,7 @@
 
     const actionLog = [];
     let currentRow = null;
+    let gameId = null;
     let teamScores = {};
     let currentTeamIndex = null;
     let selectedColorIndex = 0;
@@ -916,7 +917,7 @@
             score
         });
         if (currentTeamIndex !== null) {
-            fetch('/api/combination', {
+            fetch(`/api/combination?gameId=${gameId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -945,11 +946,14 @@
             gameMode = 'game';
             document.getElementById('game-mode-btn').textContent = 'Закончить игру';
             document.getElementById('game-mode-btn').className = 'reset-btn';
+            gameId = crypto.randomUUID();
+            logAction('game_start', {});
             showAllButtons();
         } else {
             gameMode = 'preparation';
             document.getElementById('game-mode-btn').textContent = 'Начать игру';
             document.getElementById('game-mode-btn').className = 'start-btn';
+            logAction('game_end', {});
             resetGame();
             hideAllButtons();
         }
@@ -973,6 +977,8 @@
 
         logAction('undo', {
             teamCategoryKey: lastAction.teamCategoryKey,
+            teamIndex: lastAction.teamIndex,
+            teamName: lastAction.teamIndex !== null ? teams[lastAction.teamIndex].name : null,
             score: teamScores[lastAction.teamCategoryKey]
         });
         delete teamScores[lastAction.teamCategoryKey];
@@ -1277,6 +1283,14 @@
             type,
             ...data
         });
+
+        if (['undo', 'game_start', 'game_end'].includes(type)) {
+            fetchWithTimeout(`/api/action?gameId=${gameId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type, ...data })
+            }, 1000).catch(err => console.error('Ошибка логирования действия:', err));
+        }
     }
 
     async function sendGameResultsToServer() {
@@ -1298,7 +1312,7 @@
                 return teamCombinations;
             }).flat();
 
-            const response = await fetch('/api/game', {
+            const response = await fetchWithTimeout(`/api/game?gameId=${gameId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
