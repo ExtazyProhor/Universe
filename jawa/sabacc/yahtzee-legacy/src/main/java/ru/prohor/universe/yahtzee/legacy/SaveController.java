@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,6 +68,7 @@ public class SaveController {
     public ResponseEntity<String> action(
             @RequestParam(value = "gameId", required = false) String gameId,
             @RequestHeader(value = "X-Real-IP", required = false) String ip,
+            @RequestHeader(value = HttpHeaders.USER_AGENT, required = false) String userAgent,
             @RequestBody String jsonData
     ) {
         try {
@@ -90,10 +92,10 @@ public class SaveController {
                 }
             };
 
-            chopperClient.sendMessage(appendMeta(message, gameId, ip), mutedChatId, false);
+            chopperClient.sendMessage(appendMeta(message, gameId, ip, userAgent), mutedChatId, false);
             return ResponseEntity.ok("success");
         } catch (Exception e) {
-            Sneaky.silent(() -> error(e, gameId, ip));
+            Sneaky.silent(() -> error(e, gameId, ip, userAgent));
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
@@ -102,6 +104,7 @@ public class SaveController {
     public ResponseEntity<String> combination(
             @RequestParam(value = "gameId", required = false) String gameId,
             @RequestHeader(value = "X-Real-IP", required = false) String ip,
+            @RequestHeader(value = HttpHeaders.USER_AGENT, required = false) String userAgent,
             @RequestBody String jsonData
     ) {
         try {
@@ -113,13 +116,14 @@ public class SaveController {
             String message = appendMeta(
                     teamName + " → " + resolveCombination(combination) + ": " + score,
                     gameId,
-                    ip
+                    ip,
+                    userAgent
             );
             chopperClient.sendMessage(message, mutedChatId, false);
 
             return ResponseEntity.ok("success");
         } catch (Exception e) {
-            Sneaky.silent(() -> error(e, gameId, ip));
+            Sneaky.silent(() -> error(e, gameId, ip, userAgent));
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
@@ -157,6 +161,7 @@ public class SaveController {
     public ResponseEntity<String> game(
             @RequestParam(value = "gameId", required = false) String gameId,
             @RequestHeader(value = "X-Real-IP", required = false) String ip,
+            @RequestHeader(value = HttpHeaders.USER_AGENT, required = false) String userAgent,
             @RequestBody String jsonData
     ) {
         try {
@@ -166,34 +171,36 @@ public class SaveController {
                     dir.resolve("game_" + now.format(formatter) + ".json"),
                     prettyWriter.writeValueAsString(jsonNode)
             );
-            notify(jsonNode, gameId, ip);
+            notify(jsonNode, gameId, ip, userAgent);
             return ResponseEntity.ok("success");
         } catch (Exception e) {
-            Sneaky.silent(() -> error(e, gameId, ip));
+            Sneaky.silent(() -> error(e, gameId, ip, userAgent));
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
 
-    private String appendMeta(String message, String gameId, String ip) {
+    private String appendMeta(String message, String gameId, String ip, String userAgent) {
         return message +
                 "\n\n" +
                 "game: " +
                 gameId +
                 "\nip: " +
-                (environment.canBeObtainedLocally() ? "local env" : ip);
+                (environment.canBeObtainedLocally() ? "local env" : ip) +
+                "\nuser agent: " +
+                userAgent;
     }
 
-    private void error(Exception e, String gameId, String ip) {
+    private void error(Exception e, String gameId, String ip, String userAgent) {
         chopperClient.sendFile(
                 ExceptionsUtils.getStackTraceAsString(e),
                 notifiableChatId,
                 "stack-trace.txt",
-                appendMeta("New exception at legacy yahtzee", gameId, ip),
+                appendMeta("New exception at legacy yahtzee", gameId, ip, userAgent),
                 false
         );
     }
 
-    private void notify(JsonNode jsonNode, String gameId, String ip) {
+    private void notify(JsonNode jsonNode, String gameId, String ip, String userAgent) {
         Map<String, List<Combination>> teams = new HashMap<>();
         jsonNode.forEach(node -> {
             String team = node.get("teamName").asText();
@@ -210,7 +217,7 @@ public class SaveController {
         ));
         StringBuilder builder = new StringBuilder("Новая игра в Яцзы сохранена!\n\n");
         totals.forEach((team, total) -> builder.append("- ").append(team).append(": ").append(total).append("\n"));
-        chopperClient.sendMessage(appendMeta(builder.toString(), gameId, ip), notifiableChatId, false);
+        chopperClient.sendMessage(appendMeta(builder.toString(), gameId, ip, userAgent), notifiableChatId, false);
     }
 
     private int calculateTotal(List<Combination> combinations) {
