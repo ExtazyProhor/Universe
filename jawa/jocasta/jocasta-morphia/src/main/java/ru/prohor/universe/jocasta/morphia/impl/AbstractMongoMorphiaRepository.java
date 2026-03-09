@@ -6,6 +6,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import dev.morphia.Datastore;
+import dev.morphia.DeleteOptions;
 import dev.morphia.annotations.Entity;
 import dev.morphia.query.FindOptions;
 import dev.morphia.query.Query;
@@ -125,6 +126,10 @@ public class AbstractMongoMorphiaRepository<T, W> {
                 .filter(dev.morphia.query.filters.Filters.eq(ID, id))
                 .findAndDelete();
         return Opt.ofNullable(deleted).map(wrapFunction);
+    }
+
+    long deleteAll() {
+        return datastore.find(type).delete(new DeleteOptions().multi(true)).getDeletedCount();
     }
 
     List<W> findByText(String text) {

@@ -95,6 +95,11 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
     }
 
     @Override
+    public long deleteAll() {
+        return repository.deleteAll();
+    }
+
+    @Override
     public List<T> findByText(String text) {
         return repository.findByText(text);
     }

@@ -103,6 +103,13 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     }
 
     @Override
+    public long deleteAll() {
+        int size = collection.size();
+        collection.clear();
+        return size;
+    }
+
+    @Override
     public List<T> findByText(String text) {
         if (textSearchPredicate.isEmpty())
             throw UNSUPPORTED_TEXT_SEARCH;
