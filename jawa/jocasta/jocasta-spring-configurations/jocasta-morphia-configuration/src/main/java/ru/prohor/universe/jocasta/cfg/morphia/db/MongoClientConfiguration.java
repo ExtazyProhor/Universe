@@ -17,14 +17,14 @@ import java.util.concurrent.TimeUnit;
 public class MongoClientConfiguration {
     @Bean
     public MongoClient mongoClient(
-            @Value("${universe.jocasta.mongo.min-connections:#{2}}") int minConnections,
-            @Value("${universe.jocasta.mongo.max-connections:#{15}}") int maxConnections,
-            @Value("${universe.jocasta.mongo.max-wait-time:#{100}}") int maxWaitTime,
-            @Value("${universe.jocasta.mongo.connect-timeout:#{1000}}") int connectTimeout,
-            @Value("${universe.jocasta.mongo.read-timeout:#{2000}}") int readTimeout,
+            @Value("${universe.jocasta.mongo.min-connections:2}") int minConnections,
+            @Value("${universe.jocasta.mongo.max-connections:15}") int maxConnections,
+            @Value("${universe.jocasta.mongo.max-wait-time:100}") int maxWaitTime,
+            @Value("${universe.jocasta.mongo.connect-timeout:1000}") int connectTimeout,
+            @Value("${universe.jocasta.mongo.read-timeout:2000}") int readTimeout,
             @Value("${universe.jocasta.mongo.host}") String host,
-            @Value("${universe.jocasta.mongo.port:#{27017}}") int port,
-            @Value("${universe.jocasta.mongo.replica-set:#{rs0}}") String replicaSetName,
+            @Value("${universe.jocasta.mongo.port:27017}") int port,
+            @Value("${universe.jocasta.mongo.replica-set:rs0}") String replicaSetName,
             @Value("${universe.jocasta.mongo.user}") String user,
             @Value("${universe.jocasta.mongo.password}") String password,
             @Value("${universe.jocasta.mongo.database}") String database
