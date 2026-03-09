@@ -4,6 +4,7 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -25,17 +26,15 @@ public sealed interface FieldRef<T, R>
         try {
             Method write = this.getClass().getDeclaredMethod("writeReplace");
             write.setAccessible(true);
-            SerializedLambda lambda = (SerializedLambda) write.invoke(this);
+            SerializedLambda serializedLambda = (SerializedLambda) write.invoke(this);
 
-            Class<?> type = Class.forName(lambda.getImplClass().replace('/', '.'));
-            if (!type.isRecord())
-                throw new IllegalArgumentException("Field reference must point to the record method");
+            Class<?> type = Class.forName(serializedLambda.getImplClass().replace('/', '.'));
+            String getter = serializedLambda.getImplMethodName();
+            AnnotatedElement annotated = type.isRecord()
+                    ? extractForRecord(type, getter)
+                    : extractForClassOrInterface(type, getter);
 
-            String getter = lambda.getImplMethodName();
-            if (!isRecordComponent(type, getter))
-                throw new IllegalArgumentException("Field reference must be a record component");
-
-            return Opt.ofNullable(type.getDeclaredField(getter).getAnnotation(Name.class))
+            return Opt.ofNullable(annotated.getAnnotation(Name.class))
                     .map(Name::value)
                     .filter(value -> !value.isEmpty())
                     .orElse(getter);
@@ -44,9 +43,25 @@ public sealed interface FieldRef<T, R>
         }
     }
 
-    private static boolean isRecordComponent(Class<?> type, String name) {
+    private AnnotatedElement extractForRecord(Class<?> type, String getter) throws NoSuchFieldException {
+        if (isNotRecordComponent(type, getter)) {
+            throw new IllegalArgumentException("Field reference must be a record component, if it used on a record");
+        }
+        return type.getDeclaredField(getter);
+    }
+
+    private AnnotatedElement extractForClassOrInterface(Class<?> type, String getter) {
+        for (Method method : type.getDeclaredMethods()) {
+            if (method.getName().equals(getter)) {
+                return method;
+            }
+        }
+        throw new IllegalArgumentException("no such method: " + getter);
+    }
+
+    private static boolean isNotRecordComponent(Class<?> type, String name) {
         return Arrays.stream(type.getRecordComponents())
                 .map(component -> component.getAccessor().getName())
-                .anyMatch(accessor -> accessor.equals(name));
+                .noneMatch(accessor -> accessor.equals(name));
     }
 }
