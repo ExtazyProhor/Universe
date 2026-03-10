@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity("offline_games")
+@Entity("games")
 public class OfflineGameDto {
     @Id
     private ObjectId id;

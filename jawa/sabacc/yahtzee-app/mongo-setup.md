@@ -26,7 +26,7 @@ exit
 ```js
 db.createCollection("users")
 db.createCollection("images")
-db.createCollection("offline_games")
+db.createCollection("games")
 db.createCollection("offline_rooms")
 db.createCollection("offline_stats")
 
@@ -42,6 +42,6 @@ db.users.createIndex(
 )
 db.users.getIndexes()
 
-db.offline_games.createIndex({ trusted: 1 })
-db.offline_games.getIndexes()
+db.games.createIndex({ trusted: 1 })
+db.games.getIndexes()
 ```
