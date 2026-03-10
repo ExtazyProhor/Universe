@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.core.data.entities.dto;
+package ru.prohor.universe.yahtzee.core.data.dto;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
-import ru.prohor.universe.yahtzee.core.data.inner.dto.RoomReferenceDto;
 
 import java.time.Instant;
 import java.util.List;

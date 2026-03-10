@@ -1,9 +1,9 @@
-package ru.prohor.universe.yahtzee.core.data.inner.pojo;
+package ru.prohor.universe.yahtzee.core.data.pojo;
 
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.core.core.RoomType;
-import ru.prohor.universe.yahtzee.core.data.inner.dto.RoomReferenceDto;
+import ru.prohor.universe.yahtzee.core.data.dto.RoomReferenceDto;
 
 public record RoomReference(
         ObjectId id,

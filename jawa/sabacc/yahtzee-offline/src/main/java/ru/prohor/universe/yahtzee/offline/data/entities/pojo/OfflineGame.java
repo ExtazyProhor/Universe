@@ -3,7 +3,7 @@ package ru.prohor.universe.yahtzee.offline.data.entities.pojo;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
-import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
+import ru.prohor.universe.yahtzee.core.data.pojo.RoomReference;
 import ru.prohor.universe.yahtzee.offline.data.entities.dto.OfflineGameDto;
 import ru.prohor.universe.yahtzee.offline.data.inner.OfflineGameSource;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineTeamScores;

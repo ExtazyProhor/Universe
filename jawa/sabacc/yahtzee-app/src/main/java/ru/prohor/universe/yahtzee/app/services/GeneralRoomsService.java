@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.core.core.GameRoom;
-import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
+import ru.prohor.universe.yahtzee.core.data.pojo.RoomReference;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
 
 @Service

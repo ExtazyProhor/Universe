@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
 import ru.prohor.universe.yahtzee.core.core.color.YahtzeeColor;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.data.pojo.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;

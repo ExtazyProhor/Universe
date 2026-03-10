@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.core.data.inner.dto;
+package ru.prohor.universe.yahtzee.core.data.dto;
 
 import dev.morphia.annotations.Entity;
 import lombok.AllArgsConstructor;

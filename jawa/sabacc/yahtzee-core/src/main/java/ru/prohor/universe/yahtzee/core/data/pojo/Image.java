@@ -1,9 +1,9 @@
-package ru.prohor.universe.yahtzee.core.data.entities.pojo;
+package ru.prohor.universe.yahtzee.core.data.pojo;
 
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
-import ru.prohor.universe.yahtzee.core.data.entities.dto.ImageDto;
+import ru.prohor.universe.yahtzee.core.data.dto.ImageDto;
 
 import java.time.Instant;
 

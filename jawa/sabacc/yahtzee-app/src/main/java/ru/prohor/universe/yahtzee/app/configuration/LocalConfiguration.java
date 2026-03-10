@@ -8,7 +8,7 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.app.services.AdminValidationService;
 import ru.prohor.universe.yahtzee.app.services.images.ImagesService;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.data.pojo.Player;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
 import java.time.Instant;

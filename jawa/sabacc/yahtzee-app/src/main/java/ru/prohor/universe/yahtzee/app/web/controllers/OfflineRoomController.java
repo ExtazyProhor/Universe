@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.data.pojo.Player;
 import ru.prohor.universe.yahtzee.offline.api.CreateRoomRequest;
 import ru.prohor.universe.yahtzee.offline.api.RoomInfoResponse;
 import ru.prohor.universe.yahtzee.offline.services.OfflineGameService;

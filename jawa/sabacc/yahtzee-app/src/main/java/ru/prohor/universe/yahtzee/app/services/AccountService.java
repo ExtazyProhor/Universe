@@ -19,7 +19,7 @@ import ru.prohor.universe.yahtzee.app.web.api.ColorInfo;
 import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
 import ru.prohor.universe.yahtzee.app.web.controllers.ProfileController;
 import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.data.pojo.Player;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
 import java.time.Instant;

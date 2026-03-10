@@ -1,11 +1,10 @@
-package ru.prohor.universe.yahtzee.core.data.entities.pojo;
+package ru.prohor.universe.yahtzee.core.data.pojo;
 
 import lombok.Builder;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
-import ru.prohor.universe.yahtzee.core.data.entities.dto.PlayerDto;
-import ru.prohor.universe.yahtzee.core.data.inner.pojo.RoomReference;
+import ru.prohor.universe.yahtzee.core.data.dto.PlayerDto;
 
 import java.time.Instant;
 import java.util.List;

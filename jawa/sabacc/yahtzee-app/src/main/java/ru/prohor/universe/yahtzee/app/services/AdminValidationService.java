@@ -1,7 +1,7 @@
 package ru.prohor.universe.yahtzee.app.services;
 
 import org.bson.types.ObjectId;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.data.pojo.Player;
 
 import java.util.Set;
 

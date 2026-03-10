@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.core.data.entities.dto;
+package ru.prohor.universe.yahtzee.core.data.dto;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
