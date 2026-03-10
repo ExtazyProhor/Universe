@@ -6,6 +6,7 @@ class ChopperHelper {
 
         const val CHAT_ID = "chatId"
         const val MARKDOWN = "markdown"
+        const val DISABLE_LINK_PREVIEW = "disableLinkPreview"
         const val CAPTION = "caption"
         const val FILE = "file"
         const val FILE_NAME = "fileName"

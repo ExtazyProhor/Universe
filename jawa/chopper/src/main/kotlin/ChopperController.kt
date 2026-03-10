@@ -24,7 +24,8 @@ class ChopperController(
         @RequestHeader(value = ChopperHelper.API_KEY_HEADER, required = false) apiKey: String?,
         @RequestBody body: String,
         @RequestParam(value = ChopperHelper.CHAT_ID) chatId: Long,
-        @RequestParam(value = ChopperHelper.MARKDOWN, defaultValue = "false") markdown: Boolean
+        @RequestParam(value = ChopperHelper.MARKDOWN, defaultValue = "false") markdown: Boolean,
+        @RequestParam(value = ChopperHelper.DISABLE_LINK_PREVIEW, defaultValue = "false") disableLinkPreview: Boolean
     ): ResponseEntity<Void> {
         if (apiKey.isInvalid()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
@@ -32,7 +33,8 @@ class ChopperController(
         return service.sendMessage(
             text = body,
             chatId = chatId,
-            markdown = markdown
+            markdown = markdown,
+            disableLinkPreview = disableLinkPreview
         )
     }
 

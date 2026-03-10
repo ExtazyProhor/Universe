@@ -19,13 +19,15 @@ class ChopperOkHttpClient(
     override fun sendMessage(
         text: String,
         chatId: Long,
-        markdown: Boolean
+        markdown: Boolean,
+        disableLinkPreview: Boolean
     ): Boolean {
         val url = baseUrl.toHttpUrl()
             .newBuilder()
             .addPathSegment("message")
             .addQueryParameter(ChopperHelper.CHAT_ID, chatId.toString())
             .addQueryParameter(ChopperHelper.MARKDOWN, markdown.toString())
+            .addQueryParameter(ChopperHelper.DISABLE_LINK_PREVIEW, disableLinkPreview.toString())
             .build()
 
         val request = Request.Builder()

@@ -85,14 +85,13 @@ public class SaveController {
                 default -> {
                     chopperClient.sendMessage(
                             "Illegal action type: " + type,
-                            notifiableChatId,
-                            false
+                            notifiableChatId
                     );
                     yield "Неизвестное действие: " + type;
                 }
             };
 
-            chopperClient.sendMessage(appendMeta(message, gameId, ip, userAgent), mutedChatId, false);
+            chopperClient.sendMessage(appendMeta(message, gameId, ip, userAgent), mutedChatId);
             return ResponseEntity.ok("success");
         } catch (Exception e) {
             Sneaky.silent(() -> error(e, gameId, ip, userAgent));
@@ -119,7 +118,7 @@ public class SaveController {
                     ip,
                     userAgent
             );
-            chopperClient.sendMessage(message, mutedChatId, false);
+            chopperClient.sendMessage(message, mutedChatId);
 
             return ResponseEntity.ok("success");
         } catch (Exception e) {
@@ -149,8 +148,7 @@ public class SaveController {
             default -> {
                 chopperClient.sendMessage(
                         "Illegal name of combination: " + combination,
-                        notifiableChatId,
-                        false
+                        notifiableChatId
                 );
                 yield combination;
             }
@@ -217,7 +215,7 @@ public class SaveController {
         ));
         StringBuilder builder = new StringBuilder("Новая игра в Яцзы сохранена!\n\n");
         totals.forEach((team, total) -> builder.append("- ").append(team).append(": ").append(total).append("\n"));
-        chopperClient.sendMessage(appendMeta(builder.toString(), gameId, ip, userAgent), notifiableChatId, false);
+        chopperClient.sendMessage(appendMeta(builder.toString(), gameId, ip, userAgent), notifiableChatId);
     }
 
     private int calculateTotal(List<Combination> combinations) {

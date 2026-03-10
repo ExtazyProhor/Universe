@@ -7,22 +7,26 @@ import org.telegram.telegrambots.meta.api.methods.ParseMode
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.InputFile
+import org.telegram.telegrambots.meta.api.objects.LinkPreviewOptions
 import java.io.File
 
 @Service
 class ChopperService(bot: ChopperBot) {
+    private val disableLinkPreviewOptions = LinkPreviewOptions().apply { isDisabled = true }
     private val feedbackExecutor = bot.feedbackExecutor
 
     fun sendMessage(
         text: String,
         chatId: Long,
-        markdown: Boolean
+        markdown: Boolean,
+        disableLinkPreview: Boolean
     ): ResponseEntity<Void> {
         val message = SendMessage.builder()
             .chatId(chatId)
             .text(text)
             .apply {
                 if (markdown) parseMode(ParseMode.MARKDOWNV2)
+                if (disableLinkPreview) linkPreviewOptions(disableLinkPreviewOptions)
             }
             .build()
 
@@ -47,9 +51,7 @@ class ChopperService(bot: ChopperBot) {
             .apply {
                 caption?.let {
                     caption(it)
-                    if (markdown) {
-                        parseMode(ParseMode.MARKDOWNV2)
-                    }
+                    if (markdown) parseMode(ParseMode.MARKDOWNV2)
                 }
             }
             .build()
