@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import ru.prohor.universe.chopper.client.MarkdownV2.Companion.markdown
 import ru.prohor.universe.jocasta.core.utils.DateTimeUtil
 import ru.prohor.universe.jocasta.spring.UniverseEnvironment
 import ru.prohor.universe.venator.shared.Notifier
@@ -69,14 +70,23 @@ class WebhookController(
         val actionBranch = payload.ref.replace("refs/heads/", "")
         if (actionBranch != payload.repository.masterBranch) {
             // TODO log.info("Ignoring push to branch: {}", actionBranch);
-            return onInfo("Webhook ignored, wrong branch: $actionBranch")
+            val info = markdown {
+                text("Webhook ignored, wrong branch: ")
+                text(actionBranch)
+            }
+            return onInfo(info)
         }
 
         return processWebhook(payload)
     }
 
     private fun onFailure(status: HttpStatus, message: String): ResponseEntity<ApiResponse> {
-        notifier.failure("failures at webhook controller:\n*$message*")
+        val failure = markdown {
+            text("failures at webhook controller:")
+            newline()
+            bold(message)
+        }
+        notifier.failure(failure)
         val response = ApiResponse(message)
         return ResponseEntity.status(status).body(response)
     }
@@ -91,7 +101,19 @@ class WebhookController(
         val login = payload.sender.login
         val commit = payload.headCommit.message
         val datetime = DateTimeUtil.toReadableString(Instant.ofEpochSecond(payload.repository.pushedAt))
-        notifier.success("$login pushed new changes to Universe at\n${datetime}.\nLast commit is:\n\n*$commit*")
+        val text = markdown {
+            text(login)
+            text(" pushed new changes to Universe at")
+            newline()
+            text(datetime)
+            text(".")
+            newline()
+            text("Last commit is:")
+            newline()
+            newline()
+            bold(commit)
+        }
+        notifier.success(text)
         val response = ApiResponse("Webhook accepted")
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
