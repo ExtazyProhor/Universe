@@ -19,14 +19,52 @@ class MarkdownV2 {
         builder.append('_')
     }
 
-    fun code(text: String) = apply {
+    fun underline(text: String) = apply {
+        builder.append("__")
+        builder.append(text.escape())
+        builder.append("__")
+    }
+
+    fun strike(text: String) = apply {
+        builder.append('~')
+        builder.append(text.escape())
+        builder.append('~')
+    }
+
+    fun spoiler(text: String) = apply {
+        builder.append("||")
+        builder.append(text.escape())
+        builder.append("||")
+    }
+
+    fun codeInline(text: String) = apply {
         builder.append('`')
         builder.append(text.escape())
         builder.append('`')
     }
 
+    fun codeBlock(code: String, language: String? = null) = apply {
+        builder.append("```")
+        language?.let { builder.append(it) }
+        builder.append('\n')
+        builder.append(code)
+        builder.append("\n```")
+    }
+
+    fun link(text: String, url: String) = apply {
+        builder.append('[')
+        builder.append(text.escape())
+        builder.append("](")
+        builder.append(url.escape())
+        builder.append(')')
+    }
+
     fun newline() = apply {
         builder.append('\n')
+    }
+
+    fun space() = apply {
+        builder.append(' ')
     }
 
     override fun toString(): String {
