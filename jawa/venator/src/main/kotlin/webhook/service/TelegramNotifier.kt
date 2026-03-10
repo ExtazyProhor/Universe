@@ -1,27 +1,24 @@
 package ru.prohor.universe.venator.webhook.service
 
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Service
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import ru.prohor.universe.chopper.client.ChopperClient
 import ru.prohor.universe.venator.shared.Notifier
-import ru.prohor.universe.venator.shared.VenatorBot
 
-@Service
 class TelegramNotifier(
     @param:Value($$"${universe.venator.notifiable-chat-id}")
     private val notifiableChatId: Long,
-    private val bot: VenatorBot
+    private val chopperClient: ChopperClient
 ) : Notifier {
     override fun failure(message: String) {
         send("\u274c $message")
     }
 
     override fun failure(message: String, fileContent: String, fileName: String) {
-        bot.feedbackExecutor.sendDocument(
-            notifiableChatId,
-            fileContent,
-            fileName,
-            "\u274c $message"
+        chopperClient.sendFile(
+            content = fileContent,
+            chatId = notifiableChatId,
+            fileName = fileName,
+            caption = "\u274c $message"
         )
     }
 
@@ -34,12 +31,10 @@ class TelegramNotifier(
     }
 
     private fun send(message: String) {
-        bot.feedbackExecutor.sendMessage(
-            SendMessage.builder()
-                .chatId(notifiableChatId)
-                .text(message)
-                .parseMode("Markdown")
-                .build()
+        chopperClient.sendMessage(
+            text = message,
+            chatId = notifiableChatId,
+            markdown = true
         )
     }
 }
