@@ -1,92 +1,186 @@
 package ru.prohor.universe.chopper.client
 
+import kotlin.apply
+
 class MarkdownV2 {
-    private val builder = StringBuilder()
+    private val nodes = mutableListOf<Node>()
 
     fun text(text: String) = apply {
-        builder.append(text.escape())
+        nodes += TextNode(text)
     }
 
     fun bold(text: String) = apply {
-        builder.append('*')
-        builder.append(text.escape())
-        builder.append('*')
+        nodes += BoldNode(text)
     }
 
     fun italic(text: String) = apply {
-        builder.append('_')
-        builder.append(text.escape())
-        builder.append('_')
-    }
-
-    fun underline(text: String) = apply {
-        builder.append("__")
-        builder.append(text.escape())
-        builder.append("__")
+        nodes += ItalicNode(text)
     }
 
     fun strike(text: String) = apply {
-        builder.append('~')
-        builder.append(text.escape())
-        builder.append('~')
+        nodes += StrikeNode(text)
     }
 
     fun spoiler(text: String) = apply {
-        builder.append("||")
-        builder.append(text.escape())
-        builder.append("||")
+        nodes += SpoilerNode(text)
     }
 
     fun codeInline(text: String) = apply {
-        builder.append('`')
-        builder.append(text.escape())
-        builder.append('`')
+        nodes += CodeInlineNode(text)
     }
 
-    fun codeBlock(code: String, language: String? = null) = apply {
-        builder.append("```")
-        language?.let { builder.append(it) }
-        builder.append('\n')
-        builder.append(code)
-        builder.append("\n```")
+    @JvmOverloads
+    fun codeBlock(code: String, lang: String? = null) = apply {
+        nodes += CodeBlockNode(code, lang)
     }
 
     fun link(text: String, url: String) = apply {
-        builder.append('[')
-        builder.append(text.escape())
-        builder.append("](")
-        builder.append(url.escape())
-        builder.append(')')
+        nodes += LinkNode(text, url)
+    }
+
+    fun bulletList(vararg items: String) = apply {
+        nodes += BulletListNode(items.toList())
+    }
+
+    fun bulletList(items: List<String>) = apply {
+        nodes += BulletListNode(items)
+    }
+
+    fun numberedList(vararg items: String) = apply {
+        nodes += NumberedListNode(items.toList())
+    }
+
+    fun numberedList(items: List<String>) = apply {
+        nodes += NumberedListNode(items)
     }
 
     fun newline() = apply {
-        builder.append('\n')
+        nodes += CharNode('\n')
     }
 
     fun space() = apply {
-        builder.append(' ')
+        nodes += CharNode(' ')
     }
 
-    override fun toString(): String {
-        return builder.toString()
+    override fun toString() = toMarkdown()
+
+    fun toMarkdown(): String {
+        return nodes.joinToString("") { it.markdown() }
     }
 
-    private fun String.escape(): String {
-        val builder = StringBuilder(length * 2)
-        for (c in this) {
-            if (CHARS_TO_ESCAPE.contains(c)) {
-                builder.append('\\')
-            }
-            builder.append(c)
-        }
-        return builder.toString()
+    fun toRaw(): String {
+        return nodes.joinToString("") { it.raw() }
     }
 
     companion object {
-        private val CHARS_TO_ESCAPE = "_*[]()~`>#+-=|{}.!".toHashSet()
-
         fun markdown(block: MarkdownV2.() -> Unit): String {
             return MarkdownV2().apply(block).toString()
         }
     }
+}
+
+private class TextNode(private val text: String) : Node {
+    override fun markdown() = text.escape()
+    override fun raw() = text
+}
+
+private class BoldNode(private val text: String) : Node {
+    override fun markdown() = "*${text.escape()}*"
+    override fun raw() = text
+}
+
+private class ItalicNode(private val text: String) : Node {
+    override fun markdown() = "_${text.escape()}_"
+    override fun raw() = text
+}
+
+private class StrikeNode(private val text: String) : Node {
+    override fun markdown() = "~${text.escape()}~"
+    override fun raw() = text
+}
+
+private class SpoilerNode(private val text: String) : Node {
+    override fun markdown() = "||${text.escape()}||"
+    override fun raw() = text
+}
+
+private class CodeInlineNode(private val text: String) : Node {
+    override fun markdown() = "`$text`"
+    override fun raw() = text
+}
+
+private class CodeBlockNode(
+    private val code: String,
+    private val lang: String?
+) : Node {
+    override fun markdown(): String {
+        return buildString {
+            append("```")
+            lang?.let { append(it) }
+            append("\n")
+            append(code)
+            append("\n```")
+        }
+    }
+
+    override fun raw(): String = code
+}
+
+private class LinkNode(
+    private val text: String,
+    private val url: String
+) : Node {
+    override fun markdown(): String = "[${text.escape()}](${url.escape()})"
+    override fun raw(): String = "$text ($url)"
+}
+
+private class BulletListNode(private val items: List<String>) : Node {
+    override fun markdown(): String {
+        return items.joinToString("\n") {
+            "• ${it.escape()}"
+        } + "\n"
+    }
+
+    override fun raw(): String {
+        return items.joinToString("\n") {
+            "• $it"
+        } + "\n"
+    }
+}
+
+private class NumberedListNode(private val items: List<String>) : Node {
+    override fun markdown(): String {
+        return items.mapIndexed { i, item ->
+            "${i + 1}. $item".escape()
+        }.joinToString("\n") + "\n"
+    }
+
+    override fun raw(): String {
+        return items.mapIndexed { i, item ->
+            "${i + 1}. $item"
+        }.joinToString("\n") + "\n"
+    }
+}
+
+private class CharNode(private val char: Char) : Node {
+    override fun markdown() = "$char"
+    override fun raw() = "$char"
+}
+
+private interface Node {
+    fun markdown(): String
+    fun raw(): String
+}
+
+private val CHARS_TO_ESCAPE = "_*[]()~`>#+-=|{}.!".toHashSet()
+
+private fun String.escape(): String {
+    val builder = StringBuilder(length * 2)
+    for (c in this) {
+        if (CHARS_TO_ESCAPE.contains(c)) {
+            builder.append('\\')
+        }
+        builder.append(c)
+    }
+    return builder.toString()
 }
