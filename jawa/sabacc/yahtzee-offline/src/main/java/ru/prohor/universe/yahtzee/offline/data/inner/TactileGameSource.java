@@ -1,6 +1,6 @@
 package ru.prohor.universe.yahtzee.offline.data.inner;
 
-public enum OfflineGameSource {
+public enum TactileGameSource {
     /**
      * First few games. Without hasBonus flag, exact scores and time
      */

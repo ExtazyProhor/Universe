@@ -2,12 +2,12 @@ package ru.prohor.universe.yahtzee.core.data.pojo;
 
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
-import ru.prohor.universe.yahtzee.core.core.RoomType;
+import ru.prohor.universe.yahtzee.core.core.GameType;
 import ru.prohor.universe.yahtzee.core.data.dto.RoomReferenceDto;
 
 public record RoomReference(
         ObjectId id,
-        RoomType type
+        GameType type
 ) implements MongoEntityPojo<RoomReferenceDto> {
     @Override
     public RoomReferenceDto toDto() {
@@ -19,14 +19,14 @@ public record RoomReference(
     }
 
     public boolean isTactileOffline() {
-        return type == RoomType.TACTILE_OFFLINE;
+        return type == GameType.TACTILE_OFFLINE;
     }
 
     public boolean isVirtualOnline() {
-        return type == RoomType.VIRTUAL_ONLINE;
+        return type == GameType.VIRTUAL_ONLINE;
     }
 
     public boolean isVirtualOffline() {
-        return type == RoomType.VIRTUAL_OFFLINE;
+        return type == GameType.VIRTUAL_OFFLINE;
     }
 }

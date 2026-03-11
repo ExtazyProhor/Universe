@@ -11,7 +11,7 @@ import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTransaction;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
 import ru.prohor.universe.yahtzee.core.core.Combination;
-import ru.prohor.universe.yahtzee.core.core.RoomType;
+import ru.prohor.universe.yahtzee.core.core.GameType;
 import ru.prohor.universe.yahtzee.core.core.Yahtzee;
 import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
 import ru.prohor.universe.yahtzee.core.data.pojo.Player;
@@ -29,7 +29,7 @@ import ru.prohor.universe.yahtzee.offline.api.TeamInfo;
 import ru.prohor.universe.yahtzee.offline.api.TeamPlayers;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineGame;
 import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
-import ru.prohor.universe.yahtzee.offline.data.inner.OfflineGameSource;
+import ru.prohor.universe.yahtzee.offline.data.inner.TactileGameSource;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineInterimTeamScores;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineScore;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineTeamScores;
@@ -192,7 +192,7 @@ public class OfflineGameService {
                 return saveMoveError("Mover is not linked to room");
             if (!mover.currentRoom().get().equals(updated.currentRoom().get()))
                 return saveMoveError("Player and mover are in different rooms"); // TODO log [SB]
-            if (updated.currentRoom().get().type() != RoomType.TACTILE_OFFLINE)
+            if (updated.currentRoom().get().type() != GameType.TACTILE_OFFLINE)
                 return saveMoveError("Illegal room type: " + updated.currentRoom().get().type()); // TODO log [SB]
             OfflineRoom room = transactionalRoomRepository.ensuredFindById(updated.currentRoom().get().id());
             OfflineInterimTeamScores movingTeam = room.teams().get(room.movingTeamIndex());
@@ -249,7 +249,7 @@ public class OfflineGameService {
                         .map(this::offlineTeamScoresMapper)
                         .toList(),
                 initiator.trusted(),
-                OfflineGameSource.DIRECT,
+                TactileGameSource.DIRECT,
                 Opt.of(new RoomReference(
                         room.id(),
                         room.type()
@@ -317,7 +317,7 @@ public class OfflineGameService {
         transactional.save(
                 players.stream().map(
                         p -> p.toBuilder()
-                                .currentRoom(Opt.of(new RoomReference(newRoomId, RoomType.TACTILE_OFFLINE)))
+                                .currentRoom(Opt.of(new RoomReference(newRoomId, GameType.TACTILE_OFFLINE)))
                                 .build()
                 ).toList());
         return Result.of(players);

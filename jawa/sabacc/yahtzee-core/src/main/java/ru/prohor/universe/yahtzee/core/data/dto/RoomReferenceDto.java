@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
-import ru.prohor.universe.yahtzee.core.core.RoomType;
+import ru.prohor.universe.yahtzee.core.core.GameType;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,5 +14,5 @@ public class RoomReferenceDto {
     @Getter
     private ObjectId id;
     @Getter
-    private RoomType type;
+    private GameType type;
 }

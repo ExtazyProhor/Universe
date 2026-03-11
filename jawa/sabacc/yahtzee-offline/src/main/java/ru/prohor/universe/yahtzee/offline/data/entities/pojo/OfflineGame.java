@@ -5,7 +5,7 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.core.data.pojo.RoomReference;
 import ru.prohor.universe.yahtzee.offline.data.entities.dto.OfflineGameDto;
-import ru.prohor.universe.yahtzee.offline.data.inner.OfflineGameSource;
+import ru.prohor.universe.yahtzee.offline.data.inner.TactileGameSource;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineTeamScores;
 
 import java.time.Instant;
@@ -17,7 +17,7 @@ public record OfflineGame(
         ObjectId initiator,
         List<OfflineTeamScores> teams,
         boolean trusted,
-        OfflineGameSource source,
+        TactileGameSource source,
         Opt<RoomReference> room
 ) implements MongoEntityPojo<OfflineGameDto> {
     @Override

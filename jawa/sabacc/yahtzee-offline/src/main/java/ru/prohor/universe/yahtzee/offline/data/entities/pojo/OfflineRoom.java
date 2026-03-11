@@ -4,7 +4,7 @@ import lombok.Builder;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.core.core.GameRoom;
-import ru.prohor.universe.yahtzee.core.core.RoomType;
+import ru.prohor.universe.yahtzee.core.core.GameType;
 import ru.prohor.universe.yahtzee.offline.data.entities.dto.OfflineRoomDto;
 import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineInterimTeamScores;
 
@@ -46,7 +46,7 @@ public record OfflineRoom(
     }
 
     @Override
-    public RoomType type() {
-        return RoomType.TACTILE_OFFLINE;
+    public GameType type() {
+        return GameType.TACTILE_OFFLINE;
     }
 }

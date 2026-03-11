@@ -7,5 +7,5 @@ public interface GameRoom {
 
     int teamsCount();
 
-    RoomType type();
+    GameType type();
 }
