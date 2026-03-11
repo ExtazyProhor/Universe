@@ -26,10 +26,6 @@ public record RoomReference(
         return type == RoomType.VIRTUAL_ONLINE;
     }
 
-    public boolean isTactileOnline() {
-        return type == RoomType.TACTILE_ONLINE;
-    }
-
     public boolean isVirtualOffline() {
         return type == RoomType.VIRTUAL_OFFLINE;
     }

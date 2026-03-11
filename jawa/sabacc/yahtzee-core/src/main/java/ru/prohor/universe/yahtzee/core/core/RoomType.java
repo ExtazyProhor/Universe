@@ -17,11 +17,6 @@ public enum RoomType {
     VIRTUAL_ONLINE,
 
     /**
-     * Тактильные кубики, игра онлайн
-     */
-    TACTILE_ONLINE,
-
-    /**
      * Виртуальные кубики, игра офлайн
      */
     VIRTUAL_OFFLINE;
