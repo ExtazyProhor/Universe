@@ -6,14 +6,14 @@ public class CastUtils {
     private CastUtils() {}
 
     @SuppressWarnings("unchecked")
-    public static <T1, T2> List<T2> cast(List<T1> list) {
+    public static <T> List<T> cast(List<?> list) {
         return list.stream()
-                .map(container -> (T2) container)
+                .map(container -> (T) container)
                 .toList();
     }
 
     @SuppressWarnings("unchecked")
-    public static <T1, T2> T2 cast(T1 t1) {
-        return (T2) t1;
+    public static <T> T cast(Object object) {
+        return (T) object;
     }
 }
