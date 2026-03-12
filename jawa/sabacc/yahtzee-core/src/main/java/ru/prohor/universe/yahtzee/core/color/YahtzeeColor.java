@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.core.core.color;
+package ru.prohor.universe.yahtzee.core.color;
 
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 

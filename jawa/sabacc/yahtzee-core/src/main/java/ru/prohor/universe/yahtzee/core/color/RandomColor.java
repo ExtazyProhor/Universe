@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.core.core.color;
+package ru.prohor.universe.yahtzee.core.color;
 
 import java.util.Arrays;
 import java.util.Random;

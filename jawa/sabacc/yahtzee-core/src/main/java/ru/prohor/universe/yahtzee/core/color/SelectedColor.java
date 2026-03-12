@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.core.core.color;
+package ru.prohor.universe.yahtzee.core.color;
 
 public interface SelectedColor {
     int getColorId();
