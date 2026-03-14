@@ -23,5 +23,7 @@ public class TeamDto {
     @Property("has_bonus")
     private Boolean hasBonus;
     @Nullable
+    private String title;
+    @Nullable
     private Integer color;
 }

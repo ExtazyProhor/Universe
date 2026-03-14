@@ -272,6 +272,7 @@ public class TactileGameService {
                         .mapToInt(TactileScore::value)
                         .sum() + (hasBonus ? Yahtzee.BONUS_VALUE : 0),
                 Opt.of(hasBonus),
+                Opt.of(team.title()),
                 Opt.of(team.color())
         );
     }

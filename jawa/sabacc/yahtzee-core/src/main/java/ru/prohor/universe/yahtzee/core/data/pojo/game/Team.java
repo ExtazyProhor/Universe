@@ -14,6 +14,7 @@ public record Team<TScore extends Score>(
         Opt<List<TScore>> scores,
         int total,
         Opt<Boolean> hasBonus,
+        Opt<String> title,
         Opt<Integer> color
 ) implements MongoEntityPojo<TeamDto> {
     @Override
@@ -23,6 +24,7 @@ public record Team<TScore extends Score>(
                 scores.map(scores -> scores.stream().map(Score::toDto).toList()).orElseNull(),
                 total,
                 hasBonus.orElseNull(),
+                title.orElseNull(),
                 color.orElseNull()
         );
     }
@@ -33,6 +35,7 @@ public record Team<TScore extends Score>(
                 Opt.ofNullable(dto.getScores()).map(scores -> scores.stream().map(mapper).toList()),
                 dto.getTotal(),
                 Opt.ofNullable(dto.getHasBonus()),
+                Opt.ofNullable(dto.getTitle()),
                 Opt.ofNullable(dto.getColor())
         );
     }
