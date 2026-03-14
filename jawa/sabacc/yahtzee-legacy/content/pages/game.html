@@ -1289,7 +1289,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ type, ...data })
-            }, 1000).catch(err => console.error('Ошибка логирования действия:', err));
+            }, 5000).catch(err => console.error('Ошибка логирования действия:', err));
         }
     }
 
@@ -1318,7 +1318,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(gameResults)
-            }, 1000);
+            }, 5000);
 
             if (response.ok) {
                 showNotification('Результаты сохранены', true);
@@ -1332,7 +1332,7 @@
         }
     }
 
-    async function fetchWithTimeout(url, options = {}, timeout = 1000) {
+    async function fetchWithTimeout(url, options = {}, timeout = 5000) {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), timeout);
 
