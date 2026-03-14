@@ -1,4 +1,6 @@
-package ru.prohor.universe.yahtzee.core.core;
+package ru.prohor.universe.yahtzee.core;
+
+import ru.prohor.universe.yahtzee.core.data.Combination;
 
 public class Yahtzee {
     public static final int BONUS_VALUE = 35;

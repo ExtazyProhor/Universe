@@ -27,8 +27,8 @@ exit
 db.createCollection("users")
 db.createCollection("images")
 db.createCollection("games")
-db.createCollection("offline_rooms")
-db.createCollection("offline_stats")
+db.createCollection("tactile_rooms")
+db.createCollection("stats")
 
 db.users.createIndex(
     {

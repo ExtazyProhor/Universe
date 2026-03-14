@@ -15,6 +15,10 @@ public record TactileScore(
 ) implements Score {
     @Override
     public ScoreDto toDto() {
+        return toTypedDto();
+    }
+
+    public TactileScoreDto toTypedDto() {
         return new TactileScoreDto(
                 combination,
                 value,

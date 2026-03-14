@@ -24,6 +24,4 @@ public class TeamDto {
     private Boolean hasBonus;
     @Nullable
     private Integer color;
-    @Nullable
-    private Integer index;
 }

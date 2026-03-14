@@ -19,6 +19,10 @@ public record VirtualScore(
 ) implements Score {
     @Override
     public ScoreDto toDto() {
+        return toTypedDto();
+    }
+
+    public VirtualScoreDto toTypedDto() {
         return new VirtualScoreDto(
                 combination,
                 value,

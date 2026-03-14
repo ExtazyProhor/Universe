@@ -4,7 +4,7 @@ import dev.morphia.annotations.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ru.prohor.universe.yahtzee.core.core.Combination;
+import ru.prohor.universe.yahtzee.core.data.Combination;
 
 @Getter
 @AllArgsConstructor

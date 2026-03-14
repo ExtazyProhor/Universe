@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.jocasta.cfg.morphia.MongoInMemoryConfiguration;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.impl.MongoInMemoryRepository;
-import ru.prohor.universe.yahtzee.core.data.pojo.Image;
-import ru.prohor.universe.yahtzee.core.data.pojo.Player;
-import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineGame;
-import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
-import ru.prohor.universe.yahtzee.stats.model.OfflineStats;
+import ru.prohor.universe.yahtzee.core.data.pojo.game.Game;
+import ru.prohor.universe.yahtzee.core.data.pojo.image.Image;
+import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
+import ru.prohor.universe.yahtzee.core.data.pojo.room.TactileRoom;
+import ru.prohor.universe.yahtzee.stats.model.Stats;
 
 @Configuration
 @Profile("local | testing")
@@ -23,13 +23,13 @@ public class MongoLocalConfiguration {
     }
 
     @Bean
-    public MongoRepository<OfflineGame> offlineGameRepository() {
-        return new MongoInMemoryRepository<>(OfflineGame::id, OfflineGame.class);
+    public MongoRepository<Game> gameRepository() {
+        return new MongoInMemoryRepository<>(Game::id, Game.class);
     }
 
     @Bean
-    public MongoRepository<OfflineRoom> offlineRoomRepository() {
-        return new MongoInMemoryRepository<>(OfflineRoom::id, OfflineRoom.class);
+    public MongoRepository<TactileRoom> tactileRoomRepository() {
+        return new MongoInMemoryRepository<>(TactileRoom::id, TactileRoom.class);
     }
 
     @Bean
@@ -42,7 +42,7 @@ public class MongoLocalConfiguration {
     }
 
     @Bean
-    public MongoRepository<OfflineStats> offlineStatsRepository() {
-        return new MongoInMemoryRepository<>(OfflineStats::id, OfflineStats.class);
+    public MongoRepository<Stats> offlineStatsRepository() {
+        return new MongoInMemoryRepository<>(Stats::id, Stats.class);
     }
 }

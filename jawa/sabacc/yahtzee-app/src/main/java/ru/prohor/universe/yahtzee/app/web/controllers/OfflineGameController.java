@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.yahtzee.core.data.pojo.Player;
-import ru.prohor.universe.yahtzee.offline.api.SaveMoveRequest;
-import ru.prohor.universe.yahtzee.offline.services.OfflineGameService;
+import ru.prohor.universe.yahtzee.app.services.TactileGameService;
+import ru.prohor.universe.yahtzee.app.web.api.SaveMoveRequest;
+import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 
 @RestController
 @RequestMapping("/api/game/offline")
 public class OfflineGameController {
-    private final OfflineGameService offlineGameService;
+    private final TactileGameService tactileGameService;
 
-    public OfflineGameController(OfflineGameService offlineGameService) {
-        this.offlineGameService = offlineGameService;
+    public OfflineGameController(TactileGameService tactileGameService) {
+        this.tactileGameService = tactileGameService;
     }
 
     @PostMapping("/save_move")
@@ -30,6 +30,6 @@ public class OfflineGameController {
     ) {
         if (player.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return offlineGameService.saveMove(player.get(), body);
+        return tactileGameService.saveMove(player.get(), body);
     }
 }

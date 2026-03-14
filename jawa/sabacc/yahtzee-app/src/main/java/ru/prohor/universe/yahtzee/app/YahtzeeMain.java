@@ -11,7 +11,7 @@ import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
 import ru.prohor.universe.jocasta.springweb.configuration.AllControllersConfiguration;
 import ru.prohor.universe.yahtzee.core.YahtzeeCoreConfiguration;
-import ru.prohor.universe.yahtzee.offline.YahtzeeOfflineConfiguration;
+import ru.prohor.universe.yahtzee.stats.YahtzeeStatisticsConfiguration;
 
 @Configuration
 @ComponentScan
@@ -24,7 +24,7 @@ import ru.prohor.universe.yahtzee.offline.YahtzeeOfflineConfiguration;
         AllControllersConfiguration.class,
 
         YahtzeeCoreConfiguration.class,
-        YahtzeeOfflineConfiguration.class,
+        YahtzeeStatisticsConfiguration.class,
 })
 public class YahtzeeMain {
     public static void main(String[] args) {

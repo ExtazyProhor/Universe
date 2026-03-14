@@ -8,7 +8,7 @@ public class CastUtils {
     @SuppressWarnings("unchecked")
     public static <T> List<T> cast(List<?> list) {
         return list.stream()
-                .map(container -> (T) container)
+                .map(t -> (T) t)
                 .toList();
     }
 

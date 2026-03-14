@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.core.core;
+package ru.prohor.universe.yahtzee.core.data;
 
 public enum GameType {
     /**
@@ -16,5 +16,13 @@ public enum GameType {
     /**
      * Виртуальные кубики, игра офлайн
      */
-    VIRTUAL_OFFLINE
+    VIRTUAL_OFFLINE;
+
+    public boolean isTactile() {
+        return this == TACTILE_OFFLINE;
+    }
+
+    public boolean isVirtual() {
+        return this != TACTILE_OFFLINE;
+    }
 }

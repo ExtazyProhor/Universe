@@ -344,16 +344,6 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>yahtzee-offline</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
-                <artifactId>yahtzee-online</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
                 <artifactId>yahtzee-stats</artifactId>
                 <version>final</version>
             </dependency>

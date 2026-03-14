@@ -18,8 +18,8 @@ import ru.prohor.universe.yahtzee.app.services.images.ImagesService;
 import ru.prohor.universe.yahtzee.app.web.api.ColorInfo;
 import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
 import ru.prohor.universe.yahtzee.app.web.controllers.ProfileController;
-import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
-import ru.prohor.universe.yahtzee.core.data.pojo.Player;
+import ru.prohor.universe.yahtzee.core.color.TeamColor;
+import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
 import java.time.Instant;
@@ -37,20 +37,17 @@ public class AccountService {
 
     private final MongoTransactionService transactionService;
     private final MongoRepository<Player> playerRepository;
-    private final GeneralRoomsService generalRoomsService;
     private final GameColorsService gameColorsService;
     private final ImagesService imagesService;
 
     public AccountService(
             MongoTransactionService transactionService,
             MongoRepository<Player> playerRepository,
-            GeneralRoomsService generalRoomsService,
             GameColorsService gameColorsService,
             ImagesService imagesService
     ) {
         this.transactionService = transactionService;
         this.playerRepository = playerRepository;
-        this.generalRoomsService = generalRoomsService;
         this.gameColorsService = gameColorsService;
         this.imagesService = imagesService;
     }
@@ -102,11 +99,11 @@ public class AccountService {
                 player.displayName(),
                 ColorInfo.of(color),
                 player.imageId().toHexString(),
-                generalRoomsService.findRoom(player.currentRoom()).map(
+                player.currentRoom().map(
                         room -> new AccountController.RoomInfo(
-                                room.type().toString(),
-                                DateTimeUtil.toReadableString(room.createdAt()),
-                                room.teamsCount()
+                                room.getType().toString(),
+                                DateTimeUtil.toReadableString(room.getCreatedAt()),
+                                room.getTeamsCount()
                         )
                 ).orElseNull(),
                 player.incomingRequests().size()

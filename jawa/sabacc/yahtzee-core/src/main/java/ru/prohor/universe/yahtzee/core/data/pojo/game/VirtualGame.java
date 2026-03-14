@@ -21,6 +21,11 @@ public record VirtualGame(
         VirtualGamePropertiesDto properties
 ) implements Game {
     @Override
+    public List<Team<Score>> getTeams() {
+        return CastUtils.cast(teams);
+    }
+
+    @Override
     public GameDto toDto() {
         return new GameDto(
                 id,

@@ -3,9 +3,9 @@ package ru.prohor.universe.yahtzee.core.services.color;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
-import ru.prohor.universe.yahtzee.core.core.color.YahtzeeColor;
-import ru.prohor.universe.yahtzee.core.data.pojo.Player;
+import ru.prohor.universe.yahtzee.core.color.TeamColor;
+import ru.prohor.universe.yahtzee.core.color.YahtzeeColor;
+import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;

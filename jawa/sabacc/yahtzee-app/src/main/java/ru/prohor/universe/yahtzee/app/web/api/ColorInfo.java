@@ -2,7 +2,7 @@ package ru.prohor.universe.yahtzee.app.web.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
+import ru.prohor.universe.yahtzee.core.color.TeamColor;
 
 public record ColorInfo(
         @JsonProperty("random_color")

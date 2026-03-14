@@ -6,12 +6,12 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.tuple.Tuple2;
 import ru.prohor.universe.jocasta.core.collections.tuple.Tuple3;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
-import ru.prohor.universe.yahtzee.core.core.Combination;
-import ru.prohor.universe.yahtzee.core.core.Yahtzee;
-import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineGame;
-import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineScore;
-import ru.prohor.universe.yahtzee.offline.data.inner.pojo.OfflineTeamScores;
-import ru.prohor.universe.yahtzee.stats.model.OfflineStats;
+import ru.prohor.universe.yahtzee.core.Yahtzee;
+import ru.prohor.universe.yahtzee.core.data.Combination;
+import ru.prohor.universe.yahtzee.core.data.pojo.game.Game;
+import ru.prohor.universe.yahtzee.core.data.pojo.game.Score;
+import ru.prohor.universe.yahtzee.core.data.pojo.game.Team;
+import ru.prohor.universe.yahtzee.stats.model.Stats;
 import ru.prohor.universe.yahtzee.stats.model.inner.AverageStats;
 import ru.prohor.universe.yahtzee.stats.model.inner.BoundStats;
 import ru.prohor.universe.yahtzee.stats.model.inner.FloatCombinationStats;
@@ -36,58 +36,58 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
     private final static int TOP = 10;
     private final static int CALIBRATION_GAMES = 10;
 
-    private final MongoRepository<OfflineGame> offlineGameRepository;
-    private final MongoRepository<OfflineStats> offlineStatsRepository;
+    private final MongoRepository<Game> gameRepository;
+    private final MongoRepository<Stats> statsRepository;
 
     public LocalStatisticsCalculationService(
-            MongoRepository<OfflineGame> offlineGameRepository,
-            MongoRepository<OfflineStats> offlineStatsRepository
+            MongoRepository<Game> gameRepository,
+            MongoRepository<Stats> statsRepository
     ) {
-        this.offlineGameRepository = offlineGameRepository;
-        this.offlineStatsRepository = offlineStatsRepository;
+        this.gameRepository = gameRepository;
+        this.statsRepository = statsRepository;
     }
 
     @Override
-    public Opt<OfflineStats> calculateAndGet() {
-        List<OfflineGame> games = offlineGameRepository.findAll().stream().filter(OfflineGame::trusted).toList();
+    public Opt<Stats> calculateAndGet() {
+        List<Game> games = gameRepository.findAll().stream().filter(Game::trusted).toList();
         if (games.isEmpty())
             return Opt.empty();
-        List<FlattenedGame> teams = games.stream()
-                .flatMap(game -> game.teams().stream().map(team -> new FlattenedGame(game, team)))
+        List<FlattenedGame> allTeamsWithGames = games.stream()
+                .flatMap(game -> game.getTeams().stream().map(team -> new FlattenedGame(game, team)))
                 .toList();
-        Map<ObjectId, Long> gamesCount = teams.stream()
-                .flatMap(team -> team.teamScores.players().stream())
+        Map<ObjectId, Long> gamesCount = allTeamsWithGames.stream()
+                .flatMap(team -> team.team.players().stream())
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-        List<OfflineTeamScores> teamScores = teams.stream()
-                .map(FlattenedGame::teamScores)
+        List<Team<Score>> teams = allTeamsWithGames.stream()
+                .map(FlattenedGame::team)
                 .filter(team -> team.scores().isPresent())
                 .toList();
-        List<OfflineScore> scores = teamScores.stream()
+        List<Score> scores = teams.stream()
                 .flatMap(team -> team.scores().get().stream())
                 .toList();
-        OfflineStats stats = new OfflineStats(
+        Stats stats = new Stats(
                 ObjectId.get(),
                 Instant.now(),
                 TOP,
                 games.size(),
+                allTeamsWithGames.size(),
                 teams.size(),
-                teamScores.size(),
-                (float) teams.stream().mapToInt(game -> game.teamScores.total()).average().orElse(0),
+                (float) allTeamsWithGames.stream().mapToInt(game -> game.team.total()).average().orElse(0),
                 calculateGamesCount(gamesCount),
-                calculateAverage(teams, gamesCount),
-                calculateMaximum(teams),
-                calculateMinimum(teams),
-                calculatePersonalMaximum(teams),
-                calculateTotalDistribution(teams),
-                calculateSimpleDistribution(teamScores),
-                calculateMostFrequentTotalScores(teams),
-                calculateMissingValues(teams),
+                calculateAverage(allTeamsWithGames, gamesCount),
+                calculateMaximum(allTeamsWithGames),
+                calculateMinimum(allTeamsWithGames),
+                calculatePersonalMaximum(allTeamsWithGames),
+                calculateTotalDistribution(allTeamsWithGames),
+                calculateSimpleDistribution(teams),
+                calculateMostFrequentTotalScores(allTeamsWithGames),
+                calculateMissingValues(allTeamsWithGames),
                 calculateSimpleDiceAverage(scores),
                 calculateSimpleDiceDistribution(scores),
                 calculateVariableCombinationAverage(scores),
                 calculateComplexCombinationSuccessPercent(scores)
         );
-        offlineStatsRepository.save(stats);
+        statsRepository.save(stats);
         return Opt.of(stats);
     }
 
@@ -105,7 +105,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
 
     private List<AverageStats> calculateAverage(List<FlattenedGame> teams, Map<ObjectId, Long> gamesCount) {
         return teams.stream()
-                .map(FlattenedGame::teamScores)
+                .map(FlattenedGame::team)
                 .flatMap(team -> team.players().stream().map(player -> new Tuple2<>(player, team.total())))
                 .filter(tuple -> gamesCount.get(tuple.get1()) >= CALIBRATION_GAMES)
                 .collect(Collectors.groupingBy(Tuple2::get1, Collectors.toList()))
@@ -121,7 +121,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
     }
 
     private static final Comparator<FlattenedGame> COMPARATOR_BY_TOTAL = Comparator.comparing(
-            game -> game.teamScores().total()
+            game -> game.team.total()
     );
 
     private static final Comparator<FlattenedGame> COMPARATOR_BY_NOVELTY = Comparator
@@ -129,7 +129,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
             .reversed();
 
     private static final Comparator<FlattenedGame> COMPARATOR_BY_PLAYER = Comparator.comparing(
-            game -> game.teamScores.players().hashCode()
+            game -> game.team.players().hashCode()
     );
 
     private static final Comparator<FlattenedGame> MAX_COMPARATOR = COMPARATOR_BY_TOTAL.reversed()
@@ -145,8 +145,8 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .sorted(MAX_COMPARATOR)
                 .limit(TOP)
                 .map(game -> new BoundStats(
-                        game.teamScores.players(),
-                        game.teamScores.total(),
+                        game.team.players(),
+                        game.team.total(),
                         game.game.date()
                 ))
                 .toList();
@@ -157,21 +157,21 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .sorted(MIN_COMPARATOR)
                 .limit(TOP)
                 .map(game -> new BoundStats(
-                        game.teamScores.players(),
-                        game.teamScores.total(),
+                        game.team.players(),
+                        game.team.total(),
                         game.game.date()
                 ))
                 .toList();
     }
 
     private List<PersonalMaximumStats> calculatePersonalMaximum(List<FlattenedGame> teams) {
-        Comparator<Tuple3<ObjectId, Integer, OfflineGame>> comparator = Comparator
-                .<Tuple3<ObjectId, Integer, OfflineGame>, Integer>comparing(Tuple3::get2)
+        Comparator<Tuple3<ObjectId, Integer, Game>> comparator = Comparator
+                .<Tuple3<ObjectId, Integer, Game>, Integer>comparing(Tuple3::get2)
                 .reversed()
                 .thenComparing(Tuple3::get1);
         return teams.stream()
-                .filter(team -> team.teamScores.players().size() == 1)
-                .collect(Collectors.groupingBy(game -> game.teamScores.players().getFirst(), Collectors.toList()))
+                .filter(team -> team.team.players().size() == 1)
+                .collect(Collectors.groupingBy(game -> game.team.players().getFirst(), Collectors.toList()))
                 .entrySet()
                 .stream()
                 .map(entry -> {
@@ -181,7 +181,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                             .orElseThrow();
                     return new Tuple3<>(
                             entry.getKey(),
-                            top.teamScores.total(),
+                            top.team.total(),
                             top.game
                     );
                 })
@@ -194,8 +194,8 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
     private List<ScoresDistributionStats> calculateTotalDistribution(List<FlattenedGame> teams) {
         float count = teams.size();
         return teams.stream()
-                .map(FlattenedGame::teamScores)
-                .collect(Collectors.groupingBy(OfflineTeamScores::total, Collectors.toList()))
+                .map(FlattenedGame::team)
+                .collect(Collectors.groupingBy(Team<Score>::total, Collectors.toList()))
                 .entrySet()
                 .stream()
                 .map(entry -> new ScoresDistributionStats(
@@ -207,15 +207,15 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .toList();
     }
 
-    private List<ScoresDistributionStats> calculateSimpleDistribution(List<OfflineTeamScores> teamScores) {
-        float count = teamScores.size();
-        Function<OfflineTeamScores, Integer> simpleSummator = team -> team.scores()
+    private List<ScoresDistributionStats> calculateSimpleDistribution(List<Team<Score>> teams) {
+        float count = teams.size();
+        Function<Team<Score>, Integer> simpleSummator = team -> team.scores()
                 .get()
                 .stream()
                 .filter(score -> Yahtzee.isSimple(score.combination()))
-                .mapToInt(OfflineScore::value)
+                .mapToInt(Score::value)
                 .sum();
-        return teamScores.stream()
+        return teams.stream()
                 .collect(Collectors.groupingBy(simpleSummator, Collectors.toList()))
                 .entrySet()
                 .stream()
@@ -233,7 +233,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .reversed()
                 .thenComparing(Map.Entry.comparingByKey());
         return teams.stream()
-                .map(game -> game.teamScores.total())
+                .map(game -> game.team.total())
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
                 .stream()
@@ -244,23 +244,23 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
     }
 
     private List<Integer> calculateMissingValues(List<FlattenedGame> teams) {
-        Set<Integer> presentValues = teams.stream().map(game -> game.teamScores.total()).collect(Collectors.toSet());
+        Set<Integer> presentValues = teams.stream().map(game -> game.team.total()).collect(Collectors.toSet());
         int maximum = presentValues.stream().mapToInt(i -> i).max().orElse(0);
         int minimum = presentValues.stream().mapToInt(i -> i).min().orElse(0);
         return IntStream.range(minimum, maximum).filter(i -> !presentValues.contains(i)).boxed().toList();
     }
 
-    private List<FloatCombinationStats> calculateSimpleDiceAverage(List<OfflineScore> scores) {
+    private List<FloatCombinationStats> calculateSimpleDiceAverage(List<Score> scores) {
         return scores.stream()
                 .filter(score -> Yahtzee.isSimple(score.combination()))
-                .collect(Collectors.groupingBy(OfflineScore::combination, Collectors.toList()))
+                .collect(Collectors.groupingBy(Score::combination, Collectors.toList()))
                 .entrySet()
                 .stream()
                 .map(this::mapFloatCombinationStats)
                 .toList();
     }
 
-    private FloatCombinationStats mapFloatCombinationStats(Map.Entry<Combination, List<OfflineScore>> entry) {
+    private FloatCombinationStats mapFloatCombinationStats(Map.Entry<Combination, List<Score>> entry) {
         int denomination = Yahtzee.getSimpleCombinationDenomination(entry.getKey());
         return new FloatCombinationStats(
                 entry.getKey(),
@@ -272,10 +272,10 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
         );
     }
 
-    private List<SimpleDiceDistributionStats> calculateSimpleDiceDistribution(List<OfflineScore> scores) {
+    private List<SimpleDiceDistributionStats> calculateSimpleDiceDistribution(List<Score> scores) {
         return scores.stream()
                 .filter(score -> Yahtzee.isSimple(score.combination()))
-                .collect(Collectors.groupingBy(OfflineScore::combination, Collectors.toList()))
+                .collect(Collectors.groupingBy(Score::combination, Collectors.toList()))
                 .entrySet()
                 .stream()
                 .map(this::mapSimpleDiceDistributionStats)
@@ -283,7 +283,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
     }
 
     private SimpleDiceDistributionStats mapSimpleDiceDistributionStats(
-            Map.Entry<Combination, List<OfflineScore>> entry
+            Map.Entry<Combination, List<Score>> entry
     ) {
         float count = entry.getValue().size();
         int denomination = Yahtzee.getSimpleCombinationDenomination(entry.getKey());
@@ -291,7 +291,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 entry.getKey(),
                 entry.getValue()
                         .stream()
-                        .collect(Collectors.groupingBy(OfflineScore::value, Collectors.counting()))
+                        .collect(Collectors.groupingBy(Score::value, Collectors.counting()))
                         .entrySet()
                         .stream()
                         .map(scoreEntry -> mapSimpleDicePerCountDistribution(
@@ -316,27 +316,27 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
         );
     }
 
-    private List<FloatCombinationStats> calculateVariableCombinationAverage(List<OfflineScore> scores) {
+    private List<FloatCombinationStats> calculateVariableCombinationAverage(List<Score> scores) {
         return scores.stream()
                 .filter(score -> Yahtzee.isVariable(score.combination()))
-                .collect(Collectors.groupingBy(OfflineScore::combination, Collectors.toList()))
+                .collect(Collectors.groupingBy(Score::combination, Collectors.toList()))
                 .entrySet()
                 .stream()
                 .map(entry -> new FloatCombinationStats(
                         entry.getKey(),
                         (float) entry.getValue()
                                 .stream()
-                                .mapToInt(OfflineScore::value)
+                                .mapToInt(Score::value)
                                 .average()
                                 .orElse(0)
                 ))
                 .toList();
     }
 
-    private List<FloatCombinationStats> calculateComplexCombinationSuccessPercent(List<OfflineScore> scores) {
+    private List<FloatCombinationStats> calculateComplexCombinationSuccessPercent(List<Score> scores) {
         return scores.stream()
                 .filter(score -> !Yahtzee.isSimple(score.combination()) && score.combination() != Combination.CHANCE)
-                .collect(Collectors.groupingBy(OfflineScore::combination, Collectors.toList()))
+                .collect(Collectors.groupingBy(Score::combination, Collectors.toList()))
                 .entrySet()
                 .stream()
                 .map(entry -> new FloatCombinationStats(
@@ -351,7 +351,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
     }
 
     private record FlattenedGame(
-            OfflineGame game,
-            OfflineTeamScores teamScores
+            Game game,
+            Team<Score> team
     ) {}
 }

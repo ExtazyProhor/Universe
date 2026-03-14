@@ -1,5 +1,6 @@
 package ru.prohor.universe.yahtzee.core.data.pojo.room;
 
+import lombok.Builder;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.yahtzee.core.data.dto.room.TactileRoomDto;
@@ -7,6 +8,7 @@ import ru.prohor.universe.yahtzee.core.data.dto.room.TactileRoomDto;
 import java.time.Instant;
 import java.util.List;
 
+@Builder(toBuilder = true)
 public record TactileRoom(
         ObjectId id,
         Instant createdAt,

@@ -1,0 +1,5 @@
+package ru.prohor.universe.yahtzee.app.web.api;
+
+public record SaveMoveErrorResponse(
+        String error
+) {}

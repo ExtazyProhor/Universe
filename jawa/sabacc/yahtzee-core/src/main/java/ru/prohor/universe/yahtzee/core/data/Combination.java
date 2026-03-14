@@ -1,4 +1,4 @@
-package ru.prohor.universe.yahtzee.core.core;
+package ru.prohor.universe.yahtzee.core.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

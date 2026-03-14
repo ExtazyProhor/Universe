@@ -7,12 +7,11 @@ import org.bson.Document;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.benchmark.Benchmark;
-import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.impl.MongoMorphiaRepository;
 import ru.prohor.universe.jocasta.morphia.query.MongoQuery;
 import ru.prohor.universe.jocasta.morphia.query.MongoSorts;
-import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineGame;
-import ru.prohor.universe.yahtzee.stats.model.OfflineStats;
+import ru.prohor.universe.yahtzee.core.data.pojo.game.Game;
+import ru.prohor.universe.yahtzee.stats.model.Stats;
 
 import java.io.InputStream;
 import java.util.List;
@@ -23,21 +22,21 @@ public class MorphiaStatisticsCalculationService implements StatisticsCalculatio
     private static final String GLOBAL_STATISTIC_CALCULATION = "/global-statistics-calculation.json";
     private static final TypeReference<List<Map<String, Object>>> TYPE_REFERENCE = new TypeReference<>() {};
 
-    private final MongoMorphiaRepository<OfflineGame> offlineGamesRepository;
-    private final MongoRepository<OfflineStats> offlineStatsRepository;
+    private final MongoMorphiaRepository<Game> gamesRepository;
+    private final MongoMorphiaRepository<Stats> statsRepository;
     private final ObjectMapper objectMapper;
 
     public MorphiaStatisticsCalculationService(
-            MongoMorphiaRepository<OfflineGame> offlineGamesRepository,
-            MongoRepository<OfflineStats> offlineStatsRepository
+            MongoMorphiaRepository<Game> gamesRepository,
+            MongoMorphiaRepository<Stats> statsRepository
     ) {
-        this.offlineGamesRepository = offlineGamesRepository;
-        this.offlineStatsRepository = offlineStatsRepository;
+        this.gamesRepository = gamesRepository;
+        this.statsRepository = statsRepository;
         this.objectMapper = new ObjectMapper();
     }
 
     @Override
-    public Opt<OfflineStats> calculateAndGet() {
+    public Opt<Stats> calculateAndGet() {
         long ms = Benchmark.measureSneaky(() -> executeAggregationPipeline(loadRawPipeline()));
         // TODO log.info("The aggregation pipeline finished in {} ms", ms);
         System.out.println("aggregation finished in " + ms + " ms");
@@ -45,15 +44,15 @@ public class MorphiaStatisticsCalculationService implements StatisticsCalculatio
     }
 
     private void executeAggregationPipeline(List<Document> pipeline) {
-        MongoCollection<Document> collection = offlineGamesRepository.getCollection();
+        MongoCollection<Document> collection = gamesRepository.getCollection();
         collection.aggregate(pipeline).toCollection();
     }
 
-    private Opt<OfflineStats> getLatestStats() {
-        MongoQuery<OfflineStats> query = new MongoQuery<OfflineStats>()
-                .sort(MongoSorts.descending(OfflineStats::id))
+    private Opt<Stats> getLatestStats() {
+        MongoQuery<Stats> query = new MongoQuery<Stats>()
+                .sort(MongoSorts.descending(Stats::id))
                 .limit(1);
-        List<OfflineStats> stats = offlineStatsRepository.find(query);
+        List<Stats> stats = statsRepository.find(query);
         return Opt.when(!stats.isEmpty(), stats::getFirst);
     }
 

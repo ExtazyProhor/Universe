@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.yahtzee.app.services.AccountService;
 import ru.prohor.universe.yahtzee.app.web.api.ColorInfo;
-import ru.prohor.universe.yahtzee.core.data.pojo.Player;
+import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 
 import java.util.List;
 
