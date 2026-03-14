@@ -42,7 +42,7 @@ public class MongoLocalConfiguration {
     }
 
     @Bean
-    public MongoRepository<Stats> offlineStatsRepository() {
+    public MongoRepository<Stats> statsRepository() {
         return new MongoInMemoryRepository<>(Stats::id, Stats.class);
     }
 }

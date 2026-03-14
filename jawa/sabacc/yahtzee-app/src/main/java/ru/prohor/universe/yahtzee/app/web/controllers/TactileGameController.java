@@ -13,11 +13,11 @@ import ru.prohor.universe.yahtzee.app.web.api.SaveMoveRequest;
 import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 
 @RestController
-@RequestMapping("/api/game/offline")
-public class OfflineGameController {
+@RequestMapping("/api/game/tactile")
+public class TactileGameController {
     private final TactileGameService tactileGameService;
 
-    public OfflineGameController(TactileGameService tactileGameService) {
+    public TactileGameController(TactileGameService tactileGameService) {
         this.tactileGameService = tactileGameService;
     }
 

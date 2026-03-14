@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Service
 public class GameColorsService {
-    public GameColorsService(@Value("${universe.yahtzee.game.offline.max-teams}") int maxTeams) {
+    public GameColorsService(@Value("${universe.yahtzee.game.max-teams}") int maxTeams) {
         checkTeamsSize(maxTeams);
     }
 

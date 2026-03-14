@@ -58,8 +58,8 @@ public class TactileGameService {
     private final GameColorsService gameColorsService;
 
     public TactileGameService(
-            @Value("${universe.yahtzee.game.offline.max-teams}") int maxTeams,
-            @Value("${universe.yahtzee.game.offline.max-players-in-team}") int maxPlayersInTeam,
+            @Value("${universe.yahtzee.game.max-teams}") int maxTeams,
+            @Value("${universe.yahtzee.game.max-players-in-team}") int maxPlayersInTeam,
             MongoTransactionService transactionService,
             MongoRepository<Player> playerRepository,
             MongoRepository<Game> gameRepository,
@@ -249,7 +249,7 @@ public class TactileGameService {
                 initiator.id(),
                 room.teams()
                         .stream()
-                        .map(this::offlineTeamScoresMapper)
+                        .map(this::teamMapper)
                         .toList(),
                 initiator.trusted(),
                 Opt.of(room.id()),
@@ -258,7 +258,7 @@ public class TactileGameService {
         );
     }
 
-    private Team<TactileScore> offlineTeamScoresMapper(TactileIntermediateTeam team) {
+    private Team<TactileScore> teamMapper(TactileIntermediateTeam team) {
         boolean hasBonus = team.scores()
                 .stream()
                 .filter(score -> Yahtzee.isSimple(score.combination()))

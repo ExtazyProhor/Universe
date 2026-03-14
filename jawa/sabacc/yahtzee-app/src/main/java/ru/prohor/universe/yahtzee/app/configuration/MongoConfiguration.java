@@ -54,7 +54,7 @@ public class MongoConfiguration {
     }
 
     @Bean
-    public MongoRepository<Stats> offlineStatsRepository(Datastore datastore) {
+    public MongoRepository<Stats> statsRepository(Datastore datastore) {
         return MongoMorphiaRepository.createRepository(
                 datastore,
                 Stats.class,
