@@ -13,6 +13,6 @@ public class LocalMockConfiguration {
     public User addAdmin(
             UserService userService
     ) {
-        return userService.createUser("admin", "admin@gmail.com", "adminADMIN");
+        return userService.createUser("admin", "admin@gmail.com", "Test1234");
     }
 }
