@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.yahtzee.app.services.AdminValidationService;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -17,8 +18,7 @@ public class StableAndCanaryConfiguration {
     public AdminValidationService adminValidationService(
             @Value("${universe.yahtzee.admin-ids}") List<String> adminIds
     ) {
-        return new AdminValidationService(
-                adminIds.stream().map(ObjectId::new).collect(Collectors.toSet())
-        );
+        Set<ObjectId> adminIdsSet = adminIds.stream().map(ObjectId::new).collect(Collectors.toSet());
+        return player -> adminIdsSet.contains(player.id());
     }
 }
