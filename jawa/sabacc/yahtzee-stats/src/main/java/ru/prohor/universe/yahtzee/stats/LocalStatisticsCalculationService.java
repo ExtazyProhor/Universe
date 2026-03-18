@@ -215,7 +215,6 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
     }
 
     private List<ScoresDistributionStats> calculateSimpleDistribution(List<Team<Score>> teams) {
-        float count = teams.size();
         Function<Team<Score>, Integer> simpleSummator = team -> team.scores()
                 .get()
                 .stream()
@@ -229,7 +228,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .map(entry -> new ScoresDistributionStats(
                         entry.getKey(),
                         entry.getValue().size(),
-                        entry.getValue().size() / count * 100
+                        entry.getValue().size() * 100f / teams.size()
                 ))
                 .sorted(Comparator.comparing(ScoresDistributionStats::getValue))
                 .toList();
