@@ -64,26 +64,26 @@ public record Stats(
 
     public static Stats fromDto(StatsDto stats) {
         return new Stats(
-                stats.getId(),
-                stats.getGeneratedAt(),
-                stats.getTopLimit(),
-                stats.getGamesTotal(),
-                stats.getIndividualResultsTotal(),
-                stats.getIndividualResultsWithScoresTotal(),
-                stats.getOverallAverage(),
-                stats.getGamesCount(),
-                stats.getAverage(),
-                stats.getMaximum(),
-                stats.getMinimum(),
-                stats.getPersonalMaximum(),
-                stats.getTotalDistribution(),
-                stats.getSimpleDistribution(),
-                stats.getMostFrequentTotalScores(),
-                stats.getMissingValues(),
-                stats.getSimpleDiceAverage(),
-                stats.getSimpleDiceDistribution(),
-                stats.getVariableCombinationAverage(),
-                stats.getComplexCombinationSuccessPercent()
+                stats.id(),
+                stats.generatedAt(),
+                stats.topLimit(),
+                stats.gamesTotal(),
+                stats.individualResultsTotal(),
+                stats.individualResultsWithScoresTotal(),
+                stats.overallAverage(),
+                stats.gamesCount(),
+                stats.average(),
+                stats.maximum(),
+                stats.minimum(),
+                stats.personalMaximum(),
+                stats.totalDistribution(),
+                stats.simpleDistribution(),
+                stats.mostFrequentTotalScores(),
+                stats.missingValues(),
+                stats.simpleDiceAverage(),
+                stats.simpleDiceDistribution(),
+                stats.variableCombinationAverage(),
+                stats.complexCombinationSuccessPercent()
         );
     }
 }

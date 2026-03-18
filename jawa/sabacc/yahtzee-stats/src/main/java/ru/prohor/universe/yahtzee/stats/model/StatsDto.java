@@ -6,6 +6,7 @@ import dev.morphia.annotations.Property;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 import ru.prohor.universe.yahtzee.stats.model.inner.AverageStats;
 import ru.prohor.universe.yahtzee.stats.model.inner.BoundStats;
@@ -20,6 +21,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Getter
+@Accessors(fluent = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity("stats")
