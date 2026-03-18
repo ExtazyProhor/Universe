@@ -17,4 +17,5 @@ public class BoundStats {
     private List<ObjectId> players;
     private int value;
     private Instant date;
+    private ObjectId gameId;
 }

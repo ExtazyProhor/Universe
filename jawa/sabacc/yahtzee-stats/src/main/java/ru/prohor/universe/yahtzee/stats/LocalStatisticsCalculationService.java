@@ -147,7 +147,8 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .map(game -> new BoundStats(
                         game.team.players(),
                         game.team.total(),
-                        game.game.date()
+                        game.game.date(),
+                        game.game.id()
                 ))
                 .toList();
     }
@@ -159,7 +160,8 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .map(game -> new BoundStats(
                         game.team.players(),
                         game.team.total(),
-                        game.game.date()
+                        game.game.date(),
+                        game.game.id()
                 ))
                 .toList();
     }

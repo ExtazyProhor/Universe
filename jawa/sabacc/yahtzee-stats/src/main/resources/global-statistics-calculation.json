@@ -130,7 +130,8 @@
             "_id": 0,
             "players": "$teams.players",
             "value": "$teams.total",
-            "date": "$date"
+            "date": "$date",
+            "gameId": "$_id"
           }
         },
         { "$sort": { "value": -1, "date": -1, "players": 1 } },
@@ -144,7 +145,8 @@
             "_id": 0,
             "players": "$teams.players",
             "value": "$teams.total",
-            "date": "$date"
+            "date": "$date",
+            "gameId": "$_id"
           }
         },
         { "$sort": { "value": 1, "date": -1, "players": 1 } },
