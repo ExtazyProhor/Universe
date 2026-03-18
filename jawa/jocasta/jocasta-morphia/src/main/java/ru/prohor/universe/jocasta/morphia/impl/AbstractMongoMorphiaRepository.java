@@ -19,6 +19,7 @@ import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.morphia.MongoDatabaseException;
 import ru.prohor.universe.jocasta.morphia.MongoTextSearchResult;
+import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
 import ru.prohor.universe.jocasta.morphia.query.MongoQuery;
 
 import java.util.ArrayList;
@@ -80,6 +81,10 @@ public class AbstractMongoMorphiaRepository<T, W> {
         return session.isEmpty()
                 ? collection.countDocuments()
                 : collection.countDocuments(session.get());
+    }
+
+    long countDocuments(MongoFilter<W> filter) {
+        return datastore.find(type).filter(filter.morphia()).count();
     }
 
     Opt<W> findById(ObjectId id) {

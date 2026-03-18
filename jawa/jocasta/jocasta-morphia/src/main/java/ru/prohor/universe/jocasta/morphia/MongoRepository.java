@@ -17,6 +17,8 @@ public interface MongoRepository<T> {
 
     long countDocuments();
 
+    long countDocuments(MongoFilter<T> filter);
+
     Opt<T> findById(ObjectId id);
 
     default T ensuredFindById(ObjectId id) {

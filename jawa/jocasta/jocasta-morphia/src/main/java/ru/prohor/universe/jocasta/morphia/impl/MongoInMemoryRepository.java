@@ -55,6 +55,11 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     }
 
     @Override
+    public long countDocuments(MongoFilter<T> filter) {
+        return collection.values().stream().filter(filter.inMemory()).count();
+    }
+
+    @Override
     public Opt<T> findById(ObjectId id) {
         return Opt.ofNullable(collection.get(id));
     }
