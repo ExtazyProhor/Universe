@@ -187,7 +187,12 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 })
                 .sorted(comparator)
                 .limit(TOP)
-                .map(tuple -> new PersonalMaximumStats(tuple.get1(), tuple.get2(), tuple.get3().date()))
+                .map(tuple -> new PersonalMaximumStats(
+                        tuple.get1(),
+                        tuple.get2(),
+                        tuple.get3().date(),
+                        tuple.get3().id()
+                ))
                 .toList();
     }
 

@@ -33,7 +33,8 @@
             "_id": 0,
             "player": { "$arrayElemAt": ["$teams.players", 0] },
             "value": "$teams.total",
-            "date": "$date"
+            "date": "$date",
+            "gameId": "$_id"
           }
         },
         {
@@ -43,7 +44,8 @@
           "$group": {
             "_id": "$player",
             "value": { "$first": "$value" },
-            "date": { "$first": "$date" }
+            "date": { "$first": "$date" },
+            "gameId": { "$first": "$gameId" }
           }
         },
         {
@@ -51,7 +53,8 @@
             "_id": 0,
             "player": "$_id",
             "value": 1,
-            "date": 1
+            "date": 1,
+            "gameId": 1
           }
         },
         { "$sort": { "value": -1, "player": 1 } },

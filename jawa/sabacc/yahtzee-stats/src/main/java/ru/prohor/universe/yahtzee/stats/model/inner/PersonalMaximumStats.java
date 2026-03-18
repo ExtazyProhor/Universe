@@ -16,4 +16,5 @@ public class PersonalMaximumStats {
     private ObjectId player;
     private int value;
     private Instant date;
+    private ObjectId gameId;
 }
