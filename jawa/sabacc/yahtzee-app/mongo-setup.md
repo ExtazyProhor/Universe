@@ -43,5 +43,6 @@ db.users.createIndex(
 db.users.getIndexes()
 
 db.games.createIndex({ trusted: 1 })
+db.games.createIndex({ players: 1, "_id": -1 })
 db.games.getIndexes()
 ```
