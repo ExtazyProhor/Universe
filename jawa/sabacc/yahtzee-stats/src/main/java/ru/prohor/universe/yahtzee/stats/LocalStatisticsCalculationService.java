@@ -345,14 +345,16 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .collect(Collectors.groupingBy(Score::combination, Collectors.toList()))
                 .entrySet()
                 .stream()
-                .map(entry -> new FloatCombinationStats(
-                        entry.getKey(),
-                        100f * (float) entry.getValue()
-                                .stream()
-                                .mapToInt(score -> score.value() == 0 ? 0 : 1)
-                                .average()
-                                .orElse(0)
-                ))
+                .map(entry -> {
+                    float notNulls = entry.getValue()
+                            .stream()
+                            .filter(score -> score.value() != 0)
+                            .count();
+                    return new FloatCombinationStats(
+                            entry.getKey(),
+                            notNulls * 100f / entry.getValue().size()
+                    );
+                })
                 .toList();
     }
 
