@@ -34,6 +34,7 @@ import ru.prohor.universe.yahtzee.core.data.pojo.game.Team;
 import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 import ru.prohor.universe.yahtzee.core.data.pojo.room.TactileIntermediateTeam;
 import ru.prohor.universe.yahtzee.core.data.pojo.room.TactileRoom;
+import ru.prohor.universe.yahtzee.core.services.YahtzeeUtils;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
 import java.time.Instant;
@@ -167,12 +168,7 @@ public class TactileGameService {
 
     public ResponseEntity<?> saveMove(Player player, SaveMoveRequest body) {
         return transactionService.withTransaction(transaction -> {
-            ObjectId moverId;
-            try {
-                moverId = new ObjectId(body.movingPlayerId());
-            } catch (Exception e) {
-                return saveMoveError("Illegal ObjectId format"); // TODO log [SB]
-            }
+            ObjectId moverId = YahtzeeUtils.parseObjectId(body.movingPlayerId());
             MongoRepository<Player> transactionalPlayerRepository = transaction.wrap(playerRepository);
             MongoRepository<TactileRoom> transactionalRoomRepository = transaction.wrap(roomRepository);
             MongoRepository<Game> transactionalGameRepository = transaction.wrap(gameRepository);
@@ -299,19 +295,15 @@ public class TactileGameService {
 
         used.clear();
         List<ObjectId> playersIds = new ArrayList<>();
-        try {
-            for (TeamPlayers teamPlayers : body.teams()) {
-                if (teamPlayers.playersIds().isEmpty() || teamPlayers.playersIds().size() > maxPlayersInTeam)
-                    return Result.error("Team must have from 1 to " + maxPlayersInTeam + " players");
-                for (String id : teamPlayers.playersIds()) {
-                    playersIds.add(new ObjectId(id));
-                    if (used.contains(id))
-                        return Result.error("Duplicate playerId: {" + id + "}");
-                    used.add(id);
-                }
+        for (TeamPlayers teamPlayers : body.teams()) {
+            if (teamPlayers.playersIds().isEmpty() || teamPlayers.playersIds().size() > maxPlayersInTeam)
+                return Result.error("Team must have from 1 to " + maxPlayersInTeam + " players");
+            for (String id : teamPlayers.playersIds()) {
+                playersIds.add(YahtzeeUtils.parseObjectId(id));
+                if (used.contains(id))
+                    return Result.error("Duplicate playerId: {" + id + "}");
+                used.add(id);
             }
-        } catch (Exception e) {
-            return Result.error("Illegal format of ObjectId {" + e.getMessage() + "}");
         }
         List<Player> players = transactional.findAllByIds(playersIds);
         if (players.size() != playersIds.size())

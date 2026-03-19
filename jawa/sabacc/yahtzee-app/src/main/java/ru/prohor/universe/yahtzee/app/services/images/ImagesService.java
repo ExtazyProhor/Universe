@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.core.data.pojo.image.Image;
+import ru.prohor.universe.yahtzee.core.services.YahtzeeUtils;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
@@ -50,13 +51,6 @@ public class ImagesService {
     }
 
     public Opt<byte[]> getAvatarById(String id) {
-        ObjectId objectId;
-        try {
-            objectId = new ObjectId(id);
-        } catch (Exception e) {
-            // TODO log
-            return Opt.empty();
-        }
-        return imagesRepository.findById(objectId).map(image -> image.content().getData());
+        return imagesRepository.findById(YahtzeeUtils.parseObjectId(id)).map(image -> image.content().getData());
     }
 }

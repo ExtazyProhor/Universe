@@ -13,6 +13,7 @@ import ru.prohor.universe.yahtzee.core.data.pojo.game.Game;
 import ru.prohor.universe.yahtzee.core.data.pojo.game.Score;
 import ru.prohor.universe.yahtzee.core.data.pojo.game.Team;
 import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
+import ru.prohor.universe.yahtzee.core.services.YahtzeeUtils;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
 import java.util.List;
@@ -36,13 +37,7 @@ public class TactileGameInfoService {
     }
 
     public ResponseEntity<GameInfoController.GameInfoResponse> getTactileGameInfo(String id) {
-        ObjectId objectId;
-        try {
-            objectId = new ObjectId(id);
-        } catch (Exception e) {
-            e.printStackTrace(); // TODO log SB
-            return ResponseEntity.badRequest().build();
-        }
+        ObjectId objectId = YahtzeeUtils.parseObjectId(id);
         return gameRepository.findById(objectId)
                 .map(this::mapGame)
                 .map(ResponseEntity::ok)

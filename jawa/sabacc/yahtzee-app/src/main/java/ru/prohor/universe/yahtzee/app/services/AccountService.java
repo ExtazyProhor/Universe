@@ -20,6 +20,7 @@ import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
 import ru.prohor.universe.yahtzee.app.web.controllers.ProfileController;
 import ru.prohor.universe.yahtzee.core.color.TeamColor;
 import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
+import ru.prohor.universe.yahtzee.core.services.YahtzeeUtils;
 import ru.prohor.universe.yahtzee.core.services.color.GameColorsService;
 
 import java.time.Instant;
@@ -131,14 +132,7 @@ public class AccountService {
     }
 
     public ResponseEntity<?> deleteFriend(Player player, String id) {
-        ObjectId objectId;
-        try {
-            objectId = new ObjectId(id);
-        } catch (Exception e) {
-            e.printStackTrace(); // TODO log
-            return ResponseEntity.badRequest().build();
-        }
-
+        ObjectId objectId = YahtzeeUtils.parseObjectId(id);
         return transactionService.withTransaction(transaction -> {
             MongoRepository<Player> transactional = transaction.wrap(playerRepository);
             Map<ObjectId, Player> playerAndFriend = transactional.findAllByIdsAsMap(
@@ -212,14 +206,7 @@ public class AccountService {
     }
 
     public ResponseEntity<?> sendRequest(Player player, String id) {
-        ObjectId objectId;
-        try {
-            objectId = new ObjectId(id);
-        } catch (Exception e) {
-            e.printStackTrace(); // TODO log (SB - Suspicious Behaviour)
-            return ResponseEntity.badRequest().build();
-        }
-
+        ObjectId objectId = YahtzeeUtils.parseObjectId(id);
         return transactionService.withTransaction(transaction -> {
             MongoRepository<Player> transactional = transaction.wrap(playerRepository);
             Map<ObjectId, Player> playerAndFriend = transactional.findAllByIdsAsMap(
@@ -295,14 +282,7 @@ public class AccountService {
             String id,
             TriFunction<Player, Player, MongoRepository<Player>, ResponseEntity<?>> playerToFriendFunction
     ) {
-        ObjectId objectId;
-        try {
-            objectId = new ObjectId(id);
-        } catch (Exception e) {
-            e.printStackTrace(); // TODO log (SB - Suspicious Behaviour)
-            return ResponseEntity.badRequest().build();
-        }
-
+        ObjectId objectId = YahtzeeUtils.parseObjectId(id);
         return transactionService.withTransaction(transaction -> {
             MongoRepository<Player> transactional = transaction.wrap(playerRepository);
             Map<ObjectId, Player> playerAndFriend = transactional.findAllByIdsAsMap(
