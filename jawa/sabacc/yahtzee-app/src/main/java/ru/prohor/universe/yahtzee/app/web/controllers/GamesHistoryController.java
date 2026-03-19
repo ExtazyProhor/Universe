@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.yahtzee.app.services.GamesHistoryService;
+import ru.prohor.universe.yahtzee.core.data.GameType;
 import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class GamesHistoryController {
 
     public record GameDescription(
             ObjectId id,
-            String type, // RoomType
+            GameType type,
             String date, // datetime
             int teams,
             int players,

@@ -101,7 +101,7 @@ public class AccountService {
                 player.imageId().toHexString(),
                 player.currentRoom().map(
                         room -> new AccountController.RoomInfo(
-                                room.getType().toString(),
+                                room.getType(),
                                 DateTimeUtil.toReadableString(room.getCreatedAt()),
                                 room.getTeamsCount()
                         )

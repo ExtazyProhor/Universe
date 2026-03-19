@@ -35,7 +35,7 @@ public class TactileGameInfoService {
         this.gameColorsService = gameColorsService;
     }
 
-    public ResponseEntity<GameInfoController.TactileGameInfoResponse> getTactileGameInfo(String id) {
+    public ResponseEntity<GameInfoController.GameInfoResponse> getTactileGameInfo(String id) {
         ObjectId objectId;
         try {
             objectId = new ObjectId(id);
@@ -49,7 +49,7 @@ public class TactileGameInfoService {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    private GameInfoController.TactileGameInfoResponse mapGame(Game game) {
+    private GameInfoController.GameInfoResponse mapGame(Game game) {
         List<ObjectId> ids = game.getTeams().stream().flatMap(team -> team.players().stream()).toList();
         Map<ObjectId, GameInfoController.PlayerInfoResponse> players = playerRepository.ensuredFindAllByIds(ids)
                 .stream()
@@ -59,9 +59,10 @@ public class TactileGameInfoService {
                         MonoFunction.identity()
                 ));
 
-        return new GameInfoController.TactileGameInfoResponse(
+        return new GameInfoController.GameInfoResponse(
                 game.id(),
                 DateTimeUtil.toReadableString(game.date()),
+                game.type(),
                 players.get(game.initiator()),
                 game.getTeams().stream().map(team -> mapTeam(players, team)).toList(),
                 game.trusted()

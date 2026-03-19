@@ -47,7 +47,7 @@ public class GamesHistoryService { // TODO сделать через page-token-
                 totalPages,
                 games.stream().map(game -> new GamesHistoryController.GameDescription(
                         game.id(),
-                        game.type().toString(),
+                        game.type(),
                         DateTimeUtil.toReadableString(game.date()),
                         game.getTeams().size(),
                         game.players().size(),

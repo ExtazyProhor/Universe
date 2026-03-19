@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.yahtzee.app.services.TactileGameInfoService;
 import ru.prohor.universe.yahtzee.app.web.api.ColorInfo;
 import ru.prohor.universe.yahtzee.core.data.Combination;
+import ru.prohor.universe.yahtzee.core.data.GameType;
 
 import java.util.List;
 
@@ -21,14 +22,15 @@ public class GameInfoController {
         this.tactileGameInfoService = tactileGameInfoService;
     }
 
-    @GetMapping("/tactile/{id}")
-    public ResponseEntity<TactileGameInfoResponse> tactileGameInfo(@PathVariable("id") String gameId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<GameInfoResponse> tactileGameInfo(@PathVariable("id") String gameId) {
         return tactileGameInfoService.getTactileGameInfo(gameId);
     }
 
-    public record TactileGameInfoResponse(
+    public record GameInfoResponse(
             ObjectId id,
             String date,
+            GameType type,
             PlayerInfoResponse initiator,
             List<TeamInfoResponse> teams,
             boolean trusted

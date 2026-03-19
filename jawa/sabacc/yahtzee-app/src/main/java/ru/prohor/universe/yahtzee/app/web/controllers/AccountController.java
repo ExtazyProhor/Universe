@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.yahtzee.app.services.AccountService;
 import ru.prohor.universe.yahtzee.app.web.api.ColorInfo;
+import ru.prohor.universe.yahtzee.core.data.GameType;
 import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public class AccountController {
     ) {}
 
     public record RoomInfo(
-            String type, // RoomType
+            GameType type,
             String creation, // datetime
             int teams
     ) {}
