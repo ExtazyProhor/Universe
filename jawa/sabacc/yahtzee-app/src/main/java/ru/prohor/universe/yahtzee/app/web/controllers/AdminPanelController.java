@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.yahtzee.app.services.AdminService;
-import ru.prohor.universe.yahtzee.core.core.color.TeamColor;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class AdminPanelController {
     }
 
     @GetMapping("/colors")
-    public ResponseEntity<List<TeamColor>> getAvailableColors(
+    public ResponseEntity<List<ColorProperties>> getAvailableColors(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
             Opt<Player> player
     ) {
@@ -36,6 +35,15 @@ public class AdminPanelController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return adminService.getAvailableColors(player.get());
     }
+
+    public record ColorProperties(
+            int colorId,
+            String colorName,
+            String background,
+            String text,
+            String light,
+            String dark
+    ) {}
 
     @GetMapping("/backup")
     public ResponseEntity<ByteArrayResource> backup(
@@ -51,7 +59,7 @@ public class AdminPanelController {
             value = "/recovery",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<?> recovery(
+    public ResponseEntity<Void> recovery(
             @RequestAttribute(Player.ATTRIBUTE_KEY)
             Opt<Player> player,
             @RequestParam("file")

@@ -60,6 +60,8 @@ public interface MongoRepository<T> {
 
     Opt<T> deleteById(ObjectId id);
 
+    long deleteAll();
+
     default T safeUpdate(ObjectId id, MonoFunction<T, T> updateFunction) {
         return this.withTransaction(tx -> {
             T updated = updateFunction.apply(tx.ensuredFindById(id));

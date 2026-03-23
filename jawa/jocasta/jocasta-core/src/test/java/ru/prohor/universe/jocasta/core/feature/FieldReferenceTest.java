@@ -582,4 +582,206 @@ public class FieldReferenceTest {
             @Name("field_with_annotation")
             String fieldWithAnnotation
     ) {}
+
+    // simple classes (not records)
+
+    @Test
+    public void testPrimitiveFieldWithoutNestingForClassNames() {
+        FieldProperties<OuterClass, String> str = FR.wrap(OuterClass::str);
+        FieldProperties<OuterClass, String> optStrPresent = FR.wrapO(OuterClass::optStrPresent);
+        FieldProperties<OuterClass, String> optStrEmpty = FR.wrapO(OuterClass::optStrEmpty);
+
+        Assertions.assertEquals("str", str.name());
+        Assertions.assertEquals("optStrPresent", optStrPresent.name());
+        Assertions.assertEquals("optStrEmpty", optStrEmpty.name());
+    }
+
+    @Test
+    public void testPrimitiveFieldWithoutNestingForClassGetters() {
+        FieldProperties<OuterClass, String> str = FR.wrap(OuterClass::str);
+        FieldProperties<OuterClass, String> optStrPresent = FR.wrapO(OuterClass::optStrPresent);
+        FieldProperties<OuterClass, String> optStrEmpty = FR.wrapO(OuterClass::optStrEmpty);
+
+        testClass(str, Opt.of("a"));
+        testClass(optStrPresent, Opt.of("b"));
+        testClass(optStrEmpty, Opt.empty());
+    }
+
+    @Test
+    public void testCompositeFieldWithoutNestingForClassNames() {
+        FieldProperties<OuterClass, MiddleClass> middle = FR.wrap(OuterClass::middle);
+        FieldProperties<OuterClass, MiddleClass> optMiddlePresent = FR.wrapO(OuterClass::optMiddlePresent);
+        FieldProperties<OuterClass, MiddleClass> optMiddleEmpty = FR.wrapO(OuterClass::optMiddleEmpty);
+
+        Assertions.assertEquals("middle", middle.name());
+        Assertions.assertEquals("optMiddlePresent", optMiddlePresent.name());
+        Assertions.assertEquals("optMiddleEmpty", optMiddleEmpty.name());
+    }
+
+    @Test
+    public void testCompositeFieldWithoutNestingForClassGetters() {
+        FieldProperties<OuterClass, MiddleClass> middle = FR.wrap(OuterClass::middle);
+        FieldProperties<OuterClass, MiddleClass> optMiddlePresent = FR.wrapO(OuterClass::optMiddlePresent);
+        FieldProperties<OuterClass, MiddleClass> optMiddleEmpty = FR.wrapO(OuterClass::optMiddleEmpty);
+
+        testClass(middle, Opt.of(OUTER_CLASS.middle()));
+        testClass(optMiddlePresent, OUTER_CLASS.optMiddlePresent());
+        testClass(optMiddleEmpty, Opt.empty());
+    }
+
+    @Test
+    public void testNestedFieldsForClassNames() {
+        FieldProperties<OuterClass, InnerClass> inner =
+                FR.chain(OuterClass::middle).then(MiddleClass::inner);
+
+        FieldProperties<OuterClass, InnerClass> optInner =
+                FR.chain(OuterClass::middle).thenO(MiddleClass::optInnerPresent);
+
+        Assertions.assertEquals("middle.inner", inner.name());
+        Assertions.assertEquals("middle.optInnerPresent", optInner.name());
+    }
+
+    @Test
+    public void testNestedFieldsForClassGetters() {
+        FieldProperties<OuterClass, InnerClass> inner =
+                FR.chain(OuterClass::middle).then(MiddleClass::inner);
+
+        FieldProperties<OuterClass, InnerClass> optInner =
+                FR.chain(OuterClass::middle).thenO(MiddleClass::optInnerPresent);
+
+        testClass(inner, Opt.of(OUTER_CLASS.middle().inner()));
+        testClass(optInner, OUTER_CLASS.middle().optInnerPresent());
+    }
+
+    @Test
+    public void testCustomNamesByMethodAnnotation() {
+        FieldProperties<ClassWithMethodAnnotation, ?> withoutAnnotation =
+                FR.wrap(ClassWithMethodAnnotation::fieldWithoutAnnotation);
+
+        FieldProperties<ClassWithMethodAnnotation, ?> withAnnotation =
+                FR.wrap(ClassWithMethodAnnotation::fieldWithAnnotation);
+
+        Assertions.assertEquals("fieldWithoutAnnotation", withoutAnnotation.name());
+        Assertions.assertEquals("field_with_annotation", withAnnotation.name());
+    }
+
+    private static final OuterClass OUTER_CLASS = OuterClass.create();
+
+    private <T> void testClass(FieldProperties<OuterClass, T> field, Opt<T> expected) {
+        Opt<T> actual = field.getO(OUTER_CLASS);
+
+        if (expected.isEmpty()) {
+            Assertions.assertTrue(actual.isEmpty());
+            return;
+        }
+
+        Assertions.assertTrue(actual.isPresent());
+        Assertions.assertEquals(expected.get(), actual.get());
+    }
+
+    static class OuterClass {
+
+        private final String str;
+        private final Opt<String> optStrPresent;
+        private final Opt<String> optStrEmpty;
+        private final MiddleClass middle;
+        private final Opt<MiddleClass> optMiddlePresent;
+        private final Opt<MiddleClass> optMiddleEmpty;
+
+        private OuterClass(
+                String str,
+                Opt<String> optStrPresent,
+                Opt<String> optStrEmpty,
+                MiddleClass middle,
+                Opt<MiddleClass> optMiddlePresent,
+                Opt<MiddleClass> optMiddleEmpty
+        ) {
+            this.str = str;
+            this.optStrPresent = optStrPresent;
+            this.optStrEmpty = optStrEmpty;
+            this.middle = middle;
+            this.optMiddlePresent = optMiddlePresent;
+            this.optMiddleEmpty = optMiddleEmpty;
+        }
+
+        static OuterClass create() {
+            return new OuterClass(
+                    "a",
+                    Opt.of("b"),
+                    Opt.empty(),
+                    MiddleClass.create(
+                            new InnerClass(),
+                            new InnerClass()
+                    ),
+                    Opt.of(MiddleClass.create(
+                            new InnerClass(),
+                            new InnerClass()
+                    )),
+                    Opt.empty()
+            );
+        }
+
+        public String str() {
+            return str;
+        }
+
+        public Opt<String> optStrPresent() {
+            return optStrPresent;
+        }
+
+        public Opt<String> optStrEmpty() {
+            return optStrEmpty;
+        }
+
+        public MiddleClass middle() {
+            return middle;
+        }
+
+        public Opt<MiddleClass> optMiddlePresent() {
+            return optMiddlePresent;
+        }
+
+        public Opt<MiddleClass> optMiddleEmpty() {
+            return optMiddleEmpty;
+        }
+    }
+
+    static class MiddleClass {
+
+        private final InnerClass inner;
+        private final Opt<InnerClass> optInnerPresent;
+
+        private MiddleClass(
+                InnerClass inner,
+                Opt<InnerClass> present
+        ) {
+            this.inner = inner;
+            this.optInnerPresent = present;
+        }
+
+        static MiddleClass create(InnerClass inner, InnerClass present) {
+            return new MiddleClass(inner, Opt.of(present));
+        }
+
+        public InnerClass inner() {
+            return inner;
+        }
+
+        public Opt<InnerClass> optInnerPresent() {
+            return optInnerPresent;
+        }
+    }
+
+    static class InnerClass {}
+
+    static class ClassWithMethodAnnotation {
+        public String fieldWithoutAnnotation() {
+            return "a";
+        }
+
+        @Name("field_with_annotation")
+        public String fieldWithAnnotation() {
+            return "b";
+        }
+    }
 }

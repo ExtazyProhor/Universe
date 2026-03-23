@@ -1,11 +1,13 @@
 package ru.prohor.universe.venator.shared
 
+import ru.prohor.universe.chopper.client.MarkdownV2
+
 interface Notifier {
-    fun failure(message: String)
+    fun failure(message: MarkdownV2)
 
-    fun failure(message: String, fileContent: String, fileName: String)
+    fun failure(message: MarkdownV2, fileContent: String, fileName: String)
 
-    fun info(message: String)
+    fun info(message: MarkdownV2)
 
-    fun success(message: String)
+    fun success(message: MarkdownV2)
 }

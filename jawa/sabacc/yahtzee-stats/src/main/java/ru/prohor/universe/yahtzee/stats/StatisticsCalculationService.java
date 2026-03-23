@@ -1,11 +1,11 @@
 package ru.prohor.universe.yahtzee.stats;
 
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.yahtzee.stats.model.OfflineStats;
+import ru.prohor.universe.yahtzee.stats.model.Stats;
 
 public interface StatisticsCalculationService {
     /**
-     * @return Opt.empty if offline_games collection is empty, else - offline statistics
+     * @return Opt.empty if {@code games} collection is empty, else - statistics
      */
-    Opt<OfflineStats> calculateAndGet();
+    Opt<Stats> calculateAndGet();
 }

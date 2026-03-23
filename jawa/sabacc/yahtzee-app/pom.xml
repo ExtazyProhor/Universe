@@ -34,14 +34,6 @@
 
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>yahtzee-offline</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>yahtzee-online</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
             <artifactId>yahtzee-stats</artifactId>
         </dependency>
 

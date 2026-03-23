@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>yahtzee-offline</artifactId>
+            <artifactId>yahtzee-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -24,7 +24,7 @@ import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
 import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
 import ru.prohor.universe.yahtzee.app.web.controllers.ProfileController;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
+import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 
 import java.util.Random;
 import java.util.UUID;

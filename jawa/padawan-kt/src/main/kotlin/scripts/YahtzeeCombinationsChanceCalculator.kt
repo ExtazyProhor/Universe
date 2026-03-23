@@ -5,6 +5,11 @@ import kotlin.math.pow
 import kotlin.system.measureTimeMillis
 
 fun main() {
+    printAll()
+    test()
+}
+
+fun printAll() {
     val solvers = listOf(
         PairSolver,
         TwoPairsSolver,
@@ -25,8 +30,7 @@ fun main() {
         )
         time
     }
-    println("sum millis = $sum")
-    test()
+    println("sum millis = $sum ms")
 }
 
 fun test() {
@@ -82,9 +86,9 @@ object FourOfKindSolver : SameDiceCombinationSolver() {
 }
 
 object FullHouseSolver : CombinationSolver() {
-    override fun List<Int>.isValid(): Boolean {
-        val possibleCounts = hashSetOf(2, 3, 5)
+    private val possibleCounts = hashSetOf(2, 3, 5)
 
+    override fun List<Int>.isValid(): Boolean {
         val map = groupingBy { it }.eachCount()
         if (map.size > 2)
             return false

@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestConstructor
+import ru.prohor.universe.chopper.client.MarkdownV2
 import ru.prohor.universe.venator.Venator
 import ru.prohor.universe.venator.shared.Notifier
 import ru.prohor.universe.venator.webhook.model.ApiResponse
@@ -201,19 +202,19 @@ class WebhookControllerTest(
     @Service
     @Primary
     class DebugNotifier : Notifier {
-        override fun failure(message: String) {
+        override fun failure(message: MarkdownV2) {
             wasFailure = true
         }
 
-        override fun failure(message: String, fileContent: String, fileName: String) {
+        override fun failure(message: MarkdownV2, fileContent: String, fileName: String) {
             wasFailure = true
         }
 
-        override fun info(message: String) {
+        override fun info(message: MarkdownV2) {
             wasInfo = true
         }
 
-        override fun success(message: String) {
+        override fun success(message: MarkdownV2) {
             wasSuccess = true
         }
 

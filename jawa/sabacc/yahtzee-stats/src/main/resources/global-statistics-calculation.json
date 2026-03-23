@@ -528,5 +528,5 @@
       "all_totals": 0
     }
   },
-  { "$merge": "offline_stats" }
+  { "$merge": "stats" }
 ]

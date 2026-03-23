@@ -1,6 +1,7 @@
 package ru.prohor.universe.venator.webhook.service
 
 import org.springframework.stereotype.Service
+import ru.prohor.universe.chopper.client.MarkdownV2
 import ru.prohor.universe.jocasta.spring.UniverseEnvironment
 import ru.prohor.universe.venator.build.service.MavenService
 import ru.prohor.universe.venator.fs.Repository
@@ -58,7 +59,7 @@ class RepositoryPullerWebhookAction(
         repository.perform {
             val testResult = mavenService.cleanTestAll()
             if (testResult.success) {
-                notifier.success("Tests were passed successfully")
+                notifier.success(MarkdownV2().text("Tests were passed successfully"))
             } else {
                 val verboseError = testResult.failedModules
                     .joinToString(separator = "\n\n\n") { module ->
@@ -69,7 +70,7 @@ class RepositoryPullerWebhookAction(
                         "${module.modulePath}\n\n```\n$failedTests\n```"
                     }
                 notifier.failure(
-                    message = "${testResult.failedModules.size} modules failed",
+                    message = MarkdownV2().text("${testResult.failedModules.size} modules failed"),
                     fileContent = verboseError,
                     fileName = "test-report.md"
                 )

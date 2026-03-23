@@ -6,18 +6,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.jocasta.cfg.morphia.MongoInstanceConfiguration;
-import ru.prohor.universe.jocasta.morphia.impl.MongoMorphiaRepository;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
-import ru.prohor.universe.yahtzee.core.data.entities.dto.ImageDto;
-import ru.prohor.universe.yahtzee.core.data.entities.dto.PlayerDto;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Image;
-import ru.prohor.universe.yahtzee.core.data.entities.pojo.Player;
-import ru.prohor.universe.yahtzee.offline.data.entities.dto.OfflineGameDto;
-import ru.prohor.universe.yahtzee.offline.data.entities.dto.OfflineRoomDto;
-import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineGame;
-import ru.prohor.universe.yahtzee.offline.data.entities.pojo.OfflineRoom;
-import ru.prohor.universe.yahtzee.stats.model.OfflineStats;
-import ru.prohor.universe.yahtzee.stats.model.OfflineStatsDto;
+import ru.prohor.universe.jocasta.morphia.impl.MongoMorphiaRepository;
+import ru.prohor.universe.yahtzee.core.data.dto.game.GameDto;
+import ru.prohor.universe.yahtzee.core.data.dto.image.ImageDto;
+import ru.prohor.universe.yahtzee.core.data.dto.player.PlayerDto;
+import ru.prohor.universe.yahtzee.core.data.dto.room.TactileRoomDto;
+import ru.prohor.universe.yahtzee.core.data.pojo.game.Game;
+import ru.prohor.universe.yahtzee.core.data.pojo.image.Image;
+import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
+import ru.prohor.universe.yahtzee.core.data.pojo.room.TactileRoom;
+import ru.prohor.universe.yahtzee.stats.model.Stats;
+import ru.prohor.universe.yahtzee.stats.model.StatsDto;
 
 @Configuration
 @Profile("stable | canary")
@@ -29,22 +29,22 @@ public class MongoConfiguration {
     }
 
     @Bean
-    public MongoRepository<OfflineGame> offlineGameRepository(Datastore datastore) {
+    public MongoRepository<Game> gameRepository(Datastore datastore) {
         return MongoMorphiaRepository.createRepository(
                 datastore,
-                OfflineGame.class,
-                OfflineGameDto.class,
-                OfflineGame::fromDto
+                Game.class,
+                GameDto.class,
+                Game::fromDto
         );
     }
 
     @Bean
-    public MongoRepository<OfflineRoom> offlineRoomRepository(Datastore datastore) {
+    public MongoRepository<TactileRoom> tactileRoomRepository(Datastore datastore) {
         return MongoMorphiaRepository.createRepository(
                 datastore,
-                OfflineRoom.class,
-                OfflineRoomDto.class,
-                OfflineRoom::fromDto
+                TactileRoom.class,
+                TactileRoomDto.class,
+                TactileRoom::fromDto
         );
     }
 
@@ -54,12 +54,12 @@ public class MongoConfiguration {
     }
 
     @Bean
-    public MongoRepository<OfflineStats> offlineStatsRepository(Datastore datastore) {
+    public MongoRepository<Stats> statsRepository(Datastore datastore) {
         return MongoMorphiaRepository.createRepository(
                 datastore,
-                OfflineStats.class,
-                OfflineStatsDto.class,
-                OfflineStats::fromDto
+                Stats.class,
+                StatsDto.class,
+                Stats::fromDto
         );
     }
 }
