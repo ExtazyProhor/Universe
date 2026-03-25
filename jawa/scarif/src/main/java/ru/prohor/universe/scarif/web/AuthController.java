@@ -1,5 +1,6 @@
 package ru.prohor.universe.scarif.web;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -151,12 +152,9 @@ public class AuthController {
                     "Token was successfully refreshed, but the owner (user) of this token was not found, userId = {}",
                     userTokenAndUserId.get().userId()
             );
-            return clearCookies(HttpStatus.INTERNAL_SERVER_ERROR);
+            return clearRefreshCookie(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return fromCookies(List.of(
-                cookieProvider.createRefreshCookie(userTokenAndUserId.get().userToken()),
-                cookieProvider.createAccessCookie(userO.map(this::getToken).get())
-        ));
+        return refresh(userO.get(), cookieProvider.createRefreshCookie(userTokenAndUserId.get().userToken()));
     }
 
     @PostMapping("/logout") // TODO разобраться с HTTP-методами
@@ -168,7 +166,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         if (!sessionsService.logout(parsedUserToken.get()))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return clearCookies(); // TODO redirect to login
+        return clearRefreshCookie(); // TODO redirect to login
     }
 
     @GetMapping("/get_sessions")
@@ -219,12 +217,12 @@ public class AuthController {
 
         if (session.get().id() != currentSession.get().id())
             return ResponseEntity.ok().build();
-        return clearCookies();
+        return clearRefreshCookie();
     }
 
     @GetMapping("/clear_cookies")
     public ResponseEntity<?> closeSession() {
-        return clearCookies();
+        return clearRefreshCookie();
     }
 
     public record CloseSessionRequestBody(long id) {}
@@ -235,45 +233,39 @@ public class AuthController {
                 userData.userAgent().orElseNull(),
                 userData.ip()
         );
-        return fromCookies(List.of(
-                cookieProvider.createRefreshCookie(token),
-                cookieProvider.createAccessCookie(getToken(user))
-        ));
+        return ResponseEntity.ok().headers(ofCookie(cookieProvider.createRefreshCookie(token))).build();
     }
 
-    private ResponseEntity<?> fromCookies(List<String> cookies) {
-        return fromCookies(cookies, HttpStatus.OK);
+    private ResponseEntity<?> clearRefreshCookie() {
+        return clearRefreshCookie(HttpStatus.OK);
     }
 
-    private ResponseEntity<?> clearCookies() {
-        return clearCookies(HttpStatus.OK);
+    private ResponseEntity<?> clearRefreshCookie(HttpStatus status) {
+        return ResponseEntity.status(status).headers(ofCookie(cookieProvider.clearRefreshCookie())).build();
     }
 
-    private ResponseEntity<?> clearCookies(HttpStatus status) {
-        return fromCookies(
-                List.of(
-                        cookieProvider.clearRefreshCookie(),
-                        cookieProvider.clearAccessCookie()
-                ),
-                status
-        );
-    }
-
-    private ResponseEntity<?> fromCookies(List<String> cookies, HttpStatus status) {
-        return ResponseEntity.status(status).headers(
-                new HttpHeaders(MultiValueMap.fromMultiValue(Map.of(
-                        HttpHeaders.SET_COOKIE,
-                        cookies
-                )))
-        ).build();
-    }
-
-    private String getToken(User user) {
-        return jwtProvider.getToken(
+    private ResponseEntity<AccessTokenResponse> refresh(User user, String refreshCookie) {
+        String accessToken = jwtProvider.getToken(
                 user.id(),
                 user.uuid(),
                 user.objectId().toString(),
                 user.username()
         );
+        return ResponseEntity
+                .ok()
+                .headers(ofCookie(refreshCookie))
+                .body(new AccessTokenResponse(accessToken));
+    }
+
+    public record AccessTokenResponse(
+            @JsonProperty("access_token")
+            String accessToken
+    ) {}
+
+    private HttpHeaders ofCookie(String cookie) {
+        return new HttpHeaders(MultiValueMap.fromMultiValue(Map.of(
+                HttpHeaders.SET_COOKIE,
+                List.of(cookie)
+        )));
     }
 }

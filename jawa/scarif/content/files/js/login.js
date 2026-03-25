@@ -117,7 +117,13 @@ class LoginForm {
         };
 
         try {
-            const response = await universePost('scarif', 'api/auth/login', formData);
+            const response = await universeFetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
             await this.handleResponse(response);
         } catch (error) {
             console.error('Ошибка входа:', error);
@@ -131,8 +137,8 @@ class LoginForm {
         if (response.ok) {
             this.showNotification('Вход выполнен успешно! Добро пожаловать!', 'success');
             setTimeout(() => {
-                window.location.href = '/';
-            }, 2000);
+                window.location.href = '/profile';
+            }, 1000);
             return;
         }
 
@@ -214,6 +220,11 @@ class LoginForm {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    const isAuth = await initAuth();
+    if (isAuth) {
+        window.location.href = '/profile';
+        return;
+    }
     new LoginForm();
 });

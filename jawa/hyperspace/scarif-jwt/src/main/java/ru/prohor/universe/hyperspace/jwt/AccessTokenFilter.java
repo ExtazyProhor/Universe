@@ -3,25 +3,20 @@ package ru.prohor.universe.hyperspace.jwt;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.springweb.CookieUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class AccessTokenFilter extends OncePerRequestFilter {
     public static final int ACCESS_TOKEN_FILTER_ORDER = 5;
 
-    private final String accessTokenCookieName;
     private final JwtVerifier jwtVerifier;
 
-    public AccessTokenFilter(String accessTokenCookieName, JwtVerifier jwtVerifier) {
-        this.accessTokenCookieName = accessTokenCookieName;
+    public AccessTokenFilter(JwtVerifier jwtVerifier) {
         this.jwtVerifier = jwtVerifier;
     }
 
@@ -31,20 +26,33 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             @Nonnull HttpServletResponse response,
             @Nonnull FilterChain filterChain
     ) throws ServletException, IOException {
-        // TODO log cookies ONLY NAMES
-        System.out.println(
-                Arrays.stream(Opt.ofNullable(request.getCookies()).orElse(new Cookie[]{}))
-                        .map(Cookie::getName)
-                        .collect(Collectors.joining(", ", "cookies: {", "}"))
-        );
-
-        Opt<AuthorizedUser> authorizedUser = CookieUtil
-                .getCookieValue(request, accessTokenCookieName)
-                .flatMapO(jwtVerifier::verify);
-        request.setAttribute(
-                AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY,
-                authorizedUser
-        );
+        Opt<AuthorizedUser> authorizedUser = extractAuthorizedUser(request);
+        request.setAttribute(AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY, authorizedUser);
         filterChain.doFilter(request, response);
+    }
+
+    private Opt<AuthorizedUser> extractAuthorizedUser(HttpServletRequest request) {
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header == null) {
+            log(request, "Auth header not present"); // TODO log
+            return Opt.empty();
+        }
+        if (!header.startsWith("Bearer ")) {
+            log(request, "Illegal structure of auth header"); // TODO log
+            return Opt.empty();
+        }
+        String token = header.replace("Bearer ", "").trim();
+        Opt<AuthorizedUser> user = jwtVerifier.verify(token);
+        if (user.isEmpty()) {
+            log(request, "jwt verification failed"); // TODO log
+        } else {
+            log(request, "jwt verified"); // TODO log
+        }
+        return user;
+    }
+
+    private void log(HttpServletRequest request, String s) {
+        String path = request.getRequestURI().substring(request.getContextPath().length());
+        System.out.println(path + ": " + s);
     }
 }

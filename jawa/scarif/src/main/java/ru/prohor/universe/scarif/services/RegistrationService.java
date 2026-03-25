@@ -10,16 +10,13 @@ import java.util.List;
 @Service
 public class RegistrationService {
     private final ValidationService validationService;
-    private final PasswordService passwordService;
     private final UserService userService;
 
     public RegistrationService(
             ValidationService validationService,
-            PasswordService passwordService,
             UserService userService
     ) {
         this.validationService = validationService;
-        this.passwordService = passwordService;
         this.userService = userService;
     }
 
@@ -39,7 +36,7 @@ public class RegistrationService {
         User user = userService.createUser(
                 username,
                 email,
-                passwordService.hash(password)
+                password
         );
         userService.register(user);
         return user;

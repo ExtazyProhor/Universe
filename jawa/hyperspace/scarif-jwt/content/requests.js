@@ -1,28 +1,36 @@
-const REFRESH_URL = null;
+let refreshUrl = null;
+let refreshPromise = null;
 let accessToken = null;
 
 async function _loadConfig() {
     const resp = await fetch('/api/scarif/config');
     const data = await resp.json();
-    REFRESH_URL = data.refresh_url;
+    refreshUrl = data.refresh_url;
 }
 
 async function _refreshAccessToken() {
-    const response = await fetch(REFRESH_URL, {
-        method: 'POST',
-        credentials: 'include',
-    });
+    if (refreshPromise) return refreshPromise;
 
-    if (response.status === 200) {
-        const data = await response.json();
-        accessToken = data.access_token;
+    refreshPromise = (async () => {
+        const response = await fetch(refreshUrl, {
+            method: 'POST',
+            credentials: 'include',
+        });
+
+        if (response.status === 200) {
+            const data = await response.json();
+            accessToken = data.access_token;
+        } else if (response.status === 401) {
+            accessToken = null;
+        } else {
+            throw new Error(`Refresh failed, status: ${response.status}`);
+        }
+
+        refreshPromise = null;
         return response;
-    }
-    if (response.status === 401) {
-        accessToken = null;
-        return response;
-    }
-    throw new Error(`Refresh failed, status: ${response.status}`);
+    })();
+
+    return refreshPromise;
 }
 
 async function universeFetch(url, options = {}) {
@@ -48,18 +56,16 @@ async function universeFetch(url, options = {}) {
     }
 
     const refreshResponse = await _refreshAccessToken();
-    if (refreshResponse.status === 200) {
+    if (refreshResponse.status === 200 || refreshResponse.status === 409) {
         response = await doFetch();
     }
 
     return response;
 }
 
-window.universeFetch = universeFetch;
-
-window.initAuth = async function () {
+async function initAuth() {
     try {
-        if (!REFRESH_URL) {
+        if (!refreshUrl) {
             await _loadConfig();
         }
         const refreshResponse = await _refreshAccessToken();
@@ -69,3 +75,6 @@ window.initAuth = async function () {
         return false;
     }
 }
+
+window.universeFetch = universeFetch;
+window.initAuth = initAuth;

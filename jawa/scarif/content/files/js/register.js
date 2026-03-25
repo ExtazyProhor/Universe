@@ -147,7 +147,13 @@ class RegistrationForm {
         };
 
         try {
-            const response = await universePost('scarif', 'api/auth/register', formData);
+            const response = await universeFetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
             await this.handleResponse(response);
         } catch (error) {
             console.error('Ошибка регистрации:', error);
@@ -161,8 +167,8 @@ class RegistrationForm {
         if (response.ok) {
             this.showNotification('Регистрация успешна! Добро пожаловать!', 'success');
             setTimeout(() => {
-                window.location.href = '/';
-            }, 2000);
+                window.location.href = '/profile';
+            }, 1000);
             return;
         }
 
@@ -255,6 +261,11 @@ class RegistrationForm {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    const isAuth = await initAuth();
+    if (isAuth) {
+        window.location.href = '/profile';
+        return;
+    }
     new RegistrationForm();
 });

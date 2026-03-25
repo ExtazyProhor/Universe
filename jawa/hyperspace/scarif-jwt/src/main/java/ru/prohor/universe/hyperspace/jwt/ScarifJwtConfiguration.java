@@ -1,7 +1,6 @@
 package ru.prohor.universe.hyperspace.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,12 +26,9 @@ public class ScarifJwtConfiguration {
     }
 
     @Bean
-    public FilterRegistrationBean<AccessTokenFilter> accessTokenFilterRegistration(
-            @Value("${universe.jocasta.scarif-jwt.accessTokenCookieName}") String accessTokenCookieName,
-            JwtVerifier jwtVerifier
-    ) {
+    public FilterRegistrationBean<AccessTokenFilter> accessTokenFilterRegistration(JwtVerifier jwtVerifier) {
         FilterRegistrationBean<AccessTokenFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new AccessTokenFilter(accessTokenCookieName, jwtVerifier));
+        registration.setFilter(new AccessTokenFilter(jwtVerifier));
         registration.addUrlPatterns("/*");
         registration.setOrder(AccessTokenFilter.ACCESS_TOKEN_FILTER_ORDER);
         return registration;

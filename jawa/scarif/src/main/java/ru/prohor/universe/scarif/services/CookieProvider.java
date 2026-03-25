@@ -3,7 +3,6 @@ package ru.prohor.universe.scarif.services;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 import java.time.Duration;
 
@@ -11,34 +10,22 @@ import java.time.Duration;
 public class CookieProvider {
     private static final String SAME_SITE_NONE = "None";
     private static final String SCARIF_API_PATH = "/api/auth";
-    private static final String ROOT_PATH = "/";
 
     private final String refreshTokenCookieName;
     private final long refreshTokenTtlDays;
-    private final String accessTokenCookieName;
-    private final long accessTokenTtlMinutes;
-    private final Opt<String> universeDomain;
 
     public CookieProvider(
             @Value("${universe.scarif.refreshTokenCookieName}") String refreshTokenCookieName,
-            @Value("${universe.scarif.refreshTokenTtlDays}") long refreshTokenTtlDays,
-            @Value("${universe.jocasta.scarif-jwt.accessTokenCookieName}") String accessTokenCookieName,
-            @Value("${universe.scarif.accessTokenTtlMinutes}") long accessTokenTtlMinutes,
-            @Value("${universe.domain}") String universeDomain
+            @Value("${universe.scarif.refreshTokenTtlDays}") long refreshTokenTtlDays
     ) {
         this.refreshTokenCookieName = refreshTokenCookieName;
         this.refreshTokenTtlDays = refreshTokenTtlDays;
-        this.accessTokenCookieName = accessTokenCookieName;
-        this.accessTokenTtlMinutes = accessTokenTtlMinutes;
-        this.universeDomain = Opt.of(universeDomain);
     }
 
     public String createRefreshCookie(String token) {
         return cookie(
                 refreshTokenCookieName,
                 token,
-                SCARIF_API_PATH,
-                Opt.empty(),
                 Duration.ofDays(refreshTokenTtlDays).getSeconds()
         );
     }
@@ -47,42 +34,17 @@ public class CookieProvider {
         return cookie(
                 refreshTokenCookieName,
                 "",
-                SCARIF_API_PATH,
-                Opt.empty(),
                 0
         );
     }
 
-    public String createAccessCookie(String token) {
-        return cookie(
-                accessTokenCookieName,
-                token,
-                ROOT_PATH,
-                universeDomain,
-                Duration.ofMinutes(accessTokenTtlMinutes).getSeconds()
-        );
-    }
-
-    public String clearAccessCookie() {
-        return cookie(
-                accessTokenCookieName,
-                "",
-                ROOT_PATH,
-                universeDomain,
-                0
-        );
-    }
-
-    private String cookie(String name, String value, String path, Opt<String> domain, long maxAge) {
-        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
+    private String cookie(String name, String value, long maxAge) {
+        return ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(true)
                 .sameSite(SAME_SITE_NONE)
-                .path(path)
-                .maxAge(maxAge);
-        if (domain.isPresent())
-            cookieBuilder = cookieBuilder.domain(domain.get());
-        return cookieBuilder
+                .path(CookieProvider.SCARIF_API_PATH)
+                .maxAge(maxAge)
                 .build()
                 .toString();
     }

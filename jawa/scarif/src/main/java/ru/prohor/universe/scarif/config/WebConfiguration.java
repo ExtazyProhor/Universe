@@ -5,23 +5,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
-    private final String rootOrigin;
-    private final String subOrigins;
+    private final List<String> allowedOrigins;
 
     public WebConfiguration(
-            @Value("${universe.root-origin}") String rootOrigin,
-            @Value("${universe.sub-origins}") String subOrigins
+            @Value("${universe.scarif.allowed-origins}") List<String> allowedOrigins
     ) {
-        this.rootOrigin = rootOrigin;
-        this.subOrigins = subOrigins;
+        this.allowedOrigins = allowedOrigins;
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOriginPatterns(rootOrigin, subOrigins)
+                .allowedOriginPatterns(allowedOrigins.toArray(String[]::new))
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);

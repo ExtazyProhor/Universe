@@ -13,13 +13,16 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final SnowflakeIdGenerator snowflakeIdGenerator;
+    private final PasswordService passwordService;
     private final JpaUsersMethods usersMethods;
 
     public UserService(
             SnowflakeIdGenerator snowflakeIdGenerator,
+            PasswordService passwordService,
             JpaUsersMethods usersMethods
     ) {
         this.snowflakeIdGenerator = snowflakeIdGenerator;
+        this.passwordService = passwordService;
         this.usersMethods = usersMethods;
     }
 
@@ -30,7 +33,7 @@ public class UserService {
                 ObjectId.get(),
                 username,
                 email,
-                password,
+                passwordService.hash(password),
                 true,
                 Instant.now()
         );
