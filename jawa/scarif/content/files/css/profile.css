@@ -1,0 +1,59 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)),
+    url('/files/images/star-destroyer.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-container {
+    position: relative;
+    background: #162017f2;
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+}
+
+.profile-title {
+    color: #ffffff;
+    font-size: 28px;
+    text-align: center;
+    background: linear-gradient(135deg, #ef903d, #f39c12);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.profile-subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.7);
+    margin-top: 10px;
+}
+
+.logout-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+
+    background: linear-gradient(135deg, #ff4757, #ff3742);
+    color: white;
+    font-weight: 600;
+
+    transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3);
+}
