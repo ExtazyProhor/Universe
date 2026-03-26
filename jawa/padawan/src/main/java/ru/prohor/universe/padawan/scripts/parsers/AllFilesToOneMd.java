@@ -10,15 +10,28 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class AllFilesToOneMd {
+    private static final Preset SCARIF_FRONT = new Preset(
+            "scarif/content/files",
+            TestFile.OUTPUT,
+            path -> !path.getFileName().toString().endsWith(".jpg")
+    );
+
     public static void main(String[] args) throws IOException {
-        process(
-                ".",
-                TestFile.OUTPUT,
-                path -> true
-        );
+        process(SCARIF_FRONT);
     }
 
-    public static String getFileExtension(Path path) {
+    private static void process(Preset preset) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        Files.walk(Path.of(preset.directory)).filter(preset.filter).filter(Files::isRegularFile).forEach(path -> {
+            Sneaky.execute(() -> {
+                builder.append(path.getFileName()).append(":\n```").append(getFileExtension(path)).append("\n");
+                builder.append(Files.readString(path)).append("\n```\n\n");
+            });
+        });
+        Padawan.write(preset.output, builder.toString());
+    }
+
+    private static String getFileExtension(Path path) {
         String fileName = path.getFileName().toString();
         int lastIndexOfDot = fileName.lastIndexOf('.');
         if (lastIndexOfDot <= 0) {
@@ -27,14 +40,9 @@ public class AllFilesToOneMd {
         return fileName.substring(lastIndexOfDot + 1);
     }
 
-    private static void process(String directory, TestFile output, MonoPredicate<Path> filter) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        Files.walk(Path.of(directory)).filter(filter).filter(Files::isRegularFile).forEach(path -> {
-            Sneaky.execute(() -> {
-                builder.append(path.getFileName()).append(":\n```").append(getFileExtension(path)).append("\n");
-                builder.append(Files.readString(path)).append("\n```\n\n");
-            });
-        });
-        Padawan.write(output, builder.toString());
-    }
+    private record Preset(
+            String directory,
+            TestFile output,
+            MonoPredicate<Path> filter
+    ) {}
 }
