@@ -11,13 +11,11 @@ public class FilesControllerConfiguration {
     @Bean
     public FilesController filesController(
             StaticResourcesHandler staticResourcesHandler,
-            @Value("${universe.jocasta.spring.root}") String root,
-            @Value("${universe.jocasta.spring.redefinedRoot:#{null}}") String redefinedRoot
+            @Value("${universe.jocasta.spring.root}") String root
     ) {
         return new FilesController(
                 staticResourcesHandler,
-                root,
-                redefinedRoot
+                root
         );
     }
 }

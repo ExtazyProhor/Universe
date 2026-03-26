@@ -5,30 +5,25 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.springweb.ControllersUtils;
 import ru.prohor.universe.jocasta.springweb.StaticResourcesHandler;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
 @Controller
 public class FilesController {
     private final StaticResourcesHandler staticResourcesHandler;
-    private final Opt<Path> redefinedRoot;
     private final Path root;
 
     public FilesController(
             StaticResourcesHandler staticResourcesHandler,
-            String root,
-            String redefinedRoot
+            String root
     ) {
         this.staticResourcesHandler = staticResourcesHandler;
         this.root = Path.of(root).normalize();
-        this.redefinedRoot = Opt.ofNullable(redefinedRoot).map(Path::of);
     }
 
     @GetMapping("/files/**")
@@ -36,27 +31,14 @@ public class FilesController {
         String path = ControllersUtils.getPathWithoutSlashes(request);
         path = URLDecoder.decode(path, StandardCharsets.UTF_8);
         try {
-            if (redefinedRoot.isPresent()) {
-                Opt<Path> redefinedFileO = resolveOrBadRequest(redefinedRoot.get(), path);
-                if (redefinedFileO.isEmpty())
-                    return ResponseEntity.badRequest().build();
-                Path redefinedFile = redefinedFileO.get();
-                if (Files.exists(redefinedFile) && Files.isRegularFile(redefinedFile))
-                    return staticResourcesHandler.getResource(redefinedFile);
-            }
-
-            Opt<Path> file = resolveOrBadRequest(root, path);
-            if (file.isEmpty())
+            Path file = root.resolve(path).normalize();
+            if (!file.startsWith(root)) {
                 return ResponseEntity.badRequest().build();
-            return staticResourcesHandler.getResource(file.get());
+            }
+            return staticResourcesHandler.getResource(file);
         } catch (InvalidPathException e) {
             // TODO log.warn
             return ResponseEntity.badRequest().build();
         }
-    }
-
-    private static Opt<Path> resolveOrBadRequest(Path root, String path) {
-        Path file = root.resolve(path).normalize();
-        return Opt.when(file.startsWith(root), file);
     }
 }
