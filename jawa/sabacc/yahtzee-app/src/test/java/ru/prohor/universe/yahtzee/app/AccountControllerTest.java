@@ -43,13 +43,11 @@ public class AccountControllerTest {
     private static final String username = "TestPlayer123";
     private static final String newName = "NewPlayerName";
 
-    private final String cookieName;
     private final JwtProvider jwtProvider;
     private final TestRestTemplate rest;
     private final MongoRepository<Player> playerRepository;
 
     public AccountControllerTest(
-            @Value("${universe.jocasta.scarif-jwt.accessTokenCookieName}") String accessTokenCookieName,
             @Value("${universe.test.access-token-ttl-minutes}") int accessTokenTtlMinutes,
             SnowflakeIdGenerator snowflakeIdGenerator,
             @Value("${universe.yahtzee.private-key}") String privateKey,
@@ -58,7 +56,6 @@ public class AccountControllerTest {
             TestRestTemplate rest,
             MongoRepository<Player> playerRepository
     ) {
-        this.cookieName = accessTokenCookieName;
         KeysFromStringProvider keysFromStringProvider = new KeysFromStringProvider(privateKey, publicKey);
         this.jwtProvider = new JwtProvider(
                 accessTokenTtlMinutes,
@@ -156,7 +153,10 @@ public class AccountControllerTest {
 
     private HttpHeaders makeHeadersWithToken() {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Cookie", cookieName + "=" + jwtProvider.getToken(id, uuid, objectId.toHexString(), username));
+        headers.add(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer " + jwtProvider.getToken(id, uuid, objectId.toHexString(), username)
+        );
         return headers;
     }
 }
