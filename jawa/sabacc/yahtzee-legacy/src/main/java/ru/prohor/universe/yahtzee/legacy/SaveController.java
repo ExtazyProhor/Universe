@@ -83,7 +83,7 @@ public class SaveController {
                     yield "Отмена хода у команды '" + teamName + "'";
                 }
                 default -> {
-                    chopperClient.sendMessage(
+                    sendMessage(
                             "Illegal action type: " + type,
                             notifiableChatId
                     );
@@ -91,10 +91,10 @@ public class SaveController {
                 }
             };
 
-            chopperClient.sendMessage(appendMeta(message, gameId, ip, userAgent), mutedChatId);
+            sendMessage(appendMeta(message, gameId, ip, userAgent), mutedChatId);
             return ResponseEntity.ok("success");
         } catch (Exception e) {
-            Sneaky.silent(() -> error(e, gameId, ip, userAgent));
+            error(e, gameId, ip, userAgent);
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
@@ -118,11 +118,11 @@ public class SaveController {
                     ip,
                     userAgent
             );
-            chopperClient.sendMessage(message, mutedChatId);
+            sendMessage(message, mutedChatId);
 
             return ResponseEntity.ok("success");
         } catch (Exception e) {
-            Sneaky.silent(() -> error(e, gameId, ip, userAgent));
+            error(e, gameId, ip, userAgent);
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
@@ -146,7 +146,7 @@ public class SaveController {
             case "yahtzee" -> "яцзы";
             case "chance" -> "шанс";
             default -> {
-                chopperClient.sendMessage(
+                sendMessage(
                         "Illegal name of combination: " + combination,
                         notifiableChatId
                 );
@@ -172,7 +172,7 @@ public class SaveController {
             notify(jsonNode, gameId, ip, userAgent);
             return ResponseEntity.ok("success");
         } catch (Exception e) {
-            Sneaky.silent(() -> error(e, gameId, ip, userAgent));
+            error(e, gameId, ip, userAgent);
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
@@ -188,14 +188,18 @@ public class SaveController {
                 userAgent;
     }
 
+    private void sendMessage(String text, long chatId) {
+        /*chopperClient.sendMessage(text, chatId);*/
+    }
+
     private void error(Exception e, String gameId, String ip, String userAgent) {
-        chopperClient.sendFile(
+        /*chopperClient.sendFile(
                 ExceptionsUtils.getStackTraceAsString(e),
                 notifiableChatId,
                 "stack-trace.txt",
                 appendMeta("New exception at legacy yahtzee", gameId, ip, userAgent),
                 false
-        );
+        );*/
     }
 
     private void notify(JsonNode jsonNode, String gameId, String ip, String userAgent) {
@@ -215,7 +219,7 @@ public class SaveController {
         ));
         StringBuilder builder = new StringBuilder("Новая игра в Яцзы сохранена!\n\n");
         totals.forEach((team, total) -> builder.append("- ").append(team).append(": ").append(total).append("\n"));
-        chopperClient.sendMessage(appendMeta(builder.toString(), gameId, ip, userAgent), notifiableChatId);
+        sendMessage(appendMeta(builder.toString(), gameId, ip, userAgent), notifiableChatId);
     }
 
     private int calculateTotal(List<Combination> combinations) {
