@@ -243,11 +243,11 @@ abstract class CombinationSolver {
         return calculateInternal()
     }
 
-    fun calculate(combination: List<Int>, roll: Int): Double {
+    fun calculate(combination: List<Int>?, roll: Int): Double {
         return calculateInternal(combination, roll)
     }
 
-    fun calculateInternal(
+    private fun calculateInternal(
         combination: List<Int>? = null,
         rerollAttempt: Int = 0
     ): Double {
@@ -256,7 +256,7 @@ abstract class CombinationSolver {
         if (combination?.isValid() == true) {
             return 1.0
         }
-        if (rerollAttempt == 3) {
+        if (rerollAttempt >= 3) {
             return 0.0
         }
 
