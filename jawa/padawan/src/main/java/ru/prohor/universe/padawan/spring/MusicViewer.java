@@ -1,4 +1,4 @@
-package ru.prohor.universe.padawan.scripts;
+package ru.prohor.universe.padawan.spring;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

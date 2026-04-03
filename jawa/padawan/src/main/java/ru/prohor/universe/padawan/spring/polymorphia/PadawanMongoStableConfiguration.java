@@ -1,4 +1,4 @@
-package ru.prohor.universe.padawan.tests.polymorphia;
+package ru.prohor.universe.padawan.spring.polymorphia;
 
 import dev.morphia.Datastore;
 import org.springframework.context.annotation.Bean;
@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.jocasta.cfg.morphia.MongoInstanceConfiguration;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.impl.MongoMorphiaRepository;
-import ru.prohor.universe.padawan.tests.polymorphia.dto.ContainerDto;
-import ru.prohor.universe.padawan.tests.polymorphia.pojo.Container;
+import ru.prohor.universe.padawan.spring.polymorphia.dto.ContainerDto;
+import ru.prohor.universe.padawan.spring.polymorphia.pojo.Container;
 
 @Configuration
 @Profile("stable | canary")

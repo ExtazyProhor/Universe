@@ -1,4 +1,4 @@
-package ru.prohor.universe.padawan.tests.polymorphia.dto;
+package ru.prohor.universe.padawan.spring.polymorphia.dto;
 
 import dev.morphia.annotations.Entity;
 

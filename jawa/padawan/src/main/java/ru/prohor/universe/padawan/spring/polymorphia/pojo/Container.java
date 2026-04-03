@@ -1,12 +1,12 @@
-package ru.prohor.universe.padawan.tests.polymorphia.pojo;
+package ru.prohor.universe.padawan.spring.polymorphia.pojo;
 
 import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
-import ru.prohor.universe.padawan.tests.polymorphia.FigureType;
-import ru.prohor.universe.padawan.tests.polymorphia.dto.ContainerDto;
-import ru.prohor.universe.padawan.tests.polymorphia.dto.FigureDto;
-import ru.prohor.universe.padawan.tests.polymorphia.dto.RectangleDto;
-import ru.prohor.universe.padawan.tests.polymorphia.dto.SquareDto;
+import ru.prohor.universe.padawan.spring.polymorphia.FigureType;
+import ru.prohor.universe.padawan.spring.polymorphia.dto.ContainerDto;
+import ru.prohor.universe.padawan.spring.polymorphia.dto.FigureDto;
+import ru.prohor.universe.padawan.spring.polymorphia.dto.RectangleDto;
+import ru.prohor.universe.padawan.spring.polymorphia.dto.SquareDto;
 
 public interface Container extends MongoEntityPojo<ContainerDto> {
     ObjectId id();

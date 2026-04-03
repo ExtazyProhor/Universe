@@ -1,8 +1,8 @@
-package ru.prohor.universe.padawan.tests.polymorphia.pojo;
+package ru.prohor.universe.padawan.spring.polymorphia.pojo;
 
 import org.bson.types.ObjectId;
-import ru.prohor.universe.padawan.tests.polymorphia.FigureType;
-import ru.prohor.universe.padawan.tests.polymorphia.dto.ContainerDto;
+import ru.prohor.universe.padawan.spring.polymorphia.FigureType;
+import ru.prohor.universe.padawan.spring.polymorphia.dto.ContainerDto;
 
 public record RectangleContainer(
         ObjectId id,

@@ -1,4 +1,4 @@
-package ru.prohor.universe.padawan.tests.polymorphia;
+package ru.prohor.universe.padawan.spring.polymorphia;
 
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -6,11 +6,11 @@ import ru.prohor.universe.jocasta.core.features.fieldref.FR;
 import ru.prohor.universe.jocasta.core.utils.CastUtils;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilters;
-import ru.prohor.universe.padawan.tests.polymorphia.pojo.Container;
-import ru.prohor.universe.padawan.tests.polymorphia.pojo.Rectangle;
-import ru.prohor.universe.padawan.tests.polymorphia.pojo.RectangleContainer;
-import ru.prohor.universe.padawan.tests.polymorphia.pojo.Square;
-import ru.prohor.universe.padawan.tests.polymorphia.pojo.SquareContainer;
+import ru.prohor.universe.padawan.spring.polymorphia.pojo.Container;
+import ru.prohor.universe.padawan.spring.polymorphia.pojo.Rectangle;
+import ru.prohor.universe.padawan.spring.polymorphia.pojo.RectangleContainer;
+import ru.prohor.universe.padawan.spring.polymorphia.pojo.Square;
+import ru.prohor.universe.padawan.spring.polymorphia.pojo.SquareContainer;
 
 import java.util.List;
 

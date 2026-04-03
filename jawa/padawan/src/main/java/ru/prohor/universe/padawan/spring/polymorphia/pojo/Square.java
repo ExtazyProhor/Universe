@@ -1,7 +1,7 @@
-package ru.prohor.universe.padawan.tests.polymorphia.pojo;
+package ru.prohor.universe.padawan.spring.polymorphia.pojo;
 
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
-import ru.prohor.universe.padawan.tests.polymorphia.dto.SquareDto;
+import ru.prohor.universe.padawan.spring.polymorphia.dto.SquareDto;
 
 public record Square(
         int side

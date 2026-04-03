@@ -1,4 +1,4 @@
-package ru.prohor.universe.padawan.tests.polymorphia.dto;
+package ru.prohor.universe.padawan.spring.polymorphia.dto;
 
 import dev.morphia.annotations.Entity;
 import lombok.AllArgsConstructor;
@@ -11,14 +11,15 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Entity
-public class SquareDto extends FigureDto {
-    private int side;
+public class RectangleDto extends FigureDto {
+    private int side1;
+    private int side2;
 
     public int perimeter() {
-        return side * 4;
+        return side1 * 2 + side2 * 2;
     }
 
     public int square() {
-        return side * side;
+        return side1 * side2;
     }
 }

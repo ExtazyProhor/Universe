@@ -1,4 +1,4 @@
-package ru.prohor.universe.padawan.tests.polymorphia.dto;
+package ru.prohor.universe.padawan.spring.polymorphia.dto;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.bson.types.ObjectId;
-import ru.prohor.universe.padawan.tests.polymorphia.FigureType;
+import ru.prohor.universe.padawan.spring.polymorphia.FigureType;
 
 @Entity("test_polymorphism")
 @AllArgsConstructor
