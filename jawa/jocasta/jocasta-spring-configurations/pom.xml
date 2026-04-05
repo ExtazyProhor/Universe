@@ -17,5 +17,6 @@
         <module>jocasta-morphia-configuration</module>
         <module>jocasta-jackson-morphia</module>
         <module>jocasta-jackson-core</module>
+        <module>jocasta-jackson-kotlin</module>
     </modules>
 </project>

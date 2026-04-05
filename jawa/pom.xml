@@ -402,6 +402,16 @@
                 <artifactId>chopper-client</artifactId>
                 <version>final</version>
             </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>padawan</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>jocasta-jackson-kotlin</artifactId>
+                <version>final</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
