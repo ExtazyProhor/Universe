@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: white;
+}
+
+.app {
+    padding: 20px;
+    padding-bottom: 120px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+input {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+}
+
+.track-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.track {
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    background: #1e1e1e;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.track:hover {
+    background: #2a2a2a;
+}
+
+.track.active {
+    background: #333;
+}
+
+.player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    background: #181818;
+    border-top: 1px solid #333;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 15px 20px;
+}
+
+.player-info {
+    font-size: 14px;
+}
+
+.player-controls button {
+    font-size: 20px;
+    margin: 0 10px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.player-controls button:hover {
+    opacity: 0.7;
+}
+
+.hidden {
+    display: none;
+}

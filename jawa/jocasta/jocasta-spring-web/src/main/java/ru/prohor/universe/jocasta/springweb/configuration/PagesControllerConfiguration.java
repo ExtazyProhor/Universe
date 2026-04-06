@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -12,6 +13,7 @@ import ru.prohor.universe.jocasta.springweb.StaticResourcesHandler;
 import ru.prohor.universe.jocasta.springweb.controllers.PagesController;
 
 @Configuration
+@Import(StaticResourcesHandlerConfiguration.class)
 public class PagesControllerConfiguration {
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
     private final PagesController pagesController;

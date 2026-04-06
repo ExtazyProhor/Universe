@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Import
 import ru.prohor.universe.chopper.client.ChopperClientConfig
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration
+import ru.prohor.universe.jocasta.springweb.configuration.FilesControllerConfiguration
+import ru.prohor.universe.jocasta.springweb.configuration.PagesControllerConfiguration
 
 
 @Configuration
@@ -15,6 +17,8 @@ import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration
     JocastaAutoConfiguration::class,
     HolocronConfiguration::class,
     ChopperClientConfig::class,
+    PagesControllerConfiguration::class,
+    FilesControllerConfiguration::class,
 )
 class SpringMain
 
