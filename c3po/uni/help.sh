@@ -1,6 +1,7 @@
 #!/bin/bash
 
 BASE_DIR=$(dirname "$0")
+YELLOW=$(tput setaf 3)
 RED=$(tput setaf 1)
 RESET=$(tput sgr0)
 
@@ -46,8 +47,8 @@ for cmd in "${cmds[@]}"; do
   padding=$(( maxlen - ${#prefix} + min_gap ))
   desc=$(jq -r --arg k "$cmd" '.[$k] // ""' ${BASE_DIR}/desc.json)
   if [[ -z "$desc" ]]; then
-    printf '%s\n' "$prefix"
+    printf '%b\n' "${YELLOW}${prefix}${RESET}"
   else
-    printf '%s%*s%s\n' "$prefix" "$padding" "" "$desc"
+    printf '%b%*s%s\n' "${YELLOW}${prefix}${RESET}" "$padding" "" "$desc"
   fi
 done
