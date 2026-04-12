@@ -2,6 +2,7 @@ package ru.prohor.universe.padawan.scripts.parsers;
 
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
+import ru.prohor.universe.jocasta.core.utils.FileSystemUtils;
 import ru.prohor.universe.padawan.Padawan;
 import ru.prohor.universe.padawan.TestFile;
 
@@ -15,9 +16,17 @@ public class AllFilesToOneMd {
             TestFile.OUTPUT,
             path -> !path.getFileName().toString().endsWith(".jpg")
     );
+    private static final Preset TOVARISCH_PROTO = new Preset(
+            FileSystemUtils.userHome()
+                    .asPath()
+                    .resolve("arcadia/bdui/backend/tovarisch/v2/entity/src/main/kotlin/ru/yandex/tovarisch/core")
+                    .toString(),
+            TestFile.TXT,
+            path -> path.getFileName().toString().endsWith(".kt")
+    );
 
     public static void main(String[] args) throws IOException {
-        process(SCARIF_FRONT);
+        process(TOVARISCH_PROTO);
     }
 
     private static void process(Preset preset) throws IOException {
