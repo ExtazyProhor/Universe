@@ -8,6 +8,9 @@ import ru.prohor.universe.jocasta.spring.configuration.JacksonConfiguration
 import ru.prohor.universe.jocasta.spring.features.PrettyJsonPrinter
 import ru.prohor.universe.padawan.Padawan
 import ru.prohor.universe.padawan.TestFile
+import kotlin.io.path.Path
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
 object PadawanKt {
     object Jackson {
@@ -23,8 +26,19 @@ object PadawanKt {
             )
         }
 
+        inline fun <reified T> readList(file: String): List<T> {
+            return mapper.readValue(
+                Path(file).readText(),
+                object : TypeReference<List<T>>() {}
+            )
+        }
+
         fun <T> writeList(list: List<T>, file: TestFile) {
             Padawan.write(file, writer.writeValueAsString(list))
+        }
+
+        fun <T> writeList(list: List<T>, file: String) {
+            Path(file).writeText(writer.writeValueAsString(list))
         }
     }
 }
