@@ -202,11 +202,7 @@
                 if (e.type === "directory") {
                     setPath(fullPath);
                 } else {
-                    if (e.name.toLowerCase().endsWith('.mp4')) {
-                        window.location.href = `/player?path=${encodeURIComponent(fullPath)}`;
-                    } else {
-                        window.location.href = `/files/${fullPath}`;
-                    }
+                    window.location.href = `/files/${fullPath}`;
                 }
             };
 
