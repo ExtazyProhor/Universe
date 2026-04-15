@@ -3,7 +3,6 @@ package ru.prohor.universe.venator.webhook
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -20,7 +19,7 @@ class GithubWebhookIpsValidationTest(
     @param:Value($$"${universe.venator.webhook.permitted-ip}") private val permittedIps: List<String>,
     @param:Value($$"${universe.venator.webhook.github-meta-url}") private val githubMetaUrl: String
 ) {
-    @Test
+    // @Test rate-limited by github
     fun validateIps() {
         val restTemplate = RestTemplate()
         val objectMapper = ObjectMapper()
