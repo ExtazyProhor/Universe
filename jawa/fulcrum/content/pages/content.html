@@ -191,7 +191,7 @@
             const item = document.createElement("div");
             item.className = `item ${e.type}`;
 
-            const fullPath = path ? `${path}/${e.name}` : e.name;
+            const fullPath = path ? `${path}/${e.file}` : e.file;
 
             item.innerHTML = `
                 <div class="icon">${e.type === "directory" ? "📂" : "📄"}</div>

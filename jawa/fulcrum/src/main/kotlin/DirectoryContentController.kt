@@ -1,6 +1,8 @@
 package ru.prohor.universe.fulcrum
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -19,6 +21,7 @@ class DirectoryContentController(
     @Value($$"${universe.fulcrum.content-dir}") contentDirectory: String,
 ) {
     private val contentDirectory = Path(contentDirectory)
+    private val objectMapper = jacksonObjectMapper()
 
     @GetMapping
     fun listFiles(
@@ -48,10 +51,12 @@ class DirectoryContentController(
     }
 
     private fun readFileEntities(resolvedPath: Path): List<FileEntryDto> {
+        val config = readConfig(resolvedPath)
         return Files.newDirectoryStream(resolvedPath).use { stream ->
             stream
                 .filterNot { isIgnored(it) }
-                .map { toFileEntryDto(it) }
+                .filterNot { it.fileName.toString() == "config.json" }
+                .map { toFileEntryDto(it, config) }
                 .sortedWith(compareBy({ it.type }, { it.name }))
                 .toList()
         }
@@ -61,8 +66,16 @@ class DirectoryContentController(
         return path.fileName.toString().startsWith('.')
     }
 
-    private fun toFileEntryDto(entry: Path) = FileEntryDto(
-        name = entry.fileName.toString(),
+    private fun toFileEntryDto(
+        entry: Path,
+        config: Map<String, String>
+    ) = FileEntryDto(
+        name = if (Files.isDirectory(entry)) {
+            entry.fileName.toString()
+        } else {
+            config[entry.fileName.toString()] ?: entry.fileName.toString()
+        },
+        file = entry.fileName.toString(),
         type = if (Files.isDirectory(entry)) {
             EntryType.DIRECTORY
         } else {
@@ -70,8 +83,30 @@ class DirectoryContentController(
         }
     )
 
+    private fun readConfig(dir: Path): Map<String, String> {
+        val configPath = dir.resolve("config.json")
+
+        if (!Files.exists(configPath)) return emptyMap()
+
+        return try {
+            Files.newBufferedReader(configPath).use { reader ->
+                val list: List<FileConfigEntry> =
+                    objectMapper.readValue(reader, object : TypeReference<List<FileConfigEntry>>() {})
+                list.associate { it.file to it.name }
+            }
+        } catch (_: Exception) {
+            emptyMap()
+        }
+    }
+
+    data class FileConfigEntry(
+        val name: String,
+        val file: String
+    )
+
     data class FileEntryDto(
         val name: String,
+        val file: String,
         val type: EntryType
     )
 
