@@ -1,9 +1,8 @@
-package ru.prohor.universe.kt.padawan.spring.musicmvp
-
+package ru.prohor.universe.padawan.kotlin.spring.musicmvp
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import ru.prohor.universe.jocasta.core.utils.FileSystemUtils
-import ru.prohor.universe.kt.padawan.PadawanKt
+import ru.prohor.universe.padawan.PadawanKt
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString

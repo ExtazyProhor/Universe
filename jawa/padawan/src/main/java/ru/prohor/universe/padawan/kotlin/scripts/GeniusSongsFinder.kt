@@ -1,4 +1,4 @@
-package ru.prohor.universe.kt.padawan.scripts
+package ru.prohor.universe.padawan.kotlin.scripts
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper

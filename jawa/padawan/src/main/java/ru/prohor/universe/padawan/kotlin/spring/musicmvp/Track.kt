@@ -1,13 +1,6 @@
-package ru.prohor.universe.kt.padawan.spring.musicmvp
+package ru.prohor.universe.padawan.kotlin.spring.musicmvp
 
 import com.fasterxml.jackson.annotation.JsonProperty
-
-data class Track(
-    val name: String,
-    val authors: List<String>,
-    val track: String,
-    val duration: Double
-)
 
 data class RawMetadata(
     val duration: String?, // Double
@@ -32,7 +25,7 @@ data class Lyrics(
     val attempt: String?
 )
 
-data class TrackV2(
+data class Track(
     val name: String,
     val authors: List<String>,
     val track: String,

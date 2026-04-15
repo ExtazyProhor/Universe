@@ -1,4 +1,4 @@
-package ru.prohor.universe.padawan;
+package ru.prohor.universe.padawan.scripts;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import okhttp3.HttpUrl;

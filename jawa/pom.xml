@@ -25,7 +25,6 @@
     <modules>
         <module>jocasta</module>
         <module>padawan</module>
-        <module>padawan-kt</module>
         <module>scarif</module>
         <module>sabacc</module>
         <module>yoda</module>

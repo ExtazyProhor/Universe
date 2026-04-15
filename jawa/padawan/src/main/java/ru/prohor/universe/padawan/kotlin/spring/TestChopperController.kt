@@ -1,4 +1,4 @@
-package ru.prohor.universe.kt.padawan
+package ru.prohor.universe.padawan.kotlin.spring
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.GetMapping
@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestController
 import ru.prohor.universe.chopper.client.ChopperClient
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/chopper-api")
 class TestChopperController(
-    @param:Value($$"${universe.padawan-kt.chat-id}")
+    @param:Value($$"${universe.padawan.chat-id}")
     private val chatId: Long,
     private val chopperClient: ChopperClient
 ) {

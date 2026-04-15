@@ -1,4 +1,4 @@
-package ru.prohor.universe.kt.padawan
+package ru.prohor.universe.padawan
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectWriter
 import ru.prohor.universe.jocasta.cfg.kotlin.JacksonKotlinConfiguration
 import ru.prohor.universe.jocasta.spring.configuration.JacksonConfiguration
 import ru.prohor.universe.jocasta.spring.features.PrettyJsonPrinter
-import ru.prohor.universe.padawan.Padawan
-import ru.prohor.universe.padawan.TestFile
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
