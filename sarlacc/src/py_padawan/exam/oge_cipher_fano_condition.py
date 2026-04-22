@@ -5,11 +5,11 @@ def parse(config: dict[str, str], seq: str) -> list[str]:
         cur = l.pop(0)
         for k, v in config.items():
             if cur[0].startswith(k):
-                cur = (cur[0][len(k):], cur[1] + v)
-                if len(cur[0]) == 0:
-                    res.append(cur[1])
+                new = (cur[0][len(k):], cur[1] + v)
+                if len(new[0]) == 0:
+                    res.append(new[1])
                 else:
-                    l.append(cur)
+                    l.append(new)
     return list(set(res))
 
 
