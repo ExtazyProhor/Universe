@@ -18,9 +18,7 @@ def parse_all(config: dict[str, str], seqs: list[str]):
         print(parse(config, seq))
 
 
-"""
-from py_padawan.exam.oge_cipher_fano_condition import parse_all
-
+# example
 cfg = {
     '01': 'А',
     '011': 'В',
@@ -31,4 +29,3 @@ cfg = {
     '001': 'У',
 }
 parse_all(cfg, ['0110101001101010', '1000100110101', '100111011111100', '10000101001101'])
-"""
