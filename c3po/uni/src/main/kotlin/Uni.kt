@@ -6,12 +6,14 @@ import ru.prohor.universe.uni.cli.command.UniCommand
 import ru.prohor.universe.uni.cli.command.files.Files
 import ru.prohor.universe.uni.cli.command.mp3.Mp3
 import ru.prohor.universe.uni.cli.command.vcs.Vcs
+import ru.prohor.universe.uni.cli.command.video.Video
 
 class Uni : UniCommand() {
     init {
         subcommands(
             Files(),
             Mp3(),
+            Video(),
             Vcs(),
         )
     }

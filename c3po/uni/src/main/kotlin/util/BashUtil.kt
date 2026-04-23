@@ -32,3 +32,17 @@ fun runCommand(cmd: List<String>): CmdResult {
 
     return CmdResult(stdout, stderr, code)
 }
+
+fun runCommandStreaming(
+    cmd: List<String>,
+    onLine: (String) -> Unit
+): Int {
+    val process = ProcessBuilder(cmd)
+        .redirectErrorStream(true)
+        .start()
+
+    process.inputStream.bufferedReader().forEachLine {
+        onLine(it)
+    }
+    return process.waitFor()
+}
