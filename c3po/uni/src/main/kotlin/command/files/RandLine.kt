@@ -12,7 +12,7 @@ class RandLine : UniCommand(name = "rand-line") {
     private val includesEmpty by option("-e", "--includes-empty", help = "disables the filter that selects only non-blank strings").flag()
     private val withNumber by option("-n", "--with-number", help = "prints a line with its number in the file").flag()
 
-    override fun help(context: Context): String = "prints a random line from the specified file"
+    override fun help(context: Context) = "prints a random line from the specified file"
 
     override fun run() {
         var lines = File(file).readLines()
