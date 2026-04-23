@@ -1,0 +1,8 @@
+.idea/*
+!.idea/codeStyles/
+!.idea/dictionaries/
+!.idea/runConfigurations/
+!.idea/inspectionProfiles/
+!.idea/entryPoints.xml
+
+.uni-cache/
