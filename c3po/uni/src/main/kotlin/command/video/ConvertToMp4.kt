@@ -2,18 +2,40 @@ package ru.prohor.universe.uni.cli.command.video
 
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.arguments.argument
-import ru.prohor.universe.uni.cli.util.runCommand
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
 
 class ConvertToMp4 : FfmpegCommand(name = "mp4") {
+    private val withRecoding by option("-w", "--with-recoding", help = "recode target video to h.264").flag()
+
     override val file by argument(help = "file that needs to be converted to mp4")
 
-    override fun help(context: Context) = "converts mkv file to mp4 without recoding"
+    override fun help(context: Context) = "converts mkv file to mp4"
 
-    override val fullCommand by lazy {
+    private val commandWithoutRecoding by lazy {
         listOf(
             "ffmpeg",
             "-i", file,
             "-c:v", "copy",
+            "-c:a", "aac",
+            "-b:a", "192k",
+            "-ac", "2",
+            "-movflags", "+faststart",
+            "-progress", "pipe:1",
+            "-nostats",
+            file.removeSuffix(".mkv") + ".mp4"
+        )
+    }
+
+    private val commandWithRecoding by lazy {
+        listOf(
+            "ffmpeg",
+            "-i", file,
+            "-map", "0:v:0", "-map", "0:a:0",
+            "-c:v", "libx264",
+            "-profile:v", "high",
+            "-level", "4.1",
+            "-pix_fmt", "yuv420p",
             "-c:a", "aac",
             "-b:a", "192k",
             "-ac", "2",
@@ -29,19 +51,6 @@ class ConvertToMp4 : FfmpegCommand(name = "mp4") {
             errorEcho("file must ends with .mkv")
             return
         }
-        runCommand()
-    }
-
-    private fun getDuration(file: String): Long? {
-        val result = runCommand(
-            listOf(
-                "ffprobe",
-                "-v", "error",
-                "-show_entries", "format=duration",
-                "-of", "default=noprint_wrappers=1:nokey=1",
-                file
-            )
-        )
-        return result.stdout.trim().toDoubleOrNull()?.let { it * 1_000_000 }?.toLong()
+        runFfmpeg(if (withRecoding) commandWithRecoding else commandWithoutRecoding)
     }
 }

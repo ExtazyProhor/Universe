@@ -17,9 +17,7 @@ import ru.prohor.universe.uni.cli.util.runCommandStreaming
 abstract class FfmpegCommand(name: String? = null) : UniCommand(name) {
     abstract val file: String
 
-    abstract val fullCommand: List<String>
-
-    protected fun runCommand() {
+    protected fun runFfmpeg(fullCommand: List<String>) {
         if (!requireCommand("ffmpeg")) return
         if (!requireCommand("ffprobe")) return
 

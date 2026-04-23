@@ -7,7 +7,7 @@
 
     <groupId>ru.prohor.universe</groupId>
     <artifactId>uni</artifactId>
-    <version>0.1.2</version>
+    <version>1.0.0</version>
     <name>uni</name>
 
     <properties>
