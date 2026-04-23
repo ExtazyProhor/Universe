@@ -4,9 +4,10 @@ import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.enum
+import com.github.ajalt.mordant.rendering.TextColors.magenta
+import com.github.ajalt.mordant.rendering.TextColors.yellow
 import com.github.ajalt.mordant.terminal.prompt
 import ru.prohor.universe.uni.cli.command.UniCommand
-import ru.prohor.universe.uni.cli.util.colored
 import ru.prohor.universe.uni.cli.util.runCommand
 
 class CleanupBranches : UniCommand(name = "cleanup-branches") {
@@ -18,11 +19,9 @@ class CleanupBranches : UniCommand(name = "cleanup-branches") {
         val branches = getMergedBranches(vcs)
 
         for (branch in branches) {
-            colored {
-                val answer = terminal.prompt("Delete branch ".yellow + branch.purple + "? (y to delete / Enter to skip)".yellow)
-                if (answer.equals("y", ignoreCase = true)) {
-                    deleteBranch(vcs, branch)
-                }
+            val answer = terminal.prompt(yellow("Delete branch ") + magenta(branch) + yellow("? (y to delete / Enter to skip)"))
+            if (answer.equals("y", ignoreCase = true)) {
+                deleteBranch(vcs, branch)
             }
         }
     }

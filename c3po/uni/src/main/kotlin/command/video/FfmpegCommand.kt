@@ -4,13 +4,13 @@ import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.mordant.animation.progress.animateOnThread
 import com.github.ajalt.mordant.animation.progress.execute
 import com.github.ajalt.mordant.animation.progress.update
+import com.github.ajalt.mordant.rendering.TextColors.green
 import com.github.ajalt.mordant.widgets.progress.percentage
 import com.github.ajalt.mordant.widgets.progress.progressBar
 import com.github.ajalt.mordant.widgets.progress.progressBarLayout
 import com.github.ajalt.mordant.widgets.progress.text
 import com.github.ajalt.mordant.widgets.progress.timeRemaining
 import ru.prohor.universe.uni.cli.command.UniCommand
-import ru.prohor.universe.uni.cli.util.colored
 import ru.prohor.universe.uni.cli.util.runCommand
 import ru.prohor.universe.uni.cli.util.runCommandStreaming
 
@@ -49,9 +49,7 @@ abstract class FfmpegCommand(name: String? = null) : UniCommand(name) {
             echo("Processing...")
             runCommand(fullCommand)
         }
-        colored {
-            echo("$file " + "successfully processed".green)
-        }
+        echo("$file " + green("successfully processed"))
     }
 
     private fun getDuration(videoFile: String): Long? {

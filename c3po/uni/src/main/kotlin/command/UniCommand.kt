@@ -1,7 +1,7 @@
 package ru.prohor.universe.uni.cli.command
 
 import com.github.ajalt.clikt.core.CliktCommand
-import ru.prohor.universe.uni.cli.util.colored
+import com.github.ajalt.mordant.rendering.TextColors.red
 import ru.prohor.universe.uni.cli.util.isCommandAvailable
 
 abstract class UniCommand(name: String? = null) : CliktCommand(name) {
@@ -12,11 +12,9 @@ abstract class UniCommand(name: String? = null) : CliktCommand(name) {
     }
 
     protected fun errorEcho(message: String) {
-        colored {
-            echo(
-                message = message.red,
-                err = true
-            )
-        }
+        echo(
+            message = red(message),
+            err = true
+        )
     }
 }
