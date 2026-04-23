@@ -10,6 +10,8 @@ abstract class Alias(name: String? = null) : UniCommand(name) {
      */
     abstract val fullCommand: List<String>
 
+    open fun postHook() = Unit
+
     final override fun run() {
         if (!requireCommand(requiredCommand)) return
 
@@ -19,5 +21,6 @@ abstract class Alias(name: String? = null) : UniCommand(name) {
         } else {
             echo(result.stderr, err = true)
         }
+        postHook()
     }
 }

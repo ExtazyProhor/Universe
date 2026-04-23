@@ -4,15 +4,17 @@ import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.subcommands
 import ru.prohor.universe.uni.cli.command.UniCommand
 import ru.prohor.universe.uni.cli.command.files.Files
+import ru.prohor.universe.uni.cli.command.mp3.Mp3
 
 class Uni : UniCommand() {
     init {
         subcommands(
             Files(),
+            Mp3(),
         )
     }
 
-    override fun help(context: Context): String  = "complex cli utility with a set of various useful functions and tools for the universe"
+    override fun help(context: Context) = "a complex cli utility with a set of various useful functions and tools for the universe"
 
     override fun run() = Unit
 }
