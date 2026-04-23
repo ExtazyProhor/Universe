@@ -7,12 +7,16 @@ import ru.prohor.universe.uni.cli.util.isCommandAvailable
 abstract class UniCommand(name: String? = null) : CliktCommand(name) {
     protected fun requireCommand(cmd: String): Boolean {
         if (isCommandAvailable(cmd)) return true
+        errorEcho("Command '$cmd' not found")
+        return false
+    }
+
+    protected fun errorEcho(message: String) {
         colored {
             echo(
-                message = "Command '$cmd' not found".red,
+                message = message.red,
                 err = true
             )
         }
-        return false
     }
 }

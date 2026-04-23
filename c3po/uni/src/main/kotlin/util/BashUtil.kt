@@ -18,7 +18,7 @@ data class CmdResult(
 )
 
 fun runCommand(vararg cmd: String): CmdResult {
-    return runCommand(*cmd)
+    return runCommand(cmd.toList())
 }
 
 fun runCommand(cmd: List<String>): CmdResult {
