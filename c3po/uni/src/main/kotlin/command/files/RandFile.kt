@@ -28,6 +28,6 @@ class RandFile : UniCommand(name = "rand-file") {
         if (files.isEmpty()) return
         val file = files.random()
 
-        echo(if (absPath) file.absolutePath else file.name)
+        echo(if (absPath) file.absoluteFile.normalize() else file.name)
     }
 }
