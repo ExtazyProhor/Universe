@@ -4,7 +4,7 @@ import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import ru.prohor.universe.uni.cli.util.runCommand
 
-class ConvertToMp4 : FfmpegCommand() {
+class ConvertToMp4 : FfmpegCommand(name = "mp4") {
     override val file by argument(help = "file that needs to be converted to mp4")
 
     override fun help(context: Context) = "converts mkv file to mp4 without recoding"
@@ -16,6 +16,8 @@ class ConvertToMp4 : FfmpegCommand() {
             "-c:v", "copy",
             "-c:a", "aac",
             "-b:a", "192k",
+            "-ac", "2",
+            "-movflags", "+faststart",
             "-progress", "pipe:1",
             "-nostats",
             file.removeSuffix(".mkv") + ".mp4"
