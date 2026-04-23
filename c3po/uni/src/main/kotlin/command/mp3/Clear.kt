@@ -15,7 +15,8 @@ class Clear : Alias() {
         listOf("id3v2", "-D", file)
     }
 
-    override fun postHook() {
+    override fun run() {
+        super.run()
         echo("Tags removed")
     }
 }
