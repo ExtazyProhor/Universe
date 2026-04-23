@@ -18,7 +18,11 @@ data class CmdResult(
 )
 
 fun runCommand(vararg cmd: String): CmdResult {
-    val process = ProcessBuilder(*cmd)
+    return runCommand(*cmd)
+}
+
+fun runCommand(cmd: List<String>): CmdResult {
+    val process = ProcessBuilder(cmd)
         .redirectErrorStream(false)
         .start()
 
