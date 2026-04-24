@@ -9,6 +9,7 @@ public enum TestFile {
     JSON("json.json"),
     MD("md.md"),
     OUTPUT("output.txt"),
+    PROTO("proto.proto"),
     TXT("txt.txt"),
     YAML("yaml.yaml");
 
