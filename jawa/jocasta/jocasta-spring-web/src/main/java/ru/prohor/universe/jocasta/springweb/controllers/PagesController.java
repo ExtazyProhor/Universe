@@ -11,7 +11,7 @@ import java.nio.file.Path;
 
 @Component
 public class PagesController {
-    private static final String HTML = ".html";
+    public static final String HTML = ".html";
 
     private final StaticResourcesHandler staticResourcesHandler;
     private final Path pagesPath;

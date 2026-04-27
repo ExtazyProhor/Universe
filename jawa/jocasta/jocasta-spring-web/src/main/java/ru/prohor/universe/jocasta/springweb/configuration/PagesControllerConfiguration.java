@@ -9,31 +9,42 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.springweb.StaticResourcesHandler;
 import ru.prohor.universe.jocasta.springweb.controllers.PagesController;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Arrays;
 
 @Configuration
 @Import(StaticResourcesHandlerConfiguration.class)
 public class PagesControllerConfiguration {
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
     private final PagesController pagesController;
-    private final String paths;
+    private final String pagesDirectory;
 
     public PagesControllerConfiguration(
             RequestMappingHandlerMapping requestMappingHandlerMapping,
             StaticResourcesHandler staticResourcesHandler,
-            @Value("${universe.jocasta.spring.pages-dir}") String pagesDirectory,
-            @Value("${universe.jocasta.spring.pages-list}") String paths
+            @Value("${universe.jocasta.spring.pages-dir}") String pagesDirectory
     ) {
         this.requestMappingHandlerMapping = requestMappingHandlerMapping;
         this.pagesController = new PagesController(staticResourcesHandler, pagesDirectory);
-        this.paths = paths;
+        this.pagesDirectory = pagesDirectory;
     }
 
     @PostConstruct
-    public void init() {
+    public void init() throws Exception {
+        String[] paths = Opt.ofNullable(new File(pagesDirectory).list())
+                .map(Arrays::stream)
+                .orElseThrow(() -> new FileNotFoundException("Directory with pages does not exist: " + pagesDirectory))
+                .filter(file -> file.endsWith(PagesController.HTML))
+                .map(file -> "/" + file.substring(0, file.length() - PagesController.HTML.length()))
+                .toArray(String[]::new);
+
         RequestMappingInfo requestMappingInfo = RequestMappingInfo
-                .paths(paths.split(","))
+                .paths(paths)
                 .methods(RequestMethod.GET)
                 .build();
         try {
