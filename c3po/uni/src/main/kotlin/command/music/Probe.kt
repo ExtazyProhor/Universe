@@ -1,4 +1,4 @@
-package ru.prohor.universe.uni.cli.command.mp3
+package ru.prohor.universe.uni.cli.command.music
 
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.arguments.argument

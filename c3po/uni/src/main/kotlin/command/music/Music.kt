@@ -1,10 +1,10 @@
-package ru.prohor.universe.uni.cli.command.mp3
+package ru.prohor.universe.uni.cli.command.music
 
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.subcommands
 import ru.prohor.universe.uni.cli.command.UniCommand
 
-class Mp3 : UniCommand() {
+class Music : UniCommand() {
     init {
         subcommands(
             Probe(),
@@ -13,7 +13,7 @@ class Mp3 : UniCommand() {
         )
     }
 
-    override fun help(context: Context) = "interacts with mp3 and other music files"
+    override fun help(context: Context) = "interacts with music files"
 
     override fun run() = Unit
 }
