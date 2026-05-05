@@ -7,6 +7,7 @@ import ru.prohor.universe.uni.cli.command.UniCommand
 class Video : UniCommand() {
     init {
         subcommands(
+            CutFragment(),
             ConvertToMp4(),
         )
     }
