@@ -7,6 +7,7 @@ import ru.prohor.universe.uni.cli.command.UniCommand
 class Music : UniCommand() {
     init {
         subcommands(
+            ConvertToMp3(),
             Probe(),
             Tags(),
             Clear(),
