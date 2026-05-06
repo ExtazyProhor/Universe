@@ -59,6 +59,8 @@ source ~/.zprofile # для zsh
 [System.Environment]::SetEnvironmentVariable('UNIVERSE_WORKSPACE', 'C:\path\to\workspace\dir', 'User')
 [System.Environment]::SetEnvironmentVariable('HOLOCRON_JSON', 'C:\path\to\holocron.json', 'User')
 [System.Environment]::SetEnvironmentVariable('SPRING_PROFILES_ACTIVE', 'stable', 'User')
+
+[Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";%UNIVERSE_HOME%\c3po\uni", "User")
 ```
 
 ##### `alias`-ы
