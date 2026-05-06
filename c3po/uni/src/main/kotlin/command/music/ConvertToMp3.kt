@@ -16,8 +16,6 @@ class ConvertToMp3 : FfmpegCommand(name = "mp3") {
     override fun help(context: Context) = "converts video file to mp3"
 
     override fun run() {
-        if (!requireCommand("ffprobe")) return
-
         val inputFile = File(file)
         val outputFile = output?.toFile() ?: File(inputFile.parent, "${inputFile.nameWithoutExtension}.mp3")
         val fullOutputFile = outputDirectory?.toFile()?.resolve(outputFile) ?: outputFile

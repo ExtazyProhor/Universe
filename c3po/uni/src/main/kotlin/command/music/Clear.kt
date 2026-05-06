@@ -9,8 +9,6 @@ class Clear : Alias() {
 
     override fun help(context: Context) = "remove ID3 tags"
 
-    override val requiredCommand = "id3v2"
-
     override val fullCommand by lazy {
         listOf("id3v2", "-D", file)
     }

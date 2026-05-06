@@ -18,9 +18,6 @@ abstract class FfmpegCommand(name: String? = null) : UniCommand(name) {
     abstract val file: String
 
     protected fun runFfmpeg(fullCommand: List<String>) {
-        if (!requireCommand("ffmpeg")) return
-        if (!requireCommand("ffprobe")) return
-
         getDuration(file)?.let { duration ->
             val progress = progressBarLayout {
                 text("Processing... ")

@@ -1,15 +1,7 @@
 package ru.prohor.universe.uni.cli.util
 
-fun isCommandAvailable(cmd: String): Boolean {
-    return try {
-        ProcessBuilder("which", cmd)
-            .redirectErrorStream(true)
-            .start()
-            .waitFor() == 0
-    } catch (_: Exception) {
-        false
-    }
-}
+import com.github.ajalt.mordant.rendering.TextColors.red
+import kotlin.system.exitProcess
 
 data class CmdResult(
     val stdout: String,
@@ -22,15 +14,20 @@ fun runCommand(vararg cmd: String): CmdResult {
 }
 
 fun runCommand(cmd: List<String>): CmdResult {
-    val process = ProcessBuilder(cmd)
-        .redirectErrorStream(false)
-        .start()
+    try {
+        val process = ProcessBuilder(cmd)
+            .redirectErrorStream(false)
+            .start()
 
-    val stdout = process.inputStream.bufferedReader().readText()
-    val stderr = process.errorStream.bufferedReader().readText()
-    val code = process.waitFor()
+        val stdout = process.inputStream.bufferedReader().readText()
+        val stderr = process.errorStream.bufferedReader().readText()
+        val code = process.waitFor()
 
-    return CmdResult(stdout, stderr, code)
+        return CmdResult(stdout, stderr, code)
+    } catch (e: Exception) {
+        println(red(e.message ?: "error with command '${cmd.first()}'"))
+        exitProcess(1)
+    }
 }
 
 fun runCommandStreaming(

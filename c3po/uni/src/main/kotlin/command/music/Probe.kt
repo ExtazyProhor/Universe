@@ -9,8 +9,6 @@ class Probe : Alias() {
 
     override fun help(context: Context) = "outputs the result of the ffprobe command for the specified file in json format"
 
-    override val requiredCommand = "ffprobe"
-
     override val fullCommand by lazy {
         listOf(
             "ffprobe",
