@@ -9,6 +9,7 @@ class Video : UniCommand() {
         subcommands(
             CutFragment(),
             ConvertToMp4(),
+            Streams(),
         )
     }
 
