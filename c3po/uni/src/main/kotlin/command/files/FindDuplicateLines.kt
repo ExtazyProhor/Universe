@@ -7,14 +7,19 @@ import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.mordant.rendering.TextColors.yellow
 import ru.prohor.universe.uni.cli.command.UniCommand
 
+/**
+ * To close stdin:
+ * - Windows - `Ctrl + Z`, then `Enter`
+ * - Unix - `Ctrl + D`
+ */
 class FindDuplicateLines : UniCommand(name = "find-duplicates") {
     override fun help(context: Context) = "finds duplicate lines in the file or in stdin"
 
-    private val inputFile by argument(help = "file from which the lines will be taken. If not specified, lines are taken from stdin")
+    private val file by argument(help = "file from which the lines will be taken. If not specified, lines are taken from stdin")
         .file(mustExist = true).optional()
 
     override fun run() {
-        val reader = inputFile?.bufferedReader() ?: System.`in`.bufferedReader()
+        val reader = file?.bufferedReader() ?: System.`in`.bufferedReader()
 
         reader.useLines { lines ->
             lines.filter { it.isNotBlank() }
