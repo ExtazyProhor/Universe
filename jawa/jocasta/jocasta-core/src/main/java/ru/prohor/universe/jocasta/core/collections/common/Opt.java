@@ -3,9 +3,11 @@ package ru.prohor.universe.jocasta.core.collections.common;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import ru.prohor.universe.jocasta.core.features.sneaky.ThrowableSupplier;
+import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
+import ru.prohor.universe.jocasta.core.functional.MonoFunction;
+import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
+import ru.prohor.universe.jocasta.core.functional.NilFunction;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -14,21 +16,14 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 
-public abstract class Opt<T> implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 204194056296233266L;
-    private static final String OPTIONAL_PARAMETER_WARNING = "OptionalUsedAsFieldOrParameterType";
-    private static final String UNCHECKED_WARNING = "unchecked";
-
+/**
+ * This file is a modified version of the original file developed by Stepan Koltsov at Yandex.
+ * Original code is available under <a href="http://www.apache.org/licenses/LICENSE-2.0">the Apache License 2.0</a>
+ * at <a href="https://github.com/v1ctor/bolts">github.com/v1ctor/bolts</a>
+ */
+public abstract class Opt<T> {
     private Opt() {}
 
     public final boolean isEmpty() {
@@ -43,8 +38,8 @@ public abstract class Opt<T> implements Serializable {
         return isPresent() && Objects.equals(get(), value);
     }
 
-    public final boolean isMatch(Predicate<T> predicate) {
-        return isPresent() && predicate.test(get());
+    public final boolean isMatch(MonoPredicate<T> MonoPredicate) {
+        return isPresent() && MonoPredicate.test(get());
     }
 
     @Nonnull
@@ -59,8 +54,8 @@ public abstract class Opt<T> implements Serializable {
         return isPresent() ? get() : null;
     }
 
-    public T orElseGet(Supplier<? extends T> supplier) {
-        return isPresent() ? get() : supplier.get();
+    public T orElseGet(NilFunction<? extends T> NilFunction) {
+        return isPresent() ? get() : NilFunction.apply();
     }
 
     public T orElseThrow() {
@@ -69,62 +64,62 @@ public abstract class Opt<T> implements Serializable {
         throw new NoSuchElementException("No value present");
     }
 
-    public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
+    public <X extends Throwable> T orElseThrow(NilFunction<? extends X> exceptionSupplier) throws X {
         if (isPresent())
             return get();
-        throw exceptionSupplier.get();
+        throw exceptionSupplier.apply();
     }
 
-    @SuppressWarnings(UNCHECKED_WARNING)
+    @SuppressWarnings("unchecked")
     public final Opt<T> orElse(Opt<? extends T> other) {
         return isPresent() ? this : (Opt<T>) other;
     }
 
 
-    public final Opt<T> orElse(Supplier<Opt<T>> supplier) {
-        return isPresent() ? this : supplier.get();
+    public final Opt<T> orElse(NilFunction<Opt<T>> NilFunction) {
+        return isPresent() ? this : NilFunction.apply();
     }
 
-    public abstract <U> Opt<U> map(Function<? super T, U> f);
+    public abstract <U> Opt<U> map(MonoFunction<? super T, U> f);
 
     public Optional<T> unwrap() {
         return isPresent() ? Optional.of(get()) : Optional.empty();
     }
 
-    public OptionalInt unwrap(ToIntFunction<T> f) {
-        return isPresent() ? OptionalInt.of(f.applyAsInt(get())) : OptionalInt.empty();
+    public OptionalInt unwrapAsInt(MonoFunction<T, Integer> f) {
+        return isPresent() ? OptionalInt.of(f.apply(get())) : OptionalInt.empty();
     }
 
-    public OptionalDouble unwrap(ToDoubleFunction<T> f) {
-        return isPresent() ? OptionalDouble.of(f.applyAsDouble(get())) : OptionalDouble.empty();
+    public OptionalDouble unwrapAsDouble(MonoFunction<T, Double> f) {
+        return isPresent() ? OptionalDouble.of(f.apply(get())) : OptionalDouble.empty();
     }
 
-    public OptionalLong unwrap(ToLongFunction<T> f) {
-        return isPresent() ? OptionalLong.of(f.applyAsLong(get())) : OptionalLong.empty();
+    public OptionalLong unwrapAsLong(MonoFunction<T, Long> f) {
+        return isPresent() ? OptionalLong.of(f.apply(get())) : OptionalLong.empty();
     }
 
-    public final <U> Opt<U> flatMapO(Function<? super T, Opt<U>> f) {
+    public final <U> Opt<U> flatMapO(MonoFunction<? super T, Opt<U>> f) {
         return isPresent() ? f.apply(get()) : empty();
     }
 
-    public <B> Opt<B> filterMapOptional(Function<? super T, Optional<B>> f) {
+    public <B> Opt<B> filterMapOptional(MonoFunction<? super T, Optional<B>> f) {
         return flatMapO(e -> f.apply(e).map(Opt::of).orElse(empty()));
     }
 
-    public <B> List<B> flatMap(Function<? super T, ? extends List<B>> f) {
+    public <B> List<B> flatMap(MonoFunction<? super T, ? extends List<B>> f) {
         return isPresent() ? f.apply(get()) : List.of();
     }
 
-    @SuppressWarnings(UNCHECKED_WARNING)
-    public Opt<T> or(@Nonnull Supplier<? extends Opt<? extends T>> supplier) {
-        return isPresent() ? this : (Opt<T>) supplier.get();
+    @SuppressWarnings("unchecked")
+    public Opt<T> or(@Nonnull NilFunction<? extends Opt<? extends T>> NilFunction) {
+        return isPresent() ? this : (Opt<T>) NilFunction.apply();
     }
 
-    public Opt<T> filter(@Nonnull Predicate<? super T> predicate) {
-        return isPresent() && !predicate.test(get()) ? empty() : this;
+    public Opt<T> filter(@Nonnull MonoPredicate<? super T> MonoPredicate) {
+        return isPresent() && !MonoPredicate.test(get()) ? empty() : this;
     }
 
-    @SuppressWarnings(UNCHECKED_WARNING)
+    @SuppressWarnings("unchecked")
     public <F> Opt<F> flattenO() {
         return flatMapO(o -> (Opt<F>) o);
     }
@@ -146,17 +141,17 @@ public abstract class Opt<T> implements Serializable {
         return toSet();
     }
 
-    @SuppressWarnings(UNCHECKED_WARNING)
+    @SuppressWarnings("unchecked")
     public static <B, A extends B> Opt<A> safeCast(Opt<B> o) {
         return (Opt<A>) o;
     }
 
-    @SuppressWarnings(UNCHECKED_WARNING)
+    @SuppressWarnings("unchecked")
     public <F> Opt<F> cast() {
         return (Opt<F>) this;
     }
 
-    @SuppressWarnings(UNCHECKED_WARNING)
+    @SuppressWarnings("unchecked")
     public <F> Opt<F> castOrEmpty() {
         try {
             return (Opt<F>) this;
@@ -165,19 +160,19 @@ public abstract class Opt<T> implements Serializable {
         }
     }
 
-    public void ifPresent(Consumer<? super T> consumer) {
+    public void ifPresent(MonoConsumer<? super T> MonoConsumer) {
         if (isPresent())
-            consumer.accept(get());
+            MonoConsumer.accept(get());
     }
 
-    public void ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction) {
+    public void ifPresentOrElse(MonoConsumer<? super T> action, Runnable emptyAction) {
         if (isPresent())
             action.accept(get());
         else
             emptyAction.run();
     }
 
-    @SuppressWarnings(UNCHECKED_WARNING)
+    @SuppressWarnings("unchecked")
     public static <T> Opt<T> empty() {
         return (Opt<T>) Empty.EMPTY;
     }
@@ -190,39 +185,39 @@ public abstract class Opt<T> implements Serializable {
         return x == null ? empty() : of(x);
     }
 
-    public static <T> Opt<T> tryOrNull(ThrowableSupplier<T> supplier) {
+    public static <T> Opt<T> tryOrNull(ThrowableSupplier<T> NilFunction) {
         try {
-            return ofNullable(supplier.get());
+            return ofNullable(NilFunction.get());
         } catch (Exception e) {
             return empty();
         }
     }
 
-    public static <T> Opt<T> when(boolean predicate, @Nonnull T x) {
-        return predicate ? of(x) : empty();
+    public static <T> Opt<T> when(boolean MonoPredicate, @Nonnull T x) {
+        return MonoPredicate ? of(x) : empty();
     }
 
-    public static <T> Opt<T> when(boolean predicate, Supplier<T> supplier) {
-        return predicate ? of(supplier.get()) : empty();
+    public static <T> Opt<T> when(boolean MonoPredicate, NilFunction<T> NilFunction) {
+        return MonoPredicate ? of(NilFunction.apply()) : empty();
     }
 
-    @SuppressWarnings(OPTIONAL_PARAMETER_WARNING)
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static <T> Opt<T> wrap(Optional<T> optional) {
         return optional.map(Opt::of).orElseGet(Opt::empty);
     }
 
-    @SuppressWarnings(OPTIONAL_PARAMETER_WARNING)
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static Opt<Integer> wrap(OptionalInt optional) {
         return optional.isPresent() ? of(optional.getAsInt()) : empty();
     }
 
-    @SuppressWarnings(OPTIONAL_PARAMETER_WARNING)
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static Opt<Long> wrap(OptionalLong optional) {
         return optional.isPresent() ? of(optional.getAsLong()) : empty();
     }
 
 
-    @SuppressWarnings(OPTIONAL_PARAMETER_WARNING)
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static Opt<Double> wrap(OptionalDouble optional) {
         return optional.isPresent() ? of(optional.getAsDouble()) : empty();
     }
@@ -232,9 +227,6 @@ public abstract class Opt<T> implements Serializable {
     }
 
     public static final class Some<T> extends Opt<T> {
-        @Serial
-        private static final long serialVersionUID = 5105612001846491735L;
-
         private final T value;
 
         private Some(@Nonnull T value) {
@@ -248,7 +240,7 @@ public abstract class Opt<T> implements Serializable {
         }
 
         @Override
-        public <U> Opt<U> map(Function<? super T, U> f) {
+        public <U> Opt<U> map(MonoFunction<? super T, U> f) {
             return of(f.apply(value));
         }
 
@@ -271,8 +263,6 @@ public abstract class Opt<T> implements Serializable {
     }
 
     public static final class Empty<T> extends Opt<T> {
-        @Serial
-        private static final long serialVersionUID = 120651923649551207L;
         private static final Object[] EMPTY_ARRAY = new Object[0];
 
         @SuppressWarnings("rawtypes")
@@ -287,8 +277,8 @@ public abstract class Opt<T> implements Serializable {
         }
 
         @Override
-        @SuppressWarnings(UNCHECKED_WARNING)
-        public <U> Opt<U> map(Function<? super T, U> f) {
+        @SuppressWarnings("unchecked")
+        public <U> Opt<U> map(MonoFunction<? super T, U> f) {
             return (Opt<U>) this;
         }
 
