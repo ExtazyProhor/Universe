@@ -1,5 +1,6 @@
 package ru.prohor.universe.uni.cli.command.video
 
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.flag
@@ -20,6 +21,8 @@ class Streams : UniCommand() {
         "-d", "--directory", help = "shows streams of all valid files in a directory, the <file> argument expects a directory path"
     ).flag()
     private val recursive by option("-r", "--recursive", help = "iterate files recursively").flag()
+
+    override fun help(context: Context) = "prints video file streams using ffprobe"
 
     override fun run() {
         if (recursive) {
@@ -66,7 +69,7 @@ class Streams : UniCommand() {
         val width = terminal.size.width
         val dashCount = (width - message.length) / 2
 
-         return if (dashCount > 0) {
+        return if (dashCount > 0) {
             val dashes = "-".repeat(dashCount)
             if (dashCount * 2 + message.length < width) "$dashes-$message$dashes" else "$dashes$message$dashes"
         } else {
