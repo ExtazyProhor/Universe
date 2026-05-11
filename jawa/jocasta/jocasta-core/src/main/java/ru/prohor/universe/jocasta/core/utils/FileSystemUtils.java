@@ -22,7 +22,7 @@ public final class FileSystemUtils {
     public static class Dir {
         private final String path;
 
-        public Dir(String path) {
+        private Dir(String path) {
             this.path = path;
         }
 
