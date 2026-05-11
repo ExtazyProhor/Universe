@@ -15,7 +15,6 @@ import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
 import ru.prohor.universe.jocasta.morphia.query.MongoQuery;
 
 import java.util.List;
-import java.util.function.Function;
 
 public class MongoMorphiaRepository<T> implements MongoRepository<T> {
     private final Class<T> type;
@@ -30,7 +29,7 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
             Datastore datastore,
             Class<W> wrapperType,
             Class<E> dtoType,
-            Function<E, W> wrapFunction
+            MonoFunction<E, W> wrapFunction
     ) {
         return new MongoMorphiaRepository<>(
                 new AbstractMongoMorphiaRepository<>(datastore, dtoType, wrapFunction, W::toDto),
@@ -44,7 +43,7 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
             Class<T> type
     ) {
         return new MongoMorphiaRepository<>(
-                new AbstractMongoMorphiaRepository<>(datastore, type, Function.identity(), Function.identity()),
+                new AbstractMongoMorphiaRepository<>(datastore, type, MonoFunction.identity(), MonoFunction.identity()),
                 type
         );
     }

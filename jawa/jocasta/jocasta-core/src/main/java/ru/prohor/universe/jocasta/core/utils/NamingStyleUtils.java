@@ -1,9 +1,10 @@
 package ru.prohor.universe.jocasta.core.utils;
 
+import ru.prohor.universe.jocasta.core.functional.MonoFunction;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class NamingStyleUtils {
@@ -13,15 +14,15 @@ public final class NamingStyleUtils {
     private static final char UNDERSCORE = '_';
     private static final char DASH = '-';
 
-    private static final Function<String, List<String>> bySpace = byChar(SPACE);
-    private static final Function<String, List<String>> byUnderscore = byChar(UNDERSCORE);
-    private static final Function<String, List<String>> byDash = byChar(DASH);
+    private static final MonoFunction<String, List<String>> bySpace = byChar(SPACE);
+    private static final MonoFunction<String, List<String>> byUnderscore = byChar(UNDERSCORE);
+    private static final MonoFunction<String, List<String>> byDash = byChar(DASH);
 
-    private static Function<String, List<String>> byChar(char ch) {
+    private static MonoFunction<String, List<String>> byChar(char ch) {
         return str -> Arrays.asList(str.split(String.valueOf(ch)));
     }
 
-    private static Function<List<String>, String> mapAndJoin(Function<String, String> mapper, char delimiter) {
+    private static MonoFunction<List<String>, String> mapAndJoin(MonoFunction<String, String> mapper, char delimiter) {
         return words -> words.stream().map(mapper).collect(Collectors.joining(String.valueOf(delimiter)));
     }
 
@@ -29,7 +30,7 @@ public final class NamingStyleUtils {
         return Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase();
     }
 
-    private static final Function<String, List<String>> upperCharParser = s -> {
+    private static final MonoFunction<String, List<String>> upperCharParser = s -> {
         List<String> list = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         for (char ch : s.toCharArray()) {
@@ -128,12 +129,12 @@ public final class NamingStyleUtils {
                 mapAndJoin(String::toUpperCase, UNDERSCORE)
         );
 
-        private final Function<String, List<String>> toWords;
-        private final Function<List<String>, String> fromWords;
+        private final MonoFunction<String, List<String>> toWords;
+        private final MonoFunction<List<String>, String> fromWords;
 
         NamingStyle(
-                Function<String, List<String>> toWords,
-                Function<List<String>, String> fromWords
+                MonoFunction<String, List<String>> toWords,
+                MonoFunction<List<String>, String> fromWords
         ) {
             this.toWords = toWords;
             this.fromWords = fromWords;

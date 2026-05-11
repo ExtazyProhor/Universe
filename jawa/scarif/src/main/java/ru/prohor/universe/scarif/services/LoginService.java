@@ -3,10 +3,10 @@ package ru.prohor.universe.scarif.services;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.scarif.data.user.User;
 
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 public class LoginService {
@@ -29,7 +29,7 @@ public class LoginService {
             String password
     ) throws LoginException {
         boolean isLoginEmail = login.contains("@");
-        Function<String, Opt<String>> testLogin = isLoginEmail ?
+        MonoFunction<String, Opt<String>> testLogin = isLoginEmail ?
                 validationService::validateEmail :
                 validationService::validateUsername;
 
