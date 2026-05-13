@@ -3,6 +3,8 @@ package ru.prohor.universe.jocasta.core.string;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 public class StringExtensionsTest {
     /**
      * Tests for <code>escape()</code>
@@ -221,5 +223,131 @@ public class StringExtensionsTest {
         Assertions.assertEquals(2, StringExtensions.utf8Length("\u07FF"));  // Max 2-byte
         Assertions.assertEquals(3, StringExtensions.utf8Length("\u0800"));  // Min 3-byte
         Assertions.assertEquals(3, StringExtensions.utf8Length("\uFFFF"));  // Max BMP
+    }
+
+    /**
+     * Tests for <code>splitBySpaceChars()</code>
+     */
+    @Test
+    void testSplitBySpaceChars_EmptyString() {
+        Assertions.assertEquals(List.of(), StringExtensions.splitBySpaceChars(""));
+    }
+
+    @Test
+    void testSplitBySpaceChars_OnlySpaces() {
+        Assertions.assertEquals(List.of(), StringExtensions.splitBySpaceChars("     "));
+        Assertions.assertEquals(List.of(), StringExtensions.splitBySpaceChars("\t\n  \r"));
+    }
+
+    @Test
+    void testSplitBySpaceChars_SingleWord() {
+        Assertions.assertEquals(
+                List.of("hello"),
+                StringExtensions.splitBySpaceChars("hello")
+        );
+    }
+
+    @Test
+    void testSplitBySpaceChars_MultipleWords() {
+        Assertions.assertEquals(
+                List.of("a", "b", "c", "d"),
+                StringExtensions.splitBySpaceChars("a b      c\t\nd")
+        );
+    }
+
+    @Test
+    void testSplitBySpaceChars_LeadingAndTrailingSpaces() {
+        Assertions.assertEquals(
+                List.of("abc", "def"),
+                StringExtensions.splitBySpaceChars("   abc   def   ")
+        );
+    }
+
+    @Test
+    void testSplitBySpaceChars_MixedWhitespaceCharacters() {
+        Assertions.assertEquals(
+                List.of("one", "two", "three", "four"),
+                StringExtensions.splitBySpaceChars("one\ttwo\nthree\r\nfour")
+        );
+    }
+
+    @Test
+    void testSplitBySpaceChars_UnicodeText() {
+        Assertions.assertEquals(
+                List.of("Привет", "мир", "こんにちは"),
+                StringExtensions.splitBySpaceChars("Привет   мир\tこんにちは")
+        );
+    }
+
+    /**
+     * Tests for <code>keepOnlyLettersAndDigits()</code>
+     */
+    @Test
+    void testKeepOnlyLettersAndDigits_EmptyString() {
+        Assertions.assertEquals("", StringExtensions.keepOnlyLettersAndDigits(""));
+    }
+
+    @Test
+    void testKeepOnlyLettersAndDigits_OnlyLettersAndDigits() {
+        Assertions.assertEquals(
+                "abcABC123",
+                StringExtensions.keepOnlyLettersAndDigits("abcABC123")
+        );
+    }
+
+    @Test
+    void testKeepOnlyLettersAndDigits_RemovesSpecialCharacters() {
+        Assertions.assertEquals(
+                "abc123",
+                StringExtensions.keepOnlyLettersAndDigits("abc!@#123")
+        );
+    }
+
+    @Test
+    void testKeepOnlyLettersAndDigits_RemovesWhitespace() {
+        Assertions.assertEquals(
+                "abcdef123",
+                StringExtensions.keepOnlyLettersAndDigits(" abc \n def \t123 ")
+        );
+    }
+
+    @Test
+    void testKeepOnlyLettersAndDigits_MixedLanguages() {
+        Assertions.assertEquals(
+                "abcабв123日本",
+                StringExtensions.keepOnlyLettersAndDigits("abc абв 123 日本")
+        );
+    }
+
+    @Test
+    void testKeepOnlyLettersAndDigits_ExampleCase() {
+        Assertions.assertEquals(
+                "abcабв123",
+                StringExtensions.keepOnlyLettersAndDigits("  abc./*^*#\n\t  абв 123")
+        );
+    }
+
+    @Test
+    void testKeepOnlyLettersAndDigits_OnlySpecialCharacters() {
+        Assertions.assertEquals(
+                "",
+                StringExtensions.keepOnlyLettersAndDigits("!@#$%^&*()_+-=[]{};':\",./<>?")
+        );
+    }
+
+    @Test
+    void testKeepOnlyLettersAndDigits_EmojiRemoved() {
+        Assertions.assertEquals(
+                "hello123",
+                StringExtensions.keepOnlyLettersAndDigits("hello😀123🎉")
+        );
+    }
+
+    @Test
+    void testKeepOnlyLettersAndDigits_UnicodeLetters() {
+        Assertions.assertEquals(
+                "Žluťoučkýkůň123",
+                StringExtensions.keepOnlyLettersAndDigits("Žluťoučký kůň 123!")
+        );
     }
 }

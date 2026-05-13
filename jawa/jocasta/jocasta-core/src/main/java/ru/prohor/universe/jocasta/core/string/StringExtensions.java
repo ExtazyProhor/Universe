@@ -1,6 +1,19 @@
 package ru.prohor.universe.jocasta.core.string;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class StringExtensions {
+    public static List<String> splitBySpaceChars(String text) {
+        return Arrays.stream(text.trim().split("\\s+"))
+                .filter(part -> !part.isEmpty())
+                .toList();
+    }
+
+    public static String keepOnlyLettersAndDigits(String text) {
+        return text.replaceAll("[^\\p{L}\\p{N}]+", "");
+    }
+
     public static String escape(String s) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < s.length(); ++i) {
