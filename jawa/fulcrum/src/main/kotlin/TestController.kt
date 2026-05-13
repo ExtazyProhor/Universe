@@ -22,7 +22,7 @@ class TestController(
                 index = index,
                 question = question.question
             )
-        }
+        }.shuffled()
     }
 
     @PostMapping("/answer")
@@ -58,7 +58,7 @@ class Test(
     }
 
     fun parseQuestions(): List<Question> {
-        return File(testFile).readLines().chunked(3).map { Question(it[0], it[1]) }.shuffled()
+        return File(testFile).readLines().chunked(3).map { Question(it[0], it[1]) }
     }
 }
 
