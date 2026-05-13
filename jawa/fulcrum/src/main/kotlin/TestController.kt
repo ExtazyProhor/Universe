@@ -53,7 +53,7 @@ class Test(
 
     private fun normalizeAnswer(answer: String): List<String> {
         return StringExtensions.splitBySpaceChars(answer)
-            .map { StringExtensions.keepOnlyLettersAndDigits(it) }
+            .map { StringExtensions.sanitizeString(it) }
             .sorted()
     }
 

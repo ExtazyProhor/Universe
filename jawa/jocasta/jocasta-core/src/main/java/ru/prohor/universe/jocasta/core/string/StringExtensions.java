@@ -10,8 +10,8 @@ public class StringExtensions {
                 .toList();
     }
 
-    public static String keepOnlyLettersAndDigits(String text) {
-        return text.replaceAll("[^\\p{L}\\p{N}]+", "");
+    public static String sanitizeString(String text) {
+        return text.replaceAll("[^\\p{L}\\p{N}]+", "").toLowerCase();
     }
 
     public static String escape(String s) {

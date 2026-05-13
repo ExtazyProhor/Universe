@@ -280,74 +280,82 @@ public class StringExtensionsTest {
     }
 
     /**
-     * Tests for <code>keepOnlyLettersAndDigits()</code>
+     * Tests for <code>SanitizeString()</code>
      */
     @Test
-    void testKeepOnlyLettersAndDigits_EmptyString() {
-        Assertions.assertEquals("", StringExtensions.keepOnlyLettersAndDigits(""));
+    void testSanitizeString_EmptyString() {
+        Assertions.assertEquals("", StringExtensions.sanitizeString(""));
     }
 
     @Test
-    void testKeepOnlyLettersAndDigits_OnlyLettersAndDigits() {
-        Assertions.assertEquals(
-                "abcABC123",
-                StringExtensions.keepOnlyLettersAndDigits("abcABC123")
-        );
-    }
-
-    @Test
-    void testKeepOnlyLettersAndDigits_RemovesSpecialCharacters() {
+    void testSanitizeString() {
         Assertions.assertEquals(
                 "abc123",
-                StringExtensions.keepOnlyLettersAndDigits("abc!@#123")
+                StringExtensions.sanitizeString("abc123")
         );
     }
 
     @Test
-    void testKeepOnlyLettersAndDigits_RemovesWhitespace() {
+    void testSanitizeString_RemovesSpecialCharacters() {
+        Assertions.assertEquals(
+                "abc123",
+                StringExtensions.sanitizeString("abc!@#123")
+        );
+    }
+
+    @Test
+    void testSanitizeString_RemovesWhitespace() {
         Assertions.assertEquals(
                 "abcdef123",
-                StringExtensions.keepOnlyLettersAndDigits(" abc \n def \t123 ")
+                StringExtensions.sanitizeString(" abc \n def \t123 ")
         );
     }
 
     @Test
-    void testKeepOnlyLettersAndDigits_MixedLanguages() {
+    void testSanitizeString_MixedLanguages() {
         Assertions.assertEquals(
                 "abcабв123日本",
-                StringExtensions.keepOnlyLettersAndDigits("abc абв 123 日本")
+                StringExtensions.sanitizeString("abc абв 123 日本")
         );
     }
 
     @Test
-    void testKeepOnlyLettersAndDigits_ExampleCase() {
+    void testSanitizeString_LowerCaseMixedLanguages() {
+        Assertions.assertEquals(
+                "abcабв123日本",
+                StringExtensions.sanitizeString("AbC АбВ 123 日本")
+        );
+    }
+
+    @Test
+    void testSanitizeString_ExampleCase() {
         Assertions.assertEquals(
                 "abcабв123",
-                StringExtensions.keepOnlyLettersAndDigits("  abc./*^*#\n\t  абв 123")
+                StringExtensions.sanitizeString("  abc./*^*#\n\t  абв 123")
         );
     }
 
     @Test
-    void testKeepOnlyLettersAndDigits_OnlySpecialCharacters() {
+    void testSanitizeString_OnlySpecialCharacters() {
         Assertions.assertEquals(
                 "",
-                StringExtensions.keepOnlyLettersAndDigits("!@#$%^&*()_+-=[]{};':\",./<>?")
+                StringExtensions.sanitizeString("!@#$%^&*()_+-=[]{};':\",./<>?")
         );
     }
 
     @Test
-    void testKeepOnlyLettersAndDigits_EmojiRemoved() {
+    void testSanitizeString_EmojiRemoved() {
         Assertions.assertEquals(
                 "hello123",
-                StringExtensions.keepOnlyLettersAndDigits("hello😀123🎉")
+                StringExtensions.sanitizeString("hello😀123🎉")
         );
     }
 
     @Test
-    void testKeepOnlyLettersAndDigits_UnicodeLetters() {
+    void testSanitizeString_UnicodeLetters() {
         Assertions.assertEquals(
-                "Žluťoučkýkůň123",
-                StringExtensions.keepOnlyLettersAndDigits("Žluťoučký kůň 123!")
+                "žluťoučkýkůň123",
+                StringExtensions.sanitizeString("Žluťoučký kůň 123!")
         );
     }
 }
