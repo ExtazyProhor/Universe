@@ -10,6 +10,7 @@ class Files : UniCommand() {
             RandLine(),
             Sort(),
             Shuffle(),
+            Distinct(),
             RandFile(),
             Rename(),
             FindDuplicateLines(),
