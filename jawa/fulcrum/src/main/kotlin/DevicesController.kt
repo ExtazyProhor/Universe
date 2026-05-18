@@ -65,7 +65,7 @@ data class Mistake(
 
 @Service
 class DevicesTestService(
-    @Value($$"${universe.fulcrum.test-devices-file}") devicesFile: String
+    @Value($$"${universe.fulcrum.devices-file}") devicesFile: String
 ) {
     private val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
     private val test: DevicesTest = mapper.readValue(File(devicesFile))

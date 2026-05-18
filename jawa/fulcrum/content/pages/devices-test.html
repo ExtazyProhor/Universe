@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест устройств</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 24px;
+        }
+
+        .question {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .answer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #1976d2;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1565c0;
+        }
+
+        #result {
+            margin-top: 24px;
+        }
+
+        .mistake {
+            background: #ffebee;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .correct {
+            background: #e8f5e9;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>Тест</h1>
+
+<div id="questions"></div>
+
+<button onclick="submitTest()">
+    Проверить
+</button>
+
+<div id="result"></div>
+
+<script>
+    let testData = null
+
+    async function loadTest() {
+        const response = await fetch('/api/devices-test')
+        testData = await response.json()
+        renderQuestions(testData.questions)
+    }
+
+    function renderQuestions(questions) {
+        const container = document.getElementById('questions')
+        container.innerHTML = ''
+        questions.forEach(question => {
+            const questionDiv = document.createElement('div')
+            questionDiv.className = 'question'
+            const answersHtml = question.answers.map(answer => `
+                <label class="answer">
+                    <input
+                        type="checkbox"
+                        data-question="${question.index}"
+                        data-answer="${answer.index}"
+                    >
+                    ${answer.answer}
+                </label>
+            `).join('')
+
+            questionDiv.innerHTML = `
+                <div class="question-title">
+                    ${question.question}
+                </div>
+                <div>
+                    ${answersHtml}
+                </div>
+            `
+            container.appendChild(questionDiv)
+        })
+    }
+
+    async function submitTest() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]')
+        const answers = {}
+        checkboxes.forEach(cb => {
+
+            if (!cb.checked) {
+                return
+            }
+
+            const questionIndex = Number(cb.dataset.question)
+            const answerIndex = Number(cb.dataset.answer)
+
+            if (!answers[questionIndex]) {
+                answers[questionIndex] = []
+            }
+
+            answers[questionIndex].push(answerIndex)
+        })
+
+        const response = await fetch('/api/devices-test/check', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                answers: answers
+            })
+        })
+
+        const result = await response.json()
+
+        renderResult(result)
+    }
+
+    function renderResult(result) {
+
+        const div = document.getElementById('result')
+
+        div.innerHTML = `
+            <div class="correct">
+                <h2>
+                    Результат: ${result.correct} / ${result.total}
+                </h2>
+            </div>
+        `
+
+        if (result.mistakes.length === 0) {
+            return
+        }
+
+        result.mistakes.forEach(mistake => {
+
+            const question = testData.questions.find(
+                q => q.index === mistake.questionIndex
+            )
+
+            const expectedAnswers = question.answers
+                .filter(a => mistake.expected.includes(a.index))
+                .map(a => a.answer)
+
+            const actualAnswers = question.answers
+                .filter(a => mistake.actual.includes(a.index))
+                .map(a => a.answer)
+
+            const mistakeDiv = document.createElement('div')
+
+            mistakeDiv.className = 'mistake'
+
+            mistakeDiv.innerHTML = `
+                <div>
+                    <b>Вопрос:</b>
+                    ${question.question}
+                </div>
+                <br>
+                <div>
+                    <b>Ваш ответ:</b>
+                    ${actualAnswers.join(', ') || '—'}
+                </div>
+                <br>
+                <div>
+                    <b>Правильный ответ:</b>
+                    ${expectedAnswers.join(', ')}
+                </div>
+            `
+
+            div.appendChild(mistakeDiv)
+        })
+    }
+
+    loadTest()
+</script>
+</body>
+</html>
