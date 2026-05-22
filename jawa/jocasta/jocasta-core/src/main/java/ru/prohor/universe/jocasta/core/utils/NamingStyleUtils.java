@@ -49,95 +49,80 @@ public final class NamingStyleUtils {
     }
 
     public enum NamingStyle {
-        /**
-         * EXAMPLE LINE
-         */
         UPPER_CASE(
                 bySpace,
-                mapAndJoin(String::toUpperCase, SPACE)
+                mapAndJoin(String::toUpperCase, SPACE),
+                "EXAMPLE LINE"
         ),
 
-        /**
-         * example line
-         */
         LOWER_CASE(
                 bySpace,
-                mapAndJoin(String::toLowerCase, SPACE)
+                mapAndJoin(String::toLowerCase, SPACE),
+                "example line"
         ),
 
-        /**
-         * Example Line
-         */
         TITLE_CASE(
                 bySpace,
-                mapAndJoin(NamingStyleUtils::firstCharUpperWord, SPACE)
+                mapAndJoin(NamingStyleUtils::firstCharUpperWord, SPACE),
+                "Example Line"
         ),
 
-        /**
-         * Example line
-         */
         SENTENCE_CASE(
                 bySpace,
                 words -> {
                     StringBuilder sb = new StringBuilder(firstCharUpperWord(words.get(0)));
                     words.stream().skip(1).forEach(s -> sb.append(" ").append(s.toLowerCase()));
                     return sb.toString();
-                }
+                },
+                "Example line"
         ),
 
-        /**
-         * example_line
-         */
         SNAKE_CASE(
                 byUnderscore,
-                mapAndJoin(String::toLowerCase, UNDERSCORE)
+                mapAndJoin(String::toLowerCase, UNDERSCORE),
+                "example_line"
         ),
 
-        /**
-         * exampleLine
-         */
         CAMEL_CASE(
                 upperCharParser,
                 words -> {
                     StringBuilder sb = new StringBuilder(words.get(0).toLowerCase());
                     words.stream().skip(1).forEach(s -> sb.append(firstCharUpperWord(s)));
                     return sb.toString();
-                }
+                },
+                "exampleLine"
         ),
 
-        /**
-         * ExampleLine
-         */
         PASCAL_CASE(
                 upperCharParser,
-                words -> words.stream().map(NamingStyleUtils::firstCharUpperWord).collect(Collectors.joining())
+                words -> words.stream().map(NamingStyleUtils::firstCharUpperWord).collect(Collectors.joining()),
+                "ExampleLine"
         ),
 
-        /**
-         * example-line
-         */
         KEBAB_CASE(
                 byDash,
-                mapAndJoin(String::toLowerCase, DASH)
+                mapAndJoin(String::toLowerCase, DASH),
+                "example-line"
         ),
 
-        /**
-         * EXAMPLE_LINE
-         */
-        SCREAMING_SNAKE_CASE(
+        SCREAM_CASE(
                 byUnderscore,
-                mapAndJoin(String::toUpperCase, UNDERSCORE)
+                mapAndJoin(String::toUpperCase, UNDERSCORE),
+                "EXAMPLE_LINE"
         );
 
         private final MonoFunction<String, List<String>> toWords;
         private final MonoFunction<List<String>, String> fromWords;
+        public final String example;
 
         NamingStyle(
                 MonoFunction<String, List<String>> toWords,
-                MonoFunction<List<String>, String> fromWords
+                MonoFunction<List<String>, String> fromWords,
+                String example
         ) {
             this.toWords = toWords;
             this.fromWords = fromWords;
+            this.example = example;
         }
     }
 }
