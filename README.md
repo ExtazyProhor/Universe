@@ -10,10 +10,6 @@
 
 Java + Kotlin
 
-##### [C3PO](c3po)
-
-Bash + Batch
-
 ##### [Sarlacc](sarlacc)
 
 Python
