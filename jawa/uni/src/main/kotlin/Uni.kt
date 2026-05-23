@@ -3,6 +3,7 @@ package ru.prohor.universe.uni.cli
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.subcommands
 import ru.prohor.universe.uni.cli.command.UniCommand
+import ru.prohor.universe.uni.cli.command.crypto.Crypto
 import ru.prohor.universe.uni.cli.command.files.Files
 import ru.prohor.universe.uni.cli.command.music.Music
 import ru.prohor.universe.uni.cli.command.string.StringCommand
@@ -13,6 +14,7 @@ class Uni : UniCommand() {
     init {
         subcommands(
             StringCommand(),
+            Crypto(),
             Files(),
             Music(),
             Video(),
