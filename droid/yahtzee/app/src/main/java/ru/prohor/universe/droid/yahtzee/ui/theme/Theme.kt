@@ -1,6 +1,5 @@
 package ru.prohor.universe.droid.yahtzee.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
