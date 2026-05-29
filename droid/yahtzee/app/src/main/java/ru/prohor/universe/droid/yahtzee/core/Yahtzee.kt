@@ -8,6 +8,7 @@ import ru.prohor.universe.droid.yahtzee.model.SimpleCombination
 object Yahtzee {
     const val SCORE_TO_BONUS = 63
     const val BONUS_VALUE = 35
+    const val COMBINATIONS_WITH_META_COUNT = 17
 
     fun recalculateMetaCombinations(combinations: MutableMap<CombinationItem, Int>) {
         val simple = combinations.filter { it.key is SimpleCombination }.map { it.value }.sum()

@@ -9,15 +9,19 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import ru.prohor.universe.droid.yahtzee.core.Yahtzee
 import ru.prohor.universe.droid.yahtzee.model.Combination
 import ru.prohor.universe.droid.yahtzee.model.CombinationItem
+import ru.prohor.universe.droid.yahtzee.model.GameResult
 import ru.prohor.universe.droid.yahtzee.model.MetaCombination
 import ru.prohor.universe.droid.yahtzee.model.Team
+import ru.prohor.universe.droid.yahtzee.model.TeamResult
 
 object GameState {
     private val scores = mutableStateMapOf<Team, SnapshotStateMap<CombinationItem, Int>>()
     private var currentTeamIndex by mutableIntStateOf(0)
     private var lastCombination by mutableStateOf<Combination?>(null)
+    private var gameFinished by mutableStateOf(false)
 
     fun initialize() {
+        scores.forEach { it.value.clear() }
         TeamsState.teams().forEach { team ->
             if (team in scores) return@forEach
             scores[team] = mutableStateMapOf(
@@ -32,7 +36,7 @@ object GameState {
     }
 
     fun currentTeam(): Team {
-        return TeamsState.teams()[currentTeamIndex]
+        return TeamsState.team(currentTeamIndex)
     }
 
     fun previousTeam(): Team {
@@ -49,6 +53,25 @@ object GameState {
         scores[team]?.set(combination, value)
         currentTeamIndex = nextTurn()
         scores[team]?.let { Yahtzee.recalculateMetaCombinations(it) }
+        gameFinished = calculateIsGameFinished()
+    }
+
+    private fun calculateIsGameFinished(): Boolean {
+        val combinations = scores.map { it.value.size }.sum()
+        return combinations == TeamsState.count() * Yahtzee.COMBINATIONS_WITH_META_COUNT
+    }
+
+    fun isGameFinished() = gameFinished
+
+    fun getResults(): GameResult {
+        return GameResult(
+            scores.map {
+                TeamResult(
+                    total = it.value[MetaCombination.TOTAL] ?: 0,
+                    team = it.key
+                )
+            }.sortedByDescending { it.total }
+        )
     }
 
     fun undoLastMove() {
@@ -58,6 +81,7 @@ object GameState {
         scores[team]?.remove(combination)
         lastCombination = null
         scores[team]?.let { Yahtzee.recalculateMetaCombinations(it) }
+        gameFinished = calculateIsGameFinished()
     }
 
     fun isUndoAvailable(): Boolean {

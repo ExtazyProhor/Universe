@@ -1,5 +1,6 @@
 package ru.prohor.universe.droid.yahtzee.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -24,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import ru.prohor.universe.droid.yahtzee.model.Combination
 import ru.prohor.universe.droid.yahtzee.model.CombinationItem
 import ru.prohor.universe.droid.yahtzee.model.ComplexCombination
@@ -53,16 +54,17 @@ import ru.prohor.universe.droid.yahtzee.ui.shared.ExpandingSpacer
 import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
 
 @Composable
-fun GameScreen() {
-    LaunchedEffect(Unit) {
-        GameState.initialize()
-    }
-    GameScreenRender().Render()
+fun GameScreen(navController: NavController) {
+    BackHandler {}
+    GameScreenRender(navController).Render()
 }
 
-private class GameScreenRender {
+private class GameScreenRender(
+    private val navController: NavController
+) {
     private var editingCombination by mutableStateOf<Combination?>(null)
     private val teamsCount = TeamsState.count()
+    private val isGameFinished = GameState.isGameFinished()
 
     @Composable
     fun Render() {
@@ -89,7 +91,11 @@ private class GameScreenRender {
                     CombinationGroup(SimpleCombination.entries)
                     CombinationGroupSeparator()
                     CombinationGroup(ComplexCombination.entries)
-                    VerticalSpacer(24)
+                }
+
+                VerticalSpacer(24)
+                if (isGameFinished) {
+                    FinishButton()
                 }
             }
 
@@ -125,6 +131,15 @@ private class GameScreenRender {
             ExpandingSpacer()
 
             val currentTeam = GameState.currentTeam()
+            if (isGameFinished) {
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(54.dp)
+                )
+                return
+            }
+
             Box(
                 modifier = Modifier
                     .width(200.dp)
@@ -282,6 +297,24 @@ private class GameScreenRender {
     }
 
     @Composable
+    private fun FinishButton() {
+        AppButton(
+            text = "Завершить",
+            onClick = {
+                navController.navigate("finish") {
+                    popUpTo("game") {
+                        inclusive = true
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            containerColor = Color(0xFF36C23D)
+        )
+
+        VerticalSpacer(20)
+    }
+
+    @Composable
     private fun ScoreDialog(
         combination: Combination,
         onDismiss: () -> Unit
@@ -310,7 +343,7 @@ private class GameScreenRender {
                     TextField(
                         value = text,
                         onValueChange = {
-                            text = it
+                            text = it.take(2)
                         },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(

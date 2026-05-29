@@ -48,10 +48,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import ru.prohor.universe.droid.yahtzee.Mocks
 import ru.prohor.universe.droid.yahtzee.common.letIf
 import ru.prohor.universe.droid.yahtzee.model.IndexedTeam
 import ru.prohor.universe.droid.yahtzee.model.MAX_TEAM_NAME_LENGTH
 import ru.prohor.universe.droid.yahtzee.model.Team
+import ru.prohor.universe.droid.yahtzee.state.GameState
 import ru.prohor.universe.droid.yahtzee.state.TeamsState
 import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.shared.Background
@@ -100,6 +102,8 @@ fun NewGameScreen(navController: NavController) {
                 },
                 onStartGame = {
                     if (TeamsState.isAvailableToStartGame()) {
+                        GameState.initialize()
+                        Mocks.initScores()
                         navController.navigate("game")
                     }
                 }

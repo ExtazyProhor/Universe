@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ru.prohor.universe.droid.yahtzee.screens.FinishScreen
 import ru.prohor.universe.droid.yahtzee.screens.GameScreen
 import ru.prohor.universe.droid.yahtzee.screens.MainMenuScreen
 import ru.prohor.universe.droid.yahtzee.screens.MyGamesScreen
@@ -30,7 +31,11 @@ fun AppNavigation() {
         }
 
         composable("game") {
-            GameScreen()
+            GameScreen(navController)
+        }
+
+        composable("finish") {
+            FinishScreen(navController)
         }
     }
 }

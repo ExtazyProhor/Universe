@@ -27,7 +27,7 @@ enum class ComplexCombination(
 ) : Combination {
     PAIR("Пара", { value -> baseComplex(value) }),
     TWO_PAIRS("Две пары", { value -> baseComplex(value) }),
-    THREE_OF_KINDSET("Сет", { value -> baseComplex(value) }),
+    THREE_OF_KIND("Сет", { value -> baseComplex(value) }),
     FOUR_OF_KIND("Каре", { value -> baseComplex(value) }),
     FULL_HOUSE("Фулл-хаус", { value -> zeroOr(value, 25) }),
     LOW_STRAIGHT("Короткий стрит", { value -> zeroOr(value, 30) }),
