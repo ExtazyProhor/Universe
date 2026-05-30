@@ -1,5 +1,6 @@
 package ru.prohor.universe.droid.yahtzee.state
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -7,18 +8,27 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import ru.prohor.universe.droid.yahtzee.core.Yahtzee
+import ru.prohor.universe.droid.yahtzee.data.GameStorage
 import ru.prohor.universe.droid.yahtzee.model.Combination
 import ru.prohor.universe.droid.yahtzee.model.CombinationItem
 import ru.prohor.universe.droid.yahtzee.model.GameResult
+import ru.prohor.universe.droid.yahtzee.model.GamesDescription
 import ru.prohor.universe.droid.yahtzee.model.MetaCombination
+import ru.prohor.universe.droid.yahtzee.model.SavedCombination
+import ru.prohor.universe.droid.yahtzee.model.SavedGame
+import ru.prohor.universe.droid.yahtzee.model.SavedTeam
 import ru.prohor.universe.droid.yahtzee.model.Team
 import ru.prohor.universe.droid.yahtzee.model.TeamResult
+import java.time.Clock
+import java.time.Instant
+import java.util.UUID
 
 object GameState {
     private val scores = mutableStateMapOf<Team, SnapshotStateMap<CombinationItem, Int>>()
     private var currentTeamIndex by mutableIntStateOf(0)
     private var lastCombination by mutableStateOf<Combination?>(null)
     private var gameFinished by mutableStateOf(false)
+    private var saved = false
 
     fun initialize() {
         scores.forEach { it.value.clear() }
@@ -72,6 +82,32 @@ object GameState {
                 )
             }.sortedByDescending { it.total }
         )
+    }
+
+    fun saveGame(context: Context) {
+        if (saved) return
+        saved = true
+
+        val game = SavedGame(
+            uuid = UUID.randomUUID().toString(),
+            finish = Instant.now(Clock.systemUTC()).epochSecond,
+            teams = scores.map { team ->
+                SavedTeam(
+                    name = team.key.name,
+                    scores = team.value.map { score ->
+                        SavedCombination(
+                            combination = score.key.toString(),
+                            value = score.value
+                        )
+                    }
+                )
+            }
+        )
+        GameStorage.save(context, game)
+
+        val gamesDescription = GameStorage.readDescription(context)
+        val updated = GamesDescription(gamesDescription.games.plus(game.description()))
+        GameStorage.writeDescription(context, updated)
     }
 
     fun undoLastMove() {

@@ -7,7 +7,9 @@ data class SavedGame(
     val uuid: String,
     val finish: Long,
     val teams: List<SavedTeam>
-)
+) {
+    fun description() = GameDescription(uuid, finish, teams.size)
+}
 
 @Serializable
 data class SavedTeam(
