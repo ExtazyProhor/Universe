@@ -10,10 +10,10 @@ import ru.prohor.universe.droid.yahtzee.state.SavedGamesState
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SavedGamesState.initialize(this)
+        Mocks.initGames(this)
+        Mocks.initTeams()
         setContent {
-            SavedGamesState.initialize(this)
-            Mocks.initGames(this)
-            Mocks.initTeams()
             AppNavigation()
         }
     }

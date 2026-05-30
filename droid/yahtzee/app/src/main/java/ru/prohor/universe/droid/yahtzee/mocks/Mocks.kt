@@ -15,7 +15,7 @@ import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColors
 
 object Mocks {
     fun initGames(context: Context) {
-        games(6, context)
+
     }
 
     private fun games(count: Int, context: Context) {
