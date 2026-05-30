@@ -3,6 +3,7 @@ package ru.prohor.universe.droid.yahtzee
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import ru.prohor.universe.droid.yahtzee.mocks.Mocks
 import ru.prohor.universe.droid.yahtzee.navigation.AppNavigation
 import ru.prohor.universe.droid.yahtzee.state.SavedGamesState
 
@@ -11,6 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SavedGamesState.initialize(this)
+            Mocks.initGames(this)
             Mocks.initTeams()
             AppNavigation()
         }

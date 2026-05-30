@@ -48,7 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
-import ru.prohor.universe.droid.yahtzee.Mocks
+import ru.prohor.universe.droid.yahtzee.mocks.Mocks
 import ru.prohor.universe.droid.yahtzee.common.letIf
 import ru.prohor.universe.droid.yahtzee.model.IndexedTeam
 import ru.prohor.universe.droid.yahtzee.model.MAX_TEAM_NAME_LENGTH

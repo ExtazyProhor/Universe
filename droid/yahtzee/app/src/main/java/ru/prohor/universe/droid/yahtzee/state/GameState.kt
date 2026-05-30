@@ -87,8 +87,6 @@ object GameState {
         saved = true
 
         val game = SavedGame(
-            uuid = UUID.randomUUID().toString(),
-            finish = Instant.now(Clock.systemUTC()).epochSecond,
             teams = scores.map { team ->
                 SavedTeam(
                     name = team.key.name,

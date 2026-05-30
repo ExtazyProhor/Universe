@@ -38,7 +38,7 @@ enum class ComplexCombination(
     override fun validate(value: Int) = validator.invoke(value)
 }
 
-interface Combination : CombinationItem {
+sealed interface Combination : CombinationItem {
     fun validate(value: Int): Boolean
 }
 
