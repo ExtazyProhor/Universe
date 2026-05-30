@@ -19,15 +19,12 @@ object GameStorage {
         file.writeText(content)
     }
 
-    fun loadAll(context: Context): List<SavedGame> {
-        val directory = games(context)
-        return directory.listFiles()?.mapNotNull { file ->
-            runCatching { json.decodeFromString<SavedGame>(file.readText()) }.getOrNull()
-        }?.sortedByDescending { it.finish } ?: emptyList()
-    }
-
     fun delete(context: Context, uuid: String) {
         game(context, uuid).delete()
+    }
+
+    fun deleteAll(context: Context) {
+        games(context).deleteRecursively()
     }
 
     fun readDescription(context: Context): GamesDescription {

@@ -20,16 +20,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ru.prohor.universe.droid.yahtzee.data.GameStorage
+import ru.prohor.universe.droid.yahtzee.data.GameSender
 import ru.prohor.universe.droid.yahtzee.model.GameDescription
+import ru.prohor.universe.droid.yahtzee.state.SavedGamesState
 import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.shared.Background
 import ru.prohor.universe.droid.yahtzee.ui.shared.BoxSpacer
@@ -39,13 +40,9 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-
 @Composable
 fun MyGamesScreen(navController: NavController) {
     val context = LocalContext.current
-    val games = remember {
-        GameStorage.readDescription(context).games.sortedByDescending { it.finish }
-    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Background()
@@ -56,13 +53,20 @@ fun MyGamesScreen(navController: NavController) {
                 .statusBarsPadding()
                 .padding(24.dp)
         ) {
-            Header(games.isNotEmpty()) {
-                navController.popBackStack()
-            }
+            Header(
+                gamesCount = SavedGamesState.games().size,
+                showSendAll = SavedGamesState.games().isNotEmpty(),
+                onBack = {
+                    navController.popBackStack()
+                },
+                onSendAll = {
+                    GameSender.sendAll(context)
+                }
+            )
 
             VerticalSpacer(16)
 
-            if (games.isEmpty()) {
+            if (SavedGamesState.games().isEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -83,8 +87,13 @@ fun MyGamesScreen(navController: NavController) {
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                games.forEach {
-                    GameCard(it)
+                SavedGamesState.games().forEach { game ->
+                    GameCard(
+                        game = game,
+                        onSend = {
+                            GameSender.send(context, game.uuid)
+                        }
+                    )
                 }
             }
         }
@@ -93,8 +102,10 @@ fun MyGamesScreen(navController: NavController) {
 
 @Composable
 private fun Header(
+    gamesCount: Int,
     showSendAll: Boolean,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onSendAll: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -109,18 +120,27 @@ private fun Header(
             ExpandingSpacer()
 
             AppButton(
-                text = "Отправить всё",
+                text = sendAllText(gamesCount),
                 imageVector = Icons.AutoMirrored.Filled.Send,
-                onClick = {
-                    // TODO
-                }
+                onClick = onSendAll
             )
         }
     }
 }
 
+private fun sendAllText(count: Int): String {
+    val count = when {
+        count > 99 -> "99+"
+        else -> "$count"
+    }
+    return "Отправить все ($count)"
+}
+
 @Composable
-private fun GameCard(game: GameDescription) {
+private fun GameCard(
+    game: GameDescription,
+    onSend: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -141,7 +161,9 @@ private fun GameCard(game: GameDescription) {
                 text = formatTimestamp(game.finish),
                 color = Color.Black,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
             Icon(
@@ -161,9 +183,7 @@ private fun GameCard(game: GameDescription) {
             BoxSpacer(12)
 
             AppButton(
-                onClick = {
-                    // TODO send to server
-                },
+                onClick = onSend,
                 imageVector = Icons.AutoMirrored.Filled.Send,
             )
         }

@@ -8,11 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import ru.prohor.universe.droid.yahtzee.core.Yahtzee
-import ru.prohor.universe.droid.yahtzee.data.GameStorage
 import ru.prohor.universe.droid.yahtzee.model.Combination
 import ru.prohor.universe.droid.yahtzee.model.CombinationItem
 import ru.prohor.universe.droid.yahtzee.model.GameResult
-import ru.prohor.universe.droid.yahtzee.model.GamesDescription
 import ru.prohor.universe.droid.yahtzee.model.MetaCombination
 import ru.prohor.universe.droid.yahtzee.model.SavedCombination
 import ru.prohor.universe.droid.yahtzee.model.SavedGame
@@ -103,11 +101,7 @@ object GameState {
                 )
             }
         )
-        GameStorage.save(context, game)
-
-        val gamesDescription = GameStorage.readDescription(context)
-        val updated = GamesDescription(gamesDescription.games.plus(game.description()))
-        GameStorage.writeDescription(context, updated)
+        SavedGamesState.save(game, context)
     }
 
     fun undoLastMove() {
