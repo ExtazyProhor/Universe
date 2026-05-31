@@ -284,7 +284,8 @@ private fun BottomButtons(
         AppButton(
             text = "Начать игру",
             onClick = onStartGame,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            visible = TeamsState.isAvailableToStartGame()
         )
     }
 }

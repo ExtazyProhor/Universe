@@ -1,6 +1,7 @@
 package ru.prohor.universe.droid.yahtzee.ui.shared
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,8 +25,14 @@ fun AppButton(
     text: String? = null,
     containerColor: Color = Color.Black,
     contentColor: Color = Color.White,
-    imageVector: ImageVector? = null
+    imageVector: ImageVector? = null,
+    visible: Boolean = true
 ) {
+    if (!visible) {
+        Box(modifier = modifier.height(60.dp))
+        return
+    }
+
     Button(
         onClick = onClick,
         modifier = modifier.height(60.dp),
