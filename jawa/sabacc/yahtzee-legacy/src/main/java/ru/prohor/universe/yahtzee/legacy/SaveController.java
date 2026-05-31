@@ -59,7 +59,7 @@ public class SaveController {
         this.chopperClient = chopperClient;
         this.dir = Path.of(outputPath);
         if (!Files.exists(dir))
-            Sneaky.execute(() -> Files.createDirectory(dir));
+            Sneaky.execute(() -> dir.toFile().mkdirs());
         this.notifiableChatId = notifiableChatId;
         this.mutedChatId = mutedChatId;
     }
