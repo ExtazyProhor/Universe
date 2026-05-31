@@ -27,9 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
+import ru.prohor.universe.droid.yahtzee.api.ApiResult
+import ru.prohor.universe.droid.yahtzee.api.YahtzeeApi
 import ru.prohor.universe.droid.yahtzee.auth.Auth
-import ru.prohor.universe.droid.yahtzee.auth.AuthApi
-import ru.prohor.universe.droid.yahtzee.auth.AuthResult
 import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.shared.Background
 import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
@@ -64,10 +64,10 @@ fun AuthScreen(navController: NavController) {
                         loading = true
                         error = ""
 
-                        val result = AuthApi.validate(key)
+                        val result = YahtzeeApi.validateKey(key)
 
                         when (result) {
-                            AuthResult.Success -> {
+                            ApiResult.Success -> {
                                 Auth.saveKey(key)
 
                                 navController.navigate("menu") {
@@ -77,7 +77,7 @@ fun AuthScreen(navController: NavController) {
                                 }
                             }
 
-                            is AuthResult.Error -> {
+                            is ApiResult.Error -> {
                                 error = result.message
                             }
                         }

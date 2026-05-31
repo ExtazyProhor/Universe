@@ -20,6 +20,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,12 +33,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
+import ru.prohor.universe.droid.yahtzee.api.ApiResult
 import ru.prohor.universe.droid.yahtzee.data.GameSender
 import ru.prohor.universe.droid.yahtzee.model.GameDescription
 import ru.prohor.universe.droid.yahtzee.state.SavedGamesState
 import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.shared.Background
 import ru.prohor.universe.droid.yahtzee.ui.shared.BoxSpacer
+import ru.prohor.universe.droid.yahtzee.ui.shared.ErrorDialog
 import ru.prohor.universe.droid.yahtzee.ui.shared.ExpandingSpacer
 import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
 import java.time.Instant
@@ -43,6 +51,8 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MyGamesScreen(navController: NavController) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var error by remember { mutableStateOf<String?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Background()
@@ -60,7 +70,12 @@ fun MyGamesScreen(navController: NavController) {
                     navController.popBackStack()
                 },
                 onSendAll = {
-                    GameSender.sendAll(context)
+                    scope.launch {
+                        val result = GameSender.sendAll(context)
+                        if (result is ApiResult.Error) {
+                            error = result.message
+                        }
+                    }
                 }
             )
 
@@ -91,11 +106,25 @@ fun MyGamesScreen(navController: NavController) {
                     GameCard(
                         game = game,
                         onSend = {
-                            GameSender.send(context, game.uuid)
+                            scope.launch {
+                                val result = GameSender.send(context, game.uuid)
+                                if (result is ApiResult.Error) {
+                                    error = result.message
+                                }
+                            }
                         }
                     )
                 }
             }
+        }
+
+        error?.let {
+            ErrorDialog(
+                message = it,
+                onDismiss = {
+                    error = null
+                }
+            )
         }
     }
 }

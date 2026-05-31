@@ -19,6 +19,12 @@ object GameStorage {
         file.writeText(content)
     }
 
+    fun load(context: Context, uuid: String): String? {
+        val file = game(context, uuid)
+        if (!file.exists()) return null
+        return runCatching { file.readText() }.getOrNull()
+    }
+
     fun delete(context: Context, uuid: String) {
         game(context, uuid).delete()
     }
