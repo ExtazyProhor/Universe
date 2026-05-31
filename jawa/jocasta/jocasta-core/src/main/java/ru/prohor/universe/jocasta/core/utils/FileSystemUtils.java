@@ -15,10 +15,14 @@ public final class FileSystemUtils {
         return new Dir(System.getProperty("user.home"));
     }
 
+    public static Dir downloads() {
+        return userHome().resolve("Downloads");
+    }
+
     public static class Dir {
         private final String path;
 
-        public Dir(String path) {
+        private Dir(String path) {
             this.path = path;
         }
 
@@ -37,6 +41,10 @@ public final class FileSystemUtils {
         @Override
         public String toString() {
             return asString();
+        }
+
+        public Dir resolve(String other) {
+            return new Dir(asPath().resolve(other).toString());
         }
     }
 }

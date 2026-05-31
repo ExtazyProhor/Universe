@@ -8,8 +8,12 @@ class Files : UniCommand() {
     init {
         subcommands(
             RandLine(),
+            Sort(),
+            Shuffle(),
+            Distinct(),
             RandFile(),
             Rename(),
+            FindDuplicateLines(),
         )
     }
 

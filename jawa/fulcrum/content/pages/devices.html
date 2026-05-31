@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            margin-bottom: 24px;
+        }
+
+        .layout {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .items {
+            width: 320px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .groups {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        .item {
+            padding: 10px 14px;
+            background: #e3f2fd;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .group {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            min-height: 220px;
+            border: 2px dashed #ccc;
+        }
+
+        .group.drag-over {
+            border-color: #1976d2;
+            background: #f0f7ff;
+        }
+
+        .group-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .group-items {
+            min-height: 100px;
+        }
+
+        button {
+            margin-top: 24px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #1976d2;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #1565c0;
+        }
+
+        #result {
+            margin-top: 24px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .mistake {
+            margin-top: 10px;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 8px;
+        }
+
+    </style>
+</head>
+<body>
+
+<h1 id="title">Загрузка...</h1>
+
+<div class="layout">
+
+    <div class="items">
+        <h3>Устройства</h3>
+        <div id="items"></div>
+    </div>
+
+    <div class="groups" id="groups"></div>
+
+</div>
+
+<button onclick="submitAnswers()">
+    Проверить
+</button>
+
+<div id="result"></div>
+
+<script>
+
+    let answers = {}
+
+    async function loadTest() {
+
+        const response = await fetch('/api/devices/test')
+        const test = await response.json()
+
+        document.getElementById('title').innerText = test.title
+
+        renderItems(test.items)
+        renderGroups(test.groups)
+    }
+
+    function renderItems(items) {
+
+        const container = document.getElementById('items')
+
+        container.innerHTML = ''
+
+        items.forEach(item => {
+
+            const div = document.createElement('div')
+
+            div.className = 'item'
+            div.draggable = true
+            div.innerText = item
+            div.dataset.item = item
+
+            div.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', item)
+            })
+
+            container.appendChild(div)
+        })
+    }
+
+    function renderGroups(groups) {
+
+        const container = document.getElementById('groups')
+
+        container.innerHTML = ''
+
+        groups.forEach(group => {
+
+            const groupDiv = document.createElement('div')
+            groupDiv.className = 'group'
+
+            groupDiv.innerHTML = `
+                <div class="group-title">${group}</div>
+                <div class="group-items"></div>
+            `
+
+            groupDiv.addEventListener('dragover', e => {
+                e.preventDefault()
+                groupDiv.classList.add('drag-over')
+            })
+
+            groupDiv.addEventListener('dragleave', () => {
+                groupDiv.classList.remove('drag-over')
+            })
+
+            groupDiv.addEventListener('drop', e => {
+
+                e.preventDefault()
+
+                groupDiv.classList.remove('drag-over')
+
+                const item = e.dataTransfer.getData('text/plain')
+
+                answers[item] = group
+
+                moveItemToGroup(item, groupDiv.querySelector('.group-items'))
+            })
+
+            container.appendChild(groupDiv)
+        })
+    }
+
+    function moveItemToGroup(itemText, container) {
+
+        const old = document.querySelector(`[data-item="${itemText}"]`)
+
+        if (!old) return
+
+        const clone = old.cloneNode(true)
+
+        clone.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', itemText)
+        })
+
+        old.remove()
+
+        container.appendChild(clone)
+    }
+
+    async function submitAnswers() {
+
+        const response = await fetch('/api/devices/check', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                answers: answers
+            })
+        })
+
+        const result = await response.json()
+
+        renderResult(result)
+    }
+
+    function renderResult(result) {
+
+        const div = document.getElementById('result')
+
+        div.innerHTML = `
+            <h2>Результат</h2>
+            <p>
+                Правильно: ${result.correct} / ${result.total}
+            </p>
+        `
+
+        if (result.mistakes.length > 0) {
+
+            result.mistakes.forEach(m => {
+
+                const mistake = document.createElement('div')
+
+                mistake.className = 'mistake'
+
+                mistake.innerHTML = `
+                    <b>${m.item}</b><br>
+                    Ваш ответ: ${m.actualGroup}<br>
+                    Правильный ответ: ${m.expectedGroup}
+                `
+
+                div.appendChild(mistake)
+            })
+        }
+    }
+
+    loadTest()
+
+</script>
+
+</body>
+</html>

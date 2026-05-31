@@ -4,6 +4,7 @@ import org.bson.types.ObjectId;
 import ru.prohor.universe.jocasta.core.collections.PaginationResult;
 import ru.prohor.universe.jocasta.core.collections.Paginator;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+import ru.prohor.universe.jocasta.core.functional.DiPredicate;
 import ru.prohor.universe.jocasta.core.functional.MonoConsumer;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
@@ -15,8 +16,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class MongoInMemoryRepository<T> implements MongoRepository<T> {
@@ -25,17 +24,17 @@ public class MongoInMemoryRepository<T> implements MongoRepository<T> {
     );
 
     private final Map<ObjectId, T> collection;
-    private final Function<T, ObjectId> idExtractor;
-    private final Opt<BiPredicate<T, String>> textSearchPredicate;
+    private final MonoFunction<T, ObjectId> idExtractor;
+    private final Opt<DiPredicate<T, String>> textSearchPredicate;
     private final Class<T> type;
 
-    public MongoInMemoryRepository(Function<T, ObjectId> idExtractor, Class<T> type) {
+    public MongoInMemoryRepository(MonoFunction<T, ObjectId> idExtractor, Class<T> type) {
         this(idExtractor, null, type);
     }
 
     public MongoInMemoryRepository(
-            Function<T, ObjectId> idExtractor,
-            BiPredicate<T, String> textSearchPredicate,
+            MonoFunction<T, ObjectId> idExtractor,
+            DiPredicate<T, String> textSearchPredicate,
             Class<T> type
     ) {
         this.collection = Collections.synchronizedMap(new HashMap<>());

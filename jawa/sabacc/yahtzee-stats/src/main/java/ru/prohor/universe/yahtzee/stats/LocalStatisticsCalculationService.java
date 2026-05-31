@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.collections.tuple.Tuple2;
 import ru.prohor.universe.jocasta.core.collections.tuple.Tuple3;
+import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.yahtzee.core.Yahtzee;
 import ru.prohor.universe.yahtzee.core.data.Combination;
@@ -27,7 +28,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -57,7 +57,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .toList();
         Map<ObjectId, Long> gamesCount = allTeamsWithGames.stream()
                 .flatMap(team -> team.team.players().stream())
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+                .collect(Collectors.groupingBy(MonoFunction.identity(), Collectors.counting()));
         List<Team<Score>> teams = allTeamsWithGames.stream()
                 .map(FlattenedGame::team)
                 .filter(team -> team.scores().isPresent())
@@ -215,7 +215,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
     }
 
     private List<ScoresDistributionStats> calculateSimpleDistribution(List<Team<Score>> teams) {
-        Function<Team<Score>, Integer> simpleSummator = team -> team.scores()
+        MonoFunction<Team<Score>, Integer> simpleSummator = team -> team.scores()
                 .get()
                 .stream()
                 .filter(score -> Yahtzee.isSimple(score.combination()))
@@ -240,7 +240,7 @@ public class LocalStatisticsCalculationService implements StatisticsCalculationS
                 .thenComparing(Map.Entry.comparingByKey());
         return teams.stream()
                 .map(game -> game.team.total())
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .collect(Collectors.groupingBy(MonoFunction.identity(), Collectors.counting()))
                 .entrySet()
                 .stream()
                 .sorted(comparator)

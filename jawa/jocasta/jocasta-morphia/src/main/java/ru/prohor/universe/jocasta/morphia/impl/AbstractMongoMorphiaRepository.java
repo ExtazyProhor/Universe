@@ -24,7 +24,6 @@ import ru.prohor.universe.jocasta.morphia.query.MongoQuery;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public class AbstractMongoMorphiaRepository<T, W> {
@@ -38,16 +37,16 @@ public class AbstractMongoMorphiaRepository<T, W> {
     private final Datastore datastore;
     private final Class<T> type;
 
-    private final Function<T, W> wrapFunction;
-    private final Function<W, T> unwrapFunction;
+    private final MonoFunction<T, W> wrapFunction;
+    private final MonoFunction<W, T> unwrapFunction;
 
     private final Opt<MorphiaSession> session;
 
     AbstractMongoMorphiaRepository(
             Datastore datastore,
             Class<T> type,
-            Function<T, W> wrapFunction,
-            Function<W, T> unwrapFunction
+            MonoFunction<T, W> wrapFunction,
+            MonoFunction<W, T> unwrapFunction
     ) {
         this.type = type;
         this.datastore = datastore;

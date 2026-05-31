@@ -8,7 +8,6 @@ class Music : UniCommand() {
     init {
         subcommands(
             ConvertToMp3(),
-            Probe(),
             Tags(),
             Clear(),
         )

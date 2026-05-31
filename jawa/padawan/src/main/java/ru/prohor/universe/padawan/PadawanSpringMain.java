@@ -8,6 +8,7 @@ import ru.prohor.universe.chopper.client.ChopperClientConfig;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
 import ru.prohor.universe.jocasta.springweb.configuration.FilesControllerConfiguration;
+import ru.prohor.universe.jocasta.springweb.configuration.PagesControllerConfiguration;
 
 @Configuration
 @ComponentScan
@@ -16,6 +17,7 @@ import ru.prohor.universe.jocasta.springweb.configuration.FilesControllerConfigu
         HolocronConfiguration.class,
         ChopperClientConfig.class,
         FilesControllerConfiguration.class,
+        PagesControllerConfiguration.class,
 })
 public class PadawanSpringMain {
     public static void main(String[] args) {

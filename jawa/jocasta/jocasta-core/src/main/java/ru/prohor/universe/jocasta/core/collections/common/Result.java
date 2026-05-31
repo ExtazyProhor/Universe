@@ -3,8 +3,7 @@ package ru.prohor.universe.jocasta.core.collections.common;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import ru.prohor.universe.jocasta.core.features.sneaky.ThrowableSupplier;
-
-import java.util.function.Function;
+import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 
 public record Result<T>(
         T result,
@@ -46,13 +45,13 @@ public record Result<T>(
         return !isSuccess();
     }
 
-    public <U> Result<U> map(Function<T, U> remappingFunction) {
+    public <U> Result<U> map(MonoFunction<T, U> remappingFunction) {
         if (isError())
             return new Result<>(null, error);
         return new Result<>(remappingFunction.apply(result), null);
     }
 
-    public <U> U mapOrElse(Function<T, U> remappingFunction, Function<String, U> errorMappingFunction) {
+    public <U> U mapOrElse(MonoFunction<T, U> remappingFunction, MonoFunction<String, U> errorMappingFunction) {
         if (isSuccess())
             return remappingFunction.apply(result);
         return errorMappingFunction.apply(error);

@@ -1,5 +1,6 @@
 package ru.prohor.universe.uni.cli.command.video
 
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
@@ -12,6 +13,8 @@ class CutFragment : FfmpegCommand(name = "cut") {
     private val to by option("--to", help = "end time (HH:MM:SS)")
     private val resolution by option("--resolution", help = "vertical resolution (e.g. 1080)").default("720")
     private val fps by option("--fps", help = "Frames per second").default("30")
+
+    override fun help(context: Context) = "cuts a fragment of video, with ability to change resolution and frame rate"
 
     override fun run() {
         val command = mutableListOf(

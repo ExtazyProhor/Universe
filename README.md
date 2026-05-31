@@ -26,11 +26,11 @@ Python
 
 ##### Инструменты разработки и запуска
 
-Необходимы java, git и maven (`mvn`).
+Необходимы java, git и maven (`mvn`). Для некоторых сервисов также нужны ffmpeg и yt-dlp.
 
 Проверка наличия:
 ```sh
-for cmd in java git mvn; do command -v "$cmd" >/dev/null 2>&1 || echo "$cmd is missing"; done
+for cmd in java git mvn ffmpeg yt-dlp; do command -v "$cmd" >/dev/null 2>&1 || echo "$cmd is missing"; done
 ```
 
 ##### Клонирование репозитория
