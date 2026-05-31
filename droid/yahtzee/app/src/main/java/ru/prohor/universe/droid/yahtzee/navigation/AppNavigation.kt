@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.prohor.universe.droid.yahtzee.auth.Auth
+import ru.prohor.universe.droid.yahtzee.mocks.MockScreen
 import ru.prohor.universe.droid.yahtzee.screens.AuthScreen
 import ru.prohor.universe.droid.yahtzee.screens.FinishScreen
 import ru.prohor.universe.droid.yahtzee.screens.GameScreen
@@ -42,6 +43,10 @@ fun AppNavigation() {
 
         composable("finish") {
             FinishScreen(navController)
+        }
+
+        composable("mock") {
+            MockScreen()
         }
     }
 }
