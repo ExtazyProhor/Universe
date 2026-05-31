@@ -17,9 +17,6 @@ import ru.prohor.universe.droid.yahtzee.model.SavedGame
 import ru.prohor.universe.droid.yahtzee.model.SavedTeam
 import ru.prohor.universe.droid.yahtzee.model.Team
 import ru.prohor.universe.droid.yahtzee.model.TeamResult
-import java.time.Clock
-import java.time.Instant
-import java.util.UUID
 
 object GameState {
     private val scores = mutableStateMapOf<Team, SnapshotStateMap<CombinationItem, Int>>()
@@ -31,7 +28,6 @@ object GameState {
     fun initialize() {
         scores.forEach { it.value.clear() }
         TeamsState.teams().forEach { team ->
-            if (team in scores) return@forEach
             scores[team] = mutableStateMapOf(
                 MetaCombination.TOTAL to 0,
                 MetaCombination.SCORE_TO_BONUS to Yahtzee.SCORE_TO_BONUS,

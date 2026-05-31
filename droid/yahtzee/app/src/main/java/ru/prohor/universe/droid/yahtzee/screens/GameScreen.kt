@@ -1,5 +1,6 @@
 package ru.prohor.universe.droid.yahtzee.screens
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -270,8 +271,15 @@ private class GameScreenRender(
         combination: CombinationItem,
         value: String?
     ) {
+        val value = if (value == null && combination is MetaCombination) {
+            Log.e("bug", "meta combination $combination has null value")
+            "er"
+        } else {
+            value
+        }
+
         val color = GameState.currentTeam().color
-        val editableCombination = value == null && combination is Combination
+        val editableCombination = value == null
         val backgroundColor = if (editableCombination) color.mainColor else color.lightColor
         val textColor = if (editableCombination) color.textColor else color.darkColor
 
@@ -290,7 +298,7 @@ private class GameScreenRender(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = value ?: "+",
+                text = if (editableCombination) "+" else value,
                 color = textColor,
                 style = MaterialTheme.typography.titleMedium
             )
