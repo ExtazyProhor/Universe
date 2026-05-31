@@ -24,13 +24,11 @@ fun AppButton(
     text: String? = null,
     containerColor: Color = Color.Black,
     contentColor: Color = Color.White,
-    enabled: Boolean = true,
     imageVector: ImageVector? = null
 ) {
     Button(
         onClick = onClick,
         modifier = modifier.height(60.dp),
-        enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor

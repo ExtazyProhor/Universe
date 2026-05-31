@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ru.prohor.universe.droid.yahtzee.auth.Auth
+import ru.prohor.universe.droid.yahtzee.screens.AuthScreen
 import ru.prohor.universe.droid.yahtzee.screens.FinishScreen
 import ru.prohor.universe.droid.yahtzee.screens.GameScreen
 import ru.prohor.universe.droid.yahtzee.screens.MainMenuScreen
@@ -16,8 +18,12 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "menu"
+        startDestination = if (Auth.hasKey()) "menu" else "auth"
     ) {
+        composable("auth") {
+            AuthScreen(navController)
+        }
+
         composable("menu") {
             MainMenuScreen(navController)
         }

@@ -20,11 +20,24 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField(
+                "String",
+                "API_URL",
+                "\"http://10.0.2.2:7003\""
+            )
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
+            )
+            buildConfigField(
+                "String",
+                "API_URL",
+                "\"https://yahtzee.ru\""
             )
         }
     }
@@ -37,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -52,6 +66,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.okhttp)
+    implementation(libs.androidx.security.crypto)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
