@@ -41,9 +41,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import ru.prohor.universe.droid.yahtzee.model.ALL_COMPLEX_COMBINATIONS
 import ru.prohor.universe.droid.yahtzee.model.Combination
 import ru.prohor.universe.droid.yahtzee.model.CombinationItem
-import ru.prohor.universe.droid.yahtzee.model.ComplexCombination
 import ru.prohor.universe.droid.yahtzee.model.MetaCombination
 import ru.prohor.universe.droid.yahtzee.model.SimpleCombination
 import ru.prohor.universe.droid.yahtzee.model.Team
@@ -92,7 +92,7 @@ private class GameScreenRender(
                     CombinationGroupSeparator()
                     CombinationGroup(SimpleCombination.entries)
                     CombinationGroupSeparator()
-                    CombinationGroup(ComplexCombination.entries)
+                    CombinationGroup(ALL_COMPLEX_COMBINATIONS)
                 }
 
                 VerticalSpacer(24)

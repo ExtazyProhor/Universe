@@ -1,8 +1,11 @@
 package ru.prohor.universe.droid.yahtzee.mocks
 
 import android.content.Context
+import ru.prohor.universe.droid.yahtzee.model.ALL_COMBINATIONS
+import ru.prohor.universe.droid.yahtzee.model.CHANCE
 import ru.prohor.universe.droid.yahtzee.model.Combination
-import ru.prohor.universe.droid.yahtzee.model.ComplexCombination
+import ru.prohor.universe.droid.yahtzee.model.FixedValueCombination
+import ru.prohor.universe.droid.yahtzee.model.FreeValueCombination
 import ru.prohor.universe.droid.yahtzee.model.SavedCombination
 import ru.prohor.universe.droid.yahtzee.model.SavedGame
 import ru.prohor.universe.droid.yahtzee.model.SavedTeam
@@ -29,8 +32,12 @@ object Mocks {
             teams = List(teams) { index ->
                 SavedTeam(
                     name = NAMES[index],
-                    scores = (SimpleCombination.entries + ComplexCombination.entries)
-                        .map { SavedCombination(it.name, CombinationsMocks.generateFor(it)) }
+                    scores = ALL_COMBINATIONS.map {
+                        SavedCombination(
+                            combination = it.name,
+                            value = CombinationsMocks.generateFor(it)
+                        )
+                    }
                 )
             }
         )
@@ -59,14 +66,13 @@ object Mocks {
 
     fun almostAllScores(count: Int) {
         simpleScores(count)
-        ComplexCombination.entries.filter { it != ComplexCombination.CHANCE }.forEach {
-            combination(it, count)
-        }
+        FreeValueCombination.entries.forEach { combination(it, count) }
+        FixedValueCombination.entries.forEach { combination(it, count) }
     }
 
     fun allScores(count: Int) {
         almostAllScores(count)
-        combination(ComplexCombination.CHANCE, count)
+        combination(CHANCE, count)
     }
 
     private fun combination(combination: Combination, repeat: Int) {

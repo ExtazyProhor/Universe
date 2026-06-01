@@ -1,7 +1,10 @@
 package ru.prohor.universe.droid.yahtzee.mocks
 
+import ru.prohor.universe.droid.yahtzee.model.CHANCE
 import ru.prohor.universe.droid.yahtzee.model.Combination
 import ru.prohor.universe.droid.yahtzee.model.ComplexCombination
+import ru.prohor.universe.droid.yahtzee.model.FixedValueCombination
+import ru.prohor.universe.droid.yahtzee.model.FreeValueCombination
 import ru.prohor.universe.droid.yahtzee.model.SimpleCombination
 
 object CombinationsMocks {
@@ -17,15 +20,21 @@ object CombinationsMocks {
             }
 
             is ComplexCombination -> when (combination) {
-                ComplexCombination.PAIR -> randomComplex()
-                ComplexCombination.TWO_PAIRS -> randomComplex()
-                ComplexCombination.THREE_OF_KIND -> randomComplex()
-                ComplexCombination.FOUR_OF_KIND -> randomComplex()
-                ComplexCombination.FULL_HOUSE -> randomFixedComplex(25)
-                ComplexCombination.LOW_STRAIGHT -> randomFixedComplex(30)
-                ComplexCombination.HIGH_STRAIGHT -> randomFixedComplex(40)
-                ComplexCombination.YAHTZEE -> randomFixedComplex(50)
-                ComplexCombination.CHANCE -> randomComplex()
+                is FreeValueCombination -> when (combination) {
+                    FreeValueCombination.PAIR -> randomComplex()
+                    FreeValueCombination.TWO_PAIRS -> randomComplex()
+                    FreeValueCombination.THREE_OF_KIND -> randomComplex()
+                    FreeValueCombination.FOUR_OF_KIND -> randomComplex()
+                }
+
+                is FixedValueCombination -> when (combination) {
+                    FixedValueCombination.FULL_HOUSE -> randomFixedComplex(25)
+                    FixedValueCombination.LOW_STRAIGHT -> randomFixedComplex(30)
+                    FixedValueCombination.HIGH_STRAIGHT -> randomFixedComplex(40)
+                    FixedValueCombination.YAHTZEE -> randomFixedComplex(50)
+                }
+
+                is CHANCE -> randomComplex()
             }
         }
     }
