@@ -43,6 +43,7 @@ import ru.prohor.universe.droid.yahtzee.ui.shared.Background
 import ru.prohor.universe.droid.yahtzee.ui.shared.BoxSpacer
 import ru.prohor.universe.droid.yahtzee.ui.shared.ErrorDialog
 import ru.prohor.universe.droid.yahtzee.ui.shared.ExpandingSpacer
+import ru.prohor.universe.droid.yahtzee.ui.shared.HorizontalSpacer
 import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
 import java.time.Instant
 import java.time.ZoneId
@@ -134,6 +135,8 @@ private fun Header(
         )
 
         if (showSendAll) {
+            HorizontalSpacer(8)
+
             ExpandingSpacer()
 
             AppButton(
