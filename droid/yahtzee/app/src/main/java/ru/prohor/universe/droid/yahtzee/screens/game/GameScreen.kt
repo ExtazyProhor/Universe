@@ -170,8 +170,8 @@ private class GameScreenRender(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp)
-                .height(2.dp)
-                .background(Color.White.copy(alpha = 0.4f))
+                .height(4.dp)
+                .background(Color.White.copy(alpha = 0.6f))
         )
     }
 

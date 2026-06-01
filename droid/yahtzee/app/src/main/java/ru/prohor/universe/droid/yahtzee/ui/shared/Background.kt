@@ -21,14 +21,14 @@ fun Background() {
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
-                .blur(8.dp),
+                .blur(3.dp),
             contentScale = ContentScale.Crop
         )
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.45f))
+                .background(Color.Black.copy(alpha = 0.65f))
         )
     }
 }
