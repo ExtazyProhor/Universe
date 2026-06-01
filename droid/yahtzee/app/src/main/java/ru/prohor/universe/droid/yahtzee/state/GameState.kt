@@ -35,6 +35,10 @@ object GameState {
         }
     }
 
+    fun isGameStarted(): Boolean {
+        return scores.values.all { it.size == 2 }
+    }
+
     fun score(team: Team, combination: CombinationItem): Int? {
         return scores[team]?.get(combination)
     }

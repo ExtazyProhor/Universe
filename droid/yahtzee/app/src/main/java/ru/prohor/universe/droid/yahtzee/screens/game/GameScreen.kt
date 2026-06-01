@@ -73,7 +73,9 @@ private class GameScreenRender(
                     .statusBarsPadding()
                     .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
-                TopBar()
+                TopBar {
+                    navController.popBackStack()
+                }
 
                 VerticalSpacer(20)
 
@@ -107,20 +109,26 @@ private class GameScreenRender(
     }
 
     @Composable
-    private fun TopBar() {
+    private fun TopBar(
+        onCancelGame: () -> Unit
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             if (GameState.isUndoAvailable()) {
                 AppButton(
                     text = "Отменить ход",
                     onClick = {
                         GameState.undoLastMove()
                     }
+                )
+            } else if (GameState.isGameStarted()) {
+                AppButton(
+                    text = "Отменить игру",
+                    onClick = onCancelGame
                 )
             }
 
@@ -130,7 +138,7 @@ private class GameScreenRender(
             if (isGameFinished) {
                 Box(
                     modifier = Modifier
-                        .width(200.dp)
+                        .width(178.dp)
                         .height(54.dp)
                 )
                 return
@@ -138,7 +146,7 @@ private class GameScreenRender(
 
             Box(
                 modifier = Modifier
-                    .width(200.dp)
+                    .width(178.dp)
                     .height(54.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(currentTeam.color.mainColor)
