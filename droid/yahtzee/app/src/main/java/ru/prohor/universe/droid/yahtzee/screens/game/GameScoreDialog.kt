@@ -107,11 +107,11 @@ private fun SimpleCombinationInput(
                 modifier = Modifier
                     .size(60.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White)
-                    .padding(10.dp)
                     .clickable {
                         onSelect((index + 1) * combination.base)
-                    },
+                    }
+                    .background(Color.White)
+                    .padding(10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 DiceFace(combination.base)
