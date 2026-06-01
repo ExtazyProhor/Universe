@@ -1,4 +1,4 @@
-package ru.prohor.universe.droid.yahtzee.screens
+package ru.prohor.universe.droid.yahtzee.screens.game
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -18,13 +18,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,10 +32,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import ru.prohor.universe.droid.yahtzee.model.ALL_COMPLEX_COMBINATIONS
 import ru.prohor.universe.droid.yahtzee.model.Combination
@@ -323,83 +317,5 @@ private class GameScreenRender(
         )
 
         VerticalSpacer(20)
-    }
-
-    @Composable
-    private fun ScoreDialog(
-        combination: Combination,
-        onDismiss: () -> Unit
-    ) {
-        var text by remember { mutableStateOf("") }
-        val number = text.toIntOrNull()
-        val isValid = number != null && combination.validate(number)
-
-        Dialog(onDismissRequest = onDismiss) {
-            Surface(
-                shape = RoundedCornerShape(28.dp),
-                color = Color(0xFF1D1D1F)
-            ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = combination.readableName,
-                        color = Color.White,
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-
-                    VerticalSpacer(20)
-
-                    TextField(
-                        value = text,
-                        onValueChange = {
-                            text = it.take(2)
-                        },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color(0xFFF2F2F2)
-                        ),
-                        isError = text.isNotEmpty() && !isValid,
-                    )
-
-                    VerticalSpacer(8)
-
-                    val error = if (text.isNotEmpty() && !isValid) "Некорректное значение" else ""
-                    Text(
-                        text = error,
-                        modifier = Modifier.height(20.dp),
-                        color = Color.Red,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-
-                    VerticalSpacer(24)
-
-                    Row {
-                        AppButton(
-                            text = "Отмена",
-                            onClick = onDismiss
-                        )
-
-                        BoxSpacer(12)
-
-                        AppButton(
-                            text = "Сохранить",
-                            onClick = {
-                                if (isValid) {
-                                    GameState.setScore(combination, number)
-                                    onDismiss()
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-        }
     }
 }

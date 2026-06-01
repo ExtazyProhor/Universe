@@ -8,7 +8,7 @@ import ru.prohor.universe.droid.yahtzee.auth.Auth
 import ru.prohor.universe.droid.yahtzee.mocks.MockScreen
 import ru.prohor.universe.droid.yahtzee.screens.AuthScreen
 import ru.prohor.universe.droid.yahtzee.screens.FinishScreen
-import ru.prohor.universe.droid.yahtzee.screens.GameScreen
+import ru.prohor.universe.droid.yahtzee.screens.game.GameScreen
 import ru.prohor.universe.droid.yahtzee.screens.MainMenuScreen
 import ru.prohor.universe.droid.yahtzee.screens.MyGamesScreen
 import ru.prohor.universe.droid.yahtzee.screens.NewGameScreen
