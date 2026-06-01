@@ -32,11 +32,6 @@ object SavedGamesState {
         persist(context)
     }
 
-    fun removeAll(context: Context) {
-        GameStorage.deleteAll(context)
-        descriptions = emptyList()
-    }
-
     private fun persist(context: Context) {
         GameStorage.writeDescription(context, GamesDescription(descriptions))
     }

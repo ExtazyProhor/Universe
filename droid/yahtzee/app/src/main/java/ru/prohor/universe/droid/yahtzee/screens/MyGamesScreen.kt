@@ -102,19 +102,7 @@ fun MyGamesScreen(navController: NavController) {
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                SavedGamesState.games().forEach { game ->
-                    GameCard(
-                        game = game,
-                        onSend = {
-                            scope.launch {
-                                val result = GameSender.send(context, game.uuid)
-                                if (result is ApiResult.Error) {
-                                    error = result.message
-                                }
-                            }
-                        }
-                    )
-                }
+                SavedGamesState.games().forEach { GameCard(it) }
             }
         }
 
@@ -162,14 +150,11 @@ private fun sendAllText(count: Int): String {
         count > 99 -> "99+"
         else -> "$count"
     }
-    return "Отправить все ($count)"
+    return "Отправить ($count)"
 }
 
 @Composable
-private fun GameCard(
-    game: GameDescription,
-    onSend: () -> Unit
-) {
+private fun GameCard(game: GameDescription) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -207,13 +192,6 @@ private fun GameCard(
                 text = game.teams.toString(),
                 color = Color.Black,
                 style = MaterialTheme.typography.titleLarge
-            )
-
-            BoxSpacer(12)
-
-            AppButton(
-                onClick = onSend,
-                imageVector = Icons.AutoMirrored.Filled.Send,
             )
         }
     }

@@ -4,6 +4,7 @@ import android.content.Context
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import ru.prohor.universe.droid.yahtzee.model.GamesDescription
+import ru.prohor.universe.droid.yahtzee.model.SavedFile
 import ru.prohor.universe.droid.yahtzee.model.SavedGame
 import java.io.File
 
@@ -19,18 +20,19 @@ object GameStorage {
         file.writeText(content)
     }
 
-    fun load(context: Context, uuid: String): String? {
-        val file = game(context, uuid)
-        if (!file.exists()) return null
-        return runCatching { file.readText() }.getOrNull()
+    fun findSavedGames(context: Context): Sequence<SavedFile> {
+        return games(context).walkTopDown()
+            .filter { it.isFile && it.name != "description.json" }
+            .map {
+                SavedFile(
+                    content = it.readText(),
+                    uuid = it.name.removeSuffix(".json")
+                )
+            }
     }
 
     fun delete(context: Context, uuid: String) {
         game(context, uuid).delete()
-    }
-
-    fun deleteAll(context: Context) {
-        games(context).deleteRecursively()
     }
 
     fun readDescription(context: Context): GamesDescription {
