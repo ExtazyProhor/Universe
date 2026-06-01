@@ -366,6 +366,11 @@ private fun AddTeamDialog(
 
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     AppButton(
+                        text = "Отмена",
+                        onClick = onDismiss
+                    )
+
+                    AppButton(
                         text = "Добавить",
                         onClick = {
                             if (teamName.isBlank() || duplicatedName) return@AppButton
@@ -374,11 +379,6 @@ private fun AddTeamDialog(
                             TeamsState.save(team, editingTeamIndex)
                             onSave()
                         }
-                    )
-
-                    AppButton(
-                        text = "Отмена",
-                        onClick = onDismiss
                     )
                 }
             }
