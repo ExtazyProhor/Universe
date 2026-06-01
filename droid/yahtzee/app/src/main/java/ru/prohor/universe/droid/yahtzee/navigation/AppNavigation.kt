@@ -1,6 +1,11 @@
 package ru.prohor.universe.droid.yahtzee.navigation
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -8,10 +13,10 @@ import ru.prohor.universe.droid.yahtzee.auth.Auth
 import ru.prohor.universe.droid.yahtzee.mocks.MockScreen
 import ru.prohor.universe.droid.yahtzee.screens.AuthScreen
 import ru.prohor.universe.droid.yahtzee.screens.FinishScreen
-import ru.prohor.universe.droid.yahtzee.screens.game.GameScreen
 import ru.prohor.universe.droid.yahtzee.screens.MainMenuScreen
 import ru.prohor.universe.droid.yahtzee.screens.MyGamesScreen
 import ru.prohor.universe.droid.yahtzee.screens.NewGameScreen
+import ru.prohor.universe.droid.yahtzee.screens.game.GameScreen
 
 @Composable
 fun AppNavigation() {
@@ -21,32 +26,48 @@ fun AppNavigation() {
         navController = navController,
         startDestination = if (Auth.hasKey()) "menu" else "auth"
     ) {
-        composable("auth") {
+        composableWithAnimation("auth") {
             AuthScreen(navController)
         }
 
-        composable("menu") {
+        composableWithAnimation("menu") {
             MainMenuScreen(navController)
         }
 
-        composable("new_game") {
+        composableWithAnimation("new_game") {
             NewGameScreen(navController)
         }
 
-        composable("my_games") {
+        composableWithAnimation("my_games") {
             MyGamesScreen(navController)
         }
 
-        composable("game") {
+        composableWithAnimation("game") {
             GameScreen(navController)
         }
 
-        composable("finish") {
+        composableWithAnimation("finish") {
             FinishScreen(navController)
         }
 
-        composable("mock") {
+        composableWithAnimation("mock") {
             MockScreen()
         }
     }
+}
+
+private fun NavGraphBuilder.composableWithAnimation(
+    route: String,
+    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
+) {
+    composable(
+        route = route,
+        enterTransition = {
+            fadeIn()
+        },
+        exitTransition = {
+            fadeOut()
+        },
+        content = content
+    )
 }
