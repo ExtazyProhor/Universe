@@ -193,6 +193,7 @@ private fun FreeValueInput(
             onValueChange = {
                 text = it.take(2)
             },
+            textStyle = MaterialTheme.typography.headlineSmall,
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
