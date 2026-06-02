@@ -60,7 +60,6 @@ import ru.prohor.universe.droid.yahtzee.ui.shared.Background
 import ru.prohor.universe.droid.yahtzee.ui.shared.ExpandingSpacer
 import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
 import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColor
-import ru.prohor.universe.droid.yahtzee.ui.theme.teamColors
 
 @Composable
 fun NewGameScreen(navController: NavController) {
@@ -313,7 +312,7 @@ private fun AddTeamDialog(
     val usedColors = TeamsState.usedColors()
     editingTeam?.let { usedColors.remove(it.color) }
 
-    val availableColors = teamColors.filter { it !in usedColors }
+    val availableColors = TeamColor.entries.filter { it !in usedColors }
     var selectedColor by remember {
         mutableStateOf(editingTeam?.color ?: availableColors.random())
     }
@@ -409,7 +408,7 @@ private fun ColorPicker(
         horizontalArrangement = Arrangement.Center,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        teamColors.forEach { color ->
+        TeamColor.entries.forEach { color ->
             ColorCircle(
                 color = color,
                 isSelected = selectedColor == color,
