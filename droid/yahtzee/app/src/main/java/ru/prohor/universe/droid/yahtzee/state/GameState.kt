@@ -33,6 +33,10 @@ object GameState {
                 MetaCombination.SCORE_TO_BONUS to Yahtzee.SCORE_TO_BONUS,
             )
         }
+        gameFinished = false
+        saved = false
+        lastCombination = null
+        currentTeamIndex = 0
     }
 
     fun isGameStarted(): Boolean {
