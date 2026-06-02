@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -66,6 +67,7 @@ import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
 @Composable
 fun NewGameScreen(navController: NavController) {
+    val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
     var showTemplatesDialog by remember { mutableStateOf(false) }
     var editingTeamIndex by remember { mutableStateOf<Int?>(null) }
@@ -134,13 +136,8 @@ fun NewGameScreen(navController: NavController) {
                     showTemplatesDialog = false
                 },
                 onSelect = { template ->
-                    TeamsState.save(
-                        Team(
-                            template.name,
-                            template.color
-                        ),
-                        null
-                    )
+                    TeamsState.save(Team(template.name, template.color), null)
+                    TeamTemplatesState.register(template.name, template.color, context)
                     showTemplatesDialog = false
                 }
             )
@@ -429,6 +426,7 @@ private fun AddTeamDialog(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ColorPicker(
     selectedColor: TeamColor,
@@ -558,10 +556,7 @@ private fun TeamTemplateCard(
 
             ExpandingSpacer()
 
-            Text(
-                text = "⭐ ${template.usages}",
-                color = template.color.textColor
-            )
+            Text("⭐")
         }
     }
 }
