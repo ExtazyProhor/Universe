@@ -1,9 +1,6 @@
-package ru.prohor.universe.droid.yahtzee.state
+package ru.prohor.universe.droid.yahtzee.domain.team
 
 import androidx.compose.runtime.mutableStateListOf
-import ru.prohor.universe.droid.yahtzee.model.IndexedTeam
-import ru.prohor.universe.droid.yahtzee.model.Team
-import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColor
 
 object TeamsState {
     private const val MAX_COUNT = 8

@@ -1,4 +1,4 @@
-package ru.prohor.universe.droid.yahtzee.ui.theme
+package ru.prohor.universe.droid.yahtzee.domain.team
 
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt

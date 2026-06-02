@@ -1,6 +1,4 @@
-package ru.prohor.universe.droid.yahtzee.model
-
-import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColor
+package ru.prohor.universe.droid.yahtzee.domain.team
 
 const val MAX_TEAM_NAME_LENGTH = 20
 

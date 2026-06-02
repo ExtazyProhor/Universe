@@ -30,9 +30,9 @@ import kotlinx.coroutines.launch
 import ru.prohor.universe.droid.yahtzee.api.ApiResult
 import ru.prohor.universe.droid.yahtzee.api.YahtzeeApi
 import ru.prohor.universe.droid.yahtzee.auth.Auth
-import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
-import ru.prohor.universe.droid.yahtzee.ui.shared.Background
-import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
+import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.Background
+import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
 @Composable
 fun AuthScreen(navController: NavController) {

@@ -1,19 +1,14 @@
-package ru.prohor.universe.droid.yahtzee.state
+package ru.prohor.universe.droid.yahtzee.domain.game
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import ru.prohor.universe.droid.yahtzee.core.Yahtzee
-import ru.prohor.universe.droid.yahtzee.model.Combination
-import ru.prohor.universe.droid.yahtzee.model.CombinationItem
-import ru.prohor.universe.droid.yahtzee.model.GameResult
-import ru.prohor.universe.droid.yahtzee.model.GameStateParams
-import ru.prohor.universe.droid.yahtzee.model.MetaCombination
-import ru.prohor.universe.droid.yahtzee.model.SavedCombination
-import ru.prohor.universe.droid.yahtzee.model.SavedGame
-import ru.prohor.universe.droid.yahtzee.model.SavedTeam
-import ru.prohor.universe.droid.yahtzee.model.Team
-import ru.prohor.universe.droid.yahtzee.model.TeamResult
+import ru.prohor.universe.droid.yahtzee.domain.storage.SavedCombination
+import ru.prohor.universe.droid.yahtzee.domain.storage.SavedGame
+import ru.prohor.universe.droid.yahtzee.domain.storage.SavedGamesState
+import ru.prohor.universe.droid.yahtzee.domain.storage.SavedTeam
+import ru.prohor.universe.droid.yahtzee.domain.team.Team
+import ru.prohor.universe.droid.yahtzee.domain.team.TeamsState
 
 object GameState {
     private val scores = mutableStateMapOf<Team, SnapshotStateMap<CombinationItem, Int>>()

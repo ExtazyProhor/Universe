@@ -1,9 +1,4 @@
-package ru.prohor.universe.droid.yahtzee.core
-
-import ru.prohor.universe.droid.yahtzee.model.CombinationItem
-import ru.prohor.universe.droid.yahtzee.model.ComplexCombination
-import ru.prohor.universe.droid.yahtzee.model.MetaCombination
-import ru.prohor.universe.droid.yahtzee.model.SimpleCombination
+package ru.prohor.universe.droid.yahtzee.domain.game
 
 object Yahtzee {
     const val SCORE_TO_BONUS = 63

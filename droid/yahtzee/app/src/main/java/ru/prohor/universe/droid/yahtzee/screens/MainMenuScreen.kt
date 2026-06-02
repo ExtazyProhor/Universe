@@ -17,8 +17,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.prohor.universe.droid.yahtzee.R
-import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
-import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
+import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
 @Composable
 fun MainMenuScreen(navController: NavController) {

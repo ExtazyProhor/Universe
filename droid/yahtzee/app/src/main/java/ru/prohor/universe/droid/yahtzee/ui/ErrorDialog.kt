@@ -1,4 +1,4 @@
-package ru.prohor.universe.droid.yahtzee.ui.shared
+package ru.prohor.universe.droid.yahtzee.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.heightIn

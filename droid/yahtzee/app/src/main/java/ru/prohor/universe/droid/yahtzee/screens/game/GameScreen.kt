@@ -35,20 +35,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ru.prohor.universe.droid.yahtzee.model.ALL_COMPLEX_COMBINATIONS
-import ru.prohor.universe.droid.yahtzee.model.Combination
-import ru.prohor.universe.droid.yahtzee.model.CombinationItem
-import ru.prohor.universe.droid.yahtzee.model.MetaCombination
-import ru.prohor.universe.droid.yahtzee.model.SimpleCombination
-import ru.prohor.universe.droid.yahtzee.model.Team
-import ru.prohor.universe.droid.yahtzee.state.GameState
-import ru.prohor.universe.droid.yahtzee.state.TeamsState
-import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
-import ru.prohor.universe.droid.yahtzee.ui.shared.Background
-import ru.prohor.universe.droid.yahtzee.ui.shared.BoxSpacer
-import ru.prohor.universe.droid.yahtzee.ui.shared.ExpandingSpacer
-import ru.prohor.universe.droid.yahtzee.ui.shared.HorizontalSpacer
-import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
+import ru.prohor.universe.droid.yahtzee.domain.game.ALL_COMPLEX_COMBINATIONS
+import ru.prohor.universe.droid.yahtzee.domain.game.Combination
+import ru.prohor.universe.droid.yahtzee.domain.game.CombinationItem
+import ru.prohor.universe.droid.yahtzee.domain.game.GameState
+import ru.prohor.universe.droid.yahtzee.domain.game.MetaCombination
+import ru.prohor.universe.droid.yahtzee.domain.game.SimpleCombination
+import ru.prohor.universe.droid.yahtzee.domain.team.Team
+import ru.prohor.universe.droid.yahtzee.domain.team.TeamsState
+import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.Background
+import ru.prohor.universe.droid.yahtzee.ui.BoxSpacer
+import ru.prohor.universe.droid.yahtzee.ui.ExpandingSpacer
+import ru.prohor.universe.droid.yahtzee.ui.HorizontalSpacer
+import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
 @Composable
 fun GameScreen(navController: NavController) {

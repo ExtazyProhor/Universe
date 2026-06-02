@@ -1,7 +1,6 @@
-package ru.prohor.universe.droid.yahtzee.model
+package ru.prohor.universe.droid.yahtzee.domain.team
 
 import kotlinx.serialization.Serializable
-import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColor
 
 @Serializable
 data class TeamTemplate(

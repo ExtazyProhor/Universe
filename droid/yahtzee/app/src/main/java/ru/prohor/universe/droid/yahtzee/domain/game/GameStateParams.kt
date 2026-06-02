@@ -1,4 +1,4 @@
-package ru.prohor.universe.droid.yahtzee.model
+package ru.prohor.universe.droid.yahtzee.domain.game
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf

@@ -1,4 +1,4 @@
-package ru.prohor.universe.droid.yahtzee.model
+package ru.prohor.universe.droid.yahtzee.domain.storage
 
 import kotlinx.serialization.Serializable
 import java.time.Clock

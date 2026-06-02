@@ -1,10 +1,9 @@
-package ru.prohor.universe.droid.yahtzee.data
+package ru.prohor.universe.droid.yahtzee.api
 
 import android.content.Context
-import ru.prohor.universe.droid.yahtzee.api.ApiResult
-import ru.prohor.universe.droid.yahtzee.api.YahtzeeApi
 import ru.prohor.universe.droid.yahtzee.auth.Auth
-import ru.prohor.universe.droid.yahtzee.state.SavedGamesState
+import ru.prohor.universe.droid.yahtzee.domain.storage.GameStorage
+import ru.prohor.universe.droid.yahtzee.domain.storage.SavedGamesState
 
 object GameSender {
     suspend fun sendAll(context: Context): ApiResult {

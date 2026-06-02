@@ -49,20 +49,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import ru.prohor.universe.droid.yahtzee.domain.game.GameState
+import ru.prohor.universe.droid.yahtzee.domain.team.IndexedTeam
+import ru.prohor.universe.droid.yahtzee.domain.team.MAX_TEAM_NAME_LENGTH
+import ru.prohor.universe.droid.yahtzee.domain.team.Team
+import ru.prohor.universe.droid.yahtzee.domain.team.TeamColor
+import ru.prohor.universe.droid.yahtzee.domain.team.TeamTemplate
+import ru.prohor.universe.droid.yahtzee.domain.team.TeamTemplatesState
+import ru.prohor.universe.droid.yahtzee.domain.team.TeamsState
+import ru.prohor.universe.droid.yahtzee.ext.letIf
 import ru.prohor.universe.droid.yahtzee.mocks.Mocks
-import ru.prohor.universe.droid.yahtzee.common.letIf
-import ru.prohor.universe.droid.yahtzee.model.IndexedTeam
-import ru.prohor.universe.droid.yahtzee.model.MAX_TEAM_NAME_LENGTH
-import ru.prohor.universe.droid.yahtzee.model.Team
-import ru.prohor.universe.droid.yahtzee.model.TeamTemplate
-import ru.prohor.universe.droid.yahtzee.state.GameState
-import ru.prohor.universe.droid.yahtzee.state.TeamTemplatesState
-import ru.prohor.universe.droid.yahtzee.state.TeamsState
-import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
-import ru.prohor.universe.droid.yahtzee.ui.shared.Background
-import ru.prohor.universe.droid.yahtzee.ui.shared.ExpandingSpacer
-import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
-import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColor
+import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.Background
+import ru.prohor.universe.droid.yahtzee.ui.ExpandingSpacer
+import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
 @Composable
 fun NewGameScreen(navController: NavController) {

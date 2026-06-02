@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import ru.prohor.universe.droid.yahtzee.ui.shared.ErrorDialog
+import ru.prohor.universe.droid.yahtzee.ui.ErrorDialog
 
 @Composable
 fun MockScreen() {

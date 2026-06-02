@@ -1,20 +1,20 @@
 package ru.prohor.universe.droid.yahtzee.mocks
 
 import android.content.Context
-import ru.prohor.universe.droid.yahtzee.model.ALL_COMBINATIONS
-import ru.prohor.universe.droid.yahtzee.model.CHANCE
-import ru.prohor.universe.droid.yahtzee.model.Combination
-import ru.prohor.universe.droid.yahtzee.model.FixedValueCombination
-import ru.prohor.universe.droid.yahtzee.model.FreeValueCombination
-import ru.prohor.universe.droid.yahtzee.model.SavedCombination
-import ru.prohor.universe.droid.yahtzee.model.SavedGame
-import ru.prohor.universe.droid.yahtzee.model.SavedTeam
-import ru.prohor.universe.droid.yahtzee.model.SimpleCombination
-import ru.prohor.universe.droid.yahtzee.model.Team
-import ru.prohor.universe.droid.yahtzee.state.GameState
-import ru.prohor.universe.droid.yahtzee.state.SavedGamesState
-import ru.prohor.universe.droid.yahtzee.state.TeamsState
-import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColor
+import ru.prohor.universe.droid.yahtzee.domain.game.ALL_COMBINATIONS
+import ru.prohor.universe.droid.yahtzee.domain.game.CHANCE
+import ru.prohor.universe.droid.yahtzee.domain.game.Combination
+import ru.prohor.universe.droid.yahtzee.domain.game.FixedValueCombination
+import ru.prohor.universe.droid.yahtzee.domain.game.FreeValueCombination
+import ru.prohor.universe.droid.yahtzee.domain.game.GameState
+import ru.prohor.universe.droid.yahtzee.domain.game.SimpleCombination
+import ru.prohor.universe.droid.yahtzee.domain.storage.SavedCombination
+import ru.prohor.universe.droid.yahtzee.domain.storage.SavedGame
+import ru.prohor.universe.droid.yahtzee.domain.storage.SavedGamesState
+import ru.prohor.universe.droid.yahtzee.domain.storage.SavedTeam
+import ru.prohor.universe.droid.yahtzee.domain.team.Team
+import ru.prohor.universe.droid.yahtzee.domain.team.TeamColor
+import ru.prohor.universe.droid.yahtzee.domain.team.TeamsState
 
 object Mocks {
     fun initGames(context: Context) {

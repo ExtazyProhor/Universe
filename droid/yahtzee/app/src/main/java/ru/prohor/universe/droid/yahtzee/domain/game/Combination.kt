@@ -1,4 +1,4 @@
-package ru.prohor.universe.droid.yahtzee.model
+package ru.prohor.universe.droid.yahtzee.domain.game
 
 enum class MetaCombination(
     override val readableName: String

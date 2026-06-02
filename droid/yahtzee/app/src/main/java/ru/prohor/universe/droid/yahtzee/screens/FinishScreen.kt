@@ -25,12 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ru.prohor.universe.droid.yahtzee.model.TeamResult
-import ru.prohor.universe.droid.yahtzee.state.GameState
-import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
-import ru.prohor.universe.droid.yahtzee.ui.shared.Background
-import ru.prohor.universe.droid.yahtzee.ui.shared.HorizontalSpacer
-import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
+import ru.prohor.universe.droid.yahtzee.domain.game.GameState
+import ru.prohor.universe.droid.yahtzee.domain.game.TeamResult
+import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.Background
+import ru.prohor.universe.droid.yahtzee.ui.HorizontalSpacer
+import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
 @Composable
 fun FinishScreen(navController: NavController) {

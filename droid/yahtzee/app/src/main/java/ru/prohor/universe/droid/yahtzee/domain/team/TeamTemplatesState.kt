@@ -1,11 +1,9 @@
-package ru.prohor.universe.droid.yahtzee.state
+package ru.prohor.universe.droid.yahtzee.domain.team
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.toMutableStateList
-import ru.prohor.universe.droid.yahtzee.data.TeamTemplatesStorage
-import ru.prohor.universe.droid.yahtzee.model.TeamTemplate
-import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColor
+import ru.prohor.universe.droid.yahtzee.domain.storage.TeamTemplatesStorage
 
 object TeamTemplatesState {
     private const val TOP = 5

@@ -1,11 +1,11 @@
 package ru.prohor.universe.droid.yahtzee.mocks
 
-import ru.prohor.universe.droid.yahtzee.model.CHANCE
-import ru.prohor.universe.droid.yahtzee.model.Combination
-import ru.prohor.universe.droid.yahtzee.model.ComplexCombination
-import ru.prohor.universe.droid.yahtzee.model.FixedValueCombination
-import ru.prohor.universe.droid.yahtzee.model.FreeValueCombination
-import ru.prohor.universe.droid.yahtzee.model.SimpleCombination
+import ru.prohor.universe.droid.yahtzee.domain.game.CHANCE
+import ru.prohor.universe.droid.yahtzee.domain.game.Combination
+import ru.prohor.universe.droid.yahtzee.domain.game.ComplexCombination
+import ru.prohor.universe.droid.yahtzee.domain.game.FixedValueCombination
+import ru.prohor.universe.droid.yahtzee.domain.game.FreeValueCombination
+import ru.prohor.universe.droid.yahtzee.domain.game.SimpleCombination
 
 object CombinationsMocks {
     fun generateFor(combination: Combination): Int {

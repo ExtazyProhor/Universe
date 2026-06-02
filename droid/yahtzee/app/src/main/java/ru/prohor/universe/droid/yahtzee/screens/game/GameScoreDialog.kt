@@ -36,17 +36,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import ru.prohor.universe.droid.yahtzee.model.CHANCE
-import ru.prohor.universe.droid.yahtzee.model.Combination
-import ru.prohor.universe.droid.yahtzee.model.FixedValueCombination
-import ru.prohor.universe.droid.yahtzee.model.FreeValue
-import ru.prohor.universe.droid.yahtzee.model.FreeValueCombination
-import ru.prohor.universe.droid.yahtzee.model.SimpleCombination
-import ru.prohor.universe.droid.yahtzee.state.GameState
-import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
-import ru.prohor.universe.droid.yahtzee.ui.shared.BoxSpacer
-import ru.prohor.universe.droid.yahtzee.ui.shared.HorizontalSpacer
-import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
+import ru.prohor.universe.droid.yahtzee.domain.game.CHANCE
+import ru.prohor.universe.droid.yahtzee.domain.game.Combination
+import ru.prohor.universe.droid.yahtzee.domain.game.FixedValueCombination
+import ru.prohor.universe.droid.yahtzee.domain.game.FreeValue
+import ru.prohor.universe.droid.yahtzee.domain.game.FreeValueCombination
+import ru.prohor.universe.droid.yahtzee.domain.game.GameState
+import ru.prohor.universe.droid.yahtzee.domain.game.SimpleCombination
+import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.BoxSpacer
+import ru.prohor.universe.droid.yahtzee.ui.HorizontalSpacer
+import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
 @Composable
 fun ScoreDialog(

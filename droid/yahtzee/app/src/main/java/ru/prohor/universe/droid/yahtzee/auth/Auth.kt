@@ -2,9 +2,9 @@ package ru.prohor.universe.droid.yahtzee.auth
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import androidx.core.content.edit
 
 object Auth {
     private const val KEY = "user_key"

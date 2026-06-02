@@ -1,13 +1,9 @@
-package ru.prohor.universe.droid.yahtzee.state
+package ru.prohor.universe.droid.yahtzee.domain.storage
 
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import ru.prohor.universe.droid.yahtzee.data.GameStorage
-import ru.prohor.universe.droid.yahtzee.model.GameDescription
-import ru.prohor.universe.droid.yahtzee.model.GamesDescription
-import ru.prohor.universe.droid.yahtzee.model.SavedGame
 
 object SavedGamesState {
     private var descriptions by mutableStateOf<List<GameDescription>>(emptyList())

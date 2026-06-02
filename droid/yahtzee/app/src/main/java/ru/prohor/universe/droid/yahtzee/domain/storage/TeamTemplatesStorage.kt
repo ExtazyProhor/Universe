@@ -1,9 +1,9 @@
-package ru.prohor.universe.droid.yahtzee.data
+package ru.prohor.universe.droid.yahtzee.domain.storage
 
 import android.content.Context
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import ru.prohor.universe.droid.yahtzee.model.TeamTemplate
+import ru.prohor.universe.droid.yahtzee.domain.team.TeamTemplate
 import java.io.File
 
 object TeamTemplatesStorage {
