@@ -16,6 +16,8 @@ object TeamsState {
         teams.addAll(shuffled)
     }
 
+    fun isShuffleAvailable() = count() > 1
+
     fun count() = teams.count()
 
     fun isAdditionAvailable() = count() < MAX_COUNT

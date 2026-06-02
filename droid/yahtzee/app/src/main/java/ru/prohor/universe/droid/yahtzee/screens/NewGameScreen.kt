@@ -256,37 +256,48 @@ private fun BottomButtons(
     onStartGame: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            val shuffleAvailable = TeamsState.count() > 1
-            if (shuffleAvailable) {
+        if (TeamsState.isAdditionAvailable()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 AppButton(
-                    text = "Перемешать",
-                    onClick = { TeamsState.shuffle() },
+                    text = "Шаблоны",
+                    onClick = { },
                     modifier = Modifier.weight(1f)
                 )
-            }
 
-            if (TeamsState.isAdditionAvailable()) {
-                val addTeam = if (shuffleAvailable) "Добавить\nкоманду" else "Добавить команду"
                 AppButton(
-                    text = addTeam,
+                    text = "Добавить\nкоманду",
                     onClick = onAddTeam,
                     modifier = Modifier.weight(1f)
                 )
             }
+
+            VerticalSpacer(12)
         }
 
-        VerticalSpacer(16)
+        if (TeamsState.isAvailableToStartGame() || TeamsState.isShuffleAvailable()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (TeamsState.isShuffleAvailable()) {
+                    AppButton(
+                        text = "Перемешать",
+                        onClick = { TeamsState.shuffle() },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
 
-        AppButton(
-            text = "Начать игру",
-            onClick = onStartGame,
-            modifier = Modifier.fillMaxWidth(),
-            visible = TeamsState.isAvailableToStartGame()
-        )
+                AppButton(
+                    text = "Начать игру",
+                    onClick = onStartGame,
+                    modifier = Modifier.weight(1f),
+                    visible = TeamsState.isAvailableToStartGame()
+                )
+            }
+        }
     }
 }
 
@@ -326,7 +337,8 @@ private fun AddTeamDialog(
                 Text(
                     text = if (editingTeam == null) "Новая команда" else "Редактирование",
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge
                 )
 
                 VerticalSpacer(20)
