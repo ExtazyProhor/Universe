@@ -48,7 +48,7 @@ fun MainMenuScreen(navController: NavController) {
             VerticalSpacer(20)
 
             AppButton(
-                text = "Мои игры",
+                text = "Сохраненные игры",
                 modifier = Modifier.fillMaxWidth(0.55f),
                 onClick = { navController.navigate("my_games") }
             )
