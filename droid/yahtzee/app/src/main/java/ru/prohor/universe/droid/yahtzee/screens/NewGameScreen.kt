@@ -42,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
@@ -53,7 +54,9 @@ import ru.prohor.universe.droid.yahtzee.common.letIf
 import ru.prohor.universe.droid.yahtzee.model.IndexedTeam
 import ru.prohor.universe.droid.yahtzee.model.MAX_TEAM_NAME_LENGTH
 import ru.prohor.universe.droid.yahtzee.model.Team
+import ru.prohor.universe.droid.yahtzee.model.TeamTemplate
 import ru.prohor.universe.droid.yahtzee.state.GameState
+import ru.prohor.universe.droid.yahtzee.state.TeamTemplatesState
 import ru.prohor.universe.droid.yahtzee.state.TeamsState
 import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.shared.Background
@@ -64,6 +67,7 @@ import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColor
 @Composable
 fun NewGameScreen(navController: NavController) {
     var showDialog by remember { mutableStateOf(false) }
+    var showTemplatesDialog by remember { mutableStateOf(false) }
     var editingTeamIndex by remember { mutableStateOf<Int?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -105,6 +109,9 @@ fun NewGameScreen(navController: NavController) {
                         Mocks.initScores()
                         navController.navigate("game")
                     }
+                },
+                onPressTemplates = {
+                    showTemplatesDialog = true
                 }
             )
         }
@@ -117,6 +124,24 @@ fun NewGameScreen(navController: NavController) {
                 },
                 onSave = {
                     showDialog = false
+                }
+            )
+        }
+
+        if (showTemplatesDialog) {
+            TeamTemplatesDialog(
+                onDismiss = {
+                    showTemplatesDialog = false
+                },
+                onSelect = { template ->
+                    TeamsState.save(
+                        Team(
+                            template.name,
+                            template.color
+                        ),
+                        null
+                    )
+                    showTemplatesDialog = false
                 }
             )
         }
@@ -252,7 +277,8 @@ private fun TeamActionPlaceholder() {
 @Composable
 private fun BottomButtons(
     onAddTeam: () -> Unit,
-    onStartGame: () -> Unit
+    onStartGame: () -> Unit,
+    onPressTemplates: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         if (TeamsState.isAdditionAvailable()) {
@@ -260,14 +286,17 @@ private fun BottomButtons(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                AppButton(
-                    text = "Шаблоны",
-                    onClick = { },
-                    modifier = Modifier.weight(1f)
-                )
+                val templatesAvailable = TeamTemplatesState.isSuitableTemplatesPresent()
+                if (templatesAvailable) {
+                    AppButton(
+                        text = "Шаблоны",
+                        onClick = onPressTemplates,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
 
                 AppButton(
-                    text = "Добавить\nкоманду",
+                    text = if (templatesAvailable) "Добавить\nкоманду" else "Добавить команду",
                     onClick = onAddTeam,
                     modifier = Modifier.weight(1f)
                 )
@@ -306,6 +335,8 @@ private fun AddTeamDialog(
     onDismiss: () -> Unit,
     onSave: () -> Unit
 ) {
+    val context = LocalContext.current
+
     val editingTeam = editingTeamIndex?.let { TeamsState.team(it) }
     var teamName by remember { mutableStateOf(editingTeam?.name ?: "") }
 
@@ -388,6 +419,7 @@ private fun AddTeamDialog(
 
                             val team = Team(teamName, selectedColor)
                             TeamsState.save(team, editingTeamIndex)
+                            TeamTemplatesState.register(teamName, selectedColor, context)
                             onSave()
                         }
                     )
@@ -447,6 +479,88 @@ private fun ColorCircle(
                 text = if (isSelected) "✓" else "x",
                 color = color.textColor,
                 fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+private fun TeamTemplatesDialog(
+    onDismiss: () -> Unit,
+    onSelect: (TeamTemplate) -> Unit
+) {
+    val templates = TeamTemplatesState.topTemplates()
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(28.dp),
+            color = Color(0xFF1D1D1F),
+            modifier = Modifier.fillMaxWidth(0.96f)
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Шаблоны команд",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                VerticalSpacer(20)
+
+                templates.forEach { template ->
+                    TeamTemplateCard(
+                        template = template,
+                        onClick = {
+                            onSelect(template)
+                        }
+                    )
+
+                    VerticalSpacer(12)
+                }
+
+                VerticalSpacer(12)
+
+                AppButton(
+                    text = "Закрыть",
+                    onClick = onDismiss
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TeamTemplateCard(
+    template: TeamTemplate,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = template.color.mainColor)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = template.name,
+                color = template.color.textColor,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            ExpandingSpacer()
+
+            Text(
+                text = "⭐ ${template.usages}",
+                color = template.color.textColor
             )
         }
     }

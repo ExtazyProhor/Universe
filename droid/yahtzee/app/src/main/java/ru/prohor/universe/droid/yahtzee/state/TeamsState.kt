@@ -62,6 +62,10 @@ object TeamsState {
 
     fun isAvailableToStartGame() = count() > 0
 
+    fun usedNames(): Set<String> {
+        return teams.map { it.name }.toSet()
+    }
+
     fun usedColors(): MutableSet<TeamColor> {
         return teams.map { it.color }.toMutableSet()
     }

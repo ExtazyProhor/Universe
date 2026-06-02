@@ -8,6 +8,7 @@ import ru.prohor.universe.droid.yahtzee.auth.Auth
 import ru.prohor.universe.droid.yahtzee.mocks.Mocks
 import ru.prohor.universe.droid.yahtzee.navigation.AppNavigation
 import ru.prohor.universe.droid.yahtzee.state.SavedGamesState
+import ru.prohor.universe.droid.yahtzee.state.TeamTemplatesState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,6 +17,7 @@ class MainActivity : ComponentActivity() {
 
         Auth.initialize(this)
         SavedGamesState.initialize(this)
+        TeamTemplatesState.initialize(this)
         Mocks.initGames(this)
         Mocks.initTeams()
 

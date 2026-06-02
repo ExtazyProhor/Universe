@@ -14,7 +14,7 @@ import ru.prohor.universe.droid.yahtzee.model.Team
 import ru.prohor.universe.droid.yahtzee.state.GameState
 import ru.prohor.universe.droid.yahtzee.state.SavedGamesState
 import ru.prohor.universe.droid.yahtzee.state.TeamsState
-import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColors
+import ru.prohor.universe.droid.yahtzee.ui.theme.TeamColor
 
 object Mocks {
     fun initGames(context: Context) {
@@ -100,13 +100,13 @@ object Mocks {
     )
 
     private val COLORS = listOf(
-        TeamColors.CRIMSON,
-        TeamColors.GRAY,
-        TeamColors.GOLD,
-        TeamColors.BLACK,
-        TeamColors.ROYAL_BLUE,
-        TeamColors.LIGHT_SEA_GREEN,
-        TeamColors.ORANGE_RED,
-        TeamColors.LIME_GREEN
+        TeamColor.CRIMSON,
+        TeamColor.GRAY,
+        TeamColor.GOLD,
+        TeamColor.BLACK,
+        TeamColor.ROYAL_BLUE,
+        TeamColor.LIGHT_SEA_GREEN,
+        TeamColor.ORANGE_RED,
+        TeamColor.LIME_GREEN
     )
 }
