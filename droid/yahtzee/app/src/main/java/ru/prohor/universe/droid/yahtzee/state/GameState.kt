@@ -1,16 +1,13 @@
 package ru.prohor.universe.droid.yahtzee.state
 
 import android.content.Context
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import ru.prohor.universe.droid.yahtzee.core.Yahtzee
 import ru.prohor.universe.droid.yahtzee.model.Combination
 import ru.prohor.universe.droid.yahtzee.model.CombinationItem
 import ru.prohor.universe.droid.yahtzee.model.GameResult
+import ru.prohor.universe.droid.yahtzee.model.GameStateParams
 import ru.prohor.universe.droid.yahtzee.model.MetaCombination
 import ru.prohor.universe.droid.yahtzee.model.SavedCombination
 import ru.prohor.universe.droid.yahtzee.model.SavedGame
@@ -20,10 +17,7 @@ import ru.prohor.universe.droid.yahtzee.model.TeamResult
 
 object GameState {
     private val scores = mutableStateMapOf<Team, SnapshotStateMap<CombinationItem, Int>>()
-    private var currentTeamIndex by mutableIntStateOf(0)
-    private var lastCombination by mutableStateOf<Combination?>(null)
-    private var gameFinished by mutableStateOf(false)
-    private var saved = false
+    private lateinit var params: GameStateParams
 
     fun initialize() {
         scores.forEach { it.value.clear() }
@@ -33,10 +27,7 @@ object GameState {
                 MetaCombination.SCORE_TO_BONUS to Yahtzee.SCORE_TO_BONUS,
             )
         }
-        gameFinished = false
-        saved = false
-        lastCombination = null
-        currentTeamIndex = 0
+        params = GameStateParams()
     }
 
     fun isGameStarted(): Boolean {
@@ -48,7 +39,7 @@ object GameState {
     }
 
     fun currentTeam(): Team {
-        return TeamsState.team(currentTeamIndex)
+        return TeamsState.team(params.currentTeamIndex)
     }
 
     fun previousTeam(): Team {
@@ -61,11 +52,11 @@ object GameState {
 
     fun setScore(combination: Combination, value: Int) {
         val team = currentTeam()
-        lastCombination = combination
+        params.lastCombination = combination
         scores[team]?.set(combination, value)
-        currentTeamIndex = nextTurn()
+        params.currentTeamIndex = nextTurn()
         scores[team]?.let { Yahtzee.recalculateMetaCombinations(it) }
-        gameFinished = calculateIsGameFinished()
+        params.gameFinished = calculateIsGameFinished()
     }
 
     private fun calculateIsGameFinished(): Boolean {
@@ -73,7 +64,7 @@ object GameState {
         return combinations == TeamsState.count() * Yahtzee.COMBINATIONS_WITH_META_COUNT
     }
 
-    fun isGameFinished() = gameFinished
+    fun isGameFinished() = params.gameFinished
 
     fun getResults(): GameResult {
         return GameResult(
@@ -87,8 +78,8 @@ object GameState {
     }
 
     fun saveGame(context: Context) {
-        if (saved) return
-        saved = true
+        if (params.saved) return
+        params.saved = true
 
         val game = SavedGame(
             teams = scores.map { team ->
@@ -107,27 +98,27 @@ object GameState {
     }
 
     fun undoLastMove() {
-        val combination = lastCombination ?: return
-        currentTeamIndex = previousTurn()
-        val team = TeamsState.team(currentTeamIndex)
+        val combination = params.lastCombination ?: return
+        params.currentTeamIndex = previousTurn()
+        val team = TeamsState.team(params.currentTeamIndex)
         scores[team]?.remove(combination)
-        lastCombination = null
+        params.lastCombination = null
         scores[team]?.let { Yahtzee.recalculateMetaCombinations(it) }
-        gameFinished = calculateIsGameFinished()
+        params.gameFinished = calculateIsGameFinished()
     }
 
     fun isUndoAvailable(): Boolean {
-        return lastCombination != null
+        return params.lastCombination != null
     }
 
     private fun nextTurn(): Int {
-        var next = currentTeamIndex + 1
+        var next = params.currentTeamIndex + 1
         if (next >= TeamsState.count()) next = 0
         return next
     }
 
     private fun previousTurn(): Int {
-        var next = currentTeamIndex - 1
+        var next = params.currentTeamIndex - 1
         if (next < 0) next = TeamsState.count() - 1
         return next
     }
