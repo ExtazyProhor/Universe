@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -99,22 +100,24 @@ private fun SimpleCombinationInput(
     onSelect: (Int) -> Unit,
     onDismiss: () -> Unit
 ) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        repeat(5) { index ->
-            Box(
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .clickable {
-                        onSelect((index + 1) * combination.base)
-                    }
-                    .background(Color.White)
-                    .padding(10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                DiceFace(combination.base)
+    BoxWithConstraints {
+        val diceSize = minOf(60.dp, (maxWidth - 32.dp) / 5)
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            repeat(5) { index ->
+                Box(
+                    modifier = Modifier
+                        .size(diceSize)
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable {
+                            onSelect((index + 1) * combination.base)
+                        }
+                        .background(Color.White)
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    DiceFace(combination.base)
+                }
             }
         }
     }

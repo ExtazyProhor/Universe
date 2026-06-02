@@ -47,6 +47,7 @@ import ru.prohor.universe.droid.yahtzee.ui.shared.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.shared.Background
 import ru.prohor.universe.droid.yahtzee.ui.shared.BoxSpacer
 import ru.prohor.universe.droid.yahtzee.ui.shared.ExpandingSpacer
+import ru.prohor.universe.droid.yahtzee.ui.shared.HorizontalSpacer
 import ru.prohor.universe.droid.yahtzee.ui.shared.VerticalSpacer
 
 @Composable
@@ -131,6 +132,8 @@ private class GameScreenRender(
                     onClick = onCancelGame
                 )
             }
+
+            HorizontalSpacer(8)
 
             ExpandingSpacer()
 
