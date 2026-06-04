@@ -3,8 +3,8 @@ package ru.prohor.universe.padawan.kotlin.spring.musicmvp
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class RawMetadata(
-    val duration: String?, // Double
-    val size: String?, // Int
+    val duration: String, // Double
+    val size: String, // Int
 
     val title: String?,
     val artist: String?,
