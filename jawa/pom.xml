@@ -209,6 +209,12 @@
                 <version>2.0.17</version>
             </dependency>
 
+            <!-- Source: https://mvnrepository.com/artifact/com.mpatric/mp3agic -->
+            <dependency>
+                <groupId>com.mpatric</groupId>
+                <artifactId>mp3agic</artifactId>
+                <version>0.9.1</version>
+            </dependency>
 
             <!-- Tests -->
 

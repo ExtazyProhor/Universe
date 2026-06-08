@@ -19,6 +19,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.mpatric</groupId>
+            <artifactId>mp3agic</artifactId>
+        </dependency>
+        <dependency>
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-core</artifactId>
         </dependency>
