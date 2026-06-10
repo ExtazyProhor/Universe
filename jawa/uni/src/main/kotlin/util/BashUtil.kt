@@ -43,3 +43,24 @@ fun runCommandStreaming(
     }
     return process.waitFor()
 }
+
+fun runCommandStreaming(
+    cmd: List<String>,
+    onLine: (String) -> Unit,
+    onErrorLine: (String) -> Unit
+): Int {
+    val process = ProcessBuilder(cmd)
+        .redirectErrorStream(false)
+        .start()
+
+    Thread {
+        process.errorStream.bufferedReader().useLines { lines ->
+            lines.forEach { onErrorLine(it) }
+        }
+    }.start()
+
+    process.inputStream.bufferedReader().forEachLine {
+        onLine(it)
+    }
+    return process.waitFor()
+}
