@@ -9,9 +9,9 @@
         <version>final</version>
     </parent>
 
-    <artifactId>kenobi-bot</artifactId>
+    <artifactId>kenobi-app</artifactId>
     <packaging>jar</packaging>
-    <name>kenobi-bot</name>
+    <name>kenobi-app</name>
 
     <dependencies>
         <dependency>
@@ -20,16 +20,12 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-tg-bots</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-spring</artifactId>
+            <artifactId>jocasta-spring-web</artifactId>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>kenobi-bot</finalName>
+        <finalName>kenobi-app</finalName>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
 
@@ -42,7 +38,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.prohor.universe.kenobi.bot.KenobiBotMainKt</mainClass>
+                    <mainClass>ru.prohor.universe.kenobi.bot.KenobiAppMainKt</mainClass>
                 </configuration>
             </plugin>
         </plugins>

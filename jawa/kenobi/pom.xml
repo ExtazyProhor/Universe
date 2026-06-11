@@ -15,5 +15,6 @@
 
     <modules>
         <module>kenobi-bot</module>
+        <module>kenobi-app</module>
     </modules>
 </project>
