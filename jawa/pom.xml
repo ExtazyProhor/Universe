@@ -35,6 +35,7 @@
         <module>chopper</module>
         <module>bb-8</module>
         <module>uni</module>
+        <module>kenobi</module>
     </modules>
 
     <dependencyManagement>
