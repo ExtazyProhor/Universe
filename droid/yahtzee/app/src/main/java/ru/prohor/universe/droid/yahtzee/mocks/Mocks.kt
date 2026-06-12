@@ -56,9 +56,13 @@ object Mocks {
 
     private var scoresInitiated = false
 
-    fun initScores() {
+    fun initScoresOnce() {
         if (scoresInitiated) return
         scoresInitiated = true
+
+    }
+
+    fun initScores() {
 
     }
 

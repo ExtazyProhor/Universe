@@ -108,6 +108,7 @@ fun NewGameScreen(navController: NavController) {
                 onStartGame = {
                     if (TeamsState.isAvailableToStartGame()) {
                         GameState.initialize()
+                        Mocks.initScoresOnce()
                         Mocks.initScores()
                         navController.navigate("game")
                     }
