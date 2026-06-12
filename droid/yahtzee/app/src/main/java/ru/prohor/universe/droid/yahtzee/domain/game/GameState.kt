@@ -16,6 +16,7 @@ object GameState {
 
     fun initialize() {
         scores.forEach { it.value.clear() }
+        scores.clear()
         TeamsState.teams().forEach { team ->
             scores[team] = mutableStateMapOf(
                 MetaCombination.TOTAL to 0,
