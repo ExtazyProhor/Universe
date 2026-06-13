@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -105,7 +104,7 @@ fun NewGameScreen(navController: NavController) {
                     showDialog = true
                 },
                 onStartGame = {
-                    NavigationActions.startGame(navController)
+                    NavigationActions.startGame(navController, context)
                 },
                 onPressTemplates = {
                     showTemplatesDialog = true
@@ -132,7 +131,6 @@ fun NewGameScreen(navController: NavController) {
                 },
                 onSelect = { template ->
                     TeamsState.save(Team(template.name, template.color), null)
-                    TeamTemplatesState.register(template.name, template.color, context)
                     showTemplatesDialog = false
                 }
             )
@@ -327,8 +325,6 @@ private fun AddTeamDialog(
     onDismiss: () -> Unit,
     onSave: () -> Unit
 ) {
-    val context = LocalContext.current
-
     val editingTeam = editingTeamIndex?.let { TeamsState.team(it) }
     var teamName by remember { mutableStateOf(editingTeam?.name ?: "") }
 
@@ -411,7 +407,6 @@ private fun AddTeamDialog(
 
                             val team = Team(teamName, selectedColor)
                             TeamsState.save(team, editingTeamIndex)
-                            TeamTemplatesState.register(teamName, selectedColor, context)
                             onSave()
                         }
                     )

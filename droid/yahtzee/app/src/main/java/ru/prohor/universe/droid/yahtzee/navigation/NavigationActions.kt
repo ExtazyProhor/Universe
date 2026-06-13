@@ -3,6 +3,7 @@ package ru.prohor.universe.droid.yahtzee.navigation
 import android.content.Context
 import androidx.navigation.NavController
 import ru.prohor.universe.droid.yahtzee.domain.game.GameState
+import ru.prohor.universe.droid.yahtzee.domain.team.TeamTemplatesState
 import ru.prohor.universe.droid.yahtzee.domain.team.TeamsState
 
 object NavigationActions {
@@ -14,9 +15,10 @@ object NavigationActions {
         navController.navigateSingle("my_games")
     }
 
-    fun startGame(navController: NavController) {
+    fun startGame(navController: NavController, context: Context) {
         if (!TeamsState.isAvailableToStartGame()) return
         GameState.initialize()
+        TeamTemplatesState.registerTemplates(context)
         navController.navigateSingle("game")
     }
 
