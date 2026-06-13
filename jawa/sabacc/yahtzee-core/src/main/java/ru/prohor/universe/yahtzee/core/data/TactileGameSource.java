@@ -17,6 +17,11 @@ public enum TactileGameSource {
     LEGACY_JSON,
 
     /**
+     * Json-s received from the legacy yahtzee android app
+     */
+    LEGACY_MOBILE_JSON,
+
+    /**
      * Saved directly from the backend to the database
      */
     DIRECT
