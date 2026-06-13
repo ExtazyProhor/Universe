@@ -50,7 +50,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
-import ru.prohor.universe.droid.yahtzee.domain.game.GameState
 import ru.prohor.universe.droid.yahtzee.domain.team.IndexedTeam
 import ru.prohor.universe.droid.yahtzee.domain.team.MAX_TEAM_NAME_LENGTH
 import ru.prohor.universe.droid.yahtzee.domain.team.Team
@@ -59,7 +58,7 @@ import ru.prohor.universe.droid.yahtzee.domain.team.TeamTemplate
 import ru.prohor.universe.droid.yahtzee.domain.team.TeamTemplatesState
 import ru.prohor.universe.droid.yahtzee.domain.team.TeamsState
 import ru.prohor.universe.droid.yahtzee.ext.letIf
-import ru.prohor.universe.droid.yahtzee.mocks.Mocks
+import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.ExpandingSpacer
@@ -81,7 +80,7 @@ fun NewGameScreen(navController: NavController) {
                 .statusBarsPadding()
                 .padding(24.dp)
         ) {
-            TeamsHeader(onBack = { navController.popBackStack() })
+            TeamsHeader(onBack = { NavigationActions.back(navController) })
 
             VerticalSpacer(16)
 
@@ -106,12 +105,7 @@ fun NewGameScreen(navController: NavController) {
                     showDialog = true
                 },
                 onStartGame = {
-                    if (TeamsState.isAvailableToStartGame()) {
-                        GameState.initialize()
-                        Mocks.initScoresOnce()
-                        Mocks.initScores()
-                        navController.navigate("game")
-                    }
+                    NavigationActions.startGame(navController)
                 },
                 onPressTemplates = {
                     showTemplatesDialog = true

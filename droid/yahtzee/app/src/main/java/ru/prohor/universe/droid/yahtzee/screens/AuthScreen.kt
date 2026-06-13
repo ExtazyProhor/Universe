@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import ru.prohor.universe.droid.yahtzee.api.ApiResult
 import ru.prohor.universe.droid.yahtzee.api.YahtzeeApi
 import ru.prohor.universe.droid.yahtzee.auth.Auth
+import ru.prohor.universe.droid.yahtzee.navigation.navigateSingle
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
@@ -70,7 +71,7 @@ fun AuthScreen(navController: NavController) {
                             ApiResult.Success -> {
                                 Auth.saveKey(key)
 
-                                navController.navigate("menu") {
+                                navController.navigateSingle("menu") {
                                     popUpTo("auth") {
                                         inclusive = true
                                     }

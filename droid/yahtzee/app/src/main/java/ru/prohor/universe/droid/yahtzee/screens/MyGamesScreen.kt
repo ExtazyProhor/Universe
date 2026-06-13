@@ -38,6 +38,7 @@ import ru.prohor.universe.droid.yahtzee.api.ApiResult
 import ru.prohor.universe.droid.yahtzee.api.GameSender
 import ru.prohor.universe.droid.yahtzee.domain.storage.GameDescription
 import ru.prohor.universe.droid.yahtzee.domain.storage.SavedGamesState
+import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.BoxSpacer
@@ -68,7 +69,7 @@ fun MyGamesScreen(navController: NavController) {
                 gamesCount = SavedGamesState.games().size,
                 showSendAll = SavedGamesState.games().isNotEmpty(),
                 onBack = {
-                    navController.popBackStack()
+                    NavigationActions.back(navController)
                 },
                 onSendAll = {
                     scope.launch {

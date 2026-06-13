@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.prohor.universe.droid.yahtzee.domain.game.GameState
 import ru.prohor.universe.droid.yahtzee.domain.game.TeamResult
+import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.HorizontalSpacer
@@ -67,7 +68,7 @@ fun FinishScreen(navController: NavController) {
             AppButton(
                 text = "Далее",
                 onClick = {
-                    navController.popBackStack()
+                    NavigationActions.back(navController)
                 },
                 modifier = Modifier.fillMaxWidth()
             )

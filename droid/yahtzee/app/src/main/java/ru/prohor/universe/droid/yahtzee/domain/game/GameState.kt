@@ -18,10 +18,9 @@ object GameState {
         scores.forEach { it.value.clear() }
         scores.clear()
         TeamsState.teams().forEach { team ->
-            scores[team] = mutableStateMapOf(
-                MetaCombination.TOTAL to 0,
-                MetaCombination.SCORE_TO_BONUS to Yahtzee.SCORE_TO_BONUS,
-            )
+            val map = mutableStateMapOf<CombinationItem, Int>()
+            scores[team] = map
+            Yahtzee.recalculateMetaCombinations(map)
         }
         params = GameStateParams()
     }

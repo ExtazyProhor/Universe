@@ -43,6 +43,7 @@ import ru.prohor.universe.droid.yahtzee.domain.game.MetaCombination
 import ru.prohor.universe.droid.yahtzee.domain.game.SimpleCombination
 import ru.prohor.universe.droid.yahtzee.domain.team.Team
 import ru.prohor.universe.droid.yahtzee.domain.team.TeamsState
+import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.BoxSpacer
@@ -75,7 +76,7 @@ private class GameScreenRender(
                     .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
                 TopBar {
-                    navController.popBackStack()
+                    NavigationActions.back(navController)
                 }
 
                 VerticalSpacer(20)
@@ -316,12 +317,7 @@ private class GameScreenRender(
         AppButton(
             text = "Завершить",
             onClick = {
-                GameState.saveGame(context)
-                navController.navigate("finish") {
-                    popUpTo("game") {
-                        inclusive = true
-                    }
-                }
+                NavigationActions.finishGame(navController, context)
             },
             modifier = Modifier.fillMaxWidth(),
             containerColor = Color(0xFF36C23D)

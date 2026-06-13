@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.prohor.universe.droid.yahtzee.R
+import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
@@ -42,7 +43,7 @@ fun MainMenuScreen(navController: NavController) {
             AppButton(
                 text = "Новая игра",
                 modifier = Modifier.fillMaxWidth(0.55f),
-                onClick = { navController.navigate("new_game") }
+                onClick = { NavigationActions.newGame(navController) }
             )
 
             VerticalSpacer(20)
@@ -50,7 +51,7 @@ fun MainMenuScreen(navController: NavController) {
             AppButton(
                 text = "Сохраненные игры",
                 modifier = Modifier.fillMaxWidth(0.55f),
-                onClick = { navController.navigate("my_games") }
+                onClick = { NavigationActions.myGames(navController) }
             )
         }
 

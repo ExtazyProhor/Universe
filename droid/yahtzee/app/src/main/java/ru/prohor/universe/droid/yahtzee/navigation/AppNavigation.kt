@@ -5,7 +5,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,6 +19,18 @@ import ru.prohor.universe.droid.yahtzee.screens.MainMenuScreen
 import ru.prohor.universe.droid.yahtzee.screens.MyGamesScreen
 import ru.prohor.universe.droid.yahtzee.screens.NewGameScreen
 import ru.prohor.universe.droid.yahtzee.screens.game.GameScreen
+
+fun NavController.navigateSingle(route: String) {
+    val currentRoute = currentBackStackEntry?.destination?.route
+    if (currentRoute == route) return
+    navigate(route)
+}
+
+fun NavController.navigateSingle(route: String, builder: NavOptionsBuilder.() -> Unit) {
+    val currentRoute = currentBackStackEntry?.destination?.route
+    if (currentRoute == route) return
+    navigate(route, builder)
+}
 
 @Composable
 fun AppNavigation() {
