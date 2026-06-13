@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -13,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.prohor.universe.droid.yahtzee.auth.Auth
 import ru.prohor.universe.droid.yahtzee.mocks.MockScreen
+import ru.prohor.universe.droid.yahtzee.mocks.Mocks
 import ru.prohor.universe.droid.yahtzee.screens.AuthScreen
 import ru.prohor.universe.droid.yahtzee.screens.FinishScreen
 import ru.prohor.universe.droid.yahtzee.screens.MainMenuScreen
@@ -68,6 +70,8 @@ fun AppNavigation() {
             MockScreen()
         }
     }
+
+    Mocks.activate(navController, LocalContext.current)
 }
 
 private fun NavGraphBuilder.composableWithAnimation(

@@ -1,5 +1,10 @@
 package ru.prohor.universe.droid.yahtzee.mocks
 
-object Mocks {
+import android.content.Context
+import androidx.navigation.NavController
 
+object Mocks {
+    fun activate(navController: NavController, context: Context) {
+
+    }
 }
