@@ -21,7 +21,7 @@ object TeamsMocks {
         "Eve",
         "Frank",
         "George",
-        "Hi WWWWWWWWWWWWWWWWY"
+        "Hi WWWWWWWWWWWWWWWWY",
     )
 
     private val COLORS = listOf(

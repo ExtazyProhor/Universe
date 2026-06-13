@@ -202,7 +202,7 @@ private fun TeamCard(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = indexedTeam.team.color.textColor,
-                modifier = Modifier.width(180.dp),
+                modifier = Modifier.weight(1f),
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge
             )
@@ -217,7 +217,7 @@ private fun TeamCard(
 @Composable
 private fun TeamUpButton(indexedTeam: IndexedTeam) {
     if (indexedTeam.index == 0) {
-        TeamActionPlaceholder()
+        if (TeamsState.count() > 2) TeamActionPlaceholder()
         return
     }
     IconButton(
@@ -234,7 +234,7 @@ private fun TeamUpButton(indexedTeam: IndexedTeam) {
 @Composable
 private fun TeamDownButton(indexedTeam: IndexedTeam) {
     if (TeamsState.isLastIndex(indexedTeam.index)) {
-        TeamActionPlaceholder()
+        if (TeamsState.count() > 2) TeamActionPlaceholder()
         return
     }
     IconButton(
