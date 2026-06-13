@@ -6,7 +6,7 @@ import androidx.compose.runtime.toMutableStateList
 import ru.prohor.universe.droid.yahtzee.domain.storage.TeamTemplatesStorage
 
 object TeamTemplatesState {
-    private const val TOP = 5
+    private const val TOP = 15
 
     private var templates = mutableStateListOf<TeamTemplate>()
 

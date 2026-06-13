@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -48,6 +49,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import ru.prohor.universe.droid.yahtzee.domain.team.IndexedTeam
 import ru.prohor.universe.droid.yahtzee.domain.team.MAX_TEAM_NAME_LENGTH
@@ -479,11 +481,13 @@ private fun TeamTemplatesDialog(
 ) {
     val templates = TeamTemplatesState.topTemplates()
 
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
         Surface(
-            shape = RoundedCornerShape(28.dp),
-            color = Color(0xFF1D1D1F),
-            modifier = Modifier.fillMaxWidth(0.96f)
+            modifier = Modifier.fillMaxWidth(),
+            color = Color.Black.copy(alpha = 0.3f)
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
@@ -493,23 +497,30 @@ private fun TeamTemplatesDialog(
                     text = "Шаблоны команд",
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.headlineSmall
                 )
 
                 VerticalSpacer(20)
 
-                templates.forEach { template ->
-                    TeamTemplateCard(
-                        template = template,
-                        onClick = {
-                            onSelect(template)
-                        }
-                    )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 420.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    templates.forEach { template ->
+                        TeamTemplateCard(
+                            template = template,
+                            onClick = {
+                                onSelect(template)
+                            }
+                        )
 
-                    VerticalSpacer(12)
+                        VerticalSpacer(12)
+                    }
                 }
 
-                VerticalSpacer(12)
+                VerticalSpacer(20)
 
                 AppButton(
                     text = "Закрыть",
@@ -531,22 +542,17 @@ private fun TeamTemplateCard(
             .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = template.color.mainColor)
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(vertical = 18.dp, horizontal = 20.dp)
         ) {
             Text(
                 text = template.name,
                 color = template.color.textColor,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
-
-            ExpandingSpacer()
-
-            Text("⭐")
         }
     }
 }
