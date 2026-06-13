@@ -60,7 +60,7 @@ fun ScoreDialog(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RectangleShape,
-            color = Color(0xAF1D1D1F)
+            color = Color.Black.copy(alpha = 0.5f)
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),

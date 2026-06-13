@@ -487,7 +487,7 @@ private fun TeamTemplatesDialog(
     ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
-            color = Color.Black.copy(alpha = 0.3f)
+            color = Color.Black.copy(alpha = 0.5f)
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
