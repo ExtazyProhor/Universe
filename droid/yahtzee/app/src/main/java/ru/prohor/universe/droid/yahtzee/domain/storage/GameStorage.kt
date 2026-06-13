@@ -9,6 +9,7 @@ object GameStorage {
     private val json = Json {
         prettyPrint = true
         ignoreUnknownKeys = true
+        encodeDefaults = true
     }
 
     fun save(context: Context, game: SavedGame) {
