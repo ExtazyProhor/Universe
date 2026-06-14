@@ -170,18 +170,16 @@ private fun TeamsList(
         TeamsState.moveTeam(from.index, to.index)
     }
 
-    val indexedTeams = TeamsState.getAllIndexed()
-
     LazyColumn(
         state = lazyListState,
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(
-            count = indexedTeams.size,
-            key = { index -> indexedTeams[index].team.name }
+            count = TeamsState.count(),
+            key = { index -> TeamsState.team(index).name }
         ) { index ->
-            val indexedTeam = indexedTeams[index]
+            val indexedTeam = TeamsState.getAllIndexed().getOrNull(index) ?: return@items
             ReorderableItem(reorderState, key = indexedTeam.team.name) { isDragging ->
                 TeamCard(
                     indexedTeam = indexedTeam,
