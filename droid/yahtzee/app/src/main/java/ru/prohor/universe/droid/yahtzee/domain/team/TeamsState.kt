@@ -23,16 +23,6 @@ object TeamsState {
         teams.removeAt(index)
     }
 
-    fun moveTeamUp(index: Int) {
-        switchTeams(index - 1)
-    }
-
-    fun moveTeamDown(index: Int) {
-        switchTeams(index)
-    }
-
-    fun isLastIndex(index: Int) = index == teams.lastIndex
-
     fun getAllIndexed(): List<IndexedTeam> {
         return teams.mapIndexed { index, team -> IndexedTeam(index, team) }
     }
@@ -67,16 +57,11 @@ object TeamsState {
         return teams.map { it.color }.toMutableSet()
     }
 
-    private fun switchTeams(topIndex: Int) {
-        if (topIndex < 0 || topIndex >= teams.lastIndex) return
-
-        val bottomIndex = topIndex + 1
+    fun moveTeam(fromIndex: Int, toIndex: Int) {
+        if (fromIndex == toIndex) return
         val mutable = teams.toMutableList()
-
-        val topTeam = mutable[topIndex]
-        mutable[topIndex] = mutable[bottomIndex]
-        mutable[bottomIndex] = topTeam
-
+        val item = mutable.removeAt(fromIndex)
+        mutable.add(toIndex, item)
         teams.clear()
         teams.addAll(mutable)
     }

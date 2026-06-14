@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,8 +25,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -64,6 +65,8 @@ import ru.prohor.universe.droid.yahtzee.ui.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.ExpandingSpacer
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun NewGameScreen(navController: NavController) {
@@ -85,18 +88,13 @@ fun NewGameScreen(navController: NavController) {
 
             VerticalSpacer(16)
 
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                TeamsList(
-                    onEdit = { index ->
-                        editingTeamIndex = index
-                        showDialog = true
-                    }
-                )
-            }
+            TeamsList(
+                modifier = Modifier.weight(1f),
+                onEdit = { index ->
+                    editingTeamIndex = index
+                    showDialog = true
+                }
+            )
 
             VerticalSpacer(20)
 
@@ -164,16 +162,34 @@ private fun TeamsHeader(onBack: () -> Unit) {
 
 @Composable
 private fun TeamsList(
+    modifier: Modifier = Modifier,
     onEdit: (Int) -> Unit
 ) {
-    Column(
+    val lazyListState = rememberLazyListState()
+    val reorderState = rememberReorderableLazyListState(lazyListState) { from, to ->
+        TeamsState.moveTeam(from.index, to.index)
+    }
+
+    val indexedTeams = TeamsState.getAllIndexed()
+
+    LazyColumn(
+        state = lazyListState,
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        TeamsState.getAllIndexed().forEach {
-            TeamCard(
-                indexedTeam = it,
-                onEdit = { onEdit(it.index) }
-            )
+        items(
+            count = indexedTeams.size,
+            key = { index -> indexedTeams[index].team.name }
+        ) { index ->
+            val indexedTeam = indexedTeams[index]
+            ReorderableItem(reorderState, key = indexedTeam.team.name) { isDragging ->
+                TeamCard(
+                    indexedTeam = indexedTeam,
+                    isDragging = isDragging,
+                    modifier = Modifier.draggableHandle(),
+                    onEdit = { onEdit(indexedTeam.index) }
+                )
+            }
         }
     }
 }
@@ -181,15 +197,20 @@ private fun TeamsList(
 @Composable
 private fun TeamCard(
     indexedTeam: IndexedTeam,
+    isDragging: Boolean,
+    modifier: Modifier,
     onEdit: () -> Unit
 ) {
+    val elevation = if (isDragging) 8.dp else 2.dp
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onEdit() },
         colors = CardDefaults.cardColors(
             containerColor = indexedTeam.team.color.mainColor
-        )
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation)
     ) {
         Row(
             modifier = Modifier
@@ -207,44 +228,12 @@ private fun TeamCard(
                 style = MaterialTheme.typography.titleLarge
             )
 
-            TeamUpButton(indexedTeam)
-            TeamDownButton(indexedTeam)
             TeamRemoveButton(indexedTeam)
+            TeamDragHandle(
+                tint = indexedTeam.team.color.textColor,
+                modifier = modifier
+            )
         }
-    }
-}
-
-@Composable
-private fun TeamUpButton(indexedTeam: IndexedTeam) {
-    if (indexedTeam.index == 0) {
-        if (TeamsState.count() > 2) TeamActionPlaceholder()
-        return
-    }
-    IconButton(
-        onClick = { TeamsState.moveTeamUp(indexedTeam.index) }
-    ) {
-        Icon(
-            imageVector = Icons.Default.KeyboardArrowUp,
-            contentDescription = null,
-            tint = indexedTeam.team.color.textColor
-        )
-    }
-}
-
-@Composable
-private fun TeamDownButton(indexedTeam: IndexedTeam) {
-    if (TeamsState.isLastIndex(indexedTeam.index)) {
-        if (TeamsState.count() > 2) TeamActionPlaceholder()
-        return
-    }
-    IconButton(
-        onClick = { TeamsState.moveTeamDown(indexedTeam.index) }
-    ) {
-        Icon(
-            imageVector = Icons.Default.KeyboardArrowDown,
-            contentDescription = null,
-            tint = indexedTeam.team.color.textColor
-        )
     }
 }
 
@@ -255,15 +244,27 @@ private fun TeamRemoveButton(indexedTeam: IndexedTeam) {
     ) {
         Icon(
             imageVector = Icons.Default.Delete,
-            contentDescription = null,
+            contentDescription = "Удалить команду",
             tint = indexedTeam.team.color.textColor
         )
     }
 }
 
 @Composable
-private fun TeamActionPlaceholder() {
-    Box(modifier = Modifier.size(48.dp))
+private fun TeamDragHandle(
+    tint: Color,
+    modifier: Modifier = Modifier
+) {
+    IconButton(
+        onClick = {},
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = Icons.Default.DragHandle,
+            contentDescription = "Перетащить",
+            tint = tint
+        )
+    }
 }
 
 @Composable
