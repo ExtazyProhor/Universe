@@ -44,9 +44,11 @@ import ru.prohor.universe.droid.yahtzee.domain.game.FreeValueCombination
 import ru.prohor.universe.droid.yahtzee.domain.game.GameState
 import ru.prohor.universe.droid.yahtzee.domain.game.SimpleCombination
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
-import ru.prohor.universe.droid.yahtzee.ui.BoxSpacer
 import ru.prohor.universe.droid.yahtzee.ui.HorizontalSpacer
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
+
+private val SCORE_BUTTON_YELLOW = Color(0xFFFF9800)
+private val SCORE_BUTTON_GREEN = Color(0xFF4CAF50)
 
 @Composable
 fun ScoreDialog(
@@ -220,35 +222,61 @@ private fun FreeValueInput(
             style = MaterialTheme.typography.bodyMedium
         )
 
-        if (combination != CHANCE) {
-            VerticalSpacer(16)
+        VerticalSpacer(16)
 
-            AppButton(
-                text = "0",
-                containerColor = Color(0xFFFF9800),
-                modifier = Modifier.width(220.dp),
-                onClick = {
-                    onSelect(0)
-                }
-            )
-        }
+        FrequentValues(
+            values = combination.mostFrequentValues,
+            onSelect = onSelect
+        )
 
         VerticalSpacer(16)
 
         Row {
             AppButton(
                 text = "Отмена",
-                onClick = onDismiss
+                onClick = onDismiss,
+                modifier = Modifier.width(150.dp)
             )
 
-            BoxSpacer(12)
+            HorizontalSpacer(10)
 
             AppButton(
                 text = "Сохранить",
                 onClick = {
                     if (isValid) onSelect(number)
-                }
+                },
+                modifier = Modifier.width(150.dp)
             )
+        }
+    }
+}
+
+@Composable
+private fun FrequentValues(
+    values: List<Int>,
+    onSelect: (Int) -> Unit
+) {
+    values.chunked(4).forEachIndexed { index, row ->
+        Row(
+            modifier = Modifier.width(310.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            row.forEach { value ->
+                AppButton(
+                    text = value.toString(),
+                    containerColor = if (value == 0) {
+                        SCORE_BUTTON_YELLOW
+                    } else {
+                        SCORE_BUTTON_GREEN
+                    },
+                    modifier = Modifier.weight(1f),
+                    onClick = { onSelect(value) }
+                )
+            }
+        }
+
+        if (index != values.lastIndex / 4) {
+            VerticalSpacer(10)
         }
     }
 }
@@ -259,7 +287,7 @@ private fun RowScope.ExpandingZeroButton(
 ) {
     AppButton(
         text = "0",
-        containerColor = Color(0xFFFF9800),
+        containerColor = SCORE_BUTTON_YELLOW,
         modifier = Modifier.weight(1f),
         onClick = {
             onSelect(0)
@@ -279,14 +307,14 @@ private fun FixedValueInput(
     ) {
         AppButton(
             text = "0",
-            containerColor = Color(0xFFFF9800),
+            containerColor = SCORE_BUTTON_YELLOW,
             onClick = { onSelect(0) },
             modifier = Modifier.width(120.dp)
         )
 
         AppButton(
             text = value.toString(),
-            containerColor = Color(0xFF4CAF50),
+            containerColor = SCORE_BUTTON_GREEN,
             onClick = { onSelect(value) },
             modifier = Modifier.width(120.dp)
         )

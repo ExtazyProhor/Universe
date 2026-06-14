@@ -23,11 +23,12 @@ sealed interface ComplexCombination : Combination
 
 enum class FreeValueCombination(
     override val readableName: String,
+    override val mostFrequentValues: List<Int>
 ) : FreeValue {
-    PAIR("Пара"),
-    TWO_PAIRS("Две пары"),
-    THREE_OF_KIND("Сет"),
-    FOUR_OF_KIND("Каре");
+    PAIR("Пара", listOf(19, 20, 21, 22, 23, 24, 25, 0)),
+    TWO_PAIRS("Две пары", listOf(22, 23, 24, 25, 26, 27, 28, 0)),
+    THREE_OF_KIND("Сет", listOf(22, 23, 24, 25, 26, 27, 28, 0)),
+    FOUR_OF_KIND("Каре", listOf(21, 22, 25, 26, 27, 28, 29, 0));
 
     override fun validate(value: Int) = inRange(value) || value == 0
 }
@@ -44,6 +45,8 @@ enum class FixedValueCombination(
 
 sealed interface FreeValue : ComplexCombination {
     fun validate(value: Int): Boolean
+
+    val mostFrequentValues: List<Int>
 }
 
 object CHANCE : FreeValue {
@@ -52,6 +55,8 @@ object CHANCE : FreeValue {
     override val name = "CHANCE"
 
     override fun validate(value: Int) = inRange(value)
+
+    override val mostFrequentValues = listOf(19, 20, 21, 22, 23, 24, 25, 26)
 }
 
 val ALL_COMPLEX_COMBINATIONS = listOf(
