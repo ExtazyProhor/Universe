@@ -16,6 +16,10 @@ import ru.prohor.universe.jocasta.spring.configuration.JacksonConfiguration;
 public class JacksonMorphiaConfiguration {
     @Bean
     public Module morphiaModule() {
+        return createMorphiaModule();
+    }
+
+    public static Module createMorphiaModule() {
         SimpleModule morphiaModule = new SimpleModule();
         morphiaModule.addSerializer(ObjectId.class, new ObjectIdSerializer());
         morphiaModule.addDeserializer(ObjectId.class, new ObjectIdDeserializer());
