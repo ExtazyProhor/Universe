@@ -1,4 +1,4 @@
-package ru.prohor.universe.kenobi.bot
+package ru.prohor.universe.kenobi
 
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
@@ -13,8 +13,8 @@ import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration
     JocastaAutoConfiguration::class,
     HolocronConfiguration::class,
 )
-class KenobiBotMain
+class KenobiAppMain
 
 fun main(args: Array<String>) {
-    runApplication<KenobiBotMain>(*args)
+    runApplication<KenobiAppMain>(*args)
 }
