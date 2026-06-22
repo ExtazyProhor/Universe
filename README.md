@@ -60,7 +60,7 @@ source ~/.zprofile # для zsh
 [System.Environment]::SetEnvironmentVariable('HOLOCRON_JSON', 'C:\path\to\holocron.json', 'User')
 [System.Environment]::SetEnvironmentVariable('SPRING_PROFILES_ACTIVE', 'stable', 'User')
 
-[Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";%UNIVERSE_HOME%\c3po\uni", "User")
+[Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";%UNIVERSE_HOME%\uni\uni", "User")
 ```
 
 ##### `alias`-ы
@@ -69,7 +69,7 @@ source ~/.zprofile # для zsh
 
 ```sh
 alias venator="$UNIVERSE_HOME/jawa/venator/venator.sh"
-alias uni="$UNIVERSE_HOME/c3po/uni/uni.sh"
+alias uni="$UNIVERSE_HOME/jawa/uni/uni.sh"
 
 chmod +x "$UNIVERSE_HOME/jawa/venator/venator.sh"
 chmod +x "$UNIVERSE_HOME/jawa/uni/uni.sh"
