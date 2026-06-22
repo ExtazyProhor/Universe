@@ -176,6 +176,8 @@ test_service() {
 }
 
 # prerequisites
+mkdir -p "$PATH_BASE"
+
 if [ ! -x "$PATH_TO_JAVA" ]; then
     echo "${RED}java not found at $PATH_TO_JAVA${RESET}"
     exit 1

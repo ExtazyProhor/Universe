@@ -440,6 +440,11 @@
                 <artifactId>jocasta-jackson-kotlin</artifactId>
                 <version>final</version>
             </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>kenobi</artifactId>
+                <version>final</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
