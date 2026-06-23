@@ -10,6 +10,8 @@
     </parent>
 
     <artifactId>boba-fett</artifactId>
+    <packaging>jar</packaging>
+    <name>boba-fett</name>
 
     <dependencies>
         <dependency>
@@ -43,4 +45,17 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>boba-fett</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>ru.prohor.universe.bobafett.BobaFettMain</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

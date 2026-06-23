@@ -28,7 +28,7 @@ public class Distributor {
 
     @Scheduled(cron = "0 0/15 * * * ?", zone = "Europe/Moscow")
     public void execute() {
-        LocalTime now = LocalTime.now(DateTimeUtil.MOSCOW_ZONE_ID);
+        LocalTime now = LocalTime.now(DateTimeUtil.MOSCOW_ZONE_ID).plusSeconds(30);
         int hour = now.getHour();
         int minute = now.getMinute();
         if (!availableMinutes.contains(minute)) {
