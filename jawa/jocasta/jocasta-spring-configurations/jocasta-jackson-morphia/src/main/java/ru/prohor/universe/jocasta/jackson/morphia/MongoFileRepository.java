@@ -6,6 +6,7 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.functional.DiPredicate;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
+import ru.prohor.universe.jocasta.jackson.core.JocastaCoreModule;
 import ru.prohor.universe.jocasta.morphia.impl.MongoInMemoryRepository;
 
 import java.io.File;
@@ -18,21 +19,26 @@ public class MongoFileRepository<T> extends MongoInMemoryRepository<T> {
     public MongoFileRepository(
             MonoFunction<T, ObjectId> idExtractor,
             Class<T> type,
-            File collectionStorageFile
+            String collectionStorageFileName
     ) {
-        this(idExtractor, null, type, collectionStorageFile);
+        this(idExtractor, null, type, collectionStorageFileName);
     }
 
     public MongoFileRepository(
             MonoFunction<T, ObjectId> idExtractor,
             DiPredicate<T, String> textSearchPredicate,
             Class<T> type,
-            File collectionStorageFile
+            String collectionStorageFileName
     ) {
         super(idExtractor, textSearchPredicate, type);
-        this.collectionStorageFile = collectionStorageFile;
-        this.objectMapper = new ObjectMapper().registerModule(JacksonMorphiaConfiguration.createMorphiaModule());
+        this.collectionStorageFile = new File(collectionStorageFileName);
+        this.objectMapper = new ObjectMapper()
+                .registerModule(JacksonMorphiaConfiguration.createMorphiaModule())
+                .registerModule(new JocastaCoreModule());
 
+        if (!collectionStorageFile.exists()) {
+            return;
+        }
         List<T> list = Sneaky.execute(
                 () -> objectMapper.readValue(
                         collectionStorageFile,
@@ -69,6 +75,10 @@ public class MongoFileRepository<T> extends MongoInMemoryRepository<T> {
     }
 
     private void persist() {
+        File parent = collectionStorageFile.getParentFile();
+        if (!parent.exists() && !parent.mkdirs()) {
+            throw new RuntimeException("parent directory of collection file does not exists: " + parent);
+        }
         List<T> collection = findAll();
         Sneaky.execute(() -> objectMapper.writeValue(collectionStorageFile, collection));
     }
