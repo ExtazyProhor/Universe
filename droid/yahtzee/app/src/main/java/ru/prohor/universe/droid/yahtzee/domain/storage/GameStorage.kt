@@ -1,20 +1,13 @@
 package ru.prohor.universe.droid.yahtzee.domain.storage
 
 import android.content.Context
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import ru.prohor.universe.droid.yahtzee.ext.JsonMapper
 import java.io.File
 
 object GameStorage {
-    private val json = Json {
-        prettyPrint = true
-        ignoreUnknownKeys = true
-        encodeDefaults = true
-    }
-
     fun save(context: Context, game: SavedGame) {
         val file = game(context, game.uuid)
-        val content = json.encodeToString(game)
+        val content = JsonMapper.encode(game)
         file.writeText(content)
     }
 
@@ -38,13 +31,13 @@ object GameStorage {
         if (!file.exists()) return GamesDescription()
 
         return runCatching {
-            json.decodeFromString<GamesDescription>(file.readText())
+            JsonMapper.decode<GamesDescription>(file.readText())
         }.getOrNull() ?: GamesDescription()
     }
 
     fun writeDescription(context: Context, description: GamesDescription) {
         val file = description(context)
-        val content = json.encodeToString(description)
+        val content = JsonMapper.encode(description)
         file.writeText(content)
     }
 
