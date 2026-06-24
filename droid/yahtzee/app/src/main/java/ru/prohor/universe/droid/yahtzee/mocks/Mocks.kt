@@ -13,13 +13,18 @@ object Mocks {
         activateOnce(navController, context)
     }
 
-    fun activateOnce(navController: NavController, context: Context) {
+    private fun activateOnce(navController: NavController, context: Context) {
 
     }
 
-    fun startGame(navController: NavController, context: Context) {
+    private fun startGame(navController: NavController, context: Context) {
         NavigationActions.newGame(navController)
         TeamsMocks.generateTeams(1)
         NavigationActions.startGame(navController, context)
+    }
+
+    private fun startGameWithScores(navController: NavController, context: Context) {
+        startGame(navController, context)
+        ScoresMocks.allScores(1)
     }
 }

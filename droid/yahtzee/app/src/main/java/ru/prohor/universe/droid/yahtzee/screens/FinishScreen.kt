@@ -1,5 +1,6 @@
 package ru.prohor.universe.droid.yahtzee.screens
 
+import android.media.MediaPlayer
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,15 +17,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.prohor.universe.droid.yahtzee.R
 import ru.prohor.universe.droid.yahtzee.domain.game.GameState
 import ru.prohor.universe.droid.yahtzee.domain.game.TeamResult
 import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
@@ -36,6 +40,22 @@ import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 @Composable
 fun FinishScreen(navController: NavController) {
     BackHandler {}
+    val context = LocalContext.current
+
+    DisposableEffect(Unit) {
+        val player = MediaPlayer.create(
+            context,
+            R.raw.gong
+        )
+
+        player.start()
+
+        onDispose {
+            player.stop()
+            player.release()
+        }
+    }
+
     val result = remember { GameState.getResults() }
 
     Box(modifier = Modifier.fillMaxSize()) {
