@@ -152,7 +152,7 @@ private fun TeamsHeader(onBack: () -> Unit) {
         ExpandingSpacer()
 
         Text(
-            text = "Команды: ${TeamsState.count()}/8",
+            text = "Команды: ${TeamsState.count()}/${TeamsState.MAX_COUNT}",
             color = Color.White,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall

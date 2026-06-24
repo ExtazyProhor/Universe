@@ -15,6 +15,10 @@ object NavigationActions {
         navController.navigateSingle("my_games")
     }
 
+    fun settings(navController: NavController) {
+        navController.navigateSingle("settings")
+    }
+
     fun startGame(navController: NavController, context: Context) {
         if (!TeamsState.isAvailableToStartGame()) return
         GameState.initialize()

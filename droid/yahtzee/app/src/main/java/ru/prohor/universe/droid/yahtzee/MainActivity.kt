@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import ru.prohor.universe.droid.yahtzee.auth.Auth
+import ru.prohor.universe.droid.yahtzee.domain.settings.SettingsState
 import ru.prohor.universe.droid.yahtzee.domain.storage.SavedGamesState
 import ru.prohor.universe.droid.yahtzee.domain.team.TeamTemplatesState
 import ru.prohor.universe.droid.yahtzee.navigation.AppNavigation
@@ -17,6 +18,7 @@ class MainActivity : ComponentActivity() {
         Auth.initialize(this)
         SavedGamesState.initialize(this)
         TeamTemplatesState.initialize(this)
+        SettingsState.load(this)
 
         setContent {
             AppNavigation()

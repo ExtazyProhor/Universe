@@ -1,17 +1,35 @@
 package ru.prohor.universe.droid.yahtzee.domain.team
 
 import androidx.compose.runtime.mutableStateListOf
+import ru.prohor.universe.droid.yahtzee.domain.settings.SettingsState
 
 object TeamsState {
-    private const val MAX_COUNT = 8
+    const val MAX_COUNT = 8
 
     private val teams = mutableStateListOf<Team>()
 
     fun shuffle() {
+        val updatedTeams = if (SettingsState.settings.keepTeamsOrderOnShuffle) {
+            shuffleOrdered()
+        } else {
+            shuffleUnordered()
+        }
+
+        teams.clear()
+        teams.addAll(updatedTeams)
+    }
+
+    private fun shuffleOrdered(): List<Team> {
+        if (count() < 2) return teams
+
+        val shift = (1..(count() - 1)).random()
+        return teams().drop(shift) + teams.take(shift)
+    }
+
+    private fun shuffleUnordered(): List<Team> {
         var shuffled: List<Team> = teams
         while (shuffled == teams) shuffled = teams.shuffled()
-        teams.clear()
-        teams.addAll(shuffled)
+        return shuffled
     }
 
     fun isShuffleAvailable() = count() > 1

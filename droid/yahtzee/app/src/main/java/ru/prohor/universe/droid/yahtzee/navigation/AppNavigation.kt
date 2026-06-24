@@ -20,6 +20,7 @@ import ru.prohor.universe.droid.yahtzee.screens.FinishScreen
 import ru.prohor.universe.droid.yahtzee.screens.MainMenuScreen
 import ru.prohor.universe.droid.yahtzee.screens.MyGamesScreen
 import ru.prohor.universe.droid.yahtzee.screens.NewGameScreen
+import ru.prohor.universe.droid.yahtzee.screens.SettingsScreen
 import ru.prohor.universe.droid.yahtzee.screens.game.GameScreen
 
 fun NavController.navigateSingle(route: String) {
@@ -56,6 +57,10 @@ fun AppNavigation() {
 
         composableWithAnimation("my_games") {
             MyGamesScreen(navController)
+        }
+
+        composableWithAnimation("settings") {
+            SettingsScreen(navController)
         }
 
         composableWithAnimation("game") {

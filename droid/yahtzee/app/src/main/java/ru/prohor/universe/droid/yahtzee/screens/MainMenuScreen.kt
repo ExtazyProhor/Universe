@@ -53,6 +53,14 @@ fun MainMenuScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(0.55f),
                 onClick = { NavigationActions.myGames(navController) }
             )
+
+            VerticalSpacer(20)
+
+            AppButton(
+                text = "Настройки",
+                modifier = Modifier.fillMaxWidth(0.55f),
+                onClick = { NavigationActions.settings(navController) }
+            )
         }
 
         AppButton(
