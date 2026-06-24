@@ -8,7 +8,8 @@ object TeamsState {
     private val teams = mutableStateListOf<Team>()
 
     fun shuffle() {
-        val shuffled = teams.shuffled()
+        var shuffled: List<Team> = teams
+        while (shuffled == teams) shuffled = teams.shuffled()
         teams.clear()
         teams.addAll(shuffled)
     }
