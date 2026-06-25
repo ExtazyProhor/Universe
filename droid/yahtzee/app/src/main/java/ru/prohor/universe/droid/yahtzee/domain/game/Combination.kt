@@ -54,6 +54,8 @@ object CHANCE : FreeValue {
 
     override val name = "CHANCE"
 
+    override fun toString() = name
+
     override fun validate(value: Int) = inRange(value)
 
     override val mostFrequentValues = listOf(19, 20, 21, 22, 23, 24, 25, 26)
@@ -67,12 +69,12 @@ val ALL_COMPLEX_COMBINATIONS = listOf(
 
 val ALL_COMBINATIONS = SimpleCombination.entries + ALL_COMPLEX_COMBINATIONS
 
-sealed interface Combination : CombinationItem {
-    val name: String
-}
+sealed interface Combination : CombinationItem
 
 sealed interface CombinationItem {
     val readableName: String
+
+    val name: String
 }
 
 private fun inRange(value: Int) = value >= 5 && value <= 30

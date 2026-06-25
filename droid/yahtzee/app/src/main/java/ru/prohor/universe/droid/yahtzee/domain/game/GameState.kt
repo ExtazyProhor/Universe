@@ -82,7 +82,7 @@ object GameState {
                     name = team.key.name,
                     scores = team.value.map { score ->
                         SavedCombination(
-                            combination = score.key.toString(),
+                            combination = score.key.name,
                             value = score.value
                         )
                     }
