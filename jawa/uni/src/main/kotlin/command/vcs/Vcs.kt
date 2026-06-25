@@ -8,7 +8,6 @@ class Vcs : UniCommand() {
     init {
         subcommands(
             CleanupBranches(),
-            GenerateProject(),
         )
     }
 
