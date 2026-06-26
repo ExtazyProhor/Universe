@@ -15,6 +15,7 @@ class Rename : UniCommand() {
     private val dir by argument(help = "directory in which files will be searched").default(".")
     private val recursive by option("-r", "--recursive", help = "search files recursively").flag()
     private val dryRun by option("-d", "--dry-run", help = "prints the result without renaming files").flag()
+    private val includeFolders by option("-f", "--folders", help = "also renames folders").flag()
 
     override fun help(context: Context) = "renames all files in the specified directory using the passed regexp"
 
@@ -22,10 +23,11 @@ class Rename : UniCommand() {
         val regex = Regex(search)
         val root = File(dir)
 
+        val filter: (File) -> Boolean = { isCommonFile(it) || (if (includeFolders) it.isDirectory else false) }
         val files = if (recursive) {
-            root.walkTopDown().filter { isCommonFile(it) }
+            root.walkTopDown().filter { filter(it) }
         } else {
-            root.listFiles()?.asSequence()?.filter { isCommonFile(it) } ?: emptySequence()
+            root.listFiles()?.asSequence()?.filter { filter(it) } ?: emptySequence()
         }
 
         files.forEach { file ->
