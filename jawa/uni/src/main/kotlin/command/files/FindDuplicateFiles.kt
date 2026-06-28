@@ -25,6 +25,7 @@ class FindDuplicateFiles : UniCommand(name = "duplicate-files") {
         val baseDir = directory.toPath().toAbsolutePath().normalize()
         val filesBySize = directory.walkTopDown()
             .filter { it.isFile }
+            .filter { !EXCLUDE_FILES.contains(it.name) }
             .groupBy { it.length() }
             .filter { it.value.size > 1 }
             .values
@@ -53,5 +54,9 @@ class FindDuplicateFiles : UniCommand(name = "duplicate-files") {
         } else {
             echo("total groups found with duplicates: $duplicateCount")
         }
+    }
+
+    companion object {
+        private val EXCLUDE_FILES = setOf(".DS_Store")
     }
 }
