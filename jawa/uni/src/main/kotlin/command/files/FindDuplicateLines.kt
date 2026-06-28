@@ -12,7 +12,7 @@ import ru.prohor.universe.uni.cli.command.UniCommand
  * - Windows - `Ctrl + Z`, then `Enter`
  * - Unix - `Ctrl + D`
  */
-class FindDuplicateLines : UniCommand(name = "find-duplicates") {
+class FindDuplicateLines : UniCommand(name = "duplicate-lines") {
     override fun help(context: Context) = "finds duplicate lines in the file or in stdin"
 
     private val file by argument(help = "file from which the lines will be taken. If not specified, lines are taken from stdin")

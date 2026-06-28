@@ -14,6 +14,8 @@ class Files : UniCommand() {
             RandFile(),
             Rename(),
             FindDuplicateLines(),
+            FindDuplicateFiles(),
+            CompareDirectories(),
         )
     }
 
