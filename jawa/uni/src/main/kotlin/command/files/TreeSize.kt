@@ -3,6 +3,7 @@ package ru.prohor.universe.uni.cli.command.files
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.default
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.mordant.rendering.TextColors.cyan
@@ -17,6 +18,7 @@ import kotlin.math.pow
 class TreeSize : UniCommand("tree-size") {
     val path: String by argument(help = "path to target directory").default(".")
     val maxDepth: Int? by option("-d", "--depth", "-L", help = "maximum nesting depth").int()
+    val excludeHidden: Boolean by option("-h", "--exclude-hidden", help = "exclude hidden files and directories").flag()
 
     override fun help(context: Context) = "prints tree of files and directories with their sizes"
 
@@ -43,6 +45,9 @@ class TreeSize : UniCommand("tree-size") {
         if (file.isDirectory) {
             val listFiles = file.listFiles() ?: emptyArray()
             for (childFile in listFiles) {
+                if (excludeHidden && childFile.isHidden) {
+                    continue
+                }
                 val childNode = buildTree(childFile)
                 node.children.add(childNode)
                 node.size += childNode.size
