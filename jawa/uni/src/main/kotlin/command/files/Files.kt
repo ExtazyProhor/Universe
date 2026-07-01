@@ -16,6 +16,7 @@ class Files : UniCommand() {
             FindDuplicateLines(),
             FindDuplicateFiles(),
             CompareDirectories(),
+            TreeSize(),
         )
     }
 
