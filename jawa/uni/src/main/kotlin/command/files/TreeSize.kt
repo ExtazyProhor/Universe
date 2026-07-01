@@ -12,6 +12,7 @@ import com.github.ajalt.mordant.rendering.TextColors.red
 import ru.prohor.universe.uni.cli.command.UniCommand
 import java.io.File
 import java.nio.file.Paths
+import kotlin.io.path.absolute
 import kotlin.math.ln
 import kotlin.math.pow
 
@@ -25,7 +26,7 @@ class TreeSize : UniCommand("tree-size") {
     override fun run() {
         val rootFile = File(Paths.get(path).toAbsolutePath().toString())
         if (!rootFile.exists() || !rootFile.isDirectory) {
-            echo("Specified path does not exist or is not a directory", err = true)
+            errorEcho("Specified path does not exist or is not a directory")
             return
         }
 
@@ -35,7 +36,6 @@ class TreeSize : UniCommand("tree-size") {
 
     class Node(val file: File) {
         val isDirectory = file.isDirectory
-        val isHidden = file.isHidden
         val children = mutableListOf<Node>()
         var size: Long = 0
     }
@@ -62,10 +62,12 @@ class TreeSize : UniCommand("tree-size") {
     private fun printTree(node: Node, prefix: String, isLast: Boolean, currentDepth: Int) {
         val marker = if (currentDepth == 0) "" else if (isLast) "└── " else "├── "
         val formattedSize = formatSize(node.size)
-        val name = if (node.isDirectory) "${node.file.name}/" else node.file.name
+        val name = if (currentDepth == 0) "${node.file.toPath().absolute().normalize()}/"
+        else if (node.isDirectory) "${node.file.name}/"
+        else node.file.name
 
         val coloredName = when {
-            node.isHidden -> red(name)
+            name.startsWith(".") -> red(name)
             node.isDirectory -> cyan(name)
             else -> green(name)
         }
