@@ -8,6 +8,7 @@ class Vcs : UniCommand() {
     init {
         subcommands(
             CleanupBranches(),
+            AddMoveInfo(),
         )
     }
 
