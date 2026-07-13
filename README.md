@@ -2,7 +2,7 @@
 
 ![](assets/universe.jpg)
 Монорепозиторий для всех локальных разработок. Делится на
-поддиректории по используемым языкам или предметным областям.
+поддиректории по используемым языкам, платформам или предметным областям.
 
 ### Структура
 
@@ -10,9 +10,9 @@
 
 Java + Kotlin
 
-##### [C3PO](c3po)
+##### [Droid](droid)
 
-Bash + Batch
+Android приложения
 
 ##### [Sarlacc](sarlacc)
 
@@ -72,7 +72,7 @@ alias venator="$UNIVERSE_HOME/jawa/venator/venator.sh"
 alias uni="$UNIVERSE_HOME/c3po/uni/uni.sh"
 
 chmod +x "$UNIVERSE_HOME/jawa/venator/venator.sh"
-chmod +x "$UNIVERSE_HOME/c3po/uni/uni.sh"
+chmod +x "$UNIVERSE_HOME/jawa/uni/uni.sh"
 
 source ~/.bashrc # для bash
 source ~/.zshrc # для zsh

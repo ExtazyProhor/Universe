@@ -34,6 +34,7 @@
         <module>fulcrum</module>
         <module>chopper</module>
         <module>bb-8</module>
+        <module>uni</module>
     </modules>
 
     <dependencyManagement>
@@ -294,6 +295,20 @@
                 <version>2.20.1</version>
             </dependency>
 
+            <!-- Source: https://mvnrepository.com/artifact/tools.jackson.module/jackson-module-kotlin -->
+            <dependency>
+                <groupId>tools.jackson.module</groupId>
+                <artifactId>jackson-module-kotlin</artifactId>
+                <version>3.1.3</version>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/com.github.ajalt.clikt/clikt-jvm -->
+            <dependency>
+                <groupId>com.github.ajalt.clikt</groupId>
+                <artifactId>clikt-jvm</artifactId>
+                <version>5.1.0</version>
+            </dependency>
+
 
             <!-- Universe -->
 
@@ -439,7 +454,7 @@
                                     <version>[3.9.9,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>[21,22)</version>
+                                    <version>[21,)</version>
                                 </requireJavaVersion>
                             </rules>
                             <failFast>true</failFast>
