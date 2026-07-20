@@ -9,6 +9,12 @@ data class CmdResult(
     val exitCode: Int
 )
 
+fun runCommandInteractive(cmd: String): Int {
+    val processArgs = listOf("zsh", "-ic") + "$cmd; exit $?"
+    val process = ProcessBuilder(processArgs).inheritIO().start()
+    return process.waitFor()
+}
+
 fun runCommand(vararg cmd: String): CmdResult {
     return runCommand(cmd.toList())
 }

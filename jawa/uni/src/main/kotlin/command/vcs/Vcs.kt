@@ -9,6 +9,7 @@ class Vcs : UniCommand() {
         subcommands(
             CleanupBranches(),
             AddMoveInfo(),
+            Bisect(),
         )
     }
 
