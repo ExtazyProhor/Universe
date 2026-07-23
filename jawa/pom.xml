@@ -442,7 +442,17 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>kenobi</artifactId>
+                <artifactId>kenobi-app</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>kenobi-core</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>kenobi-youtube-plugin</artifactId>
                 <version>final</version>
             </dependency>
         </dependencies>

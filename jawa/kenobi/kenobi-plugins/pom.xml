@@ -5,17 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.prohor.universe</groupId>
-        <artifactId>jawa</artifactId>
+        <artifactId>kenobi</artifactId>
         <version>final</version>
     </parent>
 
-    <artifactId>kenobi</artifactId>
+    <artifactId>kenobi-plugins</artifactId>
     <packaging>pom</packaging>
-    <name>kenobi</name>
-
+    <name>kenobi-plugins</name>
     <modules>
-        <module>kenobi-app</module>
-        <module>kenobi-plugins</module>
-        <module>kenobi-core</module>
+        <module>kenobi-youtube-plugin</module>
     </modules>
 </project>
