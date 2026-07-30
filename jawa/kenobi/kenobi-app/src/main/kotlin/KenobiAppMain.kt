@@ -1,4 +1,4 @@
-package ru.prohor.universe.kenobi
+package ru.prohor.universe.kenobi.app
 
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
