@@ -1,8 +1,7 @@
-package ru.prohor.universe.chopper.client
+package ru.prohor.universe.jocasta.core.string
 
 import kotlin.apply
 
-@Deprecated("use MarkdownV2 from jocasta-core")
 class MarkdownV2 {
     private val nodes = mutableListOf<Node>()
 

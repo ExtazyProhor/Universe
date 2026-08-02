@@ -11,6 +11,7 @@
 
     <artifactId>jocasta-core</artifactId>
     <packaging>jar</packaging>
+    <name>jocasta-core</name>
 
     <dependencies>
         <dependency>
@@ -26,5 +27,20 @@
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+        </dependency>
     </dependencies>
+
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
