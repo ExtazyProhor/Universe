@@ -1,5 +1,6 @@
 package ru.prohor.universe.bobafett.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,15 +18,27 @@ import ru.prohor.universe.jocasta.morphia.MongoRepository;
 public class BobaFettMongoLocalConfiguration {
     @Bean
     public MongoRepository<BobaFettUser> bobaFettUserRepository(
+            ObjectMapper objectMapper,
             @Value("${universe.boba-fett.collection-file.users}") String usersCollectionFileName
     ) {
-        return new MongoFileRepository<>(BobaFettUser::id, BobaFettUser.class, usersCollectionFileName);
+        return new MongoFileRepository<>(
+                BobaFettUser::id,
+                BobaFettUser.class,
+                usersCollectionFileName,
+                objectMapper
+        );
     }
 
     @Bean
     public MongoRepository<CustomHoliday> customHolidayRepository(
+            ObjectMapper objectMapper,
             @Value("${universe.boba-fett.collection-file.custom-holidays}") String customHolidaysCollectionFileName
     ) {
-        return new MongoFileRepository<>(CustomHoliday::id, CustomHoliday.class, customHolidaysCollectionFileName);
+        return new MongoFileRepository<>(
+                CustomHoliday::id,
+                CustomHoliday.class,
+                customHolidaysCollectionFileName,
+                objectMapper
+        );
     }
 }

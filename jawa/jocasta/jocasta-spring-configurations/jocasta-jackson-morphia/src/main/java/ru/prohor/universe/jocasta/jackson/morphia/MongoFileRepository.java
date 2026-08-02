@@ -19,22 +19,22 @@ public class MongoFileRepository<T> extends MongoInMemoryRepository<T> {
     public MongoFileRepository(
             MonoFunction<T, ObjectId> idExtractor,
             Class<T> type,
-            String collectionStorageFileName
+            String collectionStorageFileName,
+            ObjectMapper objectMapper
     ) {
-        this(idExtractor, null, type, collectionStorageFileName);
+        this(idExtractor, null, type, collectionStorageFileName, objectMapper);
     }
 
     public MongoFileRepository(
             MonoFunction<T, ObjectId> idExtractor,
             DiPredicate<T, String> textSearchPredicate,
             Class<T> type,
-            String collectionStorageFileName
+            String collectionStorageFileName,
+            ObjectMapper objectMapper
     ) {
         super(idExtractor, textSearchPredicate, type);
         this.collectionStorageFile = new File(collectionStorageFileName);
-        this.objectMapper = new ObjectMapper()
-                .registerModule(JacksonMorphiaConfiguration.createMorphiaModule())
-                .registerModule(new JocastaCoreModule());
+        this.objectMapper = objectMapper;
 
         if (!collectionStorageFile.exists()) {
             return;
