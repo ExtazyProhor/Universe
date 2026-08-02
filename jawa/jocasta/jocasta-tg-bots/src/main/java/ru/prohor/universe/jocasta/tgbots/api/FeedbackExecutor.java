@@ -2,6 +2,7 @@ package ru.prohor.universe.jocasta.tgbots.api;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -15,6 +16,8 @@ public interface FeedbackExecutor {
     void editMessageText(EditMessageText message);
 
     void sendDocument(SendDocument document);
+
+    void sendPhoto(SendPhoto photo);
 
     default void sendMessage(Long chatId, String text) {
         SendMessage sendMessage = SendMessage.builder()
@@ -62,5 +65,32 @@ public interface FeedbackExecutor {
                 .document(inputFile)
                 .build();
         sendDocument(document);
+    }
+
+    default void sendPhoto(Long chatId, InputFile photo) {
+        SendPhoto sendPhoto = SendPhoto.builder()
+                .chatId(chatId)
+                .photo(photo)
+                .build();
+        sendPhoto(sendPhoto);
+    }
+
+    default void sendPhoto(Long chatId, InputFile photo, String caption) {
+        SendPhoto sendPhoto = SendPhoto.builder()
+                .chatId(chatId)
+                .photo(photo)
+                .caption(caption)
+                .build();
+        sendPhoto(sendPhoto);
+    }
+
+    default void sendPhoto(Long chatId, InputFile photo, String caption, String parseMode) {
+        SendPhoto sendPhoto = SendPhoto.builder()
+                .chatId(chatId)
+                .photo(photo)
+                .caption(caption)
+                .parseMode(parseMode)
+                .build();
+        sendPhoto(sendPhoto);
     }
 }

@@ -3,6 +3,7 @@ package ru.prohor.universe.jocasta.tgbots;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -61,6 +62,18 @@ public abstract class DeafBot extends TelegramLongPollingBot {
                             execute(document);
                         }),
                         document.getChatId()
+                );
+            }
+
+            @Override
+            public void sendPhoto(SendPhoto photo) {
+                executeSending(
+                        () -> execute(photo),
+                        Opt.of(chatId -> {
+                            photo.setChatId(chatId);
+                            execute(photo);
+                        }),
+                        photo.getChatId()
                 );
             }
         };
