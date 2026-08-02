@@ -2,27 +2,47 @@ package ru.prohor.universe.jocasta.core.string
 
 import kotlin.apply
 
-class MarkdownV2 {
-    private val nodes = mutableListOf<Node>()
+class MarkdownV2 private constructor(private val nodes: MutableList<Node>) {
+    constructor() : this(mutableListOf())
 
     fun text(text: String) = apply {
         nodes += TextNode(text)
     }
 
     fun bold(text: String) = apply {
-        nodes += BoldNode(text)
+        nodes += BoldNode(listOf(TextNode(text)))
+    }
+
+    fun bold(block: MarkdownV2.() -> Unit) = apply {
+        val child = MarkdownV2().apply(block)
+        nodes += BoldNode(child.nodes)
     }
 
     fun italic(text: String) = apply {
-        nodes += ItalicNode(text)
+        nodes += ItalicNode(listOf(TextNode(text)))
+    }
+
+    fun italic(block: MarkdownV2.() -> Unit) = apply {
+        val child = MarkdownV2().apply(block)
+        nodes += ItalicNode(child.nodes)
     }
 
     fun strike(text: String) = apply {
-        nodes += StrikeNode(text)
+        nodes += StrikeNode(listOf(TextNode(text)))
+    }
+
+    fun strike(block: MarkdownV2.() -> Unit) = apply {
+        val child = MarkdownV2().apply(block)
+        nodes += StrikeNode(child.nodes)
     }
 
     fun spoiler(text: String) = apply {
-        nodes += SpoilerNode(text)
+        nodes += SpoilerNode(listOf(TextNode(text)))
+    }
+
+    fun spoiler(block: MarkdownV2.() -> Unit) = apply {
+        val child = MarkdownV2().apply(block)
+        nodes += SpoilerNode(child.nodes)
     }
 
     fun codeInline(text: String) = apply {
@@ -35,7 +55,12 @@ class MarkdownV2 {
     }
 
     fun link(text: String, url: String) = apply {
-        nodes += LinkNode(text, url)
+        nodes += LinkNode(listOf(TextNode(text)), url)
+    }
+
+    fun link(url: String, block: MarkdownV2.() -> Unit) = apply {
+        val child = MarkdownV2().apply(block)
+        nodes += LinkNode(child.nodes, url)
     }
 
     fun bulletList(vararg items: String) = apply {
@@ -54,8 +79,11 @@ class MarkdownV2 {
         nodes += NumberedListNode(items)
     }
 
-    fun newline() = apply {
-        nodes += CharNode('\n')
+    fun newline(count: Int = 1) = apply {
+        if (count < 1) throw IllegalArgumentException("count must be positive")
+        repeat(count) {
+            nodes += CharNode('\n')
+        }
     }
 
     fun space() = apply {
@@ -84,24 +112,31 @@ private class TextNode(private val text: String) : Node {
     override fun raw() = text
 }
 
-private class BoldNode(private val text: String) : Node {
-    override fun markdown() = "*${text.escape()}*"
-    override fun raw() = text
+private class BoldNode(children: List<Node>) : ParentNode(children) {
+    override fun markdown() = "*${children.joinToString("") { it.markdown() }}*"
 }
 
-private class ItalicNode(private val text: String) : Node {
-    override fun markdown() = "_${text.escape()}_"
-    override fun raw() = text
+private class ItalicNode(children: List<Node>) : ParentNode(children) {
+    override fun markdown() = "_${children.joinToString("") { it.markdown() }}_"
 }
 
-private class StrikeNode(private val text: String) : Node {
-    override fun markdown() = "~${text.escape()}~"
-    override fun raw() = text
+private class StrikeNode(children: List<Node>) : ParentNode(children) {
+    override fun markdown() = "~${children.joinToString("") { it.markdown() }}~"
 }
 
-private class SpoilerNode(private val text: String) : Node {
-    override fun markdown() = "||${text.escape()}||"
-    override fun raw() = text
+private class SpoilerNode(children: List<Node>) : ParentNode(children) {
+    override fun markdown() = "||${children.joinToString("") { it.markdown() }}||"
+}
+
+private class LinkNode(
+    children: List<Node>,
+    private val url: String
+) : ParentNode(children) {
+    override fun markdown(): String {
+        val textMarkdown = children.joinToString("") { it.markdown() }
+        return "[$textMarkdown](${url.escape()})"
+    }
+    override fun raw(): String = "${super.raw()} ($url)"
 }
 
 private class CodeInlineNode(private val text: String) : Node {
@@ -124,14 +159,6 @@ private class CodeBlockNode(
     }
 
     override fun raw(): String = code
-}
-
-private class LinkNode(
-    private val text: String,
-    private val url: String
-) : Node {
-    override fun markdown(): String = "[${text.escape()}](${url.escape()})"
-    override fun raw(): String = "$text ($url)"
 }
 
 private class BulletListNode(private val items: List<String>) : Node {
@@ -165,6 +192,10 @@ private class NumberedListNode(private val items: List<String>) : Node {
 private class CharNode(private val char: Char) : Node {
     override fun markdown() = "$char"
     override fun raw() = "$char"
+}
+
+private abstract class ParentNode(protected val children: List<Node>) : Node {
+    override fun raw(): String = children.joinToString("") { it.raw() }
 }
 
 private interface Node {
