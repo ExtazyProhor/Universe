@@ -79,6 +79,7 @@ public abstract class DeafBot extends TelegramLongPollingBot {
         };
     }
 
+    // TODO возвращать статус, чтобы можно было сделать ретрай
     private void executeSending(
             ThrowableRunnable task,
             Opt<ThrowableConsumer<Long>> taskWithNewChatId,
