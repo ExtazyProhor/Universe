@@ -1,6 +1,6 @@
 package ru.prohor.universe.venator.shared
 
-import ru.prohor.universe.chopper.client.MarkdownV2
+import ru.prohor.universe.jocasta.core.string.MarkdownV2
 
 interface Notifier {
     fun failure(message: MarkdownV2)

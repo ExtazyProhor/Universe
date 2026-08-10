@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestConstructor
-import ru.prohor.universe.chopper.client.MarkdownV2
+import ru.prohor.universe.jocasta.core.string.MarkdownV2
 import ru.prohor.universe.venator.Venator
 import ru.prohor.universe.venator.shared.Notifier
 import ru.prohor.universe.venator.webhook.model.ApiResponse

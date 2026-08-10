@@ -2,7 +2,7 @@ package ru.prohor.universe.venator.webhook.service
 
 import org.springframework.beans.factory.annotation.Value
 import ru.prohor.universe.chopper.client.ChopperClient
-import ru.prohor.universe.chopper.client.MarkdownV2
+import ru.prohor.universe.jocasta.core.string.MarkdownV2
 import ru.prohor.universe.venator.shared.Notifier
 
 class TelegramNotifier(
