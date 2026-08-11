@@ -19,7 +19,8 @@ dependencies = [
     "pandas (>=3.0.2,<4.0.0)",
     "pypdf (>=6.9.2,<7.0.0)",
     "lyricsgenius (>=3.11.0,<4.0.0)",
-    "rapidfuzz (>=3.14.3,<4.0.0)"
+    "rapidfuzz (>=3.14.3,<4.0.0)",
+    "matplotlib (>=3.11.1,<4.0.0)"
 ]
 
 [tool.poetry]
