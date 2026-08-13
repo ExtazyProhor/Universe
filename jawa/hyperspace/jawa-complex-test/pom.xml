@@ -20,10 +20,6 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>kryonet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
             <artifactId>yahtzee-app</artifactId>
         </dependency>
         <dependency>
