@@ -34,6 +34,7 @@ import ru.prohor.universe.droid.yahtzee.ui.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
+import ru.prohor.universe.droid.yahtzee.ui.disableDensity
 
 @Composable
 fun AuthScreen(navController: NavController) {
@@ -146,7 +147,7 @@ private fun KeyInput(
         onValueChange = onValueChange,
         singleLine = true,
         enabled = enabled,
-        textStyle = MaterialTheme.typography.titleLarge,
+        textStyle = MaterialTheme.typography.titleLarge.disableDensity(),
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.White,

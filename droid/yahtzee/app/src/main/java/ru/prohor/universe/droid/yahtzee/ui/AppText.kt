@@ -4,7 +4,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -20,7 +19,6 @@ fun AppText(
     softWrap: Boolean = true,
     maxLines: Int = Int.MAX_VALUE
 ) {
-    val density = LocalDensity.current
     Text(
         text = text,
         modifier = modifier,
@@ -29,9 +27,6 @@ fun AppText(
         overflow = overflow,
         softWrap = softWrap,
         maxLines = maxLines,
-        style = style.copy(
-            fontSize = style.fontSize / density.fontScale,
-            lineHeight = style.lineHeight / density.fontScale
-        )
+        style = style.disableDensity()
     )
 }

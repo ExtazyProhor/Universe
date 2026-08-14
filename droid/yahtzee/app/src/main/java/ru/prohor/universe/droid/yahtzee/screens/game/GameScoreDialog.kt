@@ -46,6 +46,7 @@ import ru.prohor.universe.droid.yahtzee.ui.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.HorizontalSpacer
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
+import ru.prohor.universe.droid.yahtzee.ui.disableDensity
 
 private val SCORE_BUTTON_YELLOW = Color(0xFFFF9800)
 private val SCORE_BUTTON_GREEN = Color(0xFF4CAF50)
@@ -198,7 +199,7 @@ private fun FreeValueInput(
             onValueChange = {
                 text = it.take(2)
             },
-            textStyle = MaterialTheme.typography.headlineSmall,
+            textStyle = MaterialTheme.typography.headlineSmall.disableDensity(),
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number

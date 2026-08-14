@@ -65,6 +65,7 @@ import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.ExpandingSpacer
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
+import ru.prohor.universe.droid.yahtzee.ui.disableDensity
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
@@ -383,7 +384,7 @@ private fun AddTeamDialog(
                         unfocusedContainerColor = Color(0xFFF2F2F2),
                         errorContainerColor = Color(0xFFE8736B)
                     ),
-                    textStyle = MaterialTheme.typography.titleMedium
+                    textStyle = MaterialTheme.typography.titleMedium.disableDensity()
                 )
 
                 if (duplicatedName) {
