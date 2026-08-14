@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -44,6 +43,7 @@ import ru.prohor.universe.droid.yahtzee.domain.game.FreeValueCombination
 import ru.prohor.universe.droid.yahtzee.domain.game.GameState
 import ru.prohor.universe.droid.yahtzee.domain.game.SimpleCombination
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.HorizontalSpacer
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
@@ -70,7 +70,7 @@ fun ScoreDialog(
             ) {
                 VerticalSpacer(40)
 
-                Text(
+                AppText(
                     text = combination.readableName,
                     color = Color.White,
                     style = MaterialTheme.typography.headlineSmall
@@ -215,7 +215,7 @@ private fun FreeValueInput(
         VerticalSpacer(8)
 
         val error = if (isError) "Некорректное значение" else ""
-        Text(
+        AppText(
             text = error,
             modifier = Modifier.height(20.dp),
             color = Color.Red,

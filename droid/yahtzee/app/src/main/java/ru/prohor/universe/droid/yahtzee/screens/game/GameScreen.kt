@@ -20,7 +20,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +44,7 @@ import ru.prohor.universe.droid.yahtzee.domain.team.Team
 import ru.prohor.universe.droid.yahtzee.domain.team.TeamsState
 import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.BoxSpacer
 import ru.prohor.universe.droid.yahtzee.ui.ExpandingSpacer
@@ -157,7 +157,7 @@ private class GameScreenRender(
                     .padding(horizontal = 12.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
+                AppText(
                     text = currentTeam.name,
                     color = currentTeam.color.textColor,
                     style = MaterialTheme.typography.titleMedium,
@@ -205,11 +205,12 @@ private class GameScreenRender(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            AppText(
                 text = combination.readableName,
                 color = Color.White,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = fontWeight
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = fontWeight
+                )
             )
             ExpandingSpacer()
             ScoresRow(combination)
@@ -264,7 +265,7 @@ private class GameScreenRender(
                 .background(color.lightColor),
             contentAlignment = Alignment.Center
         ) {
-            Text(
+            AppText(
                 text = value.toString(),
                 color = color.darkColor,
                 style = MaterialTheme.typography.titleMedium
@@ -303,7 +304,7 @@ private class GameScreenRender(
                 },
             contentAlignment = Alignment.Center
         ) {
-            Text(
+            AppText(
                 text = if (editableCombination) "+" else value,
                 color = textColor,
                 style = MaterialTheme.typography.titleMedium

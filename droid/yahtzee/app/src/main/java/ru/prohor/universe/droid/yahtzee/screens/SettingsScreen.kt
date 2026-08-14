@@ -13,7 +13,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +24,7 @@ import androidx.navigation.NavController
 import ru.prohor.universe.droid.yahtzee.domain.settings.SettingsState
 import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.ExpandingSpacer
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
@@ -77,11 +77,12 @@ private fun Header(
 
         ExpandingSpacer()
 
-        Text(
+        AppText(
             text = "Настройки",
             color = Color.White,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Bold
+            ),
             modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
@@ -108,7 +109,7 @@ private fun SettingsItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            AppText(
                 text = title,
                 modifier = Modifier.weight(1f),
                 color = Color.White,

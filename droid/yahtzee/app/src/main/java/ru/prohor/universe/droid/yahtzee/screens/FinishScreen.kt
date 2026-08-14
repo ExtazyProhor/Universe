@@ -15,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -33,6 +32,7 @@ import ru.prohor.universe.droid.yahtzee.domain.game.GameState
 import ru.prohor.universe.droid.yahtzee.domain.game.TeamResult
 import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.HorizontalSpacer
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
@@ -123,7 +123,7 @@ private fun ResultCard(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            AppText(
                 text = result.team.name,
                 color = textColor,
                 style = MaterialTheme.typography.titleLarge,
@@ -134,11 +134,12 @@ private fun ResultCard(
 
             HorizontalSpacer(16)
 
-            Text(
+            AppText(
                 text = result.total.toString(),
                 color = textColor,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
             )
         }
     }

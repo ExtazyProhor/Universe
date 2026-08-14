@@ -32,7 +32,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -62,6 +61,7 @@ import ru.prohor.universe.droid.yahtzee.domain.team.TeamsState
 import ru.prohor.universe.droid.yahtzee.ext.letIf
 import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.ExpandingSpacer
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
@@ -151,11 +151,12 @@ private fun TeamsHeader(onBack: () -> Unit) {
 
         ExpandingSpacer()
 
-        Text(
+        AppText(
             text = "Команды: ${TeamsState.count()}/${TeamsState.MAX_COUNT}",
             color = Color.White,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Bold
+            )
         )
     }
 }
@@ -216,14 +217,15 @@ private fun TeamCard(
                 .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            AppText(
                 text = indexedTeam.team.name,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = indexedTeam.team.color.textColor,
                 modifier = Modifier.weight(1f),
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
             )
 
             TeamRemoveButton(indexedTeam)
@@ -353,11 +355,12 @@ private fun AddTeamDialog(
                     .wrapContentHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
+                AppText(
                     text = if (editingTeam == null) "Новая команда" else "Редактирование",
                     color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
 
                 VerticalSpacer(20)
@@ -366,7 +369,12 @@ private fun AddTeamDialog(
                     value = teamName,
                     onValueChange = { teamName = it.trim().take(MAX_TEAM_NAME_LENGTH) },
                     singleLine = true,
-                    placeholder = { Text("Название команды") },
+                    placeholder = {
+                        AppText(
+                            text = "Название команды",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    },
                     isError = duplicatedName,
                     keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
                     shape = RoundedCornerShape(16.dp),
@@ -380,7 +388,7 @@ private fun AddTeamDialog(
 
                 if (duplicatedName) {
                     VerticalSpacer(8)
-                    Text(
+                    AppText(
                         text = "Название уже занято",
                         color = Color.Red,
                         style = MaterialTheme.typography.titleSmall
@@ -464,10 +472,10 @@ private fun ColorCircle(
         contentAlignment = Alignment.Center
     ) {
         if (isUsed || isSelected) {
-            Text(
+            AppText(
                 text = if (isSelected) "✓" else "x",
                 color = color.textColor,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.titleSmall
             )
         }
     }
@@ -492,11 +500,12 @@ private fun TeamTemplatesDialog(
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
+                AppText(
                     text = "Шаблоны команд",
                     color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
 
                 VerticalSpacer(20)
@@ -546,11 +555,12 @@ private fun TeamTemplateCard(
                 .fillMaxWidth()
                 .padding(vertical = 18.dp, horizontal = 20.dp)
         ) {
-            Text(
+            AppText(
                 text = template.name,
                 color = template.color.textColor,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold
+                )
             )
         }
     }

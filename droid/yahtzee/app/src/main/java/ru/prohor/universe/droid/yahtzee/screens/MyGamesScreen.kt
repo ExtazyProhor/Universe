@@ -18,7 +18,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +39,7 @@ import ru.prohor.universe.droid.yahtzee.domain.storage.GameDescription
 import ru.prohor.universe.droid.yahtzee.domain.storage.SavedGamesState
 import ru.prohor.universe.droid.yahtzee.navigation.NavigationActions
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.BoxSpacer
 import ru.prohor.universe.droid.yahtzee.ui.ErrorDialog
@@ -90,11 +90,12 @@ fun MyGamesScreen(navController: NavController) {
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
+                    AppText(
                         text = "Нет сохранённых игр",
                         color = Color.White.copy(alpha = 0.8f),
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                 }
                 return
@@ -175,7 +176,7 @@ private fun GameCard(game: GameDescription) {
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            AppText(
                 text = formatTimestamp(game.finish),
                 color = Color.Black,
                 style = MaterialTheme.typography.titleLarge,
@@ -192,7 +193,7 @@ private fun GameCard(game: GameDescription) {
 
             BoxSpacer(6)
 
-            Text(
+            AppText(
                 text = game.teams.toString(),
                 color = Color.Black,
                 style = MaterialTheme.typography.titleLarge

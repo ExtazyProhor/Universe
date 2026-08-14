@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -32,6 +31,7 @@ import ru.prohor.universe.droid.yahtzee.api.YahtzeeApi
 import ru.prohor.universe.droid.yahtzee.auth.Auth
 import ru.prohor.universe.droid.yahtzee.navigation.navigateSingle
 import ru.prohor.universe.droid.yahtzee.ui.AppButton
+import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
@@ -107,11 +107,12 @@ private fun AuthCard(
             modifier = Modifier.padding(28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
+            AppText(
                 text = "Введите ключ доступа",
                 color = Color.White,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold
+                )
             )
 
             VerticalSpacer(24)
@@ -168,7 +169,7 @@ private fun ErrorBlock(error: String) {
         contentAlignment = Alignment.Center
     ) {
         if (error.isNotEmpty()) {
-            Text(
+            AppText(
                 text = error,
                 color = Color(0xFFFF6B6B),
                 textAlign = TextAlign.Center,
