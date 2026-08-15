@@ -1,5 +1,6 @@
 package ru.prohor.universe.droid.yahtzee.api
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -17,8 +18,8 @@ object YahtzeeApi {
     private const val HOST = BuildConfig.API_URL
     private val mediaType = "application/json; charset=utf-8".toMediaType()
     private val client = OkHttpClient.Builder()
-        .connectTimeout(5, TimeUnit.SECONDS)
-        .readTimeout(5, TimeUnit.SECONDS)
+        .connectTimeout(3, TimeUnit.SECONDS)
+        .readTimeout(3, TimeUnit.SECONDS)
         .writeTimeout(1, TimeUnit.SECONDS)
         .build()
 
@@ -56,7 +57,7 @@ object YahtzeeApi {
     }
 
     private suspend fun call(request: Request): ApiResult {
-        return withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
             try {
                 val response = client.newCall(request).execute()
                 when (response.code) {
@@ -74,5 +75,7 @@ object YahtzeeApi {
                 ApiResult.Error(e.message ?: "Неизвестная ошибка")
             }
         }
+        Log.d("api", result.toString())
+        return result
     }
 }
