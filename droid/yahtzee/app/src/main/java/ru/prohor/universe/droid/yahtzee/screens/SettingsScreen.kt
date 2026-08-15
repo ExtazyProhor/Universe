@@ -8,11 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import ru.prohor.universe.droid.yahtzee.ui.AppButton
 import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.Background
 import ru.prohor.universe.droid.yahtzee.ui.ExpandingSpacer
+import ru.prohor.universe.droid.yahtzee.ui.HorizontalSpacer
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 
 @Composable
@@ -96,6 +98,7 @@ private fun SettingsItem(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Black.copy(alpha = 0.65f)
         )
@@ -109,21 +112,27 @@ private fun SettingsItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = Color(0xFF34C759),
+                    checkedBorderColor = Color.Transparent,
+
+                    uncheckedThumbColor = Color.White,
+                    uncheckedTrackColor = Color(0xFF636366),
+                    uncheckedBorderColor = Color.Transparent
+                )
+            )
+
+            HorizontalSpacer(14)
+
             AppText(
                 text = title,
                 modifier = Modifier.weight(1f),
                 color = Color.White,
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            Checkbox(
-                checked = checked,
-                onCheckedChange = onCheckedChange,
-                colors = CheckboxDefaults.colors(
-                    checkedColor = Color.White,
-                    uncheckedColor = Color.White,
-                    checkmarkColor = Color.Black
-                )
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
