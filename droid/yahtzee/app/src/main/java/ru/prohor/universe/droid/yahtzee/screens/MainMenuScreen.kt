@@ -37,9 +37,7 @@ fun MainMenuScreen(navController: NavController) {
         )
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding(),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -71,6 +69,7 @@ fun MainMenuScreen(navController: NavController) {
             onClick = { activity?.finish() },
             containerColor = Color(0xFF8B0000),
             modifier = Modifier
+                .statusBarsPadding()
                 .align(Alignment.TopEnd)
                 .padding(16.dp)
         )
