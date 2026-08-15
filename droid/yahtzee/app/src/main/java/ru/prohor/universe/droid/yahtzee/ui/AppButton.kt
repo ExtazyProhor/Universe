@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,6 +23,7 @@ fun AppButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     text: String? = null,
+    textStyle: TextStyle = MaterialTheme.typography.titleMedium,
     containerColor: Color = Color.Black,
     contentColor: Color = Color.White,
     imageVector: ImageVector? = null,
@@ -48,7 +50,7 @@ fun AppButton(
         text?.let {
             AppText(
                 text = text,
-                style = MaterialTheme.typography.titleMedium.copy(
+                style = textStyle.copy(
                     lineHeight = 20.sp,
                 ),
                 textAlign = TextAlign.Center,

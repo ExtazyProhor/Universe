@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -47,9 +48,6 @@ import ru.prohor.universe.droid.yahtzee.ui.AppText
 import ru.prohor.universe.droid.yahtzee.ui.HorizontalSpacer
 import ru.prohor.universe.droid.yahtzee.ui.VerticalSpacer
 import ru.prohor.universe.droid.yahtzee.ui.disableDensity
-
-private val SCORE_BUTTON_YELLOW = Color(0xFFFF9800)
-private val SCORE_BUTTON_GREEN = Color(0xFF4CAF50)
 
 @Composable
 fun ScoreDialog(
@@ -263,13 +261,8 @@ private fun FrequentValues(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             row.forEach { value ->
-                AppButton(
-                    text = value.toString(),
-                    containerColor = if (value == 0) {
-                        SCORE_BUTTON_YELLOW
-                    } else {
-                        SCORE_BUTTON_GREEN
-                    },
+                ScoreButton(
+                    value = value,
                     modifier = Modifier.weight(1f),
                     onClick = { onSelect(value) }
                 )
@@ -286,9 +279,8 @@ private fun FrequentValues(
 private fun RowScope.ExpandingZeroButton(
     onSelect: (Int) -> Unit
 ) {
-    AppButton(
-        text = "0",
-        containerColor = SCORE_BUTTON_YELLOW,
+    ScoreButton(
+        value = 0,
         modifier = Modifier.weight(1f),
         onClick = {
             onSelect(0)
@@ -306,16 +298,14 @@ private fun FixedValueInput(
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        AppButton(
-            text = "0",
-            containerColor = SCORE_BUTTON_YELLOW,
+        ScoreButton(
+            value = 0,
             onClick = { onSelect(0) },
             modifier = Modifier.width(120.dp)
         )
 
-        AppButton(
-            text = value.toString(),
-            containerColor = SCORE_BUTTON_GREEN,
+        ScoreButton(
+            value = value,
             onClick = { onSelect(value) },
             modifier = Modifier.width(120.dp)
         )
@@ -330,4 +320,34 @@ private fun FixedValueInput(
             modifier = Modifier.width(252.dp),
         )
     }
+}
+
+
+private val SCORE_BUTTON_YELLOW = Color(0xFFFF9800)
+private val SCORE_BUTTON_GREEN = Color(0xFF4CAF50)
+
+@Composable
+fun ScoreButton(
+    value: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AppButton(
+        text = value.toString(),
+        textStyle = MaterialTheme.typography.titleMedium.copy(
+            fontWeight = FontWeight.Bold
+        ),
+        containerColor = if (value == 0) {
+            SCORE_BUTTON_YELLOW
+        } else {
+            SCORE_BUTTON_GREEN
+        },
+        contentColor = if (value == 0) {
+            Color.Black
+        } else {
+            Color.White
+        },
+        onClick = { onClick() },
+        modifier = modifier
+    )
 }
