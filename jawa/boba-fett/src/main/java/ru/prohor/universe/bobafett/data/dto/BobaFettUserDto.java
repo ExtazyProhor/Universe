@@ -25,5 +25,7 @@ public class BobaFettUserDto {
     private String userLink;
     @Property("holidays_subscription_options")
     private HolidaysSubscriptionOptionsDto holidaysSubscriptionOptions;
+    @Property("currency_subscription_options")
+    private CurrencySubscriptionOptionsDto currencySubscriptionOptions;
     private UserStatusDto status;
 }

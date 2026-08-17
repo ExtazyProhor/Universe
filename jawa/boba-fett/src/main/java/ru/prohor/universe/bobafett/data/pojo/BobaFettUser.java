@@ -15,6 +15,7 @@ public record BobaFettUser(
         Opt<String> chatName,
         Opt<String> userLink,
         Opt<HolidaysSubscriptionOptions> holidaysSubscriptionOptions,
+        Opt<CurrencySubscriptionOptions> currencySubscriptionOptions,
         Opt<UserStatus> status
 ) implements MongoEntityPojo<BobaFettUserDto> {
     @Override
@@ -26,6 +27,7 @@ public record BobaFettUser(
                 chatName.orElseNull(),
                 userLink.orElseNull(),
                 holidaysSubscriptionOptions.map(HolidaysSubscriptionOptions::toDto).orElseNull(),
+                currencySubscriptionOptions.map(CurrencySubscriptionOptions::toDto).orElseNull(),
                 status.map(UserStatus::toDto).orElseNull()
         );
     }
@@ -38,6 +40,7 @@ public record BobaFettUser(
                 Opt.ofNullable(user.getChatName()),
                 Opt.ofNullable(user.getUserLink()),
                 Opt.ofNullable(user.getHolidaysSubscriptionOptions()).map(HolidaysSubscriptionOptions::fromDto),
+                Opt.ofNullable(user.getCurrencySubscriptionOptions()).map(CurrencySubscriptionOptions::fromDto),
                 Opt.ofNullable(user.getStatus()).map(UserStatus::fromDto)
         );
     }
@@ -54,6 +57,7 @@ public record BobaFettUser(
                 chat.getType(),
                 Opt.ofNullable(name),
                 link,
+                Opt.empty(),
                 Opt.empty(),
                 Opt.empty()
         );
