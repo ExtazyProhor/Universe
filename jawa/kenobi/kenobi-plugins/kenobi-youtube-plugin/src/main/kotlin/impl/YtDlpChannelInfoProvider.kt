@@ -6,6 +6,7 @@ import ru.prohor.universe.kenobi.plugin.youtube.model.ChannelInfo
 
 @Service
 class YtDlpChannelInfoProvider : ChannelInfoProvider {
+    // TODO add test
     private val baseCommand = listOf(
         "yt-dlp",
         "--playlist-items",

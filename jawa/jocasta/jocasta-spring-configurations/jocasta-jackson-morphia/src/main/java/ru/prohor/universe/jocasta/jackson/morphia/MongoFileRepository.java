@@ -6,7 +6,6 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.functional.DiPredicate;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
-import ru.prohor.universe.jocasta.jackson.core.JocastaCoreModule;
 import ru.prohor.universe.jocasta.morphia.impl.MongoInMemoryRepository;
 
 import java.io.File;
@@ -37,6 +36,12 @@ public class MongoFileRepository<T> extends MongoInMemoryRepository<T> {
         this.objectMapper = objectMapper;
 
         if (!collectionStorageFile.exists()) {
+            File parent = collectionStorageFile.getParentFile();
+            if (!parent.exists()) {
+                if (!parent.mkdirs()) {
+                    throw new IllegalStateException("can not create directory: " + parent);
+                }
+            }
             return;
         }
         List<T> list = Sneaky.execute(

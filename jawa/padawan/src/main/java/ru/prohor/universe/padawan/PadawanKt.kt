@@ -1,6 +1,7 @@
 package ru.prohor.universe.padawan
 
 import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectWriter
 import ru.prohor.universe.jocasta.cfg.kotlin.JacksonKotlinConfiguration
@@ -14,7 +15,7 @@ object PadawanKt {
     object Jackson {
         val mapper: ObjectMapper = JacksonConfiguration().objectMapper(
             listOf(JacksonKotlinConfiguration().kotlinModule())
-        )
+        ).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         val writer: ObjectWriter = mapper.writer(PrettyJsonPrinter())
 
         inline fun <reified T> readList(file: TestFile): List<T> {
