@@ -16,6 +16,9 @@ import java.util.Set;
 
 @Service
 public class NotifyCommand implements CommandHandler {
+    private final static String NOTIFY_MESSAGE = "На первой строчке chatId через запятую, все остальное - сообщение. "
+            + "Для отправки сообщения всем подписчикам, вместо chatId укажите строку 'all-users' без кавычек";
+
     private final Set<Long> adminChatsIds;
     private final BobaFettUserService bobaFettUserService;
     private final WaitNotifyMessage waitNotifyMessage;
@@ -42,6 +45,6 @@ public class NotifyCommand implements CommandHandler {
             return;
 
         bobaFettUserService.setStatus(chatId, new UserStatus(waitNotifyMessage.key(), Opt.empty()));
-        feedbackExecutor.sendMessage(chatId, "На первой строчке chatId через запятую, все остальное - сообщение");
+        feedbackExecutor.sendMessage(chatId, NOTIFY_MESSAGE);
     }
 }

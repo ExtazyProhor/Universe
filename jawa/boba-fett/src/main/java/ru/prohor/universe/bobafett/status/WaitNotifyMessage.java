@@ -3,6 +3,8 @@ package ru.prohor.universe.bobafett.status;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.bobafett.command.Commands;
+import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
+import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusFlow;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
@@ -12,6 +14,12 @@ import java.util.List;
 
 @Service
 public class WaitNotifyMessage implements StatusHandler<String> {
+    private final MongoRepository<BobaFettUser> bobaFettUsersRepository;
+
+    public WaitNotifyMessage(MongoRepository<BobaFettUser> bobaFettUsersRepository) {
+        this.bobaFettUsersRepository = bobaFettUsersRepository;
+    }
+
     @Override
     public String key() {
         return "admin/wait-notify-message";
@@ -34,17 +42,26 @@ public class WaitNotifyMessage implements StatusHandler<String> {
             return StatusFlow.EXIT;
         }
         List<Long> chatIds = new ArrayList<>();
-        for (String part : message.substring(0, lineIndex).split(",")) {
-            try {
-                chatIds.add(Long.parseLong(part));
-            } catch (NumberFormatException nfe) {
-                feedbackExecutor.sendMessage(chatId, "Неверный формат chatId: \"" + part + "\"");
-                return StatusFlow.EXIT;
+        String chatIdsLine = message.substring(0, lineIndex);
+        if (chatIdsLine.equals("all-users")) {
+            chatIds.addAll(bobaFettUsersRepository.findAll().stream().map(BobaFettUser::chatId).toList());
+        } else {
+            for (String part : chatIdsLine.split(",")) {
+                try {
+                    chatIds.add(Long.parseLong(part));
+                } catch (NumberFormatException nfe) {
+                    feedbackExecutor.sendMessage(chatId, "Неверный формат chatId: \"" + part + "\"");
+                    return StatusFlow.EXIT;
+                }
             }
         }
         message = message.substring(lineIndex + 1);
         for (Long chat : chatIds) {
-            feedbackExecutor.sendMessage(chat, message);
+            try {
+                feedbackExecutor.sendMessage(chat, message);
+            } catch (Exception e) {
+                e.printStackTrace(); // TODO log
+            }
         }
         return StatusFlow.EXIT;
     }
