@@ -26,6 +26,7 @@ exit
 ```js
 db.createCollection("users")
 db.createCollection("custom_holidays")
+db.createCollection("currency_rates")
 
 db.users.createIndex(
     {

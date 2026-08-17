@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
+import ru.prohor.universe.bobafett.data.pojo.CurrencyRate;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
 import ru.prohor.universe.jocasta.cfg.morphia.MongoInMemoryConfiguration;
 import ru.prohor.universe.jocasta.jackson.morphia.MongoFileRepository;
@@ -38,6 +39,19 @@ public class BobaFettMongoLocalConfiguration {
                 CustomHoliday::id,
                 CustomHoliday.class,
                 customHolidaysCollectionFileName,
+                objectMapper
+        );
+    }
+
+    @Bean
+    public MongoRepository<CurrencyRate> currencyRatesRepository(
+            ObjectMapper objectMapper,
+            @Value("${universe.boba-fett.collection-file.currency-rates}") String currencyRatesCollectionFileName
+    ) {
+        return new MongoFileRepository<>(
+                CurrencyRate::id,
+                CurrencyRate.class,
+                currencyRatesCollectionFileName,
                 objectMapper
         );
     }
