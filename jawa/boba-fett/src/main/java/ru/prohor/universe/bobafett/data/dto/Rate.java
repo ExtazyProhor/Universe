@@ -14,5 +14,5 @@ import ru.prohor.universe.bobafett.data.Currency;
 public class Rate {
     private Currency currency;
     @Property("rate_to_russian_ruble")
-    private float rateToRussianRuble;
+    private double rateToRussianRuble;
 }

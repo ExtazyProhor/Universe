@@ -65,5 +65,5 @@ public class CurrencyLayerApiService {
                 .toList();
     }
 
-    private record CurrencyResponse(Map<String, Float> quotes) {}
+    private record CurrencyResponse(Map<String, Double> quotes) {}
 }
