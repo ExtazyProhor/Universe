@@ -22,7 +22,7 @@ public class CommandsList implements CommandHandler {
 
     @Override
     public String command() {
-        return Commands.COMMANDS;
+        return Commands.HELP;
     }
 
     @Override

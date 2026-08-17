@@ -17,7 +17,7 @@ public class UnknownCommandHandler implements UnknownActionKeyHandler<Message, S
         log.trace("unknown command '{}' from chat with id {}", command, message.getChatId());
         feedbackExecutor.sendMessage(
                 message.getChatId(),
-                "Неизвестная команда. Посмотреть список доступных команд - " + Commands.COMMANDS
+                "Неизвестная команда. Посмотреть список доступных команд - " + Commands.HELP
         );
     }
 }

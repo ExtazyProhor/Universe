@@ -33,7 +33,7 @@ public class StartCommand implements CommandHandler {
         feedbackExecutor.sendMessage(
                 chat.getId(),
                 "Привет, " + name + "! Чтобы узнать что я могу, используй команду "
-                        + Commands.COMMANDS + " или меню слева от поля ввода"
+                        + Commands.HELP + " или меню слева от поля ввода"
         );
     }
 }
