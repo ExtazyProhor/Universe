@@ -25,4 +25,13 @@ public interface Callbacks {
     String GET_HOLIDAYS = "h/g";
     String GET_HOLIDAYS_FOR_CUSTOM_DATE = "h/gd";
     String GET_HOLIDAYS_INIT = "h/ig";
+
+    /**
+     *  Currency (<code>c/**</code>)
+     * <p>
+     * i - init
+     * s - subscription
+     */
+    String SUBSCRIBE_CURRENCY_INIT = "c/is";
+    String SUBSCRIBE_CURRENCY = "c/s";
 }

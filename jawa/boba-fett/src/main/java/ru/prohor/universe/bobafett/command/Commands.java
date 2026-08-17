@@ -5,4 +5,5 @@ public interface Commands {
     String HELP = "/help";
     String GET_ID = "/id";
     String HOLIDAYS = "/holidays";
+    String CURRENCY = "/currency";
 }
