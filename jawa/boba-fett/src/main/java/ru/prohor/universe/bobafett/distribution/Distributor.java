@@ -35,6 +35,13 @@ public class Distributor {
             log.error("invalid minute value: '{}'", minute);
             return;
         }
-        tasks.forEach(task -> task.distribute(feedbackExecutor, hour, minute));
+        tasks.forEach(task -> {
+            try {
+                task.distribute(feedbackExecutor, hour, minute);
+            } catch (Exception e) {
+                // TODO log
+                e.printStackTrace();
+            }
+        });
     }
 }

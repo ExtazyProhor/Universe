@@ -49,8 +49,8 @@ public class BobaFettBot extends SimpleBot {
 
     @Override
     public void onBotRemovedFromChat(long chatId, Chat chat) {
-        bobaFettUserService.disableHolidaysSubscription(chatId);
-        log.info("bot was removed from chat: '{}'", objectsEncoder.encode(chat));
+        bobaFettUserService.deleteByChatId(chatId);
+        log.info("bot was removed from chat: '{}', chat-user was deleted", objectsEncoder.encode(chat));
     }
 
     @Override
@@ -58,15 +58,15 @@ public class BobaFettBot extends SimpleBot {
         log.warn("unrecognized chat member: '{}'", objectsEncoder.encode(chatMemberUpdated));
     }
 
-    @Override
+    @Override // TODO убрать, сыпит warn-ами при отправках стикеров
     public void onUnknownAction(Update update) {
         log.warn("unknown action: '{}'", objectsEncoder.encode(update));
     }
 
     @Override
     public void onForbidden(String response, long chatId) {
-        bobaFettUserService.disableHolidaysSubscription(chatId);
-        log.info("forbidden for chat with id {}, response - '{}'", chatId, response);
+        bobaFettUserService.deleteByChatId(chatId);
+        log.debug("forbidden for chat with id {}, response - '{}', user was deleted", chatId, response);
     }
 
     @Override

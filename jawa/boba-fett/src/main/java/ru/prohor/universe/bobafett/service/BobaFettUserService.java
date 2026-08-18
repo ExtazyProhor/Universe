@@ -2,7 +2,6 @@ package ru.prohor.universe.bobafett.service;
 
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
-import ru.prohor.universe.bobafett.data.pojo.HolidaysSubscriptionOptions;
 import ru.prohor.universe.bobafett.data.pojo.UserStatus;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.fieldref.FR;
@@ -20,20 +19,6 @@ public class BobaFettUserService {
 
     public BobaFettUserService(MongoRepository<BobaFettUser> usersRepository) {
         this.usersRepository = usersRepository;
-    }
-
-    public void disableHolidaysSubscription(long chatId) {
-        usersRepository.safeUpdate(
-                filterByChatId(chatId),
-                user -> {
-                    Opt<HolidaysSubscriptionOptions> disabled = user.holidaysSubscriptionOptions().map(
-                            it -> it.toBuilder().subscriptionIsActive(false).build()
-                    );
-                    return user.toBuilder()
-                            .holidaysSubscriptionOptions(disabled)
-                            .build();
-                }
-        );
     }
 
     public void changeChatId(long oldChatId, long newChatId) {
@@ -94,6 +79,10 @@ public class BobaFettUserService {
         return Opt.of(repository.find(filterByChatId(chatId)))
                 .filter(list -> list.size() == 1)
                 .map(List::getFirst);
+    }
+
+    public void deleteByChatId(long chatId) {
+        findByChatId(usersRepository, chatId).ifPresent(user -> usersRepository.deleteById(user.id()));
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
