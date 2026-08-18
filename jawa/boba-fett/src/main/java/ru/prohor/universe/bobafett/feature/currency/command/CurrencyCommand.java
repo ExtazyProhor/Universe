@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.prohor.universe.bobafett.command.Commands;
+import ru.prohor.universe.bobafett.feature.currency.callback.GetCurrencyCallback;
 import ru.prohor.universe.bobafett.feature.currency.callback.SubscribeCurrencyInitCallback;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
@@ -18,10 +19,19 @@ public class CurrencyCommand implements CommandHandler {
     private static final String START_MESSAGE = "Выберите действие";
     private final InlineKeyboardMarkup keyboard;
 
-    public CurrencyCommand(SubscribeCurrencyInitCallback subscribeCurrencyInitCallback) {
+    public CurrencyCommand(
+            GetCurrencyCallback getCurrencyCallback,
+            SubscribeCurrencyInitCallback subscribeCurrencyInitCallback
+    ) {
         keyboard = InlineKeyboardUtils.getColumnInlineKeyboard(
-                List.of("ежедневная рассылка курсов валют"),
-                List.of(subscribeCurrencyInitCallback.key())
+                List.of(
+                        "узнать текущий курс валют",
+                        "ежедневная рассылка курса валют"
+                ),
+                List.of(
+                        getCurrencyCallback.key(),
+                        subscribeCurrencyInitCallback.key()
+                )
         );
     }
 

@@ -30,8 +30,10 @@ public interface Callbacks {
      *  Currency (<code>c/**</code>)
      * <p>
      * i - init
+     * g - get currency
      * s - subscription
      */
     String SUBSCRIBE_CURRENCY_INIT = "c/is";
     String SUBSCRIBE_CURRENCY = "c/s";
+    String GET_CURRENCY = "c/g";
 }
