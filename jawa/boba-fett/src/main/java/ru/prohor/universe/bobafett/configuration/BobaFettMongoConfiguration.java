@@ -16,7 +16,8 @@ import ru.prohor.universe.jocasta.morphia.impl.MongoMorphiaRepository;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 
 @Configuration
-@Profile("stable | canary")
+@Profile("aaa")
+// TODO @Profile("stable | canary")
 @Import(MongoInstanceConfiguration.class)
 public class BobaFettMongoConfiguration {
     @Bean

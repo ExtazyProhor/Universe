@@ -14,7 +14,7 @@ import ru.prohor.universe.jocasta.jackson.morphia.MongoFileRepository;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 
 @Configuration
-@Profile("local | testing")
+// TODO @Profile("local | testing")
 @Import(MongoInMemoryConfiguration.class)
 public class BobaFettMongoLocalConfiguration {
     @Bean
