@@ -23,10 +23,12 @@ import java.util.List;
 @Service
 public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHolidaysCallback.Payload> {
     private static final String SETTINGS_MESSAGE =
-            "Выберите время ежедневной рассылки и день праздников, относительно даты рассылки";
-    private static final List<String> MAJOR_HOURS_TEXT = List.of("-6:00", "+6:00");
-    private static final List<String> MINOR_HOURS_TEXT = List.of("-1:00", "+1:00");
-    private static final List<String> MINUTES_TEXT = List.of("-0:15", "+0:15");
+            "Выберите время ежедневной рассылки (по МСК) и день праздников, относительно даты рассылки";
+    private static final List<String> MAJOR_HOURS_TEXT = List.of("-6 ч", "+6 ч");
+    private static final List<String> MIDDLE_HOURS_TEXT = List.of("-3 ч", "+3 ч");
+    private static final List<String> MINOR_HOURS_TEXT = List.of("-1 ч", "+1 ч");
+    private static final List<String> MINUTES_TEXT = List.of("-15 мин", "+15 мин");
+
     private static final String[] INDENT_TEXT = {"того же дня", "следующего дня", "после-следующего дня"};
     private static final int DEFAULT_HOUR = 12;
     private static final int DEFAULT_MINUTE = 0;
@@ -87,7 +89,8 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
                         messageId,
                         "Настройки успешно применены. В " + payload.hour + ":" +
                                 (payload.minute == 0 ? "00" : payload.minute) +
-                                " каждый день будет приходить " + "список праздников " + INDENT_TEXT[payload.indent]
+                                " по МСК каждый день будет приходить " + "список праздников " +
+                                INDENT_TEXT[payload.indent]
                 );
             }
         }
@@ -153,6 +156,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
                 List.of(
                         List.of("Установить время: " + DateTimeUtil.timeWithoutMillis(time)),
                         MAJOR_HOURS_TEXT,
+                        MIDDLE_HOURS_TEXT,
                         MINOR_HOURS_TEXT,
                         MINUTES_TEXT,
                         List.of("тот же день " + indentText(indent, 0)),
@@ -163,6 +167,7 @@ public class SubscribeHolidaysCallback extends JsonCallbackHandler<SubscribeHoli
                 List.of(
                         List.of(Callbacks.BLANK),
                         makeTimeRow(time.minusHours(6), time.plusHours(6), indent),
+                        makeTimeRow(time.minusHours(3), time.plusHours(3), indent),
                         makeTimeRow(time.minusHours(1), time.plusHours(1), indent),
                         makeTimeRow(time.minusMinutes(15), time.plusMinutes(15), indent),
                         List.of(indent(time, indent, 0)),

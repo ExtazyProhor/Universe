@@ -23,10 +23,11 @@ import java.util.List;
 
 @Service
 public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurrencyCallback.Payload> {
-    private static final String SETTINGS_MESSAGE = "Выберите время ежедневной рассылки";
-    private static final List<String> MAJOR_HOURS_TEXT = List.of("-6:00", "+6:00");
-    private static final List<String> MINOR_HOURS_TEXT = List.of("-1:00", "+1:00");
-    private static final List<String> MINUTES_TEXT = List.of("-0:15", "+0:15");
+    private static final String SETTINGS_MESSAGE = "Выберите время ежедневной рассылки (по МСК)";
+    private static final List<String> MAJOR_HOURS_TEXT = List.of("-6 ч", "+6 ч");
+    private static final List<String> MIDDLE_HOURS_TEXT = List.of("-3 ч", "+3 ч");
+    private static final List<String> MINOR_HOURS_TEXT = List.of("-1 ч", "+1 ч");
+    private static final List<String> MINUTES_TEXT = List.of("-15 мин", "+15 мин");
     private static final int DEFAULT_HOUR = 12;
     private static final int DEFAULT_MINUTE = 0;
 
@@ -82,7 +83,7 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
                         messageId,
                         "Настройки успешно применены. В " + payload.hour + ":" +
                                 (payload.minute == 0 ? "00" : payload.minute) +
-                                " каждый день будет приходить актуальный курс валют"
+                                " по МСК каждый день будет приходить актуальный курс валют"
                 );
             }
         }
@@ -151,6 +152,7 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
                 List.of(
                         List.of("Установить время: " + DateTimeUtil.timeWithoutMillis(time)),
                         MAJOR_HOURS_TEXT,
+                        MIDDLE_HOURS_TEXT,
                         MINOR_HOURS_TEXT,
                         MINUTES_TEXT,
                         List.of("Применить")
@@ -158,6 +160,7 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
                 List.of(
                         List.of(Callbacks.BLANK),
                         makeTimeRow(time.minusHours(6), time.plusHours(6)),
+                        makeTimeRow(time.minusHours(3), time.plusHours(3)),
                         makeTimeRow(time.minusHours(1), time.plusHours(1)),
                         makeTimeRow(time.minusMinutes(15), time.plusMinutes(15)),
                         List.of(makeCallback(Payload.create(Option.CONFIRM, time)))
