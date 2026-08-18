@@ -5,36 +5,63 @@ import ru.prohor.universe.bobafett.data.dto.Rate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
 public class CurrencyMessageFormatterImpl implements CurrencyMessageFormatter {
+    private final NumberFormat numberFormat = setupNumberFormat();
+
+    private NumberFormat setupNumberFormat() {
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.forLanguageTag("ru-RU"));
+        numberFormat.setMinimumFractionDigits(2);
+        numberFormat.setMaximumFractionDigits(2);
+        numberFormat.setRoundingMode(RoundingMode.HALF_UP);
+        return numberFormat;
+    }
+
     @Override
     public String format(List<Rate> rates) {
         return "Курс валют сейчас:\n\n" + rates.stream().map(this::formatRate).collect(Collectors.joining("\n"));
     }
 
     private String formatRate(Rate rate) {
-        BigDecimal bd = new BigDecimal(Double.toString(1.0 / rate.getRateToRussianRuble()));
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
-        String formattedValue = String.format(Locale.ROOT, "%.2f", bd);
+        BigDecimal rateToRussianRuble = BigDecimal.valueOf(1.0 / rate.getRateToRussianRuble());
 
-        long totalRubles = bd.longValue();
-        long lastTwoDigits = totalRubles % 100;
-        long lastDigit = totalRubles % 10;
-
-        String currencySign;
-        if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
-            currencySign = "рублей";
-        } else if (lastDigit == 1) {
-            currencySign = "рубль";
-        } else if (lastDigit >= 2 && lastDigit <= 4) {
-            currencySign = "рубля";
+        BigDecimal amount;
+        long currencyAmount;
+        String currencyName;
+        if (rateToRussianRuble.compareTo(BigDecimal.ONE) < 0) {
+            amount = rateToRussianRuble.multiply(BigDecimal.valueOf(1000));
+            currencyAmount = 1000;
+            currencyName = rate.getCurrency().russianNameForThousand;
         } else {
-            currencySign = "рублей";
+            amount = rateToRussianRuble;
+            currencyAmount = 1;
+            currencyName = rate.getCurrency().russianName;
         }
-        return "- 1 " + rate.getCurrency().russianName + " = " + formattedValue + " " + currencySign;
+
+        String formattedValue = numberFormat.format(amount);
+        String currencySign = getRussianRublesWord(amount.longValue());
+        return "- " + currencyAmount + " " + currencyName + " (" + rate.getCurrency().code + " " +
+                rate.getCurrency().flag + ") = " + formattedValue + " " + currencySign;
+    }
+
+    private String getRussianRublesWord(long rubles) {
+        long lastTwoDigits = rubles % 100;
+        long lastDigit = rubles % 10;
+
+        if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+            return "рублей";
+        }
+        if (lastDigit == 1) {
+            return "рубль";
+        }
+        if (lastDigit >= 2 && lastDigit <= 4) {
+            return "рубля";
+        }
+        return "рублей";
     }
 }
