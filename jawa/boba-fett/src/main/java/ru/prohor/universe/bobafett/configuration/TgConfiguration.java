@@ -4,15 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import ru.prohor.universe.bobafett.BobaFettBot;
 import ru.prohor.universe.bobafett.command.StartCommand;
 import ru.prohor.universe.bobafett.data.MongoStatusStorage;
 import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.bobafett.service.ObjectsEncoder;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
-import ru.prohor.universe.jocasta.tgbots.RegisterBot;
+import ru.prohor.universe.jocasta.tgbots.TelegramBotsConfiguration;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.UnknownActionKeyHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
@@ -26,6 +27,7 @@ import ru.prohor.universe.jocasta.tgbots.api.status.ValuedStatusHandler;
 
 import java.util.List;
 
+@Import(TelegramBotsConfiguration.class)
 @Configuration
 public class TgConfiguration {
     @Bean
@@ -74,7 +76,7 @@ public class TgConfiguration {
             BotSettings settings,
             StartCommand startCommand
     ) {
-        return RegisterBot.register(new BobaFettBot(bobaFettUserService, objectsEncoder, settings, startCommand));
+        return new BobaFettBot(bobaFettUserService, objectsEncoder, settings, startCommand);
     }
 
     @Bean

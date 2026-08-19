@@ -1,7 +1,7 @@
 package ru.prohor.universe.jocasta.tgbots.support;
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
+import org.telegram.telegrambots.meta.api.objects.message.MaybeInaccessibleMessage;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
 import ru.prohor.universe.jocasta.tgbots.api.ActionHandler;

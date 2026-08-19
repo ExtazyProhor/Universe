@@ -2,7 +2,7 @@ package ru.prohor.universe.bobafett.feature.holidays.callback;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
+import org.telegram.telegrambots.meta.api.objects.message.MaybeInaccessibleMessage;
 import ru.prohor.universe.bobafett.callback.Callbacks;
 import ru.prohor.universe.bobafett.command.Commands;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;

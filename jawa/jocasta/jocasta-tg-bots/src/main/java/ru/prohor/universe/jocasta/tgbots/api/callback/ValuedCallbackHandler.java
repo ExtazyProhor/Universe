@@ -1,6 +1,6 @@
 package ru.prohor.universe.jocasta.tgbots.api.callback;
 
-import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
+import org.telegram.telegrambots.meta.api.objects.message.MaybeInaccessibleMessage;
 import ru.prohor.universe.jocasta.tgbots.api.ActionHandler;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 

@@ -5,15 +5,17 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.PropertySource
 import ru.prohor.universe.jocasta.jackson.morphia.MongoFileRepository
 import ru.prohor.universe.jocasta.morphia.MongoRepository
 import ru.prohor.universe.jocasta.tgbots.BotAuth
-import ru.prohor.universe.jocasta.tgbots.RegisterBot
+import ru.prohor.universe.jocasta.tgbots.TelegramBotsConfiguration
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor
 import ru.prohor.universe.kenobi.plugin.youtube.model.Subscriber
 import ru.prohor.universe.kenobi.plugin.youtube.tg.KenobiBot
 
+@Import(TelegramBotsConfiguration::class)
 @Configuration
 @ComponentScan
 @PropertySource("classpath:kenobi-youtube-plugin.properties")
@@ -36,10 +38,7 @@ class KenobiYoutubePluginConfiguration {
         @Value($$"${universe.kenobi.plugins.youtube.tg-bot.username}") username: String,
         @Value($$"${universe.kenobi.plugins.youtube.tg-bot.token}") token: String
     ): KenobiBot {
-        val auth = BotAuth(username, token)
-        val bot = KenobiBot(auth)
-        RegisterBot.register(bot)
-        return bot
+        return KenobiBot(BotAuth(username, token))
     }
 
     @Bean

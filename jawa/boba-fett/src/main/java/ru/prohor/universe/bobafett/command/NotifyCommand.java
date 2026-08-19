@@ -2,7 +2,7 @@ package ru.prohor.universe.bobafett.command;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import ru.prohor.universe.bobafett.data.pojo.UserStatus;
 import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.bobafett.status.WaitNotifyMessage;

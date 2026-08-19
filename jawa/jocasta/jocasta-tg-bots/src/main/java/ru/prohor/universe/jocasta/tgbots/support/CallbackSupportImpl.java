@@ -19,7 +19,7 @@ public class CallbackSupportImpl extends FeatureSupportImpl<CallbackQuery, Strin
     public void handle(CallbackQuery callback, FeedbackExecutor feedbackExecutor) {
         String callbackData = callback.getData();
         if (callbackData.indexOf('.') != -1) {
-            // log error simple callback must have zero dots, but got more
+            // TODO log error simple callback must have zero dots, but got more
             return;
         }
         useHandler(

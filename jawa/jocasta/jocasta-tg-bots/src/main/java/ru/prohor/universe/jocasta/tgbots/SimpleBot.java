@@ -2,10 +2,10 @@ package ru.prohor.universe.jocasta.tgbots;
 
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.chat.Chat;
+import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMemberUpdated;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusFlow;
 import ru.prohor.universe.jocasta.tgbots.support.FeatureSupport;
@@ -34,7 +34,7 @@ public abstract class SimpleBot extends DeafBot {
     public abstract void onUnknownAction(Update update);
 
     @Override
-    public final void onUpdateReceived(Update update) {
+    public final void consume(Update update) {
         try {
             if (statusSupport.handle(update, feedbackExecutor) == StatusFlow.EXIT)
                 return;
@@ -84,8 +84,6 @@ public abstract class SimpleBot extends DeafBot {
     }
 
     private void suppressTimer(CallbackQuery callback) throws TelegramApiException {
-        AnswerCallbackQuery answer = new AnswerCallbackQuery();
-        answer.setCallbackQueryId(callback.getId());
-        execute(answer);
+        telegramClient.execute(new AnswerCallbackQuery(callback.getId()));
     }
 }

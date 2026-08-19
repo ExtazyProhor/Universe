@@ -1,8 +1,8 @@
 package ru.prohor.universe.bobafett.command;
 
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.chat.Chat;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;

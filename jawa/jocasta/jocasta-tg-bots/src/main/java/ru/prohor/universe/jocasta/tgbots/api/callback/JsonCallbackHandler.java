@@ -1,7 +1,7 @@
 package ru.prohor.universe.jocasta.tgbots.api.callback;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
+import org.telegram.telegrambots.meta.api.objects.message.MaybeInaccessibleMessage;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.string.StringExtensions;
 import ru.prohor.universe.jocasta.tgbots.api.ActionHandler;

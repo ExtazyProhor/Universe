@@ -2,6 +2,7 @@ package ru.prohor.universe.jocasta.tgbots.util;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +15,23 @@ public class InlineKeyboardUtils {
             List<List<String>> buttonText,
             List<List<String>> buttonCallback
     ) {
-        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        List<InlineKeyboardRow> keyboard = new ArrayList<>();
 
         for (int i = 0; i < buttonText.size(); ++i) {
             List<InlineKeyboardButton> row = new ArrayList<>();
             for (int j = 0; j < buttonText.get(i).size(); ++j) {
-                InlineKeyboardButton button = new InlineKeyboardButton();
-                button.setText(buttonText.get(i).get(j));
-                button.setCallbackData(buttonCallback.get(i).get(j));
+                InlineKeyboardButton button = InlineKeyboardButton.builder()
+                        .text(buttonText.get(i).get(j))
+                        .callbackData(buttonCallback.get(i).get(j))
+                        .build();
                 row.add(button);
             }
-            keyboard.add(row);
+            keyboard.add(new InlineKeyboardRow(row));
         }
 
-        markup.setKeyboard(keyboard);
-        return markup;
+        return InlineKeyboardMarkup.builder()
+                .keyboard(keyboard)
+                .build();
     }
 
     // TODO make it by Tuple2 or Maps
@@ -37,19 +39,18 @@ public class InlineKeyboardUtils {
             List<String> buttonText,
             List<String> buttonCallback
     ) {
-        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        List<InlineKeyboardRow> keyboard = new ArrayList<>();
 
         for (int i = 0; i < buttonText.size(); ++i) {
-            List<InlineKeyboardButton> row = new ArrayList<>();
-            InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText(buttonText.get(i));
-            button.setCallbackData(buttonCallback.get(i));
-            row.add(button);
-            keyboard.add(row);
+            InlineKeyboardButton button = InlineKeyboardButton.builder()
+                    .text(buttonText.get(i))
+                    .callbackData(buttonCallback.get(i))
+                    .build();
+            keyboard.add(new InlineKeyboardRow(List.of(button)));
         }
 
-        markup.setKeyboard(keyboard);
-        return markup;
+        return InlineKeyboardMarkup.builder()
+                .keyboard(keyboard)
+                .build();
     }
 }

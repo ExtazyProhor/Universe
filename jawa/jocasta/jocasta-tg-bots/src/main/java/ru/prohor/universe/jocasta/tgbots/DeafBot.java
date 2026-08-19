@@ -1,6 +1,7 @@
 package ru.prohor.universe.jocasta.tgbots;
 
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
+import org.telegram.telegrambots.longpolling.util.DefaultLongPollingUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -8,19 +9,27 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import org.telegram.telegrambots.meta.generics.TelegramClient;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.sneaky.ThrowableConsumer;
 import ru.prohor.universe.jocasta.core.features.sneaky.ThrowableRunnable;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
-public abstract class DeafBot extends TelegramLongPollingBot {
+public abstract class DeafBot extends DefaultLongPollingUpdateConsumer {
     protected final FeedbackExecutor feedbackExecutor;
     protected final String username;
+    protected final String token;
+    protected final TelegramClient telegramClient;
 
     public DeafBot(BotAuth auth) {
-        super(auth.token());
         this.feedbackExecutor = makeFeedbackExecutor();
         this.username = auth.username();
+        this.token = auth.token();
+        this.telegramClient = new OkHttpTelegramClient(auth.token());
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public FeedbackExecutor getFeedbackExecutor() {
@@ -32,10 +41,10 @@ public abstract class DeafBot extends TelegramLongPollingBot {
             @Override
             public synchronized void sendMessage(SendMessage message) {
                 executeSending(
-                        () -> execute(message),
+                        () -> telegramClient.execute(message),
                         Opt.of(chatId -> {
                             message.setChatId(chatId);
-                            execute(message);
+                            telegramClient.execute(message);
                         }),
                         message.getChatId()
                 );
@@ -44,10 +53,10 @@ public abstract class DeafBot extends TelegramLongPollingBot {
             @Override
             public synchronized void editMessageText(EditMessageText message) {
                 executeSending(
-                        () -> execute(message),
+                        () -> telegramClient.execute(message),
                         Opt.of(chatId -> {
                             message.setChatId(chatId);
-                            execute(message);
+                            telegramClient.execute(message);
                         }),
                         message.getChatId()
                 );
@@ -56,10 +65,10 @@ public abstract class DeafBot extends TelegramLongPollingBot {
             @Override
             public synchronized void sendDocument(SendDocument document) {
                 executeSending(
-                        () -> execute(document),
+                        () -> telegramClient.execute(document),
                         Opt.of(chatId -> {
                             document.setChatId(chatId);
-                            execute(document);
+                            telegramClient.execute(document);
                         }),
                         document.getChatId()
                 );
@@ -68,10 +77,10 @@ public abstract class DeafBot extends TelegramLongPollingBot {
             @Override
             public void sendPhoto(SendPhoto photo) {
                 executeSending(
-                        () -> execute(photo),
+                        () -> telegramClient.execute(photo),
                         Opt.of(chatId -> {
                             photo.setChatId(chatId);
-                            execute(photo);
+                            telegramClient.execute(photo);
                         }),
                         photo.getChatId()
                 );
@@ -99,7 +108,7 @@ public abstract class DeafBot extends TelegramLongPollingBot {
             } else if (code == 403) {
                 onForbidden(response, numericChatId);
             } else if (code == 400) {
-                if (response.contains("message is not modified")) {
+                if (response != null && response.contains("message is not modified")) {
                     // TODO log info / debug
                     return;
                 }
@@ -115,12 +124,7 @@ public abstract class DeafBot extends TelegramLongPollingBot {
     }
 
     @Override
-    public final String getBotUsername() {
-        return username;
-    }
-
-    @Override
-    public void onUpdateReceived(Update update) {}
+    public void consume(Update update) {}
 
     public abstract void onSendingException(Exception e, long chatId);
 

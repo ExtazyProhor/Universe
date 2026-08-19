@@ -2,7 +2,7 @@ package ru.prohor.universe.jocasta.tgbots;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import ru.prohor.universe.jocasta.tgbots.api.UnknownActionKeyHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;

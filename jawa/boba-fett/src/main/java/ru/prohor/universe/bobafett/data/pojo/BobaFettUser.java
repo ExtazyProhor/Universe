@@ -2,7 +2,7 @@ package ru.prohor.universe.bobafett.data.pojo;
 
 import lombok.Builder;
 import org.bson.types.ObjectId;
-import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 import ru.prohor.universe.bobafett.data.dto.BobaFettUserDto;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;

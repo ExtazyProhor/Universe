@@ -155,17 +155,13 @@
                 <version>4.12.0</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
+            <!-- Source: https://mvnrepository.com/artifact/org.telegram/telegrambots-bom -->
             <dependency>
                 <groupId>org.telegram</groupId>
-                <artifactId>telegrambots</artifactId>
-                <version>6.9.7.1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
+                <artifactId>telegrambots-bom</artifactId>
+                <version>10.2.0</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->

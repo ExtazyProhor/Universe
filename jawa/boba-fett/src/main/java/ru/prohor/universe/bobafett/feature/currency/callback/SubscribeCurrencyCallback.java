@@ -3,7 +3,7 @@ package ru.prohor.universe.bobafett.feature.currency.callback;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
+import org.telegram.telegrambots.meta.api.objects.message.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.prohor.universe.bobafett.callback.Callbacks;
 import ru.prohor.universe.bobafett.command.Commands;

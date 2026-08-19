@@ -3,13 +3,15 @@ package ru.prohor.universe.yoda.bot
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.telegram.telegrambots.meta.api.objects.Message
+import org.springframework.context.annotation.Import
+import org.telegram.telegrambots.meta.api.objects.message.Message
 import ru.prohor.universe.jocasta.tgbots.BotSettings
-import ru.prohor.universe.jocasta.tgbots.RegisterBot
+import ru.prohor.universe.jocasta.tgbots.TelegramBotsConfiguration
 import ru.prohor.universe.jocasta.tgbots.api.UnknownActionKeyHandler
 import ru.prohor.universe.jocasta.tgbots.api.comand.CommandHandler
 import ru.prohor.universe.jocasta.tgbots.api.comand.NonCommandMessageHandler
 
+@Import(TelegramBotsConfiguration::class)
 @Configuration
 class TgConfiguration {
     @Bean
@@ -27,6 +29,6 @@ class TgConfiguration {
 
     @Bean
     fun yodaBot(settings: BotSettings): YodaBot {
-        return RegisterBot.register(YodaBot(settings))
+        return YodaBot(settings)
     }
 }

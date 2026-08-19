@@ -1,14 +1,12 @@
 package ru.prohor.universe.bobafett.feature.currency;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.data.Currency;
 import ru.prohor.universe.bobafett.data.dto.Rate;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
-import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
 import java.net.URI;
@@ -41,16 +39,7 @@ public class CurrencyLayerApiService {
         this.feedbackExecutorProvider = feedbackExecutorProvider;
         this.adminChatId = adminChatId;
         this.mapper = mapper;
-        this.uri = generateUri(baseApiUrl, apiKey);
-    }
-
-    private URI generateUri(String baseApiUrl, String apiKey) {
-        return Sneaky.execute(
-                () -> new URIBuilder(baseApiUrl)
-                        .addParameter("access_key", apiKey)
-                        .addParameter("source", "RUB")
-                        .build()
-        );
+        this.uri = URI.create(baseApiUrl + "?access_key=" + apiKey + "&source=RUB");
     }
 
     public List<Rate> getNewRates() throws Exception {
