@@ -15,7 +15,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class CurrencyLayerApiService {
@@ -33,16 +32,10 @@ public class CurrencyLayerApiService {
     }
 
     private URI generateUri(String baseApiUrl, String apiKey) {
-        String currencies = Currency.CURRENCIES_FOR_RATES
-                .stream()
-                .map(currency -> currency.code)
-                .collect(Collectors.joining(","));
         return Sneaky.execute(
                 () -> new URIBuilder(baseApiUrl)
                         .addParameter("access_key", apiKey)
                         .addParameter("source", "RUB")
-                        .addParameter("currencies", currencies)
-                        .addParameter("format", "1")
                         .build()
         );
     }
