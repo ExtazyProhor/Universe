@@ -13,6 +13,7 @@ import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.bobafett.service.ObjectsEncoder;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
 import ru.prohor.universe.jocasta.tgbots.RegisterBot;
+import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.UnknownActionKeyHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.CallbackHandler;
 import ru.prohor.universe.jocasta.tgbots.api.callback.JsonCallbackHandler;
@@ -74,5 +75,10 @@ public class TgConfiguration {
             StartCommand startCommand
     ) {
         return RegisterBot.register(new BobaFettBot(bobaFettUserService, objectsEncoder, settings, startCommand));
+    }
+
+    @Bean
+    public FeedbackExecutor feedbackExecutor(BobaFettBot bobaFettBot) {
+        return bobaFettBot.getFeedbackExecutor();
     }
 }

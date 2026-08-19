@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.bobafett.BobaFettBot;
 import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 
@@ -21,9 +20,9 @@ public class Distributor {
     private final List<DistributionTask> tasks;
     private final FeedbackExecutor feedbackExecutor;
 
-    public Distributor(List<DistributionTask> tasks, BobaFettBot bot) {
+    public Distributor(List<DistributionTask> tasks, FeedbackExecutor feedbackExecutor) {
         this.tasks = tasks;
-        this.feedbackExecutor = bot.getFeedbackExecutor();
+        this.feedbackExecutor = feedbackExecutor;
     }
 
     @Scheduled(cron = "0 0/15 * * * ?", zone = "Europe/Moscow")
