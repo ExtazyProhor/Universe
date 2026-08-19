@@ -385,42 +385,7 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>boba-fett</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
-                <artifactId>yahtzee-app</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
-                <artifactId>yahtzee-legacy</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
-                <artifactId>scarif</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
-                <artifactId>venator</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
                 <artifactId>yoda-bot</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
-                <artifactId>yoda-app</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
-                <artifactId>chopper</artifactId>
                 <version>final</version>
             </dependency>
             <dependency>
@@ -430,17 +395,7 @@
             </dependency>
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
-                <artifactId>padawan</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
                 <artifactId>jocasta-jackson-kotlin</artifactId>
-                <version>final</version>
-            </dependency>
-            <dependency>
-                <groupId>ru.prohor.universe</groupId>
-                <artifactId>kenobi-app</artifactId>
                 <version>final</version>
             </dependency>
             <dependency>
