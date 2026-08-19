@@ -49,7 +49,7 @@ public class CurrencyMessageFormatterImpl implements CurrencyMessageFormatter {
                 rate.getCurrency().flag + ") = " + formattedValue + " " + currencySign;
     }
 
-    private String getRussianRublesWord(long rubles) {
+    String getRussianRublesWord(long rubles) {
         long lastTwoDigits = rubles % 100;
         long lastDigit = rubles % 10;
 
