@@ -13,8 +13,8 @@ import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration
     JocastaAutoConfiguration::class,
     HolocronConfiguration::class,
 )
-class Chopper
+class ChopperApp
 
 fun main(args: Array<String>) {
-    runApplication<Chopper>(*args)
+    runApplication<ChopperApp>(*args)
 }

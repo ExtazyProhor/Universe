@@ -16,6 +16,5 @@
     <modules>
         <module>scarif-jwt</module>
         <module>scarif-jwt-provider</module>
-        <module>chopper-client</module>
     </modules>
 </project>
