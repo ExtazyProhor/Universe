@@ -22,11 +22,6 @@
             <groupId>ru.prohor.universe</groupId>
             <artifactId>jocasta-spring-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
