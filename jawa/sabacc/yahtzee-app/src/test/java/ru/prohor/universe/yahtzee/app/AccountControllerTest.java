@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
-import ru.prohor.universe.hyperspace.jwtprovider.JwtProvider;
+import ru.prohor.universe.scarif.jwtprovider.JwtProvider;
 import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
 import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;

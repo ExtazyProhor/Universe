@@ -10,72 +10,12 @@
     </parent>
 
     <artifactId>scarif</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>scarif</name>
-    <description>Universe auth service</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>scarif-jwt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>scarif-jwt-provider</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-crypto</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>bson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <finalName>scarif</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>ru.prohor.universe.scarif.ScarifMain</mainClass>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <modules>
+        <module>scarif-app</module>
+        <module>scarif-jwt</module>
+        <module>scarif-jwt-provider</module>
+    </modules>
 </project>

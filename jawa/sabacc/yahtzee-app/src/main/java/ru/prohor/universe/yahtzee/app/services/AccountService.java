@@ -4,7 +4,7 @@ import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.hyperspace.jwt.AuthorizedUser;
+import ru.prohor.universe.scarif.jwt.AuthorizedUser;
 import ru.prohor.universe.jocasta.core.collections.PaginationResult;
 import ru.prohor.universe.jocasta.core.collections.Paginator;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
