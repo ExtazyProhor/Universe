@@ -82,9 +82,10 @@ public class VpsBenchmarkParser {
         double totalIOPS = Double.NaN;
     }
 
-    public static void main(String[] args) throws Exception {
-        Path input = FileSystemUtils.userHome().asPath().resolve("my/benchmark");
-        Path output = input.resolve("vps_benchmark_report.html");
+    static void main() throws Exception {
+        Path benchmarkDir = FileSystemUtils.downloads().asPath().resolve("benchmark");
+        Path input = benchmarkDir.resolve("benchmark-files");
+        Path output = benchmarkDir.resolve("vps_benchmark_report.html");
         if (!Files.exists(input))
             throw new IllegalArgumentException("Папка не существует: " + input);
 
