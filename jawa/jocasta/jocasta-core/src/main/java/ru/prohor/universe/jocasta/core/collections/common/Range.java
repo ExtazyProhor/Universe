@@ -3,6 +3,7 @@ package ru.prohor.universe.jocasta.core.collections.common;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Range {
     private static final int DEFAULT_FROM = 0;
@@ -41,6 +42,9 @@ public class Range {
         }
 
         public Integer next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
             cursor += step;
             return cursor - step;
         }
