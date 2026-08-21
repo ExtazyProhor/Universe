@@ -78,8 +78,8 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
                         chatId,
                         user -> {
                             CurrencySubscriptionOptions options = currencyService.createOptions(
-                                    new DistributionTime(payload.hour, payload.minute),
-                                    true,
+                                    Opt.of(new DistributionTime(payload.hour, payload.minute)),
+                                    Opt.of(true),
                                     user.currencySubscriptionOptions()
                                             .map(CurrencySubscriptionOptions::selectedCurrencies)
                                             .flattenO()

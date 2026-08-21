@@ -1,12 +1,14 @@
 package ru.prohor.universe.bobafett.service;
 
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.UserStatus;
+import ru.prohor.universe.bobafett.feature.currency.CurrencyService;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.fieldref.FR;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
-import ru.prohor.universe.jocasta.core.functional.NilFunction;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilters;
@@ -16,9 +18,32 @@ import java.util.List;
 @Service
 public class BobaFettUserService {
     private final MongoRepository<BobaFettUser> usersRepository;
+    private final CurrencyService currencyService;
 
-    public BobaFettUserService(MongoRepository<BobaFettUser> usersRepository) {
+    public BobaFettUserService(
+            MongoRepository<BobaFettUser> usersRepository,
+            CurrencyService currencyService
+    ) {
         this.usersRepository = usersRepository;
+        this.currencyService = currencyService;
+    }
+
+    public BobaFettUser create(Chat chat) {
+        String name = chat.isUserChat() ? chat.getFirstName() : chat.getTitle();
+        Opt<String> link = Opt.when(
+                chat.isUserChat() && chat.getUserName() != null,
+                () -> "@" + chat.getUserName()
+        );
+        return new BobaFettUser(
+                ObjectId.get(),
+                chat.getId(),
+                chat.getType(),
+                Opt.ofNullable(name),
+                link,
+                Opt.empty(),
+                Opt.of(currencyService.createOptions(Opt.empty(), Opt.empty(), Opt.empty())),
+                Opt.empty()
+        );
     }
 
     public void changeChatId(long oldChatId, long newChatId) {
@@ -30,10 +55,10 @@ public class BobaFettUserService {
         );
     }
 
-    public void createIfNotExists(long chatId, NilFunction<BobaFettUser> userProvider) {
+    public void createIfNotExists(Chat chat) {
         usersRepository.withTransaction(tx -> {
-            if (!contains(tx, chatId)) {
-                tx.save(userProvider.apply());
+            if (!contains(tx, chat.getId())) {
+                tx.save(create(chat));
             }
         });
     }

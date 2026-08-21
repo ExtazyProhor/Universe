@@ -2,7 +2,6 @@ package ru.prohor.universe.bobafett.data.pojo;
 
 import lombok.Builder;
 import org.bson.types.ObjectId;
-import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 import ru.prohor.universe.bobafett.data.dto.BobaFettUserDto;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
@@ -42,24 +41,6 @@ public record BobaFettUser(
                 Opt.ofNullable(user.getHolidaysSubscriptionOptions()).map(HolidaysSubscriptionOptions::fromDto),
                 Opt.ofNullable(user.getCurrencySubscriptionOptions()).map(CurrencySubscriptionOptions::fromDto),
                 Opt.ofNullable(user.getStatus()).map(UserStatus::fromDto)
-        );
-    }
-
-    public static BobaFettUser create(Chat chat) {
-        String name = chat.isUserChat() ? chat.getFirstName() : chat.getTitle();
-        Opt<String> link = Opt.when(
-                chat.isUserChat() && chat.getUserName() != null,
-                () -> "@" + chat.getUserName()
-        );
-        return new BobaFettUser(
-                ObjectId.get(),
-                chat.getId(),
-                chat.getType(),
-                Opt.ofNullable(name),
-                link,
-                Opt.empty(),
-                Opt.empty(),
-                Opt.empty()
         );
     }
 }

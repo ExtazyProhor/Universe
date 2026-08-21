@@ -32,14 +32,14 @@ public class BobaFettMain {
         MongoRepository<BobaFettUser> repository = context.getBean("bobaFettUserRepository", MongoRepository.class);
         CurrencyService currencyService = context.getBean(CurrencyService.class);
         repository.safeUpdateAll(user -> {
-            Opt<CurrencySubscriptionOptions> options = user.currencySubscriptionOptions().map(
+            CurrencySubscriptionOptions options = user.currencySubscriptionOptions().map(
                     o -> currencyService.createOptions(
-                            o.dailyDistributionTime(),
-                            o.subscriptionIsActive(),
+                            Opt.of(o.dailyDistributionTime()),
+                            Opt.of(o.subscriptionIsActive()),
                             o.selectedCurrencies()
                     )
-            );
-            return user.toBuilder().currencySubscriptionOptions(options).build();
+            ).orElse(currencyService.createOptions(Opt.empty(), Opt.empty(), Opt.empty()));
+            return user.toBuilder().currencySubscriptionOptions(Opt.of(options)).build();
         });
     }
 }

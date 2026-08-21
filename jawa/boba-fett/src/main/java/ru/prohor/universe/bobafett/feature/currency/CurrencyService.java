@@ -11,6 +11,9 @@ import java.util.List;
 
 @Service
 public class CurrencyService {
+    private static final int DEFAULT_HOUR = 12;
+    private static final int DEFAULT_MINUTE = 0;
+
     private final List<Currency> defaultCurrency;
 
     public CurrencyService(
@@ -20,13 +23,13 @@ public class CurrencyService {
     }
 
     public CurrencySubscriptionOptions createOptions(
-            DistributionTime time,
-            boolean subscriptionIsActive,
+            Opt<DistributionTime> time,
+            Opt<Boolean> subscriptionIsActive,
             Opt<List<Currency>> selectedCurrencies
     ) {
         return new CurrencySubscriptionOptions(
-                time,
-                subscriptionIsActive,
+                time.orElseGet(() -> new DistributionTime(DEFAULT_HOUR, DEFAULT_MINUTE)),
+                subscriptionIsActive.orElse(false),
                 Opt.of(selectedCurrencies.orElse(defaultCurrency))
         );
     }

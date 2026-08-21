@@ -6,7 +6,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMemberUpdated;
 import ru.prohor.universe.bobafett.command.StartCommand;
-import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.bobafett.service.ObjectsEncoder;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
@@ -43,7 +42,7 @@ public class BobaFettBot extends SimpleBot {
 
     @Override
     public void onBotAddedToChat(long chatId, Chat chat) {
-        bobaFettUserService.createIfNotExists(chatId, () -> BobaFettUser.create(chat));
+        bobaFettUserService.createIfNotExists(chat);
         startCommand.sendGreeting(chat, feedbackExecutor);
     }
 
