@@ -32,8 +32,10 @@ public interface Callbacks {
      * i - init
      * g - get currency
      * s - subscription
+     * c - change selected currencies
      */
     String SUBSCRIBE_CURRENCY_INIT = "c/is";
     String SUBSCRIBE_CURRENCY = "c/s";
     String GET_CURRENCY = "c/g";
+    String CHANGE_SELECTED_CURRENCIES = "c/c";
 }

@@ -2,6 +2,8 @@ package ru.prohor.universe.bobafett.data;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum Currency {
@@ -9,11 +11,11 @@ public enum Currency {
     USD(1, "United States Dollar", "Доллар США", "Долларов США", "USD", "🇺🇸"),
     EUR(2, "Euro", "Евро", "Евро", "EUR", "🇪🇺"),
     BTC(3, "Bitcoin", "Биткоин", "Биткоинов", "BTC", null),
-    AED(4, "United Arab Emirates Dirham", "Дирхам ОАЭ", "Дирхамов ОАЭ", "AED", "🇦🇪"),
+    CNY(4, "Chinese Yuan", "Китайский юань", "Китайских юаней", "CNY", "🇨🇳"),
     TRY(5, "Turkish Lira", "Турецкая лира", "Турецких лир", "TRY", "🇹🇷"),
-    CNY(6, "Chinese Yuan", "Китайский юань", "Китайских юаней", "CNY", "🇨🇳"),
-    GBP(7, "British Pound Sterling", "Британский фунт стерлингов", "Британских фунтов стерлингов", "GBP", "🇬🇧"),
-    GEL(8, "Georgian Lari", "Грузинский лари", "Грузинских лари", "GEL", "🇬🇪"),
+    GBP(6, "British Pound Sterling", "Британский фунт стерлингов", "Британских фунтов стерлингов", "GBP", "🇬🇧"),
+    GEL(7, "Georgian Lari", "Грузинский лари", "Грузинских лари", "GEL", "🇬🇪"),
+    AED(8, "United Arab Emirates Dirham", "Дирхам ОАЭ", "Дирхамов ОАЭ", "AED", "🇦🇪"),
     KZT(9, "Kazakhstani Tenge", "Казахстанский тенге", "Казахстанских тенге", "KZT", "🇰🇿"),
     AMD(10, "Armenian Dram", "Армянский драм", "Армянских драмов", "AMD", "🇦🇲"),
     BYN(11, "Belarusian Ruble", "Белорусский рубль", "Белорусских рублей", "BYN", "🇧🇾"),
@@ -234,6 +236,9 @@ public enum Currency {
     public static final List<Currency> CURRENCIES_FOR_RATES = Arrays.stream(values())
             .filter(currency -> currency != RUB)
             .toList();
+
+    public static final Map<Integer, Currency> CURRENCIES_BY_INDEX = Arrays.stream(values())
+            .collect(Collectors.toMap(c -> c.index, Function.identity()));
 
     static {
         List<String> error = Arrays.stream(values())

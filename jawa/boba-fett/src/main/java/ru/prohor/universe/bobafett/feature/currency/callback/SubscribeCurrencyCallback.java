@@ -128,10 +128,7 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
             options = options.map(it -> it.toBuilder().subscriptionIsActive(isSubscribe).build());
             user = user.toBuilder().currencySubscriptionOptions(options).build();
             tx.save(user);
-            String message = "Теперь вы " + (isSubscribe ? "" : "не ") + "будете получать рассылку курсов валют";
-            if (isSubscribe) {
-                message = message + ". Настройте время рассылки, вызвав еще раз команду " + Commands.CURRENCY;
-            }
+            String message = getMessageForSubscribeControl(isSubscribe);
 
             feedbackExecutor.editMessageText(
                     chatId,
@@ -139,6 +136,25 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
                     message
             );
         });
+    }
+
+    private String getMessageForSubscribeControl(boolean isSubscribe) {
+        StringBuilder message = new StringBuilder("Теперь вы ");
+        if (!isSubscribe) {
+            message.append("не ");
+        }
+        message.append("будете получать рассылку курсов валют");
+
+        if (isSubscribe) {
+            message.append(". Настройте время рассылки, вызвав еще раз команду ")
+                    .append(Commands.CURRENCY)
+                    .append(".\n\nВы также можете выбрать валюты, курс которых хотите получать. ")
+                    .append("Для этого вызовите команду ")
+                    .append(Commands.CURRENCY)
+                    .append(" и нажмите ")
+                    .append("'изменить список валют'.");
+        }
+        return message.toString();
     }
 
     private void settingSubscription(
