@@ -7,8 +7,8 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.PropertySource
-import ru.prohor.universe.jocasta.jackson.morphia.MongoFileRepository
 import ru.prohor.universe.jocasta.morphia.MongoRepository
+import ru.prohor.universe.jocasta.morphia.impl.MongoFileRepository
 import ru.prohor.universe.jocasta.tgbots.BotAuth
 import ru.prohor.universe.jocasta.tgbots.TelegramBotsConfiguration
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor

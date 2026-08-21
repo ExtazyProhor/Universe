@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jackson.morphia;
+package ru.prohor.universe.jocasta.morphia.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
@@ -6,7 +6,6 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.functional.DiPredicate;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
-import ru.prohor.universe.jocasta.morphia.impl.MongoInMemoryRepository;
 
 import java.io.File;
 import java.util.List;

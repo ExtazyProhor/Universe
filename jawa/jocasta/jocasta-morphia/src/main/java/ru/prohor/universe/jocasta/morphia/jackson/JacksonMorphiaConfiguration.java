@@ -1,8 +1,6 @@
-package ru.prohor.universe.jocasta.jackson.morphia;
+package ru.prohor.universe.jocasta.morphia.jackson;
 
 import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.bson.types.ObjectId;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -20,9 +18,6 @@ public class JacksonMorphiaConfiguration {
     }
 
     public static Module createMorphiaModule() {
-        SimpleModule morphiaModule = new SimpleModule();
-        morphiaModule.addSerializer(ObjectId.class, new ObjectIdSerializer());
-        morphiaModule.addDeserializer(ObjectId.class, new ObjectIdDeserializer());
-        return morphiaModule;
+        return new JacksonMorphiaModule();
     }
 }

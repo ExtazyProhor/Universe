@@ -38,10 +38,6 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-jackson-morphia</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jackson.morphia;
+package ru.prohor.universe.jocasta.morphia.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

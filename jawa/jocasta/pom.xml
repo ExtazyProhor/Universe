@@ -19,6 +19,5 @@
         <module>jocasta-core</module>
         <module>jocasta-tg-bots</module>
         <module>jocasta-morphia</module>
-        <module>jocasta-spring-configurations</module>
     </modules>
 </project>

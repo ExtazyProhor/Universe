@@ -2,7 +2,7 @@ package ru.prohor.universe.bobafett.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.jocasta.jackson.morphia.MongoForceBackupService;
+import ru.prohor.universe.jocasta.morphia.jackson.MongoForceBackupService;
 
 import java.util.HashSet;
 import java.util.List;

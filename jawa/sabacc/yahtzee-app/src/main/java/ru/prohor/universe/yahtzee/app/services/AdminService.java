@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.prohor.universe.jocasta.jackson.morphia.MongoForceBackupService;
+import ru.prohor.universe.jocasta.morphia.jackson.MongoForceBackupService;
 import ru.prohor.universe.yahtzee.app.web.controllers.AdminPanelController;
 import ru.prohor.universe.yahtzee.core.color.TeamColor;
 import ru.prohor.universe.yahtzee.core.color.YahtzeeColor;
