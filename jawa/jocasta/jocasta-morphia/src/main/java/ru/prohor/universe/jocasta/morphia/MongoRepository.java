@@ -80,6 +80,14 @@ public interface MongoRepository<T> {
         });
     }
 
+    default void safeUpdateAll(MonoFunction<T, T> updateFunction) {
+        this.withTransaction(tx -> {
+            List<T> entities = tx.findAll();
+            List<T> updated = entities.stream().map(updateFunction).toList();
+            tx.save(updated);
+        });
+    }
+
     default void safeUpdate(MongoFilter<T> filter, MonoFunction<T, T> updateFunction) {
         this.withTransaction(tx -> {
             List<T> entities = tx.find(filter);

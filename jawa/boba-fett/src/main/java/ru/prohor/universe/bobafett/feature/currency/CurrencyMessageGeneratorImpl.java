@@ -17,16 +17,13 @@ import java.util.stream.Collectors;
 public class CurrencyMessageGeneratorImpl implements CurrencyMessageGenerator {
     private final LatestAvailableCurrencyRatesProvider latestAvailableCurrencyRatesProvider;
     private final CurrencyMessageFormatter currencyMessageFormatter;
-    private final List<Currency> defaultCurrencyToSend;
 
     public CurrencyMessageGeneratorImpl(
             LatestAvailableCurrencyRatesProvider latestAvailableCurrencyRatesProvider,
-            CurrencyMessageFormatter currencyMessageFormatter,
-            @Value("${universe.boba-fett.currency.default-currency-to-send}") List<Currency> defaultCurrencyToSend
+            CurrencyMessageFormatter currencyMessageFormatter
     ) {
         this.latestAvailableCurrencyRatesProvider = latestAvailableCurrencyRatesProvider;
         this.currencyMessageFormatter = currencyMessageFormatter;
-        this.defaultCurrencyToSend = defaultCurrencyToSend;
     }
 
     @Override
@@ -37,7 +34,7 @@ public class CurrencyMessageGeneratorImpl implements CurrencyMessageGenerator {
         List<Currency> currenciesToSend = user.currencySubscriptionOptions()
                 .map(CurrencySubscriptionOptions::selectedCurrencies)
                 .flatMapO(o -> o)
-                .orElse(defaultCurrencyToSend);
+                .get(); // TODO
         List<Rate> rates = currenciesToSend.stream().map(ratesMap::get).filter(Objects::nonNull).toList();
         return currencyMessageFormatter.format(rates);
     }
