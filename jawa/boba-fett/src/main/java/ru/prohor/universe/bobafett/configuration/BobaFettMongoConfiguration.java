@@ -11,9 +11,9 @@ import ru.prohor.universe.bobafett.data.dto.CustomHolidayDto;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.CurrencyRate;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
-import ru.prohor.universe.jocasta.cfg.morphia.MongoInstanceConfiguration;
-import ru.prohor.universe.jocasta.morphia.impl.MongoMorphiaRepository;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.configuration.MongoInstanceConfiguration;
+import ru.prohor.universe.jocasta.morphia.impl.MongoMorphiaRepository;
 
 @Configuration
 @Profile("aaa")

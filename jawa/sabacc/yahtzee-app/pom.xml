@@ -20,10 +20,6 @@
         </dependency>
         <dependency>
             <groupId>ru.prohor.universe</groupId>
-            <artifactId>jocasta-morphia-configuration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.prohor.universe</groupId>
             <artifactId>scarif-jwt</artifactId>
         </dependency>
         <dependency>

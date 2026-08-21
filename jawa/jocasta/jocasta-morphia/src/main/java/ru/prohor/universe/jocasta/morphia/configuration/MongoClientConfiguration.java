@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.cfg.morphia.db;
+package ru.prohor.universe.jocasta.morphia.configuration;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;

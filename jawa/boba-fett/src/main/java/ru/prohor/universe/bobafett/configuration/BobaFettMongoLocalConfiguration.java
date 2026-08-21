@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.CurrencyRate;
 import ru.prohor.universe.bobafett.data.pojo.CustomHoliday;
-import ru.prohor.universe.jocasta.cfg.morphia.MongoInMemoryConfiguration;
 import ru.prohor.universe.jocasta.jackson.morphia.MongoFileRepository;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.configuration.MongoInMemoryConfiguration;
 
 @Configuration
 // TODO @Profile("local | testing")
