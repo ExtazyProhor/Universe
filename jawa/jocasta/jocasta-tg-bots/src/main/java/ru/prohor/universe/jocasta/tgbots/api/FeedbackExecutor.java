@@ -3,6 +3,7 @@ package ru.prohor.universe.jocasta.tgbots.api;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -18,6 +19,8 @@ public interface FeedbackExecutor {
     void sendDocument(SendDocument document);
 
     void sendPhoto(SendPhoto photo);
+
+    void deleteMessage(DeleteMessage message);
 
     default void sendMessage(Long chatId, String text) {
         SendMessage sendMessage = SendMessage.builder()
@@ -92,5 +95,13 @@ public interface FeedbackExecutor {
                 .parseMode(parseMode)
                 .build();
         sendPhoto(sendPhoto);
+    }
+
+    default void deleteMessage(Long chatId, Integer messageId) {
+        DeleteMessage deleteMessage = DeleteMessage.builder()
+                .chatId(chatId)
+                .messageId(messageId)
+                .build();
+        deleteMessage(deleteMessage);
     }
 }

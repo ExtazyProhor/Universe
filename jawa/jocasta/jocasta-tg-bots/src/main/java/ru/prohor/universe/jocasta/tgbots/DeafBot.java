@@ -5,6 +5,7 @@ import org.telegram.telegrambots.longpolling.util.DefaultLongPollingUpdateConsum
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -83,6 +84,18 @@ public abstract class DeafBot extends DefaultLongPollingUpdateConsumer {
                             telegramClient.execute(photo);
                         }),
                         photo.getChatId()
+                );
+            }
+
+            @Override
+            public void deleteMessage(DeleteMessage message) {
+                executeSending(
+                        () -> telegramClient.execute(message),
+                        Opt.of(chatId -> {
+                            message.setChatId(chatId);
+                            telegramClient.execute(message);
+                        }),
+                        message.getChatId()
                 );
             }
         };
