@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
 import ru.prohor.universe.jocasta.core.collections.common.Bool;
+import ru.prohor.universe.jocasta.core.jackson.deserializer.BitSetDeserializer;
 import ru.prohor.universe.jocasta.core.jackson.deserializer.BoolDeserializer;
 import ru.prohor.universe.jocasta.core.jackson.deserializer.InstantDeserializer;
 import ru.prohor.universe.jocasta.core.jackson.deserializer.JocastaCoreDeserializers;
 import ru.prohor.universe.jocasta.core.jackson.deserializer.LocalDateDeserializer;
+import ru.prohor.universe.jocasta.core.jackson.serializer.BitSetSerializer;
 import ru.prohor.universe.jocasta.core.jackson.serializer.BoolSerializer;
 import ru.prohor.universe.jocasta.core.jackson.serializer.InstantSerializer;
 import ru.prohor.universe.jocasta.core.jackson.serializer.JocastaCoreSerializers;
@@ -16,6 +18,7 @@ import ru.prohor.universe.jocasta.core.jackson.serializer.LocalDateSerializer;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.BitSet;
 
 public class JocastaCoreModule extends Module {
     @Override
@@ -28,12 +31,14 @@ public class JocastaCoreModule extends Module {
         serializers.addSerializer(Bool.class, new BoolSerializer());
         serializers.addSerializer(Instant.class, new InstantSerializer());
         serializers.addSerializer(LocalDate.class, new LocalDateSerializer());
+        serializers.addSerializer(BitSet.class, new BitSetSerializer());
         context.addSerializers(serializers);
 
         SimpleDeserializers deserializers = new SimpleDeserializers();
         deserializers.addDeserializer(Bool.class, new BoolDeserializer());
         deserializers.addDeserializer(Instant.class, new InstantDeserializer());
         deserializers.addDeserializer(LocalDate.class, new LocalDateDeserializer());
+        deserializers.addDeserializer(BitSet.class, new BitSetDeserializer());
         context.addDeserializers(deserializers);
     }
 
