@@ -27,11 +27,10 @@ public class BackupCommand implements CommandHandler {
         if (!backupService.isAdmin(chatId))
             return;
 
-        SendMessage sendMessage = SendMessage.builder()
-                .chatId(message.getChatId())
-                .text("```json\n" + backupService.createBackupJson() + "\n```")
-                .parseMode(ParseMode.MARKDOWNV2)
-                .build();
-        feedbackExecutor.sendMessage(sendMessage);
+        feedbackExecutor.sendDocument(
+                message.getChatId(),
+                backupService.createBackupJson(),
+                "backup.json"
+        );
     }
 }
