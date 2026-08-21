@@ -3,6 +3,7 @@ package ru.prohor.universe.bobafett.feature.currency.callback;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.message.MaybeInaccessibleMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.prohor.universe.bobafett.callback.Callbacks;
@@ -39,61 +40,37 @@ public class ChangeSelectedCurrenciesCallback extends JsonCallbackHandler<Change
 
     @Override
     protected void handle(Payload payload, MaybeInaccessibleMessage message, FeedbackExecutor feedbackExecutor) {
+        EditMessageText editMessage = EditMessageText.builder().build();
+        editMessage.setChatId(message.getChatId());
+        editMessage.setMessageId(message.getMessageId());
+        editMessage.setText(MESSAGE);
+
         switch (payload.option) {
             case SWITCH -> {
-                BitSet bitSet = payload.chosenCurrencies.get();
-                bitSet.flip(payload.chosenCurrency.get());
-
-                feedbackExecutor.editMessageText(
-                        message.getChatId(),
-                        message.getMessageId(),
-                        MESSAGE,
-                        makeKeyboard(payload.page, bitSet)
-                );
+                payload.chosenCurrencies.get().flip(payload.chosenCurrency.get());
+                editMessage.setReplyMarkup(makeKeyboard(payload.page, payload.chosenCurrencies.get()));
             }
             case INITIALIZE -> {
                 BobaFettUser user = bobaFettUserService.ensureFindByChatId(message.getChatId());
-                BitSet enabledCurrencies = createEnabledCurrenciesBitSet(
-                        user.currencySubscriptionOptions().get().selectedCurrencies().get()
-                );
-                feedbackExecutor.editMessageText(
-                        message.getChatId(),
-                        message.getMessageId(),
-                        MESSAGE,
-                        makeKeyboard(FIRST_PAGE, enabledCurrencies)
-                );
+                editMessage.setReplyMarkup(makeKeyboard(FIRST_PAGE, createEnabledCurrenciesBitSet(user)));
             }
-            case SWIPE -> {
-                feedbackExecutor.editMessageText(
-                        message.getChatId(),
-                        message.getMessageId(),
-                        MESSAGE,
-                        makeKeyboard(payload.page, payload.chosenCurrencies.get())
-                );
-            }
+            case SWIPE -> editMessage.setReplyMarkup(makeKeyboard(payload.page, payload.chosenCurrencies.get()));
             case CONFIRM -> {
-                List<Currency> chosenCurrencies = payload.chosenCurrencies.get()
-                        .stream()
+                List<Currency> chosenCurrencies = payload.chosenCurrencies.get().stream()
                         .mapToObj(Currency.CURRENCIES_BY_INDEX::get)
                         .toList();
                 bobaFettUserService.safeUpdate(
                         message.getChatId(),
-                        user -> user.toBuilder()
-                                .currencySubscriptionOptions(
-                                        user.currencySubscriptionOptions().map(
-                                                options -> options.toBuilder()
-                                                        .selectedCurrencies(Opt.of(chosenCurrencies))
-                                                        .build()
-                                        )
-                                ).build()
-                        );
-                feedbackExecutor.editMessageText(
-                        message.getChatId(),
-                        message.getMessageId(),
-                        getResultMessage(chosenCurrencies)
+                        user -> user.toBuilder().currencySubscriptionOptions(
+                                user.currencySubscriptionOptions().toBuilder()
+                                        .selectedCurrencies(chosenCurrencies)
+                                        .build()
+                        ).build()
                 );
+                editMessage.setText(getResultMessage(chosenCurrencies));
             }
         }
+        feedbackExecutor.editMessageText(editMessage);
     }
 
     public String initialCallback() {
@@ -106,9 +83,9 @@ public class ChangeSelectedCurrenciesCallback extends JsonCallbackHandler<Change
                         .collect(Collectors.joining(", "));
     }
 
-    private BitSet createEnabledCurrenciesBitSet(List<Currency> currencies) {
+    private BitSet createEnabledCurrenciesBitSet(BobaFettUser user) {
         BitSet bitSet = new BitSet();
-        currencies.forEach(currency -> bitSet.set(currency.index));
+        user.currencySubscriptionOptions().selectedCurrencies().forEach(currency -> bitSet.set(currency.index));
         return bitSet;
     }
 
@@ -125,7 +102,6 @@ public class ChangeSelectedCurrenciesCallback extends JsonCallbackHandler<Change
 
         List<List<String>> buttonsText = new ArrayList<>();
         List<List<String>> buttonsCallback = new ArrayList<>();
-
 
 
         for (Currency currency : pagination.values()) {

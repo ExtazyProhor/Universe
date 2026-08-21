@@ -10,9 +10,7 @@ import ru.prohor.universe.bobafett.command.Commands;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
 import ru.prohor.universe.bobafett.data.pojo.CurrencySubscriptionOptions;
 import ru.prohor.universe.bobafett.data.pojo.DistributionTime;
-import ru.prohor.universe.bobafett.feature.currency.CurrencyService;
 import ru.prohor.universe.bobafett.service.BobaFettUserService;
-import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.utils.DateTimeUtil;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
@@ -29,21 +27,16 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
     private static final List<String> MIDDLE_HOURS_TEXT = List.of("-3 ч", "+3 ч");
     private static final List<String> MINOR_HOURS_TEXT = List.of("-1 ч", "+1 ч");
     private static final List<String> MINUTES_TEXT = List.of("-15 мин", "+15 мин");
-    private static final int DEFAULT_HOUR = 12;
-    private static final int DEFAULT_MINUTE = 0;
 
-    private final CurrencyService currencyService;
     private final BobaFettUserService bobaFettUserService;
     private final MongoRepository<BobaFettUser> usersRepository;
 
     public SubscribeCurrencyCallback(
             ObjectMapper objectMapper,
-            CurrencyService currencyService,
             BobaFettUserService bobaFettUserService,
             MongoRepository<BobaFettUser> usersRepository
     ) {
         super(Callbacks.SUBSCRIBE_CURRENCY, Payload.class, objectMapper);
-        this.currencyService = currencyService;
         this.bobaFettUserService = bobaFettUserService;
         this.usersRepository = usersRepository;
     }
@@ -55,7 +48,7 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
         switch (payload.option) {
             case SETTINGS -> {
                 BobaFettUser user = bobaFettUserService.ensureFindByChatId(usersRepository, chatId);
-                CurrencySubscriptionOptions options = user.currencySubscriptionOptions().orElseThrow();
+                CurrencySubscriptionOptions options = user.currencySubscriptionOptions();
                 settingSubscription(
                         feedbackExecutor,
                         chatId,
@@ -77,14 +70,11 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
                 bobaFettUserService.safeUpdate(
                         chatId,
                         user -> {
-                            CurrencySubscriptionOptions options = currencyService.createOptions(
-                                    Opt.of(new DistributionTime(payload.hour, payload.minute)),
-                                    Opt.of(true),
-                                    user.currencySubscriptionOptions()
-                                            .map(CurrencySubscriptionOptions::selectedCurrencies)
-                                            .flattenO()
-                            );
-                            return user.toBuilder().currencySubscriptionOptions(Opt.of(options)).build();
+                            CurrencySubscriptionOptions options = user.currencySubscriptionOptions().toBuilder()
+                                    .dailyDistributionTime(new DistributionTime(payload.hour, payload.minute))
+                                    .subscriptionIsActive(true)
+                                    .build();
+                            return user.toBuilder().currencySubscriptionOptions(options).build();
                         }
                 );
                 feedbackExecutor.editMessageText(
@@ -100,7 +90,7 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
 
     public void sendMenu(long chatId, int messageId, FeedbackExecutor feedbackExecutor) {
         boolean subscribed = bobaFettUserService.findByChatId(usersRepository, chatId)
-                .flatMapO(BobaFettUser::currencySubscriptionOptions)
+                .map(BobaFettUser::currencySubscriptionOptions)
                 .map(CurrencySubscriptionOptions::subscriptionIsActive)
                 .orElse(false);
         feedbackExecutor.editMessageText(
@@ -114,18 +104,9 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
     private void subscribeControl(boolean isSubscribe, long chatId, int messageId, FeedbackExecutor feedbackExecutor) {
         usersRepository.withTransaction(tx -> {
             BobaFettUser user = bobaFettUserService.ensureFindByChatId(tx, chatId);
-            Opt<CurrencySubscriptionOptions> options = user.currencySubscriptionOptions();
-            if (options.isEmpty()) {
-                settingSubscription(
-                        feedbackExecutor,
-                        chatId,
-                        messageId,
-                        DEFAULT_HOUR,
-                        DEFAULT_MINUTE
-                );
-                return;
-            }
-            options = options.map(it -> it.toBuilder().subscriptionIsActive(isSubscribe).build());
+            CurrencySubscriptionOptions options = user.currencySubscriptionOptions().toBuilder()
+                    .subscriptionIsActive(isSubscribe)
+                    .build();
             user = user.toBuilder().currencySubscriptionOptions(options).build();
             tx.save(user);
             String message = getMessageForSubscribeControl(isSubscribe);

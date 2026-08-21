@@ -3,7 +3,6 @@ package ru.prohor.universe.bobafett.data.pojo;
 import lombok.Builder;
 import ru.prohor.universe.bobafett.data.Currency;
 import ru.prohor.universe.bobafett.data.dto.CurrencySubscriptionOptionsDto;
-import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 public record CurrencySubscriptionOptions(
         DistributionTime dailyDistributionTime,
         boolean subscriptionIsActive,
-        Opt<List<Currency>> selectedCurrencies
+        List<Currency> selectedCurrencies
 ) implements MongoEntityPojo<CurrencySubscriptionOptionsDto> {
     @Override
     public CurrencySubscriptionOptionsDto toDto() {

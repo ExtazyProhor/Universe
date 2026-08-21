@@ -17,15 +17,15 @@ public class CurrencyDistributionUsersProvider {
     private static final FieldProperties<BobaFettUser, ?> CURRENCY_SUBSCRIPTION_OPTIONS_KEY = FR
             .wrap(BobaFettUser::currencySubscriptionOptions);
     private static final FieldProperties<BobaFettUser, Integer> HOUR_KEY = FR
-            .chainO(BobaFettUser::currencySubscriptionOptions)
+            .chain(BobaFettUser::currencySubscriptionOptions)
             .then(CurrencySubscriptionOptions::dailyDistributionTime)
             .then(DistributionTime::hour);
     private static final FieldProperties<BobaFettUser, Integer> MINUTE_KEY = FR
-            .chainO(BobaFettUser::currencySubscriptionOptions)
+            .chain(BobaFettUser::currencySubscriptionOptions)
             .then(CurrencySubscriptionOptions::dailyDistributionTime)
             .then(DistributionTime::minute);
     private static final FieldProperties<BobaFettUser, Boolean> IS_ACTIVE_KEY = FR
-            .chainO(BobaFettUser::currencySubscriptionOptions)
+            .chain(BobaFettUser::currencySubscriptionOptions)
             .then(CurrencySubscriptionOptions::subscriptionIsActive);
 
     public List<BobaFettUser> findUsersToDistribution(

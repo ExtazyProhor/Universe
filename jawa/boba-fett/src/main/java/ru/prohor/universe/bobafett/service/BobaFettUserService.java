@@ -41,7 +41,7 @@ public class BobaFettUserService {
                 Opt.ofNullable(name),
                 link,
                 Opt.empty(),
-                Opt.of(currencyService.createOptions(Opt.empty(), Opt.empty(), Opt.empty())),
+                currencyService.createOptions(),
                 Opt.empty()
         );
     }
