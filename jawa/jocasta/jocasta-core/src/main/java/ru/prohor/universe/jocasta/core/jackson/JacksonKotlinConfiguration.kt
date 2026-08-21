@@ -1,11 +1,10 @@
-package ru.prohor.universe.jocasta.cfg.kotlin
+package ru.prohor.universe.jocasta.core.jackson
 
 import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-import ru.prohor.universe.jocasta.core.jackson.JacksonConfiguration
 
 @Configuration
 @Import(JacksonConfiguration::class)

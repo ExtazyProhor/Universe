@@ -15,6 +15,5 @@
 
     <modules>
         <module>jocasta-jackson-morphia</module>
-        <module>jocasta-jackson-kotlin</module>
     </modules>
 </project>

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectWriter
-import ru.prohor.universe.jocasta.cfg.kotlin.JacksonKotlinConfiguration
 import ru.prohor.universe.jocasta.core.jackson.JacksonConfiguration
+import ru.prohor.universe.jocasta.core.jackson.JacksonKotlinConfiguration
 import ru.prohor.universe.jocasta.core.jackson.PrettyJsonPrinter
 import kotlin.io.path.Path
 import kotlin.io.path.readText

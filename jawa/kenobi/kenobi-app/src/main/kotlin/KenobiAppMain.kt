@@ -5,8 +5,8 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.scheduling.annotation.EnableScheduling
-import ru.prohor.universe.jocasta.cfg.kotlin.JacksonKotlinConfiguration
 import ru.prohor.universe.jocasta.core.jackson.JacksonJocastaCoreConfiguration
+import ru.prohor.universe.jocasta.core.jackson.JacksonKotlinConfiguration
 import ru.prohor.universe.jocasta.jackson.morphia.JacksonMorphiaConfiguration
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration
