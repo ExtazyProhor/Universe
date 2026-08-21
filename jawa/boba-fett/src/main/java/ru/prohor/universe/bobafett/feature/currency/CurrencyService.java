@@ -25,7 +25,8 @@ public class CurrencyService {
         return new CurrencySubscriptionOptions(
                 new DistributionTime(DEFAULT_HOUR, DEFAULT_MINUTE),
                 false,
-                defaultCurrency
+                defaultCurrency,
+                false
         );
     }
 }

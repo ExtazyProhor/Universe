@@ -33,9 +33,11 @@ public interface Callbacks {
      * g - get currency
      * s - subscription
      * c - change selected currencies
+     * h - disable hint about changing selected currency
      */
     String SUBSCRIBE_CURRENCY_INIT = "c/is";
     String SUBSCRIBE_CURRENCY = "c/s";
     String GET_CURRENCY = "c/g";
     String CHANGE_SELECTED_CURRENCIES = "c/c";
+    String DISABLE_HINT_ABOUT_CHANGING_SELECTED_CURRENCY = "c/h";
 }

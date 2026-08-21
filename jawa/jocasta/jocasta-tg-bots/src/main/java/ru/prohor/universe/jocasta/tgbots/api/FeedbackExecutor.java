@@ -30,6 +30,15 @@ public interface FeedbackExecutor {
         sendMessage(sendMessage);
     }
 
+    default void sendMessage(Long chatId, String text, InlineKeyboardMarkup keyboard) {
+        SendMessage sendMessage = SendMessage.builder()
+                .chatId(chatId)
+                .text(text)
+                .replyMarkup(keyboard)
+                .build();
+        sendMessage(sendMessage);
+    }
+
     default void editMessageText(Long chatId, Integer messageId, String text) {
         EditMessageText editMessageText = EditMessageText.builder()
                 .chatId(chatId)

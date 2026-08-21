@@ -20,4 +20,6 @@ public class CurrencySubscriptionOptionsDto {
     private boolean subscriptionIsActive;
     @Property("selected_currencies")
     private List<Currency> selectedCurrencies;
+    @Property("hint_about_changing_selected_currency_disabled")
+    private Boolean hintAboutChangingSelectedCurrencyDisabled;
 }

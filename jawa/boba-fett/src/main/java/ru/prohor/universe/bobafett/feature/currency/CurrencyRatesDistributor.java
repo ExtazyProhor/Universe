@@ -10,15 +10,18 @@ import java.util.List;
 
 @Service
 public class CurrencyRatesDistributor implements DistributionTask {
+    private final HintAboutChangingSelectedCurrencyService hintAboutChangingSelectedCurrencyService;
     private final CurrencyMessageGenerator currencyMessageGenerator;
     private final CurrencyDistributionUsersProvider currencyDistributionUsersProvider;
     private final MongoRepository<BobaFettUser> bobaFettUsersRepository;
 
     public CurrencyRatesDistributor(
+            HintAboutChangingSelectedCurrencyService hintAboutChangingSelectedCurrencyService,
             CurrencyMessageGenerator currencyMessageGenerator,
             CurrencyDistributionUsersProvider currencyDistributionUsersProvider,
             MongoRepository<BobaFettUser> bobaFettUsersRepository
     ) {
+        this.hintAboutChangingSelectedCurrencyService = hintAboutChangingSelectedCurrencyService;
         this.currencyMessageGenerator = currencyMessageGenerator;
         this.currencyDistributionUsersProvider = currencyDistributionUsersProvider;
         this.bobaFettUsersRepository = bobaFettUsersRepository;
@@ -39,6 +42,7 @@ public class CurrencyRatesDistributor implements DistributionTask {
                     user.chatId(),
                     currencyMessageGenerator.getCurrencyMessageFor(user)
             );
+            hintAboutChangingSelectedCurrencyService.executeHint(user, feedbackExecutor);
         }
     }
 }
