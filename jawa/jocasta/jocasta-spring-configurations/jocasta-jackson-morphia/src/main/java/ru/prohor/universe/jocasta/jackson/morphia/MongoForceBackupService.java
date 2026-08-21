@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.functional.MonoFunction;
+import ru.prohor.universe.jocasta.core.jackson.PrettyJsonPrinter;
 import ru.prohor.universe.jocasta.morphia.MongoEntityPojo;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
 import ru.prohor.universe.jocasta.morphia.MongoTransactionService;
-import ru.prohor.universe.jocasta.spring.features.PrettyJsonPrinter;
 
 import java.io.InputStream;
 import java.util.List;

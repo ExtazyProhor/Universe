@@ -1,18 +1,18 @@
-package ru.prohor.universe.jocasta.jackson.core;
+package ru.prohor.universe.jocasta.core.jackson;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
 import ru.prohor.universe.jocasta.core.collections.common.Bool;
-import ru.prohor.universe.jocasta.jackson.core.deserializer.BoolDeserializer;
-import ru.prohor.universe.jocasta.jackson.core.deserializer.InstantDeserializer;
-import ru.prohor.universe.jocasta.jackson.core.deserializer.JocastaCoreDeserializers;
-import ru.prohor.universe.jocasta.jackson.core.deserializer.LocalDateDeserializer;
-import ru.prohor.universe.jocasta.jackson.core.serializer.BoolSerializer;
-import ru.prohor.universe.jocasta.jackson.core.serializer.InstantSerializer;
-import ru.prohor.universe.jocasta.jackson.core.serializer.JocastaCoreSerializers;
-import ru.prohor.universe.jocasta.jackson.core.serializer.LocalDateSerializer;
+import ru.prohor.universe.jocasta.core.jackson.deserializer.BoolDeserializer;
+import ru.prohor.universe.jocasta.core.jackson.deserializer.InstantDeserializer;
+import ru.prohor.universe.jocasta.core.jackson.deserializer.JocastaCoreDeserializers;
+import ru.prohor.universe.jocasta.core.jackson.deserializer.LocalDateDeserializer;
+import ru.prohor.universe.jocasta.core.jackson.serializer.BoolSerializer;
+import ru.prohor.universe.jocasta.core.jackson.serializer.InstantSerializer;
+import ru.prohor.universe.jocasta.core.jackson.serializer.JocastaCoreSerializers;
+import ru.prohor.universe.jocasta.core.jackson.serializer.LocalDateSerializer;
 
 import java.time.Instant;
 import java.time.LocalDate;

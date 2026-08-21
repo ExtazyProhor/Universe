@@ -1,6 +1,4 @@
-package ru.prohor.universe.jocasta.jackson.core;
-
-import java.lang.reflect.Type;
+package ru.prohor.universe.jocasta.core.jackson;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.ReferenceType;
@@ -8,6 +6,8 @@ import com.fasterxml.jackson.databind.type.TypeBindings;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.databind.type.TypeModifier;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
+
+import java.lang.reflect.Type;
 
 public class JocastaCoreTypeModifier extends TypeModifier {
     @Override

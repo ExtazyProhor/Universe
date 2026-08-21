@@ -6,7 +6,7 @@ import org.bson.types.ObjectId;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import ru.prohor.universe.jocasta.spring.configuration.JacksonConfiguration;
+import ru.prohor.universe.jocasta.core.jackson.JacksonConfiguration;
 
 @Configuration
 @Import({

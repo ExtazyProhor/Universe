@@ -10,14 +10,14 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.prohor.universe.scarif.jwt.AuthorizedUser;
-import ru.prohor.universe.scarif.jwt.JwtVerifier;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
+import ru.prohor.universe.jocasta.core.jackson.JacksonJocastaCoreConfiguration;
 import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
-import ru.prohor.universe.jocasta.jackson.core.JacksonJocastaCoreConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
+import ru.prohor.universe.scarif.jwt.AuthorizedUser;
+import ru.prohor.universe.scarif.jwt.JwtVerifier;
 
 import java.util.UUID;
 

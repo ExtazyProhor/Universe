@@ -1,4 +1,4 @@
-package ru.prohor.universe.jocasta.jackson.core;
+package ru.prohor.universe.jocasta.core.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
-import ru.prohor.universe.jocasta.spring.features.PrettyJsonPrinter;
+import ru.prohor.universe.jocasta.core.jackson.PrettyJsonPrinter;
 
 import java.io.File;
 import java.nio.file.Files;
