@@ -69,6 +69,10 @@ public class BobaFettUserService {
         usersRepository.safeUpdate(filterByChatId(chatId), updateFunction);
     }
 
+    public BobaFettUser ensureFindByChatId(long chatId) {
+        return ensureFindByChatId(usersRepository, chatId);
+    }
+
     public BobaFettUser ensureFindByChatId(MongoRepository<BobaFettUser> repository, long chatId) {
         return findByChatId(repository, chatId).orElseThrow(
                 () -> new RuntimeException("Unexpected count of users with chatId=" + chatId)

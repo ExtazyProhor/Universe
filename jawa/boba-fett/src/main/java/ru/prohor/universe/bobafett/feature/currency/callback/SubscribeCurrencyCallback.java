@@ -70,13 +70,18 @@ public class SubscribeCurrencyCallback extends JsonCallbackHandler<SubscribeCurr
                     payload.minute
             );
             case CONFIRM -> {
-                CurrencySubscriptionOptions options = new CurrencySubscriptionOptions(
-                        new DistributionTime(payload.hour, payload.minute),
-                        true
-                );
                 bobaFettUserService.safeUpdate(
                         chatId,
-                        user -> user.toBuilder().currencySubscriptionOptions(Opt.of(options)).build()
+                        user -> {
+                            CurrencySubscriptionOptions options = new CurrencySubscriptionOptions(
+                                    new DistributionTime(payload.hour, payload.minute),
+                                    true,
+                                    user.currencySubscriptionOptions()
+                                            .map(CurrencySubscriptionOptions::selectedCurrencies)
+                                            .flattenO()
+                            );
+                            return user.toBuilder().currencySubscriptionOptions(Opt.of(options)).build();
+                        }
                 );
                 feedbackExecutor.editMessageText(
                         chatId,

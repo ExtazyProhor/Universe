@@ -1,5 +1,7 @@
 package ru.prohor.universe.bobafett.feature.currency;
 
+import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
+
 public interface CurrencyMessageGenerator {
-    String getCurrencyMessage();
+    String getCurrencyMessageFor(BobaFettUser user);
 }

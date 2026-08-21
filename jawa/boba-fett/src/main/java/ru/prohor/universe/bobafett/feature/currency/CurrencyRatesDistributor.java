@@ -34,9 +34,11 @@ public class CurrencyRatesDistributor implements DistributionTask {
         if (users.isEmpty())
             return;
 
-        String message = currencyMessageGenerator.getCurrencyMessage();
         for (BobaFettUser user : users) {
-            feedbackExecutor.sendMessage(user.chatId(), message);
+            feedbackExecutor.sendMessage(
+                    user.chatId(),
+                    currencyMessageGenerator.getCurrencyMessageFor(user)
+            );
         }
     }
 }
