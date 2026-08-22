@@ -42,7 +42,8 @@ public class BobaFettUserService {
                 link,
                 Opt.empty(),
                 currencyService.createOptions(),
-                Opt.empty()
+                Opt.empty(),
+                Opt.of(true)
         );
     }
 
@@ -57,8 +58,13 @@ public class BobaFettUserService {
 
     public void createIfNotExists(Chat chat) {
         usersRepository.withTransaction(tx -> {
-            if (!contains(tx, chat.getId())) {
+            Opt<BobaFettUser> user = findByChatId(tx, chat.getId());
+            if (user.isEmpty()) {
                 tx.save(create(chat));
+                return;
+            }
+            if (user.get().enabled().isEmpty() || !user.get().enabled().get()) {
+                tx.save(user.get().toBuilder().enabled(Opt.of(true)).build());
             }
         });
     }
@@ -108,10 +114,6 @@ public class BobaFettUserService {
         return Opt.of(repository.find(filterByChatId(chatId)))
                 .filter(list -> list.size() == 1)
                 .map(List::getFirst);
-    }
-
-    public void deleteByChatId(long chatId) {
-        findByChatId(usersRepository, chatId).ifPresent(user -> usersRepository.deleteById(user.id()));
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

@@ -125,6 +125,10 @@ public abstract class DeafBot extends DefaultLongPollingUpdateConsumer {
                     // TODO log info / debug
                     return;
                 }
+                if (response.contains("chat not found")) {
+                    onForbidden(response, numericChatId);
+                    return;
+                }
                 // TODO log warn
             } else if (code == 429) {
                 // TODO log too many requests
