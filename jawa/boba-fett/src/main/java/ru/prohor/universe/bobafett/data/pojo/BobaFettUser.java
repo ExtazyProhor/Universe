@@ -16,7 +16,7 @@ public record BobaFettUser(
         Opt<HolidaysSubscriptionOptions> holidaysSubscriptionOptions,
         CurrencySubscriptionOptions currencySubscriptionOptions,
         Opt<UserStatus> status,
-        Opt<Boolean> enabled
+        boolean enabled
 ) implements MongoEntityPojo<BobaFettUserDto> {
     @Override
     public BobaFettUserDto toDto() {
@@ -29,7 +29,7 @@ public record BobaFettUser(
                 holidaysSubscriptionOptions.map(HolidaysSubscriptionOptions::toDto).orElseNull(),
                 currencySubscriptionOptions.toDto(),
                 status.map(UserStatus::toDto).orElseNull(),
-                enabled.orElse(true)
+                enabled
         );
     }
 
@@ -43,7 +43,7 @@ public record BobaFettUser(
                 Opt.ofNullable(user.getHolidaysSubscriptionOptions()).map(HolidaysSubscriptionOptions::fromDto),
                 CurrencySubscriptionOptions.fromDto(user.getCurrencySubscriptionOptions()),
                 Opt.ofNullable(user.getStatus()).map(UserStatus::fromDto),
-                Opt.ofNullable(user.getEnabled())
+                user.isEnabled()
         );
     }
 }

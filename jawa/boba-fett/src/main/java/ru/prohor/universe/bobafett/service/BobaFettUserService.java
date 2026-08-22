@@ -43,7 +43,7 @@ public class BobaFettUserService {
                 Opt.empty(),
                 currencyService.createOptions(),
                 Opt.empty(),
-                Opt.of(true)
+                true
         );
     }
 
@@ -63,8 +63,8 @@ public class BobaFettUserService {
                 tx.save(create(chat));
                 return;
             }
-            if (user.get().enabled().isEmpty() || !user.get().enabled().get()) {
-                tx.save(user.get().toBuilder().enabled(Opt.of(true)).build());
+            if (!user.get().enabled()) {
+                tx.save(user.get().toBuilder().enabled(true).build());
             }
         });
     }

@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMemberUpdated;
 import ru.prohor.universe.bobafett.command.StartCommand;
 import ru.prohor.universe.bobafett.service.BobaFettUserService;
 import ru.prohor.universe.bobafett.service.ObjectsEncoder;
-import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.tgbots.BotSettings;
 import ru.prohor.universe.jocasta.tgbots.SimpleBot;
 
@@ -49,7 +48,7 @@ public class BobaFettBot extends SimpleBot {
 
     @Override
     public void onBotRemovedFromChat(long chatId, Chat chat) {
-        bobaFettUserService.safeUpdate(chatId, user -> user.toBuilder().enabled(Opt.of(false)).build());
+        bobaFettUserService.safeUpdate(chatId, user -> user.toBuilder().enabled(false).build());
         log.info("bot was removed from chat: '{}', chat-user was deleted", objectsEncoder.encode(chat));
     }
 
@@ -65,7 +64,7 @@ public class BobaFettBot extends SimpleBot {
 
     @Override
     public void onForbidden(String response, long chatId) {
-        bobaFettUserService.safeUpdate(chatId, user -> user.toBuilder().enabled(Opt.of(false)).build());
+        bobaFettUserService.safeUpdate(chatId, user -> user.toBuilder().enabled(false).build());
         log.debug("forbidden for chat with id {}, response - '{}', user was deleted", chatId, response);
     }
 

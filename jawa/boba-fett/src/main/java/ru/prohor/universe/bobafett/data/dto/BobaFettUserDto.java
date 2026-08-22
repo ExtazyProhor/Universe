@@ -28,5 +28,5 @@ public class BobaFettUserDto {
     @Property("currency_subscription_options")
     private CurrencySubscriptionOptionsDto currencySubscriptionOptions;
     private UserStatusDto status;
-    private Boolean enabled;
+    private boolean enabled;
 }

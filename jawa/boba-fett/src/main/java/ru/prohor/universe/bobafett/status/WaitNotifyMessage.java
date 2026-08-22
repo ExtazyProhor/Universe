@@ -45,7 +45,7 @@ public class WaitNotifyMessage implements StatusHandler<String> {
         String chatIdsLine = message.substring(0, lineIndex);
         if (chatIdsLine.equals("all-users")) {
             List<Long> ids = bobaFettUsersRepository.findAll().stream()
-                    .filter(u -> u.enabled().isEmpty() || u.enabled().get())
+                    .filter(BobaFettUser::enabled)
                     .map(BobaFettUser::chatId)
                     .toList();
             chatIds.addAll(ids);
