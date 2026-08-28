@@ -4,6 +4,9 @@ import glob
 import requests
 from lxml import etree
 import win32com.client as win32
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def extract_style(file_path: str) -> str:
@@ -48,7 +51,7 @@ def map_xml_to_xlsx(file_path):
         print(f"  -> Найдена ссылка на стиль: {xslt_url}")
 
         print("  -> Скачивание XSLT-шаблона...")
-        res = requests.get(xslt_url, timeout=10)
+        res = requests.get(xslt_url, timeout=10, verify=False)
         res.raise_for_status()
 
         print("  -> Парсинг XML и XSLT...")
