@@ -1,8 +1,6 @@
 package ru.prohor.universe.padawan.kotlin.scripts
 
 fun main() {
-    val relations = mutableListOf<Relation>()
-
     val maxim = Character("Максим Лавров")
     val vika = Character("Виктория Сергеевна")
     val nastya = Character("Официантка Настя")
@@ -11,15 +9,27 @@ fun main() {
     val tanya = Character("Татьяна Гончарова")
     val alice = Character("Алиса, дочь Шефа")
     val chief = Character("Шеф")
+    val nagiev = Character("Нагиев")
+    val kristina = Character("Кристина")
+    val nastyaFather = Character("Папа Насти")
+    val nastyaMother = Character("Мама Насти")
+    val elenaPavlovna = Character("Елена Павловна")
 
-    relations.add(maxim sleepsWith vika)
-    relations.add(maxim kiss nastya)
-    relations.add(kostya sleepsWith nastya)
-    relations.add(maxim sleepsWith sasha)
-    relations.add(tanya kinTo alice)
-    relations.add(chief kinTo alice)
-    relations.add(chief sleepsWith tanya)
-    relations.add(tanya kinTo vika)
+    val relations = listOf(
+        maxim sleepsWith vika,
+        maxim kiss nastya,
+        kostya sleepsWith nastya,
+        maxim sleepsWith sasha,
+        tanya kinTo alice,
+        chief kinTo alice,
+        chief sleepsWith tanya,
+        tanya kinTo vika,
+        nagiev sleepsWith kristina,
+        nastyaFather kinTo nastya,
+        nastyaMother kinTo nastya,
+        nastyaFather sleepsWith nastyaMother,
+        chief kiss elenaPavlovna,
+    )
 }
 
 data class Relation(
