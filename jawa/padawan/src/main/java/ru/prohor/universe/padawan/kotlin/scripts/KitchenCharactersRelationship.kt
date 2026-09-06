@@ -14,6 +14,16 @@ fun main() {
     val nastyaFather = Character("Папа Насти")
     val nastyaMother = Character("Мама Насти")
     val elenaPavlovna = Character("Елена Павловна")
+    val sonOfElenaPavlovna = Character("Сын Елены Павловны")
+    val ilya = Character("Официант Илья")
+    val katya = Character("Катя, дочка Шефа")
+    val leva = Character("Лёва")
+    val momOfLeva = Character("Мама Лёвы")
+    val hostessAngelina = Character("Хостес Ангелина")
+    val eva = Character("Официантка Ева")
+    val denis = Character("Денис")
+    val herman = Character("Герман")
+    val aynura = Character("Айнура")
 
     val relations = listOf(
         maxim sleepsWith vika,
@@ -28,7 +38,19 @@ fun main() {
         nastyaFather kinTo nastya,
         nastyaMother kinTo nastya,
         nastyaFather sleepsWith nastyaMother,
-        chief kiss elenaPavlovna,
+        chief sleepsWith elenaPavlovna,
+        ilya sleepsWith sasha,
+        sonOfElenaPavlovna kinTo elenaPavlovna,
+        leva kinTo momOfLeva,
+        leva kiss katya,
+        katya kinTo chief,
+        maxim kiss hostessAngelina,
+        maxim kiss katya,
+        nagiev kiss eva,
+        maxim kiss eva,
+        denis sleepsWith katya,
+        herman sleepsWith aynura,
+        chief sleepsWith eva,
     )
 }
 
