@@ -37,7 +37,7 @@ android {
             buildConfigField(
                 "String",
                 "API_URL",
-                "\"https://yahtzee.ru\""
+                "\"https://yatzy.ru\""
             )
         }
     }
