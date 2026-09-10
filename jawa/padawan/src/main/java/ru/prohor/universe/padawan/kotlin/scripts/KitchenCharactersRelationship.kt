@@ -24,6 +24,11 @@ fun main() {
     val denis = Character("Денис")
     val herman = Character("Герман")
     val aynura = Character("Айнура")
+    val oksana = Character("Оксана Смирнова")
+    val eleonora = Character("Элеонора Андреевна")
+    val senya = Character("Сеня")
+    val fedya = Character("Федя")
+    val wifeOfSenya = Character("Жена Сени")
 
     val relations = listOf(
         maxim sleepsWith vika,
@@ -51,6 +56,11 @@ fun main() {
         denis sleepsWith katya,
         herman sleepsWith aynura,
         chief sleepsWith eva,
+        nagiev sleepsWith oksana,
+        denis sleepsWith eleonora,
+        chief sleepsWith eleonora,
+        senya sleepsWith wifeOfSenya,
+        fedya kiss wifeOfSenya,
     )
 }
 
