@@ -5,7 +5,7 @@
       <env name="UNIVERSE_HOME" value="$UNIVERSE_HOME$" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="ru.prohor.universe.scarif.ScarifMain" />
-    <module name="scarif" />
+    <module name="scarif-app" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

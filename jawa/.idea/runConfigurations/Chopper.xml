@@ -4,8 +4,8 @@
       <env name="HOLOCRON_JSON" value="$HOLOCRON_JSON$" />
       <env name="UNIVERSE_HOME" value="$UNIVERSE_HOME$" />
     </envs>
-    <option name="MAIN_CLASS_NAME" value="ru.prohor.universe.chopper.app.ChopperKt" />
-    <module name="chopper" />
+    <option name="MAIN_CLASS_NAME" value="ru.prohor.universe.chopper.app.ChopperAppKt" />
+    <module name="chopper-app" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
