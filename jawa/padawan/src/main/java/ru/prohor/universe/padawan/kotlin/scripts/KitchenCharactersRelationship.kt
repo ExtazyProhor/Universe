@@ -70,6 +70,7 @@ fun main() {
         maxim kinTo maxGrandma,
         maxim kinTo maxGrandpa,
         maxGrandma kinTo maxGrandpa,
+        nagiev sleepsWith eleonora,
     )
 }
 
