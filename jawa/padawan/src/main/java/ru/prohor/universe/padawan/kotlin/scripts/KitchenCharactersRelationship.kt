@@ -33,6 +33,8 @@ fun main() {
     val maxMother = Character("Мама Макса")
     val maxGrandma = Character("Бабушка Макса")
     val maxGrandpa = Character("Дедушка Макса")
+    val gulya = Character("Гульнара")
+    val sveta = Character("Света")
 
     val relations = listOf(
         maxim sleepsWith vika,
@@ -71,6 +73,9 @@ fun main() {
         maxim kinTo maxGrandpa,
         maxGrandma kinTo maxGrandpa,
         nagiev sleepsWith eleonora,
+        gulya kinTo aynura,
+        leva sleepsWith gulya,
+        denis kiss sveta,
     )
 }
 
