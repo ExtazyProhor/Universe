@@ -11,6 +11,7 @@ public enum TestFile {
     OUTPUT("output.txt"),
     PROTO("proto.proto"),
     TXT("txt.txt"),
+    XML("xml.xml"),
     YAML("yaml.yaml");
 
     public final String file;
