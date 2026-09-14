@@ -35,6 +35,7 @@
         <module>bb-8</module>
         <module>uni</module>
         <module>kenobi</module>
+        <module>fondor</module>
     </modules>
 
     <dependencies>
@@ -311,6 +312,11 @@
             <dependency>
                 <groupId>ru.prohor.universe</groupId>
                 <artifactId>kenobi-youtube-plugin</artifactId>
+                <version>final</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.prohor.universe</groupId>
+                <artifactId>fondor-core</artifactId>
                 <version>final</version>
             </dependency>
         </dependencies>
