@@ -10,6 +10,7 @@ class Vcs : UniCommand() {
             CleanupBranches(),
             AddMoveInfo(),
             Bisect(),
+            BranchDiff(),
         )
     }
 

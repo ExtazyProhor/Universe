@@ -13,7 +13,11 @@ data class CmdResult(
 
 fun UniCommand.errorEcho(message: String) = echo(message = red(message), err = true)
 
-fun UniCommand.debug(isDebug: Boolean, message: String) = isDebug.let { if (it) echo(yellow(message)) }
+fun UniCommand.debug(isDebug: Boolean, message: String) {
+    if (isDebug) echo(yellow("--- $message"))
+}
+
+private fun formatOutput(output: String) = output.split("\n").joinToString("\n") { "\t\t$it" }
 
 fun runCommandInteractive(cmd: String): Int {
     val processArgs = listOf("zsh", "-ic") + "$cmd; exit $?"
@@ -26,6 +30,7 @@ fun UniCommand.runCommand(vararg cmd: String, debug: Boolean = false): CmdResult
 }
 
 fun UniCommand.runCommand(cmd: List<String>, debug: Boolean = false): CmdResult {
+    debug(debug, "command: '${cmd.joinToString(" ")}'")
     try {
         val process = ProcessBuilder(cmd)
             .redirectErrorStream(false)
@@ -37,8 +42,8 @@ fun UniCommand.runCommand(cmd: List<String>, debug: Boolean = false): CmdResult 
 
         val result = CmdResult(stdout, stderr, code)
         debug(debug, "exit code: ${result.exitCode}")
-        debug(debug, "stdout: [${result.stdout}]")
-        debug(debug, "stderr: [${result.stderr}]")
+        debug(debug, "stdout:\n${formatOutput(result.stdout)}")
+        debug(debug, "stderr:\n${formatOutput(result.stderr)}")
         return result
     } catch (e: Exception) {
         errorEcho(e.message ?: "error with command '${cmd.first()}'")
