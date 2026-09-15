@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.prohor.universe.bobafett.command.Commands;
 import ru.prohor.universe.bobafett.data.pojo.BobaFettUser;
+import ru.prohor.universe.jocasta.core.features.fieldref.FR;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.filter.MongoFilters;
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusFlow;
 import ru.prohor.universe.jocasta.tgbots.api.status.StatusHandler;
@@ -44,8 +46,8 @@ public class WaitNotifyMessage implements StatusHandler<String> {
         List<Long> chatIds = new ArrayList<>();
         String chatIdsLine = message.substring(0, lineIndex);
         if (chatIdsLine.equals("all-users")) {
-            List<Long> ids = bobaFettUsersRepository.findAll().stream()
-                    .filter(BobaFettUser::enabled)
+            List<Long> ids = bobaFettUsersRepository.find(MongoFilters.eq(FR.wrap(BobaFettUser::enabled), true))
+                    .stream()
                     .map(BobaFettUser::chatId)
                     .toList();
             chatIds.addAll(ids);
