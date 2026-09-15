@@ -9,6 +9,7 @@ import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
 import ru.prohor.universe.jocasta.springweb.configuration.FilesControllerConfiguration;
 import ru.prohor.universe.jocasta.springweb.configuration.PagesControllerConfiguration;
+import ru.prohor.universe.jocasta.springweb.configuration.UrlHandlerFilterConfiguration;
 
 @Configuration
 @ComponentScan
@@ -18,9 +19,10 @@ import ru.prohor.universe.jocasta.springweb.configuration.PagesControllerConfigu
         ChopperClientConfig.class,
         FilesControllerConfiguration.class,
         PagesControllerConfiguration.class,
+        UrlHandlerFilterConfiguration.class
 })
 public class PadawanSpringMain {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(PadawanSpringMain.class, args);
     }
 }
