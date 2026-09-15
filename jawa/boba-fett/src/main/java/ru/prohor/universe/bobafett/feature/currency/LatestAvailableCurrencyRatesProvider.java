@@ -1,9 +1,7 @@
 package ru.prohor.universe.bobafett.feature.currency;
 
-import ru.prohor.universe.bobafett.data.dto.Rate;
-
-import java.util.List;
+import ru.prohor.universe.bobafett.data.pojo.CurrencyRate;
 
 public interface LatestAvailableCurrencyRatesProvider {
-    List<Rate> getLatestAvailableCurrencyRates();
+    CurrencyRate getLatestAvailableCurrencyRates();
 }

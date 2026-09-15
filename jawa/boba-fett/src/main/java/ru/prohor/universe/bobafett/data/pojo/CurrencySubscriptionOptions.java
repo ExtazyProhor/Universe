@@ -1,6 +1,7 @@
 package ru.prohor.universe.bobafett.data.pojo;
 
 import lombok.Builder;
+import org.bson.types.ObjectId;
 import ru.prohor.universe.bobafett.data.Currency;
 import ru.prohor.universe.bobafett.data.dto.CurrencySubscriptionOptionsDto;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
@@ -13,6 +14,7 @@ public record CurrencySubscriptionOptions(
         DistributionTime dailyDistributionTime,
         boolean subscriptionIsActive,
         List<Currency> selectedCurrencies,
+        Opt<ObjectId> lastReceivedCurrencyRates,
         boolean hintAboutChangingSelectedCurrencyDisabled
 ) implements MongoEntityPojo<CurrencySubscriptionOptionsDto> {
     @Override
@@ -21,6 +23,7 @@ public record CurrencySubscriptionOptions(
                 dailyDistributionTime.toDto(),
                 subscriptionIsActive,
                 selectedCurrencies,
+                lastReceivedCurrencyRates.orElseNull(),
                 hintAboutChangingSelectedCurrencyDisabled
         );
     }
@@ -30,6 +33,7 @@ public record CurrencySubscriptionOptions(
                 DistributionTime.fromDto(options.getDailyDistributionTime()),
                 options.isSubscriptionIsActive(),
                 options.getSelectedCurrencies(),
+                Opt.ofNullable(options.getLastReceivedCurrencyRates()),
                 Opt.ofNullable(options.getHintAboutChangingSelectedCurrencyDisabled()).orElse(false)
         );
     }

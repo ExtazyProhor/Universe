@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.prohor.universe.bobafett.data.Currency;
 import ru.prohor.universe.bobafett.data.pojo.CurrencySubscriptionOptions;
 import ru.prohor.universe.bobafett.data.pojo.DistributionTime;
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class CurrencyService {
                 new DistributionTime(DEFAULT_HOUR, DEFAULT_MINUTE),
                 false,
                 defaultCurrency,
+                Opt.empty(),
                 false
         );
     }

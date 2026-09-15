@@ -2,7 +2,6 @@ package ru.prohor.universe.bobafett.feature.currency;
 
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
-import ru.prohor.universe.bobafett.data.dto.Rate;
 import ru.prohor.universe.bobafett.data.pojo.CurrencyRate;
 import ru.prohor.universe.jocasta.core.features.fieldref.FR;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
@@ -32,7 +31,7 @@ public class LatestAvailableCurrencyRatesProviderImpl implements LatestAvailable
     }
 
     @Override
-    public List<Rate> getLatestAvailableCurrencyRates() {
+    public CurrencyRate getLatestAvailableCurrencyRates() {
         List<CurrencyRate> latest = currencyRatesRepository.find(LATEST_QUERY);
         if (latest.isEmpty()) {
             return Sneaky.execute(this::getRatesFromApiAndSaveIt);
@@ -50,17 +49,16 @@ public class LatestAvailableCurrencyRatesProviderImpl implements LatestAvailable
                 e.printStackTrace(); // TODO log warn / err
             }
         }
-        return currencyRate.rates();
+        return currencyRate;
     }
 
-    private List<Rate> getRatesFromApiAndSaveIt() throws Exception {
-        List<Rate> newRates = currencyLayerApiService.getNewRates();
+    private CurrencyRate getRatesFromApiAndSaveIt() throws Exception {
         CurrencyRate currencyRate = new CurrencyRate(
                 ObjectId.get(),
                 Instant.now(),
-                newRates
+                currencyLayerApiService.getNewRates()
         );
         currencyRatesRepository.save(currencyRate);
-        return newRates;
+        return currencyRate;
     }
 }
