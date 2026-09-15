@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.types.file
 import ru.prohor.universe.uni.cli.command.UniCommand
+import ru.prohor.universe.uni.cli.util.errorOutputRunCommand
 
 class AddMoveInfo : UniCommand(name = "add-move-info") {
     private val file by argument(

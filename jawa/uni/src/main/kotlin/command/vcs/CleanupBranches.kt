@@ -8,6 +8,7 @@ import com.github.ajalt.mordant.rendering.TextColors.magenta
 import com.github.ajalt.mordant.rendering.TextColors.yellow
 import com.github.ajalt.mordant.terminal.prompt
 import ru.prohor.universe.uni.cli.command.UniCommand
+import ru.prohor.universe.uni.cli.util.defaultOutputRunCommand
 import ru.prohor.universe.uni.cli.util.runCommand
 
 class CleanupBranches : UniCommand(name = "cleanup-branches") {
@@ -21,7 +22,7 @@ class CleanupBranches : UniCommand(name = "cleanup-branches") {
         for (branch in branches) {
             val answer = terminal.prompt(yellow("Delete branch ") + magenta(branch) + yellow("? (y to delete / Enter to skip)"))
             if (answer.equals("y", ignoreCase = true)) {
-                deleteBranch(vcs, branch)
+                defaultOutputRunCommand(vcs.command, "branch", "-d", branch)
             }
         }
     }
@@ -38,16 +39,5 @@ class CleanupBranches : UniCommand(name = "cleanup-branches") {
                     it != vcs.mainBranch &&
                     !it.contains("*")
             }
-    }
-
-    private fun deleteBranch(vcs: VcsType, branch: String) {
-        val cmd = arrayOf(vcs.command, "branch", "-d", branch)
-        val result = runCommand(*cmd)
-
-        if (result.exitCode == 0) {
-            echo(result.stdout, false)
-        } else {
-            errorEcho(result.stderr)
-        }
     }
 }

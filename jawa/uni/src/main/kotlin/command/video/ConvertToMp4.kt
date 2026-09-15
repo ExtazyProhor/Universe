@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import ru.prohor.universe.uni.cli.util.errorEcho
 
 class ConvertToMp4 : FfmpegCommand(name = "mp4") {
     private val withRecoding by option("-w", "--with-recoding", help = "recode target video to h.264").flag()

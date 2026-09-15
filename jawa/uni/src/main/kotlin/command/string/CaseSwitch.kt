@@ -15,6 +15,7 @@ import com.github.ajalt.mordant.terminal.prompt
 import com.github.ajalt.mordant.widgets.Text
 import ru.prohor.universe.jocasta.core.utils.NamingStyleUtils
 import ru.prohor.universe.uni.cli.command.UniCommand
+import ru.prohor.universe.uni.cli.util.errorEcho
 
 class CaseSwitch : UniCommand(name = "case") {
     init {

@@ -10,6 +10,7 @@ import com.github.ajalt.mordant.rendering.TextColors.cyan
 import com.github.ajalt.mordant.rendering.TextColors.green
 import com.github.ajalt.mordant.rendering.TextColors.red
 import ru.prohor.universe.uni.cli.command.UniCommand
+import ru.prohor.universe.uni.cli.util.errorEcho
 import java.io.File
 import java.nio.file.Paths
 import kotlin.io.path.absolute

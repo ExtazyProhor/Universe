@@ -11,6 +11,7 @@ import com.github.ajalt.mordant.rendering.TextColors.magenta
 import com.github.ajalt.mordant.rendering.TextStyles.bold
 import ru.prohor.universe.uni.cli.command.UniCommand
 import ru.prohor.universe.uni.cli.helper.video.StreamsParser
+import ru.prohor.universe.uni.cli.util.errorEcho
 import ru.prohor.universe.uni.cli.util.runCommand
 import java.io.File
 
