@@ -171,4 +171,85 @@ public class CurrencyMessageFormatterTest {
                 "Ожидался рост на 10 ₽, но получено: " + result
         );
     }
+
+    @Test
+    @DisplayName("Не должен показывать изменение, если разница после округления равна нулю")
+    void format_RateChangedWithinRoundingPrecision_DoesNotShowChange() {
+        Rate lastRate = new Rate(Currency.USD, 0.01); // 100,00 ₽
+        Rate currentRate = new Rate(Currency.USD, 0.0099999); // ≈ 100,00 ₽
+
+        String result = formatter.format(
+                List.of(currentRate),
+                Opt.of(List.of(lastRate))
+        );
+
+        assertEquals("Курс валют сейчас:\n\n- 1 Доллар США (USD 🇺🇸) = 100,00 ₽", result);
+    }
+
+    @Test
+    @DisplayName("Должен показывать изменение, если после округления разница составляет 0,01 ₽")
+    void format_RateChangedByOneKopeckAfterRounding_ShowsChange() {
+        Rate lastRate = new Rate(Currency.USD, 0.01); // 100,00 ₽
+        Rate currentRate = new Rate(Currency.USD, 0.009999); // ≈ 100,01 ₽
+
+        String result = formatter.format(
+                List.of(currentRate),
+                Opt.of(List.of(lastRate))
+        );
+
+        assertTrue(result.contains("= 100,01 ₽ 📈 +0,01 ₽"), "Ожидалось изменение +0,01 ₽, но получено: " + result);
+    }
+
+    @ParameterizedTest(name = "Для изменения {0} ожидается {1}")
+    @CsvSource({
+            "0.004, 100,00",
+            "0.005, 100,01",
+            "-0.004, 100,00",
+            "-0.006, 99,99"
+    })
+    @DisplayName("Должен корректно обрабатывать границу округления HALF_UP")
+    void format_RoundingBoundary_UsesHalfUp(double change, String expectedValue) {
+        double currentRateValue = 1.0 / (100.0 + change);
+        Rate currentRate = new Rate(Currency.USD, currentRateValue);
+        String result = formatter.format(List.of(currentRate), Opt.empty());
+
+        assertTrue(
+                result.contains("= " + expectedValue),
+                "Ожидалось значение '" + expectedValue + "', но получено: " + result
+        );
+    }
+
+    @Test
+    @DisplayName("Должен корректно сравнивать изменение после округления для дешевой валюты")
+    void format_CheapCurrency_ChangeWithinRoundingPrecision_DoesNotShowChange() {
+        Rate lastRate = new Rate(Currency.IRR, 2.0); // 500,00 ₽ за 1000
+        Rate currentRate = new Rate(Currency.IRR, 1.99999); // ≈ 500,00 ₽ за 1000
+
+        String result = formatter.format(
+                List.of(currentRate),
+                Opt.of(List.of(lastRate))
+        );
+
+        assertTrue(
+                !result.contains("📈") && !result.contains("📉"),
+                "Изменение меньше точности отображения не должно показываться: " + result
+        );
+    }
+
+    @Test
+    @DisplayName("Должен показывать изменение дешевой валюты после перехода через копейку")
+    void format_CheapCurrency_ChangeAfterRounding_ShowsChange() {
+        Rate lastRate = new Rate(Currency.IRR, 2.0); // 500,00 ₽ за 1000
+        Rate currentRate = new Rate(Currency.IRR, 1.99996); // ≈ 500,01 ₽ за 1000
+
+        String result = formatter.format(
+                List.of(currentRate),
+                Opt.of(List.of(lastRate))
+        );
+
+        assertTrue(
+                result.contains("= 500,01 ₽ 📈 +0,01 ₽"),
+                "Ожидалось изменение +0,01 ₽, но получено: " + result
+        );
+    }
 }

@@ -14,12 +14,15 @@ import java.util.stream.IntStream;
 
 @Service
 public class CurrencyMessageFormatterImpl implements CurrencyMessageFormatter {
+    private static final int DISPLAY_SCALE = 2;
+    private static final int CALCULATION_SCALE = 10;
+
     private final NumberFormat numberFormat = setupNumberFormat();
 
     private NumberFormat setupNumberFormat() {
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.forLanguageTag("ru-RU"));
-        numberFormat.setMinimumFractionDigits(2);
-        numberFormat.setMaximumFractionDigits(2);
+        numberFormat.setMinimumFractionDigits(DISPLAY_SCALE);
+        numberFormat.setMaximumFractionDigits(DISPLAY_SCALE);
         numberFormat.setRoundingMode(RoundingMode.HALF_UP);
         return numberFormat;
     }
@@ -36,7 +39,8 @@ public class CurrencyMessageFormatterImpl implements CurrencyMessageFormatter {
     }
 
     private String formatRate(Rate rate, Opt<Rate> lastRate) {
-        BigDecimal rateToRussianRuble = BigDecimal.valueOf(1.0 / rate.getRateToRussianRuble());
+        BigDecimal rateToRussianRuble = calculateRateToRussianRuble(rate);
+
         BigDecimal amount;
         long currencyAmount;
         String currencyName;
@@ -59,10 +63,12 @@ public class CurrencyMessageFormatterImpl implements CurrencyMessageFormatter {
     }
 
     private String formatChange(Rate currentRate, Rate lastRate, long currencyAmount) {
-        BigDecimal current = BigDecimal.valueOf(1.0 / currentRate.getRateToRussianRuble())
-                .multiply(BigDecimal.valueOf(currencyAmount));
-        BigDecimal previous = BigDecimal.valueOf(1.0 / lastRate.getRateToRussianRuble())
-                .multiply(BigDecimal.valueOf(currencyAmount));
+        BigDecimal current = roundForDisplay(
+                calculateRateToRussianRuble(currentRate).multiply(BigDecimal.valueOf(currencyAmount))
+        );
+        BigDecimal previous = roundForDisplay(
+                calculateRateToRussianRuble(lastRate).multiply(BigDecimal.valueOf(currencyAmount))
+        );
 
         BigDecimal change = current.subtract(previous);
         if (change.signum() == 0) {
@@ -71,5 +77,17 @@ public class CurrencyMessageFormatterImpl implements CurrencyMessageFormatter {
 
         String arrow = change.signum() > 0 ? " \uD83D\uDCC8 +" : " \uD83D\uDCC9 -";
         return arrow + numberFormat.format(change.abs()) + " ₽";
+    }
+
+    private BigDecimal calculateRateToRussianRuble(Rate rate) {
+        return BigDecimal.ONE.divide(
+                BigDecimal.valueOf(rate.getRateToRussianRuble()),
+                CALCULATION_SCALE,
+                RoundingMode.HALF_UP
+        );
+    }
+
+    private BigDecimal roundForDisplay(BigDecimal value) {
+        return value.setScale(DISPLAY_SCALE, RoundingMode.HALF_UP);
     }
 }
