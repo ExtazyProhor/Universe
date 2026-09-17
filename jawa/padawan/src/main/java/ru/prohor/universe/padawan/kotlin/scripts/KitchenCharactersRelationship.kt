@@ -35,6 +35,12 @@ fun main() {
     val maxGrandpa = Character("Дедушка Макса")
     val gulya = Character("Гульнара")
     val sveta = Character("Света")
+    val nikita = Character("Никита")
+    val rodion = Character("Родион Сергеевич")
+    val pavel = Character("Павел Аркадьевич")
+    val julia = Character("Юля")
+    val ekaterinaAndreevna = Character("Екатерина Андреевна")
+    val michael = Character("Михаил Джекович")
 
     val relations = listOf(
         maxim sleepsWith vika,
@@ -48,7 +54,7 @@ fun main() {
         nagiev sleepsWith kristina,
         nastyaFather kinTo nastya,
         nastyaMother kinTo nastya,
-        nastyaFather sleepsWith nastyaMother,
+        nastyaFather marriedWith nastyaMother,
         chief sleepsWith elenaPavlovna,
         ilya sleepsWith sasha,
         sonOfElenaPavlovna kinTo elenaPavlovna,
@@ -71,11 +77,16 @@ fun main() {
         maxim kinTo maxMother,
         maxim kinTo maxGrandma,
         maxim kinTo maxGrandpa,
-        maxGrandma kinTo maxGrandpa,
+        maxGrandma marriedWith maxGrandpa,
         nagiev sleepsWith eleonora,
         gulya kinTo aynura,
         leva sleepsWith gulya,
         denis kiss sveta,
+        nikita kiss katya,
+        rodion marriedWith eleonora,
+        eleonora kinTo pavel,
+        pavel sleepsWith julia,
+        ekaterinaAndreevna sleepsWith michael,
     )
 }
 
@@ -91,9 +102,11 @@ data class Character(
 enum class RelationType {
     INTIMACY,
     KISS,
-    KINSHIP
+    KINSHIP,
+    MARRIEDS
 }
 
 infix fun Character.sleepsWith(other: Character): Relation = Relation(this to other, RelationType.INTIMACY)
 infix fun Character.kiss(other: Character): Relation = Relation(this to other, RelationType.KISS)
 infix fun Character.kinTo(other: Character): Relation = Relation(this to other, RelationType.KINSHIP)
+infix fun Character.marriedWith(other: Character): Relation = Relation(this to other, RelationType.MARRIEDS)
