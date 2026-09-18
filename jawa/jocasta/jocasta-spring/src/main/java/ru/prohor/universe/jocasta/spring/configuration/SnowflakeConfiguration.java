@@ -9,7 +9,7 @@ import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
 public class SnowflakeConfiguration {
     @Bean
     public SnowflakeIdGenerator snowflakeIdGenerator(
-            @Value("${universe.jocasta.core.snowflake.workerId}") int workerId
+            @Value("${universe.jocasta.core.snowflake.worker-id}") int workerId
     ) {
         return new SnowflakeIdGenerator(workerId);
     }

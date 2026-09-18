@@ -90,7 +90,9 @@ public class MongoMorphiaRepository<T> implements MongoRepository<T> {
 
     @Override
     public void save(List<T> entities) {
-        repository.save(entities);
+        if (!entities.isEmpty()) {
+            repository.save(entities);
+        }
     }
 
     @Override

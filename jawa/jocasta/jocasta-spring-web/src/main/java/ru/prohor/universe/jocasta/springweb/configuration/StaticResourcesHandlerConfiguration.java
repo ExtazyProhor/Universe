@@ -5,12 +5,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.prohor.universe.jocasta.springweb.StaticResourcesHandler;
 
+import java.time.Duration;
+
 @Configuration
 public class StaticResourcesHandlerConfiguration {
     @Bean
     public StaticResourcesHandler staticResourcesHandler(
-            @Value("${universe.jocasta.spring.filesCacheMaxAgeDays}") int filesCacheMaxAgeDays
+            @Value("${universe.jocasta.spring.files-cache-max-age}") Duration filesCacheMaxAge
     ) {
-        return new StaticResourcesHandler(filesCacheMaxAgeDays);
+        return new StaticResourcesHandler(filesCacheMaxAge);
     }
 }

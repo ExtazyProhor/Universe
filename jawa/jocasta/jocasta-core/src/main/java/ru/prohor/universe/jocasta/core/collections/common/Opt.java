@@ -184,12 +184,12 @@ public abstract class Opt<T> {
         }
     }
 
-    public static <T> Opt<T> when(boolean MonoPredicate, @Nonnull T x) {
-        return MonoPredicate ? of(x) : empty();
+    public static <T> Opt<T> when(boolean condition, @Nonnull T x) {
+        return condition ? of(x) : empty();
     }
 
-    public static <T> Opt<T> when(boolean MonoPredicate, NilFunction<T> NilFunction) {
-        return MonoPredicate ? of(NilFunction.apply()) : empty();
+    public static <T> Opt<T> when(boolean condition, NilFunction<T> provider) {
+        return condition ? of(provider.apply()) : empty();
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

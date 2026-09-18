@@ -14,10 +14,10 @@ import java.io.IOException;
 public class AccessTokenFilter extends OncePerRequestFilter {
     public static final int ACCESS_TOKEN_FILTER_ORDER = 5;
 
-    private final JwtVerifier jwtVerifier;
+    private final AccessJwtVerifier accessJwtVerifier;
 
-    public AccessTokenFilter(JwtVerifier jwtVerifier) {
-        this.jwtVerifier = jwtVerifier;
+    public AccessTokenFilter(AccessJwtVerifier accessJwtVerifier) {
+        this.accessJwtVerifier = accessJwtVerifier;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             return Opt.empty();
         }
         String token = header.replace("Bearer ", "").trim();
-        Opt<AuthorizedUser> user = jwtVerifier.verify(token);
+        Opt<AuthorizedUser> user = accessJwtVerifier.verify(token);
         if (user.isEmpty()) {
             log(request, "jwt verification failed"); // TODO log
         } else {

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,15 +16,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
-import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
 import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
 import ru.prohor.universe.jocasta.morphia.MongoRepository;
-import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
-import ru.prohor.universe.scarif.jwtprovider.JwtProvider;
+import ru.prohor.universe.scarif.jwtprovider.AccessJwtProvider;
 import ru.prohor.universe.yahtzee.app.web.controllers.AccountController;
 import ru.prohor.universe.yahtzee.app.web.controllers.ProfileController;
 import ru.prohor.universe.yahtzee.core.data.pojo.player.Player;
 
+import java.time.Duration;
 import java.util.Random;
 import java.util.UUID;
 
@@ -35,21 +33,19 @@ import java.util.UUID;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@Import(SnowflakeConfiguration.class)
 public class AccountControllerTest {
     private static final long id = new Random().nextInt();
     private static final UUID uuid = UUID.randomUUID();
     private static final ObjectId objectId = ObjectId.get();
-    private static final String username = "TestPlayer123";
+    private static final String username = "Player " + objectId.toHexString().substring(0, 6);
     private static final String newName = "NewPlayerName";
 
-    private final JwtProvider jwtProvider;
+    private final AccessJwtProvider accessJwtProvider;
     private final TestRestTemplate rest;
     private final MongoRepository<Player> playerRepository;
 
     public AccountControllerTest(
-            @Value("${universe.test.access-token-ttl-minutes}") int accessTokenTtlMinutes,
-            SnowflakeIdGenerator snowflakeIdGenerator,
+            @Value("${universe.test.access-token-ttl}") Duration accessTokenTtl,
             @Value("${universe.yahtzee.private-key}") String privateKey,
             @Value("${universe.yahtzee.public-key}") String publicKey,
             ObjectMapper objectMapper,
@@ -57,9 +53,8 @@ public class AccountControllerTest {
             MongoRepository<Player> playerRepository
     ) {
         KeysFromStringProvider keysFromStringProvider = new KeysFromStringProvider(privateKey, publicKey);
-        this.jwtProvider = new JwtProvider(
-                accessTokenTtlMinutes,
-                snowflakeIdGenerator,
+        this.accessJwtProvider = new AccessJwtProvider(
+                accessTokenTtl,
                 keysFromStringProvider,
                 objectMapper
         );
@@ -155,7 +150,7 @@ public class AccountControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add(
                 HttpHeaders.AUTHORIZATION,
-                "Bearer " + jwtProvider.getToken(id, uuid, objectId.toHexString(), username)
+                "Bearer " + accessJwtProvider.getToken(id, uuid, objectId, ObjectId.get())
         );
         return headers;
     }

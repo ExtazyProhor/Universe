@@ -1,24 +1,26 @@
 package ru.prohor.universe.scarif;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import ru.prohor.universe.scarif.jwt.ScarifJwtConfiguration;
+import ru.prohor.universe.jocasta.morphia.jackson.JacksonMorphiaConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.SnowflakeConfiguration;
-import ru.prohor.universe.jocasta.springweb.ExcludeControllersComponentScan;
+import ru.prohor.universe.scarif.jwt.ScarifJwtConfiguration;
 
 @Configuration
-@ExcludeControllersComponentScan
+@ComponentScan
 @Import({
         JocastaAutoConfiguration.class,
         SnowflakeConfiguration.class,
         HolocronConfiguration.class,
         ScarifJwtConfiguration.class,
+        JacksonMorphiaConfiguration.class,
 })
 public class ScarifMain {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(ScarifMain.class, args);
     }
 }

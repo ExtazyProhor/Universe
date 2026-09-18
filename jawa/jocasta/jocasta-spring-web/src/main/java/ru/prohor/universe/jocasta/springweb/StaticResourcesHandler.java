@@ -9,13 +9,13 @@ import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class StaticResourcesHandler {
-    private final int filesCacheMaxAgeDays;
+    private final Duration filesCacheMaxAge;
 
-    public StaticResourcesHandler(int filesCacheMaxAgeDays) {
-        this.filesCacheMaxAgeDays = filesCacheMaxAgeDays;
+    public StaticResourcesHandler(Duration filesCacheMaxAge) {
+        this.filesCacheMaxAge = filesCacheMaxAge;
     }
 
     public ResponseEntity<FileSystemResource> getResource(Path path) {
@@ -24,7 +24,7 @@ public class StaticResourcesHandler {
             return ResponseEntity.notFound().build(); // TODO сделать механизм для 404
 
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(filesCacheMaxAgeDays, TimeUnit.DAYS).cachePublic().mustRevalidate())
+                .cacheControl(CacheControl.maxAge(filesCacheMaxAge).cachePublic().mustRevalidate())
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + path.getFileName() + '"')
                 .contentType(MediaType.parseMediaType(Opt.tryOrNull(
                         () -> Files.probeContentType(path)

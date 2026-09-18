@@ -54,7 +54,22 @@ public interface MongoRepository<T> {
 
     List<T> find(MongoFilter<T> filter);
 
+    default Opt<T> findOne(MongoFilter<T> filter) {
+        return findOne(find(filter));
+    }
+
     List<T> find(MongoQuery<T> query);
+
+    default Opt<T> findOne(MongoQuery<T> query) {
+        return findOne(find(query));
+    }
+
+    private Opt<T> findOne(List<T> list) {
+        if (list.size() > 1) {
+            throw new MongoDatabaseException("called findOne, but " + list.size() + " documents was found");
+        }
+        return Opt.when(!list.isEmpty(), list::getFirst);
+    }
 
     void save(T entity);
 

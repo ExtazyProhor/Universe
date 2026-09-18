@@ -377,4 +377,26 @@ public final class MongoFilters {
             }
         };
     }
+
+    public static <T, R> MongoFilter<T> elemMatch(
+            FieldProperties<T, List<R>> fieldProperties,
+            MongoFilter<R> filter
+    ) {
+        return new MongoFilter<>() {
+            @Override
+            public MonoPredicate<T> inMemory() {
+                return t -> fieldProperties.getO(t)
+                        .map(list -> list.stream().anyMatch(filter.inMemory()::test))
+                        .orElse(false);
+            }
+
+            @Override
+            public Filter morphia() {
+                return Filters.elemMatch(
+                        fieldProperties.name(),
+                        filter.morphia()
+                );
+            }
+        };
+    }
 }

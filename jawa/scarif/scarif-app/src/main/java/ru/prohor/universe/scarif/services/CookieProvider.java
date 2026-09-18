@@ -8,25 +8,28 @@ import java.time.Duration;
 
 @Service
 public class CookieProvider {
-    private static final String SAME_SITE_NONE = "None";
-    private static final String SCARIF_API_PATH = "/api/auth";
-
     private final String refreshTokenCookieName;
-    private final long refreshTokenTtlDays;
+    private final long refreshTokenTtlSeconds;
+    private final String sameSite;
+    private final boolean secure;
 
     public CookieProvider(
-            @Value("${universe.scarif.refreshTokenCookieName}") String refreshTokenCookieName,
-            @Value("${universe.scarif.refreshTokenTtlDays}") long refreshTokenTtlDays
+            @Value("${universe.scarif.refresh-token.cookie-name}") String refreshTokenCookieName,
+            @Value("${universe.scarif.refresh-token.ttl}") Duration refreshTokenTtl,
+            @Value("${universe.scarif.refresh-token.same-site}") String sameSite,
+            @Value("${universe.scarif.refresh-token.secure}") boolean secure
     ) {
         this.refreshTokenCookieName = refreshTokenCookieName;
-        this.refreshTokenTtlDays = refreshTokenTtlDays;
+        this.refreshTokenTtlSeconds = refreshTokenTtl.getSeconds();
+        this.sameSite = sameSite;
+        this.secure = secure;
     }
 
     public String createRefreshCookie(String token) {
         return cookie(
                 refreshTokenCookieName,
                 token,
-                Duration.ofDays(refreshTokenTtlDays).getSeconds()
+                refreshTokenTtlSeconds
         );
     }
 
@@ -41,9 +44,9 @@ public class CookieProvider {
     private String cookie(String name, String value, long maxAge) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
-                .secure(true)
-                .sameSite(SAME_SITE_NONE)
-                .path(CookieProvider.SCARIF_API_PATH)
+                .secure(secure)
+                .sameSite(sameSite)
+                .path("/")
                 .maxAge(maxAge)
                 .build()
                 .toString();

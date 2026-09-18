@@ -63,10 +63,10 @@ public class AccountService {
                 Player player = new Player(
                         objectId,
                         user.uuid(),
-                        user.id(),
-                        user.username(),
+                        user.numericId(),
+                        "Player " + user.objectId().substring(0, 6), // TODO
                         gameColorsService.getRandomColorId(),
-                        user.username(),
+                        "Player " + user.objectId().substring(0, 6), // TODO
                         List.of(),
                         Opt.empty(),
                         imagesService.generateAndSave().id(),

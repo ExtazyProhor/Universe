@@ -11,6 +11,7 @@ import java.util.List;
 public class WebConfiguration implements WebMvcConfigurer {
     private final List<String> allowedOrigins;
 
+    // TODO надо правильно настроить CORS
     public WebConfiguration(
             @Value("${universe.scarif.allowed-origins}") List<String> allowedOrigins
     ) {

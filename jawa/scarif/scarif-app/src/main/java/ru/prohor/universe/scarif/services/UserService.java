@@ -4,62 +4,49 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.SnowflakeIdGenerator;
-import ru.prohor.universe.scarif.data.user.JpaUsersMethods;
-import ru.prohor.universe.scarif.data.user.User;
+import ru.prohor.universe.jocasta.core.features.fieldref.FR;
+import ru.prohor.universe.jocasta.morphia.MongoRepository;
+import ru.prohor.universe.jocasta.morphia.filter.MongoFilter;
+import ru.prohor.universe.jocasta.morphia.filter.MongoFilters;
+import ru.prohor.universe.scarif.data.ExternalAccount;
+import ru.prohor.universe.scarif.data.ExternalAccountProvider;
+import ru.prohor.universe.scarif.data.User;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class UserService {
     private final SnowflakeIdGenerator snowflakeIdGenerator;
-    private final PasswordService passwordService;
-    private final JpaUsersMethods usersMethods;
 
-    public UserService(
-            SnowflakeIdGenerator snowflakeIdGenerator,
-            PasswordService passwordService,
-            JpaUsersMethods usersMethods
-    ) {
+    public UserService(SnowflakeIdGenerator snowflakeIdGenerator) {
         this.snowflakeIdGenerator = snowflakeIdGenerator;
-        this.passwordService = passwordService;
-        this.usersMethods = usersMethods;
     }
 
-    public User createUser(String username, String email, String password) {
-        return new User(
-                snowflakeIdGenerator.nextId(),
-                UUID.randomUUID(),
-                ObjectId.get(),
-                username,
-                email,
-                passwordService.hash(password),
-                true,
-                Instant.now()
+    public Opt<User> findByExternalAccount(
+            MongoRepository<User> usersRepository,
+            ExternalAccountProvider provider,
+            String id
+    ) {
+        MongoFilter<User> filter = MongoFilters.elemMatch(
+                FR.wrap(User::externalAccounts),
+                MongoFilters.and(
+                        MongoFilters.eq(FR.wrap(ExternalAccount::provider), provider),
+                        MongoFilters.eq(FR.wrap(ExternalAccount::id), id)
+                )
         );
+        return usersRepository.findOne(filter);
     }
 
-    public void register(User user) {
-        usersMethods.save(user.toDto());
-    }
-
-    public Opt<User> find(long id) {
-        return Opt.wrap(usersMethods.findById(id).map(User::fromDto));
-    }
-
-    public Opt<User> findByEmail(String email) {
-        return Opt.wrap(usersMethods.findByEmail(email).map(User::fromDto));
-    }
-
-    public Opt<User> findByUsername(String username) {
-        return Opt.wrap(usersMethods.findByUsername(username).map(User::fromDto));
-    }
-
-    public boolean existsByEmail(String email) {
-        return usersMethods.existsByEmail(email);
-    }
-
-    public boolean existsByEmailOrUsername(String email, String username) {
-        return usersMethods.existsByEmailOrUsername(email, username);
+    public User createUser() {
+        return new User(
+                ObjectId.get(),
+                UUID.randomUUID(),
+                snowflakeIdGenerator.nextId(),
+                Instant.now(),
+                List.of(),
+                List.of()
+        );
     }
 }

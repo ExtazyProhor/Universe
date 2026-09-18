@@ -12,9 +12,12 @@ import java.nio.file.Path;
 
 public class AllFilesToOneMd {
     private static final Preset SCARIF_FRONT = new Preset(
-            "scarif/content/files",
+            FileSystemUtils.userHome()
+                    .asPath()
+                    .resolve("universe/jawa/fondor/fondor-scarif/content")
+                    .toString(),
             TestFile.OUTPUT,
-            path -> !path.getFileName().toString().endsWith(".jpg")
+            path -> !path.getFileName().toString().endsWith(".jpg") && !path.getFileName().toString().endsWith(".svg")
     );
     private static final Preset TOVARISCH_PROTO = new Preset(
             FileSystemUtils.userHome()
@@ -25,8 +28,8 @@ public class AllFilesToOneMd {
             path -> path.getFileName().toString().endsWith(".kt")
     );
 
-    public static void main(String[] args) throws IOException {
-        process(TOVARISCH_PROTO);
+    static void main() throws IOException {
+        process(SCARIF_FRONT);
     }
 
     private static void process(Preset preset) throws IOException {
@@ -34,7 +37,13 @@ public class AllFilesToOneMd {
         Files.walk(Path.of(preset.directory)).filter(preset.filter).filter(Files::isRegularFile).forEach(path -> {
             Sneaky.execute(() -> {
                 builder.append(path.getFileName()).append(":\n```").append(getFileExtension(path)).append("\n");
-                builder.append(Files.readString(path)).append("\n```\n\n");
+                String content;
+                try {
+                    content = Files.readString(path);
+                } catch (Exception e) {
+                    throw new RuntimeException("File " + path, e);
+                }
+                builder.append(content).append("\n```\n\n");
             });
         });
         Padawan.write(preset.output, builder.toString());

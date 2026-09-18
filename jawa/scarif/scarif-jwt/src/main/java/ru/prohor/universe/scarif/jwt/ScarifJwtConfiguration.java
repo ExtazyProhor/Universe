@@ -8,27 +8,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import ru.prohor.universe.jocasta.core.jackson.JacksonJocastaCoreConfiguration;
 import ru.prohor.universe.jocasta.core.security.rsa.PublicKeyProvider;
-import ru.prohor.universe.jocasta.springweb.configuration.StaticResourcesHandlerConfiguration;
 
 @Configuration
-@Import({
-        JacksonJocastaCoreConfiguration.class,
-        StaticResourcesHandlerConfiguration.class
-})
+@Import(JacksonJocastaCoreConfiguration.class)
 @ComponentScan
 public class ScarifJwtConfiguration {
     @Bean
-    public JwtVerifier jwtVerifier(
+    public AccessJwtVerifier jwtVerifier(
             PublicKeyProvider publicKeyProvider,
             ObjectMapper objectMapper
     ) {
-        return new JwtVerifier(publicKeyProvider, objectMapper);
+        return new AccessJwtVerifier(publicKeyProvider, objectMapper);
     }
 
     @Bean
-    public FilterRegistrationBean<AccessTokenFilter> accessTokenFilterRegistration(JwtVerifier jwtVerifier) {
+    public FilterRegistrationBean<AccessTokenFilter> accessTokenFilterRegistration(AccessJwtVerifier accessJwtVerifier) {
         FilterRegistrationBean<AccessTokenFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new AccessTokenFilter(jwtVerifier));
+        registration.setFilter(new AccessTokenFilter(accessJwtVerifier));
         registration.addUrlPatterns("/*");
         registration.setOrder(AccessTokenFilter.ACCESS_TOKEN_FILTER_ORDER);
         return registration;
