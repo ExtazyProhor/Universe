@@ -1,5 +1,6 @@
 package ru.prohor.universe.padawan.scripts.parsers;
 
+import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.functional.MonoPredicate;
 import ru.prohor.universe.jocasta.core.utils.FileSystemUtils;
@@ -9,6 +10,7 @@ import ru.prohor.universe.padawan.TestFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
 
 public class AllFilesToOneMd {
     private static final Preset SCARIF_FRONT = new Preset(
@@ -17,7 +19,7 @@ public class AllFilesToOneMd {
                     .resolve("universe/jawa/fondor/fondor-scarif/content")
                     .toString(),
             TestFile.OUTPUT,
-            path -> !path.getFileName().toString().endsWith(".jpg") && !path.getFileName().toString().endsWith(".svg")
+            new BlackListExtensionsFilter(Set.of("jpg", "svg", "ico", "webmanifest", "png", "DS_Store"))
     );
     private static final Preset TOVARISCH_PROTO = new Preset(
             FileSystemUtils.userHome()
@@ -25,7 +27,7 @@ public class AllFilesToOneMd {
                     .resolve("arcadia/bdui/backend/tovarisch/v2/entity/src/main/kotlin/ru/yandex/tovarisch/core")
                     .toString(),
             TestFile.TXT,
-            path -> path.getFileName().toString().endsWith(".kt")
+            new WhiteListExtensionsFilter(Set.of("kt"))
     );
 
     static void main() throws IOException {
@@ -63,4 +65,24 @@ public class AllFilesToOneMd {
             TestFile output,
             MonoPredicate<Path> filter
     ) {}
+
+    private record WhiteListExtensionsFilter(Set<String> extensions) implements MonoPredicate<Path> {
+        @Override
+        public boolean test(Path path) {
+            String filename = path.getFileName().toString();
+            return Opt.when(filename.contains("."), () -> filename.substring(filename.lastIndexOf('.') + 1))
+                    .map(extensions::contains)
+                    .orElse(false);
+        }
+    }
+
+    private record BlackListExtensionsFilter(Set<String> extensions) implements MonoPredicate<Path> {
+        @Override
+        public boolean test(Path path) {
+            String filename = path.getFileName().toString();
+            return Opt.when(filename.contains("."), () -> filename.substring(filename.lastIndexOf('.') + 1))
+                    .map(extension -> !extensions.contains(extension))
+                    .orElse(false);
+        }
+    }
 }
