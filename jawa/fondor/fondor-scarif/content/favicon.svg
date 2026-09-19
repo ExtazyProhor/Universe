@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="47 47 418 418" width="512" height="512"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description><dc:creator>RealFaviconGenerator</dc:creator><dc:source>https://realfavicongenerator.net</dc:source></rdf:Description></rdf:RDF></metadata><defs>
+        <linearGradient id="planetGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#F39C12"></stop>
+            <stop offset="55%" stop-color="#C8701A"></stop>
+            <stop offset="100%" stop-color="#7A3A12"></stop>
+        </linearGradient>
+
+        <linearGradient id="shadowGradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#5A2A0C" stop-opacity="0"></stop>
+            <stop offset="100%" stop-color="#1E0D04" stop-opacity="0.85"></stop>
+        </linearGradient>
+
+        <linearGradient id="ringGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFC24D"></stop>
+            <stop offset="100%" stop-color="#B8651C"></stop>
+        </linearGradient>
+
+        <clipPath id="planetClip">
+            <circle cx="256" cy="256" r="132"></circle>
+        </clipPath>
+    </defs><circle cx="256" cy="256" r="132" fill="url(#planetGradient)"></circle><path d="
+        M 261 124
+        C 346 132, 388 190, 388 256
+        C 388 329, 329 388, 256 388
+        C 292 360, 317 329, 334 291
+        C 355 244, 353 196, 327 160
+        C 309 138, 287 128, 261 124
+        Z" fill="url(#shadowGradient)" clip-path="url(#planetClip)"></path><g clip-path="url(#planetClip)" fill="none" stroke="#FFD9A0" stroke-width="13" stroke-linecap="round" opacity="0.72">
+        <path d="M116 191 H224"></path>
+        <path d="M127 219 H201"></path>
+        <path d="M110 247 H233"></path>
+        <path d="M118 275 H190"></path>
+        <path d="M136 303 H242"></path>
+        <path d="M159 331 H213"></path>
+    </g><circle cx="256" cy="256" r="184" fill="none" stroke="url(#ringGradient)" stroke-width="18" stroke-linecap="butt" stroke-dasharray="74.191 24 74.191 24 74.191 24 74.191 24 74.191 24 74.191 24 74.191 24 74.191 24 74.191 24 74.191 24 74.191 100" stroke-dashoffset="-50"></circle><rect x="415" y="230" width="50" height="52" rx="3" fill="url(#ringGradient)"></rect></svg>
