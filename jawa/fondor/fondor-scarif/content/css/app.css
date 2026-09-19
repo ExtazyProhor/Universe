@@ -83,9 +83,11 @@ button {
 }
 
 .glass-card,
-.auth-card {
-    background: rgba(22, 32, 23, 0.95);
-    backdrop-filter: blur(20px);
+.auth-card,
+.sessions-section {
+    background: rgba(22, 32, 23, 0.50);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 
     border: 1px solid var(--border);
     border-radius: 20px;
@@ -156,13 +158,6 @@ button {
     width: min(92vw, 760px);
     padding: 56px;
     background: rgba(22, 32, 23, 0.5);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 28px;
-    box-shadow:
-            0 24px 80px rgba(0, 0, 0, 0.45),
-            0 0 60px rgba(239, 144, 61, 0.08);
 }
 
 .auth-header {
@@ -330,16 +325,7 @@ button {
 }
 
 .sessions-section {
-    background: rgba(22, 32, 23, 0.95);
-    backdrop-filter: blur(20px);
-
-    border: 1px solid var(--border);
-    border-radius: 20px;
-
     padding: 30px;
-
-    box-shadow:
-            0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
 .section-heading {
