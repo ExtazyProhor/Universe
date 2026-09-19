@@ -62,10 +62,7 @@ export function renderLogin(container) {
             <section class="auth-card">
             ${errorBanner}
                 <div class="brand">
-                    <div class="brand-mark">S</div>
-                    <div class="brand-name">
-                        Scarif
-                    </div>
+                    <img class="brand-mark" src="/icon/scarif_icon_big.svg" alt="$">
                 </div>
                 <div class="auth-header">
                     <h1 class="login-title">Scarif</h1>

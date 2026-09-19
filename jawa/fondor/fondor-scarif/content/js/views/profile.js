@@ -20,7 +20,7 @@ export function renderProfile(container, sessions, {reload}) {
         <div class="profile-container">
             <header class="profile-header">
                 <div class="profile-brand">
-                    <div class="brand-mark small">S</div>
+                    <img class="brand-mark small" src="/icon/scarif_icon_big.svg" alt="$">
 
                     <div>
                         <div class="profile-brand-name">
