@@ -1,19 +1,9 @@
-import {initAuth, universeFetch} from './api.js';
+import {initAuth, universeFetch, SCARIF_API_URL} from './api.js';
 import {renderLogin} from './views/login.js';
 import {renderProfile} from './views/profile.js';
+import {escapeHtml} from "./utils.js";
 
 const app = document.querySelector('#app');
-
-const API_URL = getApiUrl();
-
-function getApiUrl() {
-    const {hostname, protocol} = window.location;
-
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return `${protocol}//${hostname}:7001`;
-    }
-    return `${protocol}//api.${hostname}`;
-}
 
 function normalizeUrl() {
     if (window.location.pathname !== '/') {
@@ -22,7 +12,7 @@ function normalizeUrl() {
 }
 
 async function loadSessions() {
-    const response = await universeFetch(`${API_URL}/api/auth/get_sessions`);
+    const response = await universeFetch(`${SCARIF_API_URL}/api/auth/get_sessions`);
     if (response.status === 401) {
         return null;
     }
@@ -39,8 +29,13 @@ async function showApplication() {
         return;
     }
     renderProfile(app, sessions, {
-        reload: showApplication
+        reload: () => showApplication().catch(handleFatalError)
     });
+}
+
+function handleFatalError(error) {
+    console.error('Application error:', error);
+    renderError(app, 'Не удалось загрузить данные. Проверьте соединение и попробуйте снова');
 }
 
 async function start() {
@@ -55,11 +50,12 @@ async function start() {
 }
 
 function renderError(container, message) {
+    document.title = 'Scarif - ошибка';
     container.innerHTML = `
         <div class="page-container">
             <section class="glass-card error-card">
                 <h1>Что-то пошло не так</h1>
-                <p>${message}</p>
+                <p>${escapeHtml(message)}</p>
 
                 <button
                     class="primary-button"
@@ -78,13 +74,4 @@ function renderError(container, message) {
     );
 }
 
-start().catch(error => {
-    console.error('Application startup failed:', error);
-
-    renderError(
-        app,
-        'Не удалось запустить приложение.'
-    );
-});
-
-export {API_URL}
+start().catch(handleFatalError);

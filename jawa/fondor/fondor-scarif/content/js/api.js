@@ -1,9 +1,17 @@
-/*  Общая утилита для работы аутентификации в сервисах universe */
+/*  Общая утилита для работы аутентификации во всех сервисах universe */
 
 let accessToken = null;
 let refreshPromise = null;
 
-function getApiUrl() {
+function getCurrentServiceApiUrl(apiPort) {
+    const {hostname, protocol} = window.location;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return `${protocol}//${hostname}:${apiPort}`;
+    }
+    return `${protocol}//api.${hostname}`;
+}
+
+function getScarifApiUrl() {
     const {hostname, protocol} = window.location;
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
         return `${protocol}//${hostname}:7001`;
@@ -11,7 +19,7 @@ function getApiUrl() {
     return `${protocol}//api.scarif.universe-apps.ru`;
 }
 
-const apiUrl = getApiUrl();
+const SCARIF_API_URL = getScarifApiUrl();
 
 async function _refreshAccessToken() {
     if (refreshPromise) {
@@ -20,7 +28,7 @@ async function _refreshAccessToken() {
 
     refreshPromise = (async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/auth/refresh`, {
+            const response = await fetch(`${SCARIF_API_URL}/api/auth/refresh`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -78,16 +86,13 @@ async function universeFetch(url, options = {}) {
 }
 
 async function initAuth() {
-    try {
-        const refreshResponse = await _refreshAccessToken();
-        return refreshResponse.status === 200;
-    } catch (e) {
-        console.error('Init auth failed', e);
-        return false;
-    }
+    const refreshResponse = await _refreshAccessToken();
+    return refreshResponse.status === 200;
 }
 
 export {
     universeFetch,
     initAuth,
+    getCurrentServiceApiUrl,
+    SCARIF_API_URL
 };

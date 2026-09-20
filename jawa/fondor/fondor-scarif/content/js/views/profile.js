@@ -1,61 +1,41 @@
-import {universeFetch} from '../api.js';
-import {API_URL} from '../app.js'
-import {escapeHtml} from '../utils.js';
+import {universeFetch, SCARIF_API_URL} from '../api.js';
+import {escapeHtml, renderBrand} from '../utils.js';
+
 
 export function renderProfile(container, sessions, {reload}) {
+    document.title = 'Scarif - профиль';
     document.body.classList.add('profile-page');
     document.body.classList.remove('login-page');
 
-    const currentSession = sessions.find(session => session.current === true) || sessions[0];
-    const otherSessions = sessions.filter(
-        session => session !== currentSession
-    );
+    const currentSession = sessions.find(session => session.current === true);
+    const otherSessions = sessions.filter(session => session !== currentSession);
 
-    const currentSessionCard = renderSessionCard(currentSession, true)
+    const currentSessionHtml = currentSession
+        ? renderSessionCard(currentSession, true)
+        : `<div class="empty-sessions">Не удалось определить текущую сессию.</div>`;
     const sessionsListHtml = otherSessions.length > 0
         ? otherSessions.map(session => renderSessionCard(session, false)).join('')
         : `<div class="empty-sessions">Других активных сессий нет.</div>`;
 
     container.innerHTML = `
         <div class="profile-container">
-            <header class="profile-header">
-                <div class="profile-brand">
-                    <img class="brand-mark small" src="/icon/scarif_icon_big.svg" alt="$">
-
-                    <div>
-                        <div class="profile-brand-name">
-                            Scarif
-                        </div>
-                        <div class="profile-brand-subtitle">
-                            Сервис аутентификации
-                        </div>
-                    </div>
-                </div>
-                <div class="profile-page-title">
-                    Управление профилем
-                </div>
-            </header>
+            <header class="profile-header">${renderBrand()}</header>
             <main class="profile-content">
+                <div class="page-title">
+                    <h1>Управление профилем</h1>
+                </div>
                 <section class="sessions-section">
                     <div class="section-heading">
-                        <h1>Текущая сессия</h1>
-                        <p>
-                            Устройство, с которого вы сейчас
-                            используете Scarif.
-                        </p>
+                        <h2>Текущая сессия</h2>
+                        <p>Устройство, с которого вы сейчас используете Scarif</p>
                     </div>
-                    <div id="currentSession">
-                    ${currentSession ? currentSessionCard : ''}
-                    </div>
+                    <div id="currentSession">${currentSessionHtml}</div>
                 </section>
 
                 <section class="sessions-section">
                     <div class="section-heading">
                         <h2>Другие сессии</h2>
-                        <p>
-                            Здесь отображаются остальные активные
-                            подключения к вашему аккаунту.
-                        </p>
+                        <p>Здесь отображаются остальные активные подключения к вашему аккаунту</p>
                         <button class="secondary-button" type="button" id="refreshSessions">
                             Обновить
                         </button>
@@ -156,6 +136,7 @@ function renderSessionDetails(session) {
 function getDeviceIcon(session) {
     const device = String(session.userAgent || '').toLowerCase();
     if (
+        device.includes('ipad') ||
         device.includes('iphone') ||
         device.includes('android') ||
         device.includes('mobile')
@@ -192,7 +173,7 @@ function bindSessionActions(container, reload) {
                 button.textContent = 'Завершение...';
 
                 try {
-                    const response = await universeFetch(`${API_URL}/api/auth/close_session`, {
+                    const response = await universeFetch(`${SCARIF_API_URL}/api/auth/close_session`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -239,7 +220,7 @@ function bindSessionActions(container, reload) {
 
             try {
                 const response = await universeFetch(
-                    `${API_URL}/api/auth/logout`,
+                    `${SCARIF_API_URL}/api/auth/logout`,
                     {
                         method: 'POST'
                     }

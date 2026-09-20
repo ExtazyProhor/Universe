@@ -1,5 +1,5 @@
-import {API_URL} from '../app.js'
-import {escapeHtml} from '../utils.js';
+import {SCARIF_API_URL} from '../api.js';
+import {escapeHtml, renderBrand} from '../utils.js';
 
 function getLoginError() {
     const params = new URLSearchParams(window.location.search);
@@ -23,6 +23,7 @@ function getLoginError() {
 }
 
 export function renderLogin(container) {
+    document.title = 'Scarif - вход';
     document.body.classList.add('login-page');
     document.body.classList.remove('profile-page');
 
@@ -61,19 +62,25 @@ export function renderLogin(container) {
         <div class="page-container">
             <section class="auth-card">
             ${errorBanner}
-                <div class="brand">
-                    <img class="brand-mark" src="/icon/scarif_icon_big.svg" alt="$">
-                </div>
                 <div class="auth-header">
-                    <h1 class="login-title">Scarif</h1>
+                    ${renderBrand('h1')}
                     <p>
                         Единый сервис аутентификации для сервисов
-                        Universe. Управляйте своей учётной записью,
-                        сессиями и безопасностью в одном месте.
+                        <a href="https://universe-apps.ru" target="_blank" rel="noopener noreferrer">Universe</a>.
+                        Управляйте своей учётной записью, сессиями и безопасностью в одном месте.
+                    </p>
+                    <p class="auth-legal">
+                        Нажимая на кнопку «Войти через Google», вы соглашаетесь с
+                        <a href="/terms-and-policies/privacy-policy" target="_blank" rel="noopener">политикой конфиденциальности</a>
+                        и
+                        <a href="/terms-and-policies/user-agreement" target="_blank" rel="noopener">пользовательским соглашением</a>,
+                        а также даёте согласие на
+                        <a href="/terms-and-policies/cookie-policy" target="_blank" rel="noopener">обработку файлов cookie</a>
+                        для авторизации.
                     </p>
                 </div>
                 <div class="login-actions">
-                    <a class="google-button" href="${API_URL}/api/oauth/google">
+                    <a class="google-button" href="${SCARIF_API_URL}/api/oauth/google">
                         <img class="google-icon" src="/icon/google_icon.svg" alt="" aria-hidden="true">
                         <span>Войти через Google</span>
                     </a>
