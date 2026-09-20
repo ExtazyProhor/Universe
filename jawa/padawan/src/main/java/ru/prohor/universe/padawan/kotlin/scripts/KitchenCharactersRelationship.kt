@@ -41,6 +41,9 @@ fun main() {
     val julia = Character("Юля")
     val ekaterinaAndreevna = Character("Екатерина Андреевна")
     val michael = Character("Михаил Джекович")
+    val sofia = Character("София Яновна")
+    val egor = Character("Егор")
+    val dasha = Character("Даша")
 
     val relations = listOf(
         maxim sleepsWith vika,
@@ -87,6 +90,8 @@ fun main() {
         eleonora kinTo pavel,
         pavel sleepsWith julia,
         ekaterinaAndreevna sleepsWith michael,
+        michael sleepsWith sofia,
+        egor kiss dasha,
     )
 }
 
