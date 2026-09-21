@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Плеер</title>
+    <style>
+        :root {
+            --ink: #191734;
+            --muted: #64627f;
+            --paper: #f8f7fc;
+            --line: rgba(25, 23, 52, .12);
+            --tint: #8d8bd6;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: "Avenir Next", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+            color: var(--ink);
+            background: color-mix(in srgb, var(--tint) 30%, #fff);
+            transition: background .7s ease;
+        }
+
+        button {
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--ink);
+            outline-offset: 2px;
+        }
+
+        .app {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(320px, 440px);
+            gap: 48px;
+            max-width: 1180px;
+            height: 100%;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        .now {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+            max-width: 460px;
+        }
+
+        .cover {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 6px;
+            object-fit: cover;
+            background: color-mix(in srgb, var(--tint) 50%, #fff);
+            box-shadow: 0 32px 60px -24px color-mix(in srgb, var(--tint) 75%, #000);
+        }
+
+        .title {
+            margin: 28px 0 4px;
+            font-size: clamp(26px, 3.4vw, 38px);
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -.02em;
+            overflow-wrap: anywhere;
+        }
+
+        .authors {
+            margin: 0;
+            font-size: 18px;
+            color: var(--muted);
+        }
+
+        .album {
+            margin: 2px 0 0;
+            font-size: 14px;
+            color: var(--muted);
+            opacity: .8;
+        }
+
+        .timeline {
+            margin-top: 24px;
+        }
+
+        .times {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            display: block;
+            width: 100%;
+            height: 20px;
+            margin: 0;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(to right, var(--ink) var(--p, 0%), rgba(25, 23, 52, .18) var(--p, 0%));
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            margin-top: -5px;
+            border-radius: 50%;
+            border: 0;
+            background: var(--ink);
+        }
+
+        input[type=range]::-moz-range-track {
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(25, 23, 52, .18);
+        }
+
+        input[type=range]::-moz-range-progress {
+            height: 4px;
+            border-radius: 2px;
+            background: var(--ink);
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 0;
+            background: var(--ink);
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .icon-btn {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+        }
+
+        .icon-btn:hover {
+            background: rgba(25, 23, 52, .08);
+        }
+
+        .icon-btn svg {
+            width: 26px;
+            height: 26px;
+            fill: currentColor;
+        }
+
+        .icon-btn.play {
+            width: 64px;
+            height: 64px;
+            background: var(--ink);
+            color: #fff;
+        }
+
+        .icon-btn.play:hover {
+            background: var(--ink);
+            opacity: .88;
+        }
+
+        .icon-btn.play svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .spacer {
+            flex: 1;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 40px;
+            padding: 0 16px;
+            border-radius: 20px;
+            border: 1.5px solid var(--ink);
+            background: transparent;
+            font-weight: 600;
+        }
+
+        .pill:hover {
+            background: var(--ink);
+            color: #fff;
+        }
+
+        .pill svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .queue {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            background: var(--paper);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .queue-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            padding: 18px 20px 12px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .queue-head h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .queue-head span {
+            font-size: 13px;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .list {
+            position: relative;
+            flex: 1;
+            overflow-y: auto;
+            padding: 6px;
+        }
+
+        .item {
+            display: grid;
+            grid-template-columns: 48px minmax(0, 1fr);
+            gap: 12px;
+            align-items: center;
+            width: 100%;
+            padding: 8px 10px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            text-align: left;
+            content-visibility: auto;
+            contain-intrinsic-size: auto 64px;
+        }
+
+        .item:hover {
+            background: rgba(25, 23, 52, .06);
+        }
+
+        .item img, .item .ph {
+            width: 48px;
+            height: 48px;
+            border-radius: 4px;
+            object-fit: cover;
+            background: rgba(25, 23, 52, .1);
+        }
+
+        .item .meta {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .item .n, .item .a {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .item .n {
+            font-weight: 600;
+        }
+
+        .item .a {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .item.played {
+            opacity: .45;
+        }
+
+        .item.current {
+            opacity: 1;
+            background: rgba(25, 23, 52, .09);
+            box-shadow: inset 3px 0 0 var(--ink);
+        }
+
+        .item.current .n {
+            font-weight: 800;
+        }
+
+        .empty {
+            padding: 40px 20px;
+            color: var(--muted);
+        }
+
+        @media (max-width: 860px) {
+            html, body {
+                height: auto;
+            }
+
+            .app {
+                grid-template-columns: 1fr;
+                height: auto;
+                gap: 28px;
+                padding: 20px;
+            }
+
+            .now {
+                max-width: none;
+            }
+
+            .cover {
+                max-width: 420px;
+            }
+
+            .queue {
+                height: 70vh;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="app">
+    <section class="now" aria-label="Сейчас играет">
+        <img id="cover" class="cover" alt="Обложка">
+        <h1 id="title" class="title">Загрузка…</h1>
+        <p id="authors" class="authors"></p>
+        <p id="album" class="album"></p>
+
+        <div class="timeline">
+            <input id="seek" type="range" min="0" max="1" step="0.1" value="0" aria-label="Позиция в треке">
+            <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+        </div>
+
+        <div class="controls">
+            <button id="prev" class="icon-btn" aria-label="Назад" title="Назад">
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 6h2v12H6zM9.5 12 18 18V6z"/>
+                </svg>
+            </button>
+            <button id="play" class="icon-btn play" aria-label="Играть" title="Играть / пауза (пробел)"></button>
+            <button id="next" class="icon-btn" aria-label="Вперёд" title="Вперёд">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/>
+                </svg>
+            </button>
+            <span class="spacer"></span>
+            <button id="shuffle" class="pill" title="Перемешать заново и начать сначала">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>
+                </svg>
+                Перемешать
+            </button>
+        </div>
+    </section>
+
+    <aside class="queue" aria-label="Очередь">
+        <div class="queue-head"><h2>Очередь</h2><span id="count"></span></div>
+        <div id="list" class="list"></div>
+    </aside>
+</main>
+
+<audio id="audio" preload="auto"></audio>
+
+<script>
+    const $ = s => document.querySelector(s);
+    const audio = $('#audio'), seek = $('#seek'), list = $('#list');
+    const ICON_PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+    const ICON_PAUSE = '<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
+
+    let all = [], queue = [], idx = 0, seeking = false, errorStreak = 0;
+
+    const shuffled = a => {
+        a = [...a];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    };
+    const fmt = s => {
+        s = Math.floor(isFinite(s) ? s : 0);
+        return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    };
+    const coverUrl = t => t.cover ? '/cover/' + encodeURIComponent(t.cover) : '';
+    const trackUrl = t => '/music/' + encodeURIComponent(t.track);
+
+    function renderQueue() {
+        list.textContent = '';
+        const frag = document.createDocumentFragment();
+        queue.forEach((t, i) => {
+            const b = document.createElement('button');
+            b.className = 'item';
+            let pic;
+            if (t.cover) {
+                pic = new Image();
+                pic.loading = 'lazy';
+                pic.decoding = 'async';
+                pic.alt = '';
+                pic.src = coverUrl(t);
+            } else {
+                pic = document.createElement('div');
+                pic.className = 'ph';
+            }
+            const meta = document.createElement('div');
+            meta.className = 'meta';
+            const n = document.createElement('span');
+            n.className = 'n';
+            n.textContent = t.title;
+            const a = document.createElement('span');
+            a.className = 'a';
+            a.textContent = t.authors.join(', ');
+            meta.append(n, a);
+            b.append(pic, meta);
+            b.addEventListener('click', () => load(i));
+            frag.append(b);
+        });
+        list.append(frag);
+    }
+
+    function updateQueueState() {
+        const items = list.children;
+        for (let i = 0; i < items.length; i++) {
+            items[i].classList.toggle('current', i === idx);
+            items[i].classList.toggle('played', i < idx);
+        }
+        $('#count').textContent = `${idx + 1} из ${queue.length}`;
+        const el = items[idx];
+        if (el) list.scrollTo({top: el.offsetTop - 6, behavior: 'smooth'});
+    }
+
+    function load(i, autoplay = true) {
+        idx = i;
+        const t = queue[i];
+        audio.src = trackUrl(t);
+
+        $('#title').textContent = t.title;
+        $('#authors').textContent = t.authors.join(', ');
+        $('#album').textContent = t.album || '';
+        document.title = `${t.title} — ${t.authors.join(', ')}`;
+        $('#cover').src = coverUrl(t);
+
+        seek.max = t.duration || 1;
+        seek.value = 0;
+        paintTime(0, t.duration || 0);
+        updateQueueState();
+
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: t.title, artist: t.authors.join(', '), album: t.album || '',
+                artwork: t.cover ? [{src: coverUrl(t), sizes: '512x512', type: 'image/jpeg'}] : []
+            });
+        }
+        if (autoplay) audio.play().catch(() => {
+        });
+    }
+
+    function next() {
+        if (idx + 1 < queue.length) return load(idx + 1);
+        queue = shuffled(all);
+        renderQueue();
+        load(0);
+    }
+
+    function prev() {
+        if (audio.currentTime > 3 || idx === 0) audio.currentTime = 0;
+        else load(idx - 1);
+    }
+
+    function reshuffle() {
+        queue = shuffled(all);
+        renderQueue();
+        load(0);
+    }
+
+    function toggle() {
+        audio.paused ? audio.play().catch(() => {
+        }) : audio.pause();
+    }
+
+    function paintTime(cur, dur) {
+        $('#cur').textContent = fmt(cur);
+        $('#dur').textContent = fmt(dur);
+        seek.style.setProperty('--p', dur ? (cur / dur * 100) + '%' : '0%');
+    }
+
+    audio.addEventListener('loadedmetadata', () => {
+        if (isFinite(audio.duration)) seek.max = audio.duration;
+        errorStreak = 0;
+    });
+    audio.addEventListener('timeupdate', () => {
+        if (seeking) return;
+        const dur = isFinite(audio.duration) ? audio.duration : (queue[idx]?.duration || 0);
+        seek.value = audio.currentTime;
+        paintTime(audio.currentTime, dur);
+    });
+    seek.addEventListener('input', () => {
+        seeking = true;
+        paintTime(+seek.value, +seek.max);
+    });
+    seek.addEventListener('change', () => {
+        audio.currentTime = +seek.value;
+        seeking = false;
+    });
+
+    audio.addEventListener('play', () => {
+        $('#play').innerHTML = ICON_PAUSE;
+        $('#play').setAttribute('aria-label', 'Пауза');
+    });
+    audio.addEventListener('pause', () => {
+        $('#play').innerHTML = ICON_PLAY;
+        $('#play').setAttribute('aria-label', 'Играть');
+    });
+    audio.addEventListener('ended', next);
+    audio.addEventListener('error', () => {
+        if (++errorStreak < 5) next();
+    });
+
+    $('#cover').addEventListener('load', e => {
+        try {
+            const c = document.createElement('canvas');
+            c.width = c.height = 16;
+            const x = c.getContext('2d', {willReadFrequently: true});
+            x.drawImage(e.target, 0, 0, 16, 16);
+            const d = x.getImageData(0, 0, 16, 16).data;
+            let r = 0, g = 0, b = 0;
+            for (let i = 0; i < d.length; i += 4) {
+                r += d[i];
+                g += d[i + 1];
+                b += d[i + 2];
+            }
+            const n = d.length / 4;
+            document.documentElement.style.setProperty('--tint', `rgb(${r / n | 0},${g / n | 0},${b / n | 0})`);
+        } catch {
+        }
+    });
+
+    $('#play').addEventListener('click', toggle);
+    $('#next').addEventListener('click', next);
+    $('#prev').addEventListener('click', prev);
+    $('#shuffle').addEventListener('click', reshuffle);
+    document.addEventListener('keydown', e => {
+        if (e.code === 'Space' && e.target.tagName !== 'BUTTON') {
+            e.preventDefault();
+            toggle();
+        }
+    });
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', () => audio.play());
+        navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+        navigator.mediaSession.setActionHandler('previoustrack', prev);
+        navigator.mediaSession.setActionHandler('nexttrack', next);
+    }
+
+    $('#play').innerHTML = ICON_PLAY;
+    fetch('/api/tracks')
+        .then(r => r.json())
+        .then(tracks => {
+            all = tracks;
+            if (!all.length) {
+                $('#title').textContent = 'Треки не найдены';
+                list.innerHTML = '<p class="empty">В all_lyrics.json нет ни одного трека.</p>';
+                return;
+            }
+            queue = shuffled(all);
+            renderQueue();
+            load(0);
+        })
+        .catch(() => {
+            $('#title').textContent = 'Не удалось загрузить список треков';
+        });
+</script>
+</body>
+</html>
