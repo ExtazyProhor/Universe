@@ -12,9 +12,8 @@ public class RestClientConfiguration {
     @Bean
     public RestClient restClient(RestClient.Builder builder) {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        //  TODO настроить
-        factory.setConnectTimeout((int) Duration.ofSeconds(5).toMillis());
-        factory.setReadTimeout((int) Duration.ofSeconds(5).toMillis());
+        factory.setConnectTimeout(Duration.ofSeconds(5));
+        factory.setReadTimeout(Duration.ofSeconds(5));
         return builder.requestFactory(factory).build();
     }
 }

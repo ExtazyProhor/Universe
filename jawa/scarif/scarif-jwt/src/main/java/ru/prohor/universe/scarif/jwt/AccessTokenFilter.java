@@ -5,13 +5,17 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 
 import java.io.IOException;
 
 public class AccessTokenFilter extends OncePerRequestFilter {
+    private static final Logger log = LoggerFactory.getLogger(AccessTokenFilter.class);
     public static final int ACCESS_TOKEN_FILTER_ORDER = 5;
 
     private final AccessJwtVerifier accessJwtVerifier;
@@ -26,33 +30,27 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             @Nonnull HttpServletResponse response,
             @Nonnull FilterChain filterChain
     ) throws ServletException, IOException {
-        Opt<AuthorizedUser> authorizedUser = extractAuthorizedUser(request);
-        request.setAttribute(AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY, authorizedUser);
+        try {
+            request.setAttribute(AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY, extractAuthorizedUser(request));
+        } catch (Exception e) {
+            log.error("AccessTokenFilter error", e);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return;
+        }
         filterChain.doFilter(request, response);
     }
 
     private Opt<AuthorizedUser> extractAuthorizedUser(HttpServletRequest request) {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header == null) {
-            log(request, "Auth header not present"); // TODO log
+            log.trace("Auth header not present");
             return Opt.empty();
         }
         if (!header.startsWith("Bearer ")) {
-            log(request, "Illegal structure of auth header"); // TODO log
+            log.warn("Illegal structure of auth header");
             return Opt.empty();
         }
         String token = header.replace("Bearer ", "").trim();
-        Opt<AuthorizedUser> user = accessJwtVerifier.verify(token);
-        if (user.isEmpty()) {
-            log(request, "jwt verification failed"); // TODO log
-        } else {
-            log(request, "jwt verified"); // TODO log
-        }
-        return user;
-    }
-
-    private void log(HttpServletRequest request, String s) {
-        String path = request.getRequestURI().substring(request.getContextPath().length());
-        System.out.println(path + ": " + s);
+        return accessJwtVerifier.verify(token);
     }
 }

@@ -17,5 +17,5 @@ public record AccessJwtPayload(
         @JsonProperty("sid")
         String sessionId,
         @JsonProperty("jti")
-        String jwtId // TODO log when creating and receiving
+        String jwtId
 ) {}

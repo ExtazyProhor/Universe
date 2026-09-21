@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,7 +19,7 @@ import ru.prohor.universe.scarif.services.refresh.RefreshToken;
 import java.io.IOException;
 
 @Component
-public class UserDataFilter extends OncePerRequestFilter { // TODO CSRF security
+public class UserDataFilter extends OncePerRequestFilter {
     public static final String IP_HEADER = "X-Forwarded-For";
     public static final String USER_AGENT_HEADER = "User-Agent";
     private static final Logger log = LoggerFactory.getLogger(UserDataFilter.class);
@@ -40,6 +41,17 @@ public class UserDataFilter extends OncePerRequestFilter { // TODO CSRF security
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        try {
+            appendAttributes(request);
+        } catch (Exception e) {
+            log.error("UserDataFilter error", e);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return;
+        }
+        filterChain.doFilter(request, response);
+    }
+
+    private void appendAttributes(HttpServletRequest request) {
         String ip = Opt.ofNullable(request.getHeader(IP_HEADER)).orElseGet(request::getRemoteAddr);
         Opt<String> userAgent = Opt.ofNullable(request.getHeader(USER_AGENT_HEADER));
 
@@ -47,10 +59,12 @@ public class UserDataFilter extends OncePerRequestFilter { // TODO CSRF security
         log.trace("parse userData from request: {}", userData);
         request.setAttribute(UserData.USER_DATA_ATTRIBUTE_KEY, userData);
 
-        Opt<RefreshToken> refreshToken = CookieUtil.getCookieValue(request, refreshTokenCookieName)
-                .flatMapO(refreshJwtVerifier::verify);
-        request.setAttribute(RefreshToken.REFRESH_TOKEN_ATTRIBUTE_KEY, refreshToken);
+        Opt<String> refreshTokenCookie = CookieUtil.getCookieValue(request, refreshTokenCookieName);
+        if (refreshTokenCookie.isEmpty()) {
+            log.trace("Refresh token cookie is not present");
+        }
 
-        filterChain.doFilter(request, response);
+        Opt<RefreshToken> refreshToken = refreshTokenCookie.flatMapO(refreshJwtVerifier::verify);
+        request.setAttribute(RefreshToken.REFRESH_TOKEN_ATTRIBUTE_KEY, refreshToken);
     }
 }

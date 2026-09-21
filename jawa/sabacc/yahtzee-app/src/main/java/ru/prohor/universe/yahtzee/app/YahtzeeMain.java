@@ -9,6 +9,7 @@ import ru.prohor.universe.jocasta.morphia.jackson.JacksonMorphiaConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration;
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
 import ru.prohor.universe.jocasta.springweb.configuration.AllControllersConfiguration;
+import ru.prohor.universe.jocasta.springweb.configuration.GlobalExceptionControllerConfiguration;
 import ru.prohor.universe.scarif.jwt.ScarifJwtConfiguration;
 import ru.prohor.universe.yahtzee.core.YahtzeeCoreConfiguration;
 import ru.prohor.universe.yahtzee.stats.YahtzeeStatisticsConfiguration;
@@ -22,6 +23,7 @@ import ru.prohor.universe.yahtzee.stats.YahtzeeStatisticsConfiguration;
         JacksonMorphiaConfiguration.class,
         JacksonJocastaCoreConfiguration.class,
         AllControllersConfiguration.class,
+        GlobalExceptionControllerConfiguration.class,
 
         YahtzeeCoreConfiguration.class,
         YahtzeeStatisticsConfiguration.class,

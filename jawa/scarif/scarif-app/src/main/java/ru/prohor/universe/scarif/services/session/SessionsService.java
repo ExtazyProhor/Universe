@@ -1,6 +1,8 @@
 package ru.prohor.universe.scarif.services.session;
 
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class SessionsService {
+    private static final Logger log = LoggerFactory.getLogger(SessionsService.class);
+
     private final Duration refreshTokenTtl;
     private final Duration refreshTokenRotateWindow;
     private final CookieProvider cookieProvider;
@@ -58,8 +62,6 @@ public class SessionsService {
                 .build();
     }
 
-    // TODO Лимит одновременных сессий
-    // TODO Уведомления пользователя о новых сессиях, или о попытках входа
     public SessionData createNewSession(User user, UserData userData) {
         ObjectId refreshTokenId = ObjectId.get();
 
@@ -94,16 +96,17 @@ public class SessionsService {
             User user = tx.ensuredFindById(refreshToken.userId());
             Session session = findSession(user, refreshToken.sessionId());
             if (session.closed()) {
-                // TODO log
-                System.out.println("Session was closed");
+                log.info("failed to refresh: session was closed");
                 return unauthorizedResponse;
             }
 
             Instant now = Instant.now();
             if (session.expiresAt().isBefore(now)) {
-                // TODO log должно быть достаточно редким, так как валидация expires происходит в JWT
-                //  можно делать warn со временем, сколько секунд назад истекло
-                System.out.println("Сессия истекла");
+                // технически это должно быть почти невозможно, так как у сессии и токена в jwt равный expires
+                log.warn(
+                        "failed to refresh: session was expired {} millis ago",
+                        Duration.between(session.expiresAt(), now).toMillis()
+                );
                 return unauthorizedResponse;
             }
 
@@ -122,9 +125,7 @@ public class SessionsService {
                     }
                 }
 
-                // TODO log [SB] [IS] - кто-то ходит со старым токеном, который должен был стереться
-                // TODO кука очищается, но сессия не закрыта. Надо закрыть
-                System.out.println("ПОДОЗРИТЕЛЬНО! неправильный refreshTokenId, в сессии указан другой");
+                log.warn("request with old token (expired more than 10 seconds ago) that should have been deleted");
                 return unauthorizedResponse;
             }
 
@@ -150,7 +151,7 @@ public class SessionsService {
         try {
             sessionIdToClose = new ObjectId(body.sessionId());
         } catch (IllegalArgumentException e) {
-            // TODO log warn [IS], append body.sessionId(). МБ стоит выкидывать из сессии
+            log.warn("illegal format of sessionsId: {}", body.sessionId());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -160,13 +161,14 @@ public class SessionsService {
                     .filter(it -> it.id().equals(sessionIdToClose))
                     .findAny();
             if (session.isEmpty()) {
-                // TODO log warn / err, кастомный id. МБ стоит выкидывать из сессии
+                log.warn("user has no session to close with sessionId {}", body.sessionId());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
 
-            // TODO из текущей сессии надо выходить через logout
-            if (session.get().id().equals(refreshToken.sessionId()))
+            if (session.get().id().equals(refreshToken.sessionId())) {
+                log.warn("sessionId of the current session is specified for session removal");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
 
             Session updated = session.get().toBuilder().closed(true).build();
             tx.save(appendSession(user, updated, Instant.now()));
@@ -183,7 +185,6 @@ public class SessionsService {
                     return appendSession(user, session, Instant.now());
                 }
         );
-        // TODO redirect to login
         return ResponseEntity.ok().headers(CookieUtil.setCookieHeader(cookieProvider.clearRefreshCookie())).build();
     }
 
@@ -226,10 +227,9 @@ public class SessionsService {
                 .filter(session -> session.id().equals(sessionId))
                 .toList();
         if (sessions.size() != 1) {
-            // TODO log
-            System.out.println("illegal sessions count with id {" + sessionId
-                    + "}, sessions count = " + sessions.size());
-            throw new RuntimeException();
+            throw new IllegalStateException(
+                    "illegal sessions count with id {" + sessionId + "}, sessions count = " + sessions.size()
+            );
         }
         return sessions.getFirst();
     }

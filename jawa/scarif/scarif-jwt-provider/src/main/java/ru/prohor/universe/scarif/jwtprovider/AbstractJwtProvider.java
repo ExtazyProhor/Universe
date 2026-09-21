@@ -2,8 +2,8 @@ package ru.prohor.universe.scarif.jwtprovider;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.prohor.universe.jocasta.core.features.sneaky.Sneaky;
 import ru.prohor.universe.jocasta.core.security.rsa.KeysFromStringProvider;
 
 public abstract class AbstractJwtProvider<Payload> {
@@ -19,12 +19,7 @@ public abstract class AbstractJwtProvider<Payload> {
     }
 
     protected String getToken(Payload payload) {
-        try {
-            String payloadJson = objectMapper.writeValueAsString(payload);
-            return JWT.create().withPayload(payloadJson).sign(algorithm);
-        } catch (JsonProcessingException e) {
-            // TODO log error
-            throw new RuntimeException(e);
-        }
+        String payloadJson = Sneaky.execute(() -> objectMapper.writeValueAsString(payload));
+        return JWT.create().withPayload(payloadJson).sign(algorithm);
     }
 }

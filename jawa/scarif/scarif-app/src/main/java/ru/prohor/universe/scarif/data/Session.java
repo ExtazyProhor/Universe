@@ -12,12 +12,8 @@ public record Session(
         ObjectId id,
         Instant createdAt,
         Instant expiresAt,
-        // TODO https://www.baeldung.com/java-yauaa-user-agent-parsing
-        // TODO https://github.com/ua-parser/uap-java
         Opt<String> userAgent,
         String ipAddress,
-        // TODO настроить TTL у закрытых или истекших сессий (уровень БД, раз в какое-то долгое время)
-        //  например, через месяц после закрытия или истечения
         boolean closed,
         Opt<Instant> closedAt,
         List<RotatedRefreshToken> recentlyRotatedTokens,

@@ -64,7 +64,7 @@ public class GooglePublicKeyProvider {
         try {
             jwkSet = restClient.get().uri(jwkSetUrl).retrieve().body(JsonNode.class);
         } catch (Exception e) {
-            throw new OAuthServerErrorException("Error when calling google jwk", e); // TODO
+            throw new OAuthServerErrorException("Error when calling google jwk", e);
         }
 
         if (jwkSet == null || !jwkSet.has("keys")) {

@@ -1,6 +1,8 @@
 package ru.prohor.universe.scarif.oauth.google;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,8 @@ import java.util.List;
 
 @Service
 public class GoogleOAuthService {
+    private static final Logger log = LoggerFactory.getLogger(GoogleOAuthService.class);
+
     private final MongoRepository<User> usersRepository;
     private final UserService userService;
     private final GoogleOAuthClient googleOAuthClient;
@@ -73,16 +77,21 @@ public class GoogleOAuthService {
             Opt<AuthorizedUser> authorizedUser
     ) {
         if (refreshToken.isPresent() || authorizedUser.isPresent()) {
-            // TODO log
-            System.out.println("Already logged in 4321");
-            return redirectToMain().build();
+            logAlreadyLoggedIn();
+            return redirectToMain();
         }
         return ResponseEntity.status(HttpStatus.FOUND).location(googleLoginUrl).build();
     }
 
-    // TODO обобщить
-    private ResponseEntity.BodyBuilder redirectToMain() {
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(frontendHost));
+    private ResponseEntity<?> redirectToMain() {
+        return redirectToMain(null);
+    }
+
+    private ResponseEntity<?> redirectToMain(HttpHeaders headers) {
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create(frontendHost))
+                .headers(headers)
+                .build();
     }
 
     public ResponseEntity<?> authorize(
@@ -92,29 +101,34 @@ public class GoogleOAuthService {
             UserData userData
     ) {
         if (refreshToken.isPresent() || authorizedUser.isPresent()) {
-            // TODO log
-            System.out.println("Already logged in");
-            return redirectToMain().build();
+            logAlreadyLoggedIn();
+            return redirectToMain();
         }
 
         try {
             UserExternalAccountInfo userInfo = getUserInfoByCode(code);
             HttpHeaders headers = createOrUpdateUser(userInfo, userData);
-            return redirectToMain().headers(headers).build();
+            return redirectToMain(headers);
         } catch (OAuthException e) {
             return switch (e) {
-                case OAuthClientErrorException err -> errorRedirect("client-error", err.getMessage());
+                case OAuthClientErrorException err -> {
+                    log.info("oauth client error: {}", err.getMessage());
+                    yield errorRedirect("client-error", err.getMessageForClients());
+                }
                 case OAuthServerErrorException err -> {
-                    // TODO log
-                    err.printStackTrace();
+                    log.error("oauth server error", err);
                     yield errorRedirect("server-error", "Ошибка сервера при аутентификации");
                 }
             };
         } catch (Exception e) {
-            // TODO log
-            e.printStackTrace();
+            // ошибку надо обработать тут, так как клиенты запрашивают эту страницу не через фронтенд, а напрямую
+            log.error("server error", e);
             return errorRedirect("server-error", "Ошибка сервера");
         }
+    }
+
+    private void logAlreadyLoggedIn() {
+        log.trace("already logged in");
     }
 
     private ResponseEntity<?> errorRedirect(String type, String message) {
@@ -167,6 +181,7 @@ public class GoogleOAuthService {
     private UserExternalAccountInfo getUserInfoByCode(String code) throws OAuthException {
         String idToken = googleOAuthClient.getIdToken(code);
         DecodedJWT jwt = googleIdTokenVerifier.verify(idToken);
+        checkEmailVarification(jwt);
         return new UserExternalAccountInfo(
                 jwt.getClaim("sub").asString(),
                 Opt.ofNullable(jwt.getClaim("email").asString()),
@@ -176,5 +191,16 @@ public class GoogleOAuthService {
                 Opt.ofNullable(jwt.getClaim("picture").asString()),
                 Opt.ofNullable(jwt.getClaim("locale").asString())
         );
+    }
+
+    private void checkEmailVarification(DecodedJWT jwt) throws OAuthClientErrorException {
+        Boolean emailVerified = Opt.ofNullable(jwt.getClaim("email_verified").asBoolean()).orElse(false);
+        if (!emailVerified) {
+            throw new OAuthClientErrorException(
+                    "email, linked to google account is not verified",
+                    "Адрес электронной почты, связанный с аккаунтом Google, не подтвержден. " +
+                            "Войдите через другой аккаунт или подтвердите email в настройках Google"
+            );
+        }
     }
 }

@@ -15,5 +15,5 @@ public record RefreshJwtPayload(
         @JsonProperty("exp")
         Instant expires,
         @JsonProperty("jti")
-        ObjectId jwtId // TODO log when creating and receiving
+        ObjectId jwtId
 ) {}
