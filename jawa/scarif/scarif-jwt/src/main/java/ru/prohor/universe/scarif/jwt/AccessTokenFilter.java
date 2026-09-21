@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,9 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             @Nonnull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            request.setAttribute(AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY, extractAuthorizedUser(request));
+            Opt<AuthorizedUser> authorizedUser = extractAuthorizedUser(request);
+            authorizedUser.ifPresent(user -> MDC.put(MDCFields.USER_ID_KEY, user.objectId()));
+            request.setAttribute(AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY, authorizedUser);
         } catch (Exception e) {
             log.error("AccessTokenFilter error", e);
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="app"/>
+    <springProperty scope="context" name="environment" source="spring.profiles.active" defaultValue="default"/>
 
     <springProfile name="local,testing">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -20,11 +21,11 @@
 
     <springProfile name="stable,canary">
         <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>${UNIVERSE_WORKSPACE}/scarif/logs/${appName}.json</file>
+            <file>${UNIVERSE_WORKSPACE}/scarif/logs/${appName}-${environment}.json</file>
 
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
                 <fileNamePattern>
-                    ${UNIVERSE_WORKSPACE}/scarif/logs/${appName}.%d{yyyy-MM-dd}.%i.json.gz
+                    ${UNIVERSE_WORKSPACE}/scarif/logs/${appName}-${environment}.%d{yyyy-MM-dd}.%i.json.gz
                 </fileNamePattern>
 
                 <maxFileSize>100MB</maxFileSize>

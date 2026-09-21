@@ -9,6 +9,7 @@ import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.prohor.universe.scarif.jwt.MDCFields;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -16,9 +17,6 @@ import java.util.UUID;
 @Component
 @Order(-200)
 public class LogRequestContextFilter extends OncePerRequestFilter {
-    private static final String REQUEST_ID_KEY = "requestId";
-    private static final String REQUEST_URL_KEY = "requestUrl";
-
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -27,8 +25,8 @@ public class LogRequestContextFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String requestId = UUID.randomUUID().toString();
         String url = request.getRequestURI();
-        MDC.put(REQUEST_ID_KEY, requestId);
-        MDC.put(REQUEST_URL_KEY, url);
+        MDC.put(MDCFields.REQUEST_ID_KEY, requestId);
+        MDC.put(MDCFields.REQUEST_URL_KEY, url);
 
         try {
             chain.doFilter(request, response);

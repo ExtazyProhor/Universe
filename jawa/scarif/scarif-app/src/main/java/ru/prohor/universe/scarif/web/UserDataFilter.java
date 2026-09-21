@@ -20,7 +20,7 @@ import ru.prohor.universe.scarif.services.refresh.RefreshToken;
 import java.io.IOException;
 
 @Component
-@Order(-50)
+@Order(-150)
 public class UserDataFilter extends OncePerRequestFilter {
     public static final String IP_HEADER = "X-Forwarded-For";
     public static final String USER_AGENT_HEADER = "User-Agent";

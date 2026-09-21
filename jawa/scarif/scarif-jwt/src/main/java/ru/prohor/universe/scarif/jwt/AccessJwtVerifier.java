@@ -16,8 +16,8 @@ public class AccessJwtVerifier extends StaticKeyJwtVerifier<AccessJwtPayload> {
 
     public Opt<AuthorizedUser> verify(String token) {
         return verifyInternal(token).map(payload -> {
-            log.trace("received accessToken with id {}", payload.jwtId());
             MDC.put("sessionId", payload.sessionId());
+            log.trace("received accessToken with id {}", payload.jwtId());
             return new AuthorizedUser(
                     payload.numericId(),
                     payload.uuid(),
