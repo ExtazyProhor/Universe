@@ -134,6 +134,10 @@ button {
     animation: fadeIn 0.6s ease-out;
 }
 
+.no-animate .sessions-section {
+    animation: none;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

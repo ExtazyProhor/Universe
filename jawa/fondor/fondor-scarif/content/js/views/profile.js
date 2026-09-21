@@ -1,11 +1,14 @@
 import {universeFetch, SCARIF_API_URL} from '../api.js';
 import {escapeHtml, renderBrand} from '../utils.js';
 
+let isFirstRender = true;
 
 export function renderProfile(container, sessions, {reload}) {
     document.title = 'Scarif - профиль';
     document.body.classList.add('profile-page');
     document.body.classList.remove('login-page');
+    container.classList.toggle('no-animate', !isFirstRender);
+    isFirstRender = false;
 
     const currentSession = sessions.find(session => session.current === true);
     const otherSessions = sessions.filter(session => session !== currentSession);
