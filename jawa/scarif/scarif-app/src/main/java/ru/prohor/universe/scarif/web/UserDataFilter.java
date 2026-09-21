@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import ru.prohor.universe.scarif.services.refresh.RefreshToken;
 import java.io.IOException;
 
 @Component
+@Order(-50)
 public class UserDataFilter extends OncePerRequestFilter {
     public static final String IP_HEADER = "X-Forwarded-For";
     public static final String USER_AGENT_HEADER = "User-Agent";

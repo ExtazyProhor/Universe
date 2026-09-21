@@ -1,7 +1,6 @@
 package ru.prohor.universe.scarif.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,14 +18,5 @@ public class ScarifJwtConfiguration {
             ObjectMapper objectMapper
     ) {
         return new AccessJwtVerifier(publicKeyProvider, objectMapper);
-    }
-
-    @Bean
-    public FilterRegistrationBean<AccessTokenFilter> accessTokenFilterRegistration(AccessJwtVerifier accessJwtVerifier) {
-        FilterRegistrationBean<AccessTokenFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new AccessTokenFilter(accessJwtVerifier));
-        registration.addUrlPatterns("/*");
-        registration.setOrder(AccessTokenFilter.ACCESS_TOKEN_FILTER_ORDER);
-        return registration;
     }
 }
