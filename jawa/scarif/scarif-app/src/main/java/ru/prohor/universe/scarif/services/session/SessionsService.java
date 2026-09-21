@@ -20,7 +20,6 @@ import ru.prohor.universe.scarif.services.refresh.RefreshJwtProvider;
 import ru.prohor.universe.scarif.services.refresh.RefreshToken;
 import ru.prohor.universe.scarif.web.UserData;
 import ru.prohor.universe.scarif.web.api.AccessTokenResponse;
-import ru.prohor.universe.scarif.web.api.CloseSessionRequestBody;
 import ru.prohor.universe.scarif.web.api.SessionDescription;
 
 import java.time.Duration;
@@ -146,12 +145,12 @@ public class SessionsService {
         });
     }
 
-    public ResponseEntity<?> closeSession(RefreshToken refreshToken, CloseSessionRequestBody body) {
+    public ResponseEntity<?> closeSession(RefreshToken refreshToken, String sessionId) {
         ObjectId sessionIdToClose;
         try {
-            sessionIdToClose = new ObjectId(body.sessionId());
+            sessionIdToClose = new ObjectId(sessionId);
         } catch (IllegalArgumentException e) {
-            log.warn("illegal format of sessionsId: {}", body.sessionId());
+            log.warn("illegal format of sessionsId: {}", sessionId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -161,7 +160,7 @@ public class SessionsService {
                     .filter(it -> it.id().equals(sessionIdToClose))
                     .findAny();
             if (session.isEmpty()) {
-                log.warn("user has no session to close with sessionId {}", body.sessionId());
+                log.warn("user has no session to close with sessionId {}", sessionIdToClose);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
 
@@ -171,6 +170,7 @@ public class SessionsService {
             }
 
             Session updated = session.get().toBuilder().closed(true).build();
+            log.info("session with id {} was closed", sessionIdToClose);
             tx.save(appendSession(user, updated, Instant.now()));
             return ResponseEntity.ok().build();
         });

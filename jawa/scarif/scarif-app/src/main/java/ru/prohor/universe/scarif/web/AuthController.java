@@ -5,16 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.prohor.universe.jocasta.core.collections.common.Opt;
 import ru.prohor.universe.scarif.jwt.AuthorizedUser;
 import ru.prohor.universe.scarif.services.refresh.RefreshToken;
 import ru.prohor.universe.scarif.services.session.SessionsService;
-import ru.prohor.universe.scarif.web.api.CloseSessionRequestBody;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -44,7 +43,7 @@ public class AuthController {
         return sessionsService.refresh(refreshToken.get());
     }
 
-    @GetMapping("/get_sessions")
+    @GetMapping("/sessions")
     public ResponseEntity<?> getSessions(
             @RequestAttribute(name = RefreshToken.REFRESH_TOKEN_ATTRIBUTE_KEY)
             Opt<RefreshToken> refreshToken,
@@ -66,10 +65,10 @@ public class AuthController {
         return sessionsService.logout(refreshToken.get());
     }
 
-    @PostMapping("/close_session")
+    @PostMapping("/sessions/{sessionId}/close")
     public ResponseEntity<?> closeSession(
-            @RequestBody
-            CloseSessionRequestBody body,
+            @PathVariable("sessionId")
+            String sessionId,
             @RequestAttribute(name = RefreshToken.REFRESH_TOKEN_ATTRIBUTE_KEY)
             Opt<RefreshToken> refreshToken,
             @RequestAttribute(name = AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY)
@@ -77,6 +76,6 @@ public class AuthController {
     ) {
         if (refreshToken.isEmpty() || authorizedUser.isEmpty())
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        return sessionsService.closeSession(refreshToken.get(), body);
+        return sessionsService.closeSession(refreshToken.get(), sessionId);
     }
 }

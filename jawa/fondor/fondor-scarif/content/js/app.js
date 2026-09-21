@@ -12,7 +12,7 @@ function normalizeUrl() {
 }
 
 async function loadSessions() {
-    const response = await universeFetch(`${SCARIF_API_URL}/api/auth/get_sessions`);
+    const response = await universeFetch(`${SCARIF_API_URL}/api/auth/sessions`);
     if (response.status === 401) {
         return null;
     }

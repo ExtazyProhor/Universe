@@ -173,15 +173,12 @@ function bindSessionActions(container, reload) {
                 button.textContent = 'Завершение...';
 
                 try {
-                    const response = await universeFetch(`${SCARIF_API_URL}/api/auth/close_session`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            sessionId
-                        })
-                    });
+                    const response = await universeFetch(
+                        `${SCARIF_API_URL}/api/auth/sessions/${sessionId}/close`,
+                        {
+                            method: 'POST'
+                        }
+                    );
 
                     if (response.status === 401) {
                         window.location.reload();
