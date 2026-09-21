@@ -24,8 +24,10 @@ public class LogRequestContextFilter extends OncePerRequestFilter {
             @NonNull FilterChain chain
     ) throws ServletException, IOException {
         String requestId = UUID.randomUUID().toString();
+        String method = request.getMethod();
         String url = request.getRequestURI();
         MDC.put(MDCFields.REQUEST_ID_KEY, requestId);
+        MDC.put(MDCFields.METHOD_KEY, method);
         MDC.put(MDCFields.REQUEST_URL_KEY, url);
 
         try {
