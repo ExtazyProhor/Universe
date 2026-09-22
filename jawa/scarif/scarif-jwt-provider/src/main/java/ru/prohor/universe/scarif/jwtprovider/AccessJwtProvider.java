@@ -33,8 +33,8 @@ public class AccessJwtProvider extends AbstractJwtProvider<AccessJwtPayload> {
                 uuid,
                 objectId.toHexString(),
                 Instant.now().plus(accessTokenTtl),
-                jwtId,
-                sessionId.toHexString()
+                sessionId.toHexString(),
+                jwtId
         );
         return getToken(payload);
     }
