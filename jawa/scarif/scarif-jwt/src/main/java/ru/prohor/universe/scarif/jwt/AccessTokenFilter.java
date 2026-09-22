@@ -35,15 +35,20 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             @Nonnull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            Opt<AuthorizedUser> authorizedUser = extractAuthorizedUser(request);
-            authorizedUser.ifPresent(user -> MDC.put(MDCFields.USER_ID_KEY, user.objectId()));
-            request.setAttribute(AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY, authorizedUser);
-        } catch (Exception e) {
-            log.error("AccessTokenFilter error", e);
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return;
+            try {
+                Opt<AuthorizedUser> authorizedUser = extractAuthorizedUser(request);
+                authorizedUser.ifPresent(user -> MDC.put(MDCFields.USER_ID_KEY, user.objectId()));
+                request.setAttribute(AuthorizedUser.AUTHORIZED_USER_ATTRIBUTE_KEY, authorizedUser);
+            } catch (Exception e) {
+                log.error("AccessTokenFilter error", e);
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                return;
+            }
+            filterChain.doFilter(request, response);
+        } finally {
+            MDC.remove(MDCFields.USER_ID_KEY);
+            MDC.remove(MDCFields.SESSION_ID_KEY);
         }
-        filterChain.doFilter(request, response);
     }
 
     private Opt<AuthorizedUser> extractAuthorizedUser(HttpServletRequest request) {
@@ -56,7 +61,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             log.warn("Illegal structure of auth header");
             return Opt.empty();
         }
-        String token = header.replace("Bearer ", "").trim();
+        String token = header.substring(6).trim();
         return accessJwtVerifier.verify(token);
     }
 }

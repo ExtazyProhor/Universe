@@ -21,6 +21,14 @@ public class AllFilesToOneMd {
             TestFile.OUTPUT,
             new BlackListExtensionsFilter(Set.of("jpg", "svg", "ico", "webmanifest", "png", "DS_Store"))
     );
+    private static final Preset SINGLE_PACKAGE = new Preset(
+            FileSystemUtils.userHome()
+                    .asPath()
+                    .resolve("universe/jawa/scarif/scarif-jwt/src/main/java/ru/prohor/universe/scarif/jwt")
+                    .toString(),
+            TestFile.OUTPUT,
+            new WhiteListExtensionsFilter(Set.of("java"))
+    );
     private static final Preset TOVARISCH_PROTO = new Preset(
             FileSystemUtils.userHome()
                     .asPath()
@@ -31,7 +39,7 @@ public class AllFilesToOneMd {
     );
 
     static void main() throws IOException {
-        process(SCARIF_FRONT);
+        process(SINGLE_PACKAGE);
     }
 
     private static void process(Preset preset) throws IOException {

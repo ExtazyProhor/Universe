@@ -5,4 +5,5 @@ public class MDCFields {
     public static final String REQUEST_ID_KEY = "requestId";
     public static final String METHOD_KEY = "method";
     public static final String REQUEST_URL_KEY = "requestUrl";
+    public static final String SESSION_ID_KEY = "sessionId";
 }
