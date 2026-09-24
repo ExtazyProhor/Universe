@@ -2,8 +2,9 @@ package ru.prohor.universe.padawan.kotlin.spring.mvpplayer
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.bson.types.ObjectId
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Configuration
@@ -13,13 +14,22 @@ import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import ru.prohor.universe.jocasta.core.utils.FileSystemUtils
+import ru.prohor.universe.jocasta.morphia.impl.MongoFileRepository
+import ru.prohor.universe.jocasta.morphia.jackson.JacksonMorphiaConfiguration
 import java.awt.Desktop
 import java.io.File
 import java.net.URI
+
+private val COLLECTION_FILE = FileSystemUtils.userHome()
+    .resolve("my")
+    .resolve("music-collection.json")
+    .asString()
 
 private val LIBRARY_DIR = FileSystemUtils.downloads()
     .resolve("features")
@@ -43,15 +53,78 @@ data class Track(
     val duration: Double?,
 )
 
+data class Queue(
+    val id: ObjectId,
+    val tracks: List<String>,
+    val currentTrackId: String
+)
+
+val repository = MongoFileRepository(
+    { it.id },
+    Queue::class.java,
+    COLLECTION_FILE,
+    jacksonObjectMapper().registerModule(JacksonMorphiaConfiguration.createMorphiaModule())
+)
+
+private val QUEUE_ID = ObjectId("000000000000000000000000")
+
+data class QueueResponse(
+    val tracks: List<Track>,
+    val currentTrackId: String,
+)
+
+data class CurrentTrackRequest(val trackId: String)
+
 @RestController
-class TracksController(mapper: ObjectMapper) {
-    private val tracks: List<Track> = loadTracks(mapper)
+class QueueController(private val library: TrackLibrary) {
+    @GetMapping("/api/queue")
+    fun get(): QueueResponse {
+        val saved = repository.findAll().firstOrNull { it.id == QUEUE_ID }
+        val queue = saved ?: shuffledQueue().also { repository.save(it) }
+        return queue.toResponse()
+    }
+
+    @PostMapping("/api/queue/shuffle")
+    fun shuffle(): QueueResponse {
+        val queue = shuffledQueue()
+        repository.save(queue)
+        return queue.toResponse()
+    }
+
+    @PostMapping("/api/queue/current")
+    fun setCurrent(@RequestBody body: CurrentTrackRequest): QueueResponse {
+        val saved = repository.findAll().firstOrNull { it.id == QUEUE_ID } ?: shuffledQueue()
+        val updated = saved.copy(currentTrackId = body.trackId)
+        repository.save(updated)
+        return updated.toResponse()
+    }
+
+    private fun shuffledQueue(): Queue {
+        val order = library.tracks.map { it.track }.shuffled()
+        return Queue(id = QUEUE_ID, tracks = order, currentTrackId = order.first())
+    }
+
+    private fun Queue.toResponse() = QueueResponse(
+        tracks = tracks.mapNotNull { library.byTrackId(it) },
+        currentTrackId = currentTrackId,
+    )
+}
+
+@Component
+class TrackLibrary(mapper: ObjectMapper) {
+    val tracks: List<Track> = loadTracks(mapper)
+
+    fun byTrackId(id: String): Track? = tracks.firstOrNull { it.track == id }
+}
+
+@RestController
+class TracksController(private val library: TrackLibrary) {
 
     @GetMapping("/", produces = [MediaType.TEXT_HTML_VALUE])
     fun index(): Resource = ClassPathResource("music-player-mvp.html")
 
     @GetMapping("/api/tracks")
-    fun list(): List<Track> = tracks
+    fun list(): List<Track> = library.tracks
 }
 
 @Configuration

@@ -407,16 +407,8 @@
     const ICON_PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
     const ICON_PAUSE = '<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
 
-    let all = [], queue = [], idx = 0, seeking = false, errorStreak = 0;
+    let queue = [], idx = 0, seeking = false, errorStreak = 0;
 
-    const shuffled = a => {
-        a = [...a];
-        for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
-    };
     const fmt = s => {
         s = Math.floor(isFinite(s) ? s : 0);
         return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
@@ -468,10 +460,20 @@
         if (el) list.scrollTo({top: el.offsetTop - 6, behavior: 'smooth'});
     }
 
-    function load(i, autoplay = true) {
+    function saveCurrent(trackId) {
+        fetch('/api/queue/current', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({trackId}),
+        }).catch(() => {
+        });
+    }
+
+    function load(i, autoplay = true, save = true) {
         idx = i;
         const t = queue[i];
         audio.src = trackUrl(t);
+        if (save) saveCurrent(t.track);
 
         $('#title').textContent = t.title;
         $('#authors').textContent = t.authors.join(', ');
@@ -496,9 +498,7 @@
 
     function next() {
         if (idx + 1 < queue.length) return load(idx + 1);
-        queue = shuffled(all);
-        renderQueue();
-        load(0);
+        reshuffle();
     }
 
     function prev() {
@@ -507,9 +507,19 @@
     }
 
     function reshuffle() {
-        queue = shuffled(all);
+        fetch('/api/queue/shuffle', {method: 'POST'})
+            .then(r => r.json())
+            .then(applyQueue)
+            .catch(() => {
+                $('#title').textContent = 'Не удалось перемешать очередь';
+            });
+    }
+
+    function applyQueue(data) {
+        queue = data.tracks;
         renderQueue();
-        load(0);
+        const startIdx = Math.max(0, queue.findIndex(t => t.track === data.currentTrackId));
+        load(startIdx, true, false);
     }
 
     function toggle() {
@@ -604,21 +614,21 @@
     }
 
     $('#play').innerHTML = ICON_PLAY;
-    fetch('/api/tracks')
+    fetch('/api/queue')
         .then(r => r.json())
-        .then(tracks => {
-            all = tracks;
-            if (!all.length) {
+        .then(data => {
+            if (!data.tracks.length) {
                 $('#title').textContent = 'Треки не найдены';
                 list.innerHTML = '<p class="empty">В all_lyrics.json нет ни одного трека.</p>';
                 return;
             }
-            queue = shuffled(all);
+            queue = data.tracks;
             renderQueue();
-            load(0);
+            const startIdx = Math.max(0, queue.findIndex(t => t.track === data.currentTrackId));
+            load(startIdx, true, false);
         })
         .catch(() => {
-            $('#title').textContent = 'Не удалось загрузить список треков';
+            $('#title').textContent = 'Не удалось загрузить очередь';
         });
 </script>
 </body>
