@@ -451,7 +451,7 @@
             a.textContent = t.authors.join(', ');
             meta.append(n, a);
             b.append(pic, meta);
-            b.addEventListener('click', () => load(i));
+            b.addEventListener('click', () => i === idx ? toggle() : load(i));
             frag.append(b);
         });
         list.append(frag);
@@ -579,9 +579,21 @@
     $('#prev').addEventListener('click', prev);
     $('#shuffle').addEventListener('click', reshuffle);
     document.addEventListener('keydown', e => {
-        if (e.code === 'Space' && e.target.tagName !== 'BUTTON') {
-            e.preventDefault();
-            toggle();
+        switch (e.code) {
+            case 'Space':
+                e.preventDefault();
+                toggle();
+                break;
+            case 'ArrowRight':
+            case 'ArrowDown':
+                e.preventDefault();
+                next();
+                break;
+            case 'ArrowLeft':
+            case 'ArrowUp':
+                e.preventDefault();
+                prev();
+                break;
         }
     });
     if ('mediaSession' in navigator) {
