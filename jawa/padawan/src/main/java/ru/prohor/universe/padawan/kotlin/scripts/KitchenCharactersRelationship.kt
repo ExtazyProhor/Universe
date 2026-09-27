@@ -98,6 +98,7 @@ fun main() {
         pavel kiss dasha,
         pavel kiss valentina,
         eleonora kiss michael,
+        pavel kiss sofia,
     )
 }
 
