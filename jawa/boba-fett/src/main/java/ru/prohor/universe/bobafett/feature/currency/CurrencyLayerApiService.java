@@ -39,7 +39,7 @@ public class CurrencyLayerApiService {
         this.feedbackExecutorProvider = feedbackExecutorProvider;
         this.adminChatId = adminChatId;
         this.mapper = mapper;
-        this.uri = URI.create(baseApiUrl + "?access_key=" + apiKey + "&source=RUB");
+        this.uri = URI.create(baseApiUrl + "?access_key=" + apiKey);
     }
 
     public List<Rate> getNewRates() throws Exception {
@@ -47,11 +47,30 @@ public class CurrencyLayerApiService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         CurrencyResponse currencyResponse = mapper.readValue(response.body(), CurrencyResponse.class);
 
+        if (!"USD".equals(currencyResponse.source)) {
+            // TODO log
+            System.out.println("---".repeat(20));
+            System.out.println(response.body());
+            System.out.println("---".repeat(20));
+            throw new IllegalStateException("Error response from currency api");
+        }
+
+        double oneDollarToRubles = currencyResponse.quotes.entrySet().stream()
+                .filter(entry -> entry.getKey().equals("USDRUB"))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("The USD-RUB currency pair is missing"))
+                .getValue();
         List<StringRate> newRates = currencyResponse.quotes.entrySet()
                 .stream()
-                .filter(entry -> entry.getKey().length() == 6 && entry.getKey().startsWith("RUB"))
-                .map(entry -> new StringRate(entry.getKey().substring(3), entry.getValue()))
-                .toList();
+                .filter(entry -> !"USDRUB".equals(entry.getKey()))
+                .filter(entry -> entry.getKey().length() == 6 && entry.getKey().startsWith("USD"))
+                .map(entry -> new StringRate(
+                        entry.getKey().substring(3),
+                        entry.getValue() / oneDollarToRubles
+                ))
+                .collect(Collectors.toList());
+        newRates.add(new StringRate("USD", 1. / oneDollarToRubles));
+
         checkCurrencies(newRates);
         return newRates.stream()
                 .map(rate -> {
@@ -93,7 +112,10 @@ public class CurrencyLayerApiService {
         feedbackExecutorProvider.getObject().sendMessage(adminChatId, message);
     }
 
-    private record CurrencyResponse(Map<String, Double> quotes) {}
+    private record CurrencyResponse(
+            String source,
+            Map<String, Double> quotes
+    ) {}
 
     private record StringRate(String code, Double rateToRussianRuble) {}
 }

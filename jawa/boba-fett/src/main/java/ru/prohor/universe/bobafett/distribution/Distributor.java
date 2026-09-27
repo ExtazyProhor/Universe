@@ -39,6 +39,7 @@ public class Distributor {
                 task.distribute(feedbackExecutor, hour, minute);
             } catch (Exception e) {
                 // TODO log
+                log.error("Error when distributing {}", task.getClass().getName(), e);
                 e.printStackTrace();
             }
         });

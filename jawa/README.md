@@ -31,3 +31,9 @@ Setting -> Editor -> Code Style -> Scheme -> Project
 в репозитории:
 
 ![](assets/run-configurations.png)
+
+##### Сборка модуля
+
+```shell
+mvn clean install -pl {имя модуля} -am
+```
