@@ -13,6 +13,10 @@
     <packaging>jar</packaging>
     <name>jocasta-core</name>
 
+    <properties>
+        <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>commons-codec</groupId>
