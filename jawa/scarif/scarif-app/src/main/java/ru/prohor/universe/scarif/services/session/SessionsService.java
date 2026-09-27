@@ -124,7 +124,10 @@ public class SessionsService {
                     }
                 }
 
-                log.warn("request with old token (expired more than 10 seconds ago) that should have been deleted");
+                log.warn(
+                        "request with old token (expired more than {} seconds ago) that should have been deleted",
+                        refreshTokenRotateWindow.toSeconds()
+                );
                 return unauthorizedResponse;
             }
 

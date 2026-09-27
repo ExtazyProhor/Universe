@@ -136,6 +136,7 @@ public class GoogleOAuthService {
                 .queryParam("type", type)
                 .queryParam("message", message)
                 .build()
+                .encode()
                 .toUri();
         return ResponseEntity.status(HttpStatus.FOUND).location(frontendMainPage).build();
     }
@@ -181,19 +182,23 @@ public class GoogleOAuthService {
     private UserExternalAccountInfo getUserInfoByCode(String code) throws OAuthException {
         String idToken = googleOAuthClient.getIdToken(code);
         DecodedJWT jwt = googleIdTokenVerifier.verify(idToken);
-        checkEmailVarification(jwt);
+        checkEmailVerification(jwt);
         return new UserExternalAccountInfo(
                 jwt.getClaim("sub").asString(),
-                Opt.ofNullable(jwt.getClaim("email").asString()),
-                Opt.ofNullable(jwt.getClaim("name").asString()),
-                Opt.ofNullable(jwt.getClaim("given_name").asString()),
-                Opt.ofNullable(jwt.getClaim("family_name").asString()),
-                Opt.ofNullable(jwt.getClaim("picture").asString()),
-                Opt.ofNullable(jwt.getClaim("locale").asString())
+                getClaim("email", jwt),
+                getClaim("name", jwt),
+                getClaim("given_name", jwt),
+                getClaim("family_name", jwt),
+                getClaim("picture", jwt),
+                getClaim("locale", jwt)
         );
     }
 
-    private void checkEmailVarification(DecodedJWT jwt) throws OAuthClientErrorException {
+    private static Opt<String> getClaim(String key, DecodedJWT jwt) {
+        return Opt.ofNullable(jwt.getClaim(key).asString());
+    }
+
+    private void checkEmailVerification(DecodedJWT jwt) throws OAuthClientErrorException {
         Boolean emailVerified = Opt.ofNullable(jwt.getClaim("email_verified").asBoolean()).orElse(false);
         if (!emailVerified) {
             throw new OAuthClientErrorException(
