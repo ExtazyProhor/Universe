@@ -219,6 +219,20 @@
                 <version>2.1.0</version>
             </dependency>
 
+            <!-- Source: https://mvnrepository.com/artifact/dev.samstevens.totp/totp -->
+            <dependency>
+                <groupId>dev.samstevens.totp</groupId>
+                <artifactId>totp</artifactId>
+                <version>1.7.1</version>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>4.36.2</version>
+            </dependency>
+
             <!-- https://mvnrepository.com/artifact/org.skyscreamer/jsonassert -->
             <dependency>
                 <groupId>org.skyscreamer</groupId>
@@ -498,6 +512,32 @@
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.xolstice.maven.plugins</groupId>
+                    <artifactId>protobuf-maven-plugin</artifactId>
+                    <version>0.6.1</version>
+
+                    <configuration>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <protocArtifact>
+                            com.google.protobuf:protoc:4.36.2:exe:${os.detected.classifier}
+                        </protocArtifact>
+                    </configuration>
+
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>kr.motd.maven</groupId>
+                    <artifactId>os-maven-plugin</artifactId>
+                    <version>1.7.1</version>
+                    <extensions>true</extensions>
                 </plugin>
             </plugins>
         </pluginManagement>
