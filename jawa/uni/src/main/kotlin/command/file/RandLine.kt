@@ -1,4 +1,4 @@
-package ru.prohor.universe.uni.cli.command.files
+package ru.prohor.universe.uni.cli.command.file
 
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.arguments.argument

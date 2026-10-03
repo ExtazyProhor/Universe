@@ -7,20 +7,15 @@ import ru.prohor.universe.uni.cli.command.UniCommand
 class Files : UniCommand() {
     init {
         subcommands(
-            RandLine(),
-            Sort(),
-            Shuffle(),
-            Distinct(),
             RandFile(),
             Rename(),
-            FindDuplicateLines(),
             FindDuplicateFiles(),
             CompareDirectories(),
             TreeSize(),
         )
     }
 
-    override fun help(context: Context) = "interacts with the file system"
+    override fun help(context: Context) = "interacts with multiple files and directories"
 
     override fun run() = Unit
 }

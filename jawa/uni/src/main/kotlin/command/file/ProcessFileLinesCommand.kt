@@ -1,14 +1,11 @@
-package ru.prohor.universe.uni.cli.command.files
+package ru.prohor.universe.uni.cli.command.file
 
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import ru.prohor.universe.uni.cli.command.UniCommand
 
-abstract class ProcessFileLinesCommand(
-    inputFileDescription: String
-) : UniCommand() {
-
+abstract class ProcessFileLinesCommand(inputFileDescription: String) : UniCommand() {
     private val inputFile by option("-i", "--input", help = inputFileDescription)
         .file(mustExist = true, canBeDir = false)
         .required()

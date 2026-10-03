@@ -1,10 +1,10 @@
-package ru.prohor.universe.uni.cli.command.files
+package ru.prohor.universe.uni.cli.command.file
 
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.types.file
-import com.github.ajalt.mordant.rendering.TextColors.yellow
+import com.github.ajalt.mordant.rendering.TextColors
 import ru.prohor.universe.uni.cli.command.UniCommand
 
 /**
@@ -29,7 +29,7 @@ class FindDuplicateLines : UniCommand(name = "duplicate-lines") {
                 .toList()
                 .sortedBy { it.second }
                 .forEach { (line, count) ->
-                    println(yellow("$count: $line"))
+                    println(TextColors.yellow("$count: $line"))
                 }
         }
     }

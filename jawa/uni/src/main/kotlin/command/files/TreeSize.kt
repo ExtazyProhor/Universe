@@ -20,7 +20,7 @@ import kotlin.math.pow
 class TreeSize : UniCommand("tree-size") {
     val path: String by argument(help = "path to target directory").default(".")
     val maxDepth: Int? by option("-d", "--depth", "-L", help = "maximum nesting depth").int()
-    val excludeHidden: Boolean by option("-h", "--exclude-hidden", help = "exclude hidden files and directories").flag()
+    val excludeHidden: Boolean by option("-e", "--exclude-hidden", help = "exclude hidden files and directories").flag()
 
     override fun help(context: Context) = "prints tree of files and directories with their sizes"
 
