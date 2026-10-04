@@ -9,6 +9,10 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
+import com.github.ajalt.mordant.rendering.TextColors.cyan
+import com.github.ajalt.mordant.rendering.TextColors.gray
+import com.github.ajalt.mordant.rendering.TextColors.red
+import com.github.ajalt.mordant.rendering.TextColors.yellow
 import ru.prohor.universe.uni.cli.command.UniCommand
 import ru.prohor.universe.uni.cli.helper.fslinter.Duplicates
 import ru.prohor.universe.uni.cli.helper.fslinter.FileSystemEntry
@@ -61,31 +65,39 @@ class LintCommand : UniCommand(name = "lint") {
         echo("Checked ${entries.size} entries. Found $totalIssues problem(s)\n")
 
         for ((code, items) in problems) {
-            echo("[$code] ${items.size}")
+            printGroupHeader(code, items.size)
             for ((e, issue) in items.take(maxPerGroup)) {
-                echo("    ${e.rel}  --  ${issue.message}")
+                val detail = issue.detail?.let { "  —  ${cyan(it)}" }.orEmpty()
+                echo("    ${red(e.rel.toString())}$detail")
             }
-            if (items.size > maxPerGroup) echo("    ... ${items.size - maxPerGroup} more")
+            if (items.size > maxPerGroup) echo(gray("    ... ${items.size - maxPerGroup} more"))
             echo("")
         }
 
         if (dupGroups.isNotEmpty()) {
-            echo("[DUPLICATE_NAME_CASEFOLD] ${dupGroups.size} group(s)")
+            printGroupHeader(IssueCode.DUPLICATE_NAME_CASEFOLD, dupGroups.size)
             for (group in dupGroups.take(maxPerGroup)) {
-                echo("    in folder ${group.first().path.parent}:")
-                for (e in group) echo("        ${e.path.fileName}")
+                val folder = group.first().rel.parent?.toString() ?: "."
+                echo(gray("    In $folder:"))
+                for (e in group) echo("        ${red(e.path.fileName.toString())}")
             }
+            if (dupGroups.size > maxPerGroup) echo(gray("    ... ${dupGroups.size - maxPerGroup} more"))
             echo("")
         }
 
         if (longPaths.isNotEmpty()) {
-            echo("[PATH_TOO_LONG] ${longPaths.size} (limit ${NameRules.WARN_TOTAL_PATH_CHARS} chars)")
+            printGroupHeader(IssueCode.PATH_TOO_LONG, longPaths.size)
             for ((e, totalLen) in longPaths.take(maxPerGroup)) {
-                echo("    ${e.rel}  --  $totalLen chars")
+                echo("    ${red(e.rel.toString())}  ${cyan("$totalLen chars")}")
             }
+            if (longPaths.size > maxPerGroup) echo(gray("    ... ${longPaths.size - maxPerGroup} more"))
             echo("")
         }
 
         throw ProgramResult(1)
+    }
+
+    private fun printGroupHeader(code: IssueCode, count: Int) {
+        echo("${yellow("${code.title} ($count)")}  ${gray(code.description)}")
     }
 }

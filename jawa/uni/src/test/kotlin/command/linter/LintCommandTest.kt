@@ -18,11 +18,16 @@ class LintCommandTest {
     }
 
     @Test
-    fun `tree with a bad name exits 1 and lists the issue`(@TempDir dir: Path) {
+    fun `files with the same issue share one description and keep their details`(@TempDir dir: Path) {
         Files.createFile(dir.resolve("bad:name.txt"))
+        Files.createFile(dir.resolve("bad?name.txt"))
         val result = LintCommand().test(dir.toString())
         assertEquals(1, result.statusCode)
-        assertTrue(result.output.contains("FORBIDDEN_CHARS"))
+        assertTrue(result.output.contains("Forbidden characters (2)"))
+        val description = "Name contains characters forbidden on Windows."
+        assertEquals(1, Regex(Regex.escape(description)).findAll(result.output).count())
+        assertTrue(result.output.contains("bad:name.txt  —  :"))
+        assertTrue(result.output.contains("bad?name.txt  —  ?"))
     }
 
     @Test

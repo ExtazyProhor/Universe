@@ -25,50 +25,40 @@ object NameRules {
         val issues = mutableListOf<Issue>()
 
         if (name.isEmpty() || name == "." || name == "..") {
-            issues.add(Issue(IssueCode.EMPTY_OR_DOT, "Empty name or '.'/'..'"))
+            issues.add(Issue(IssueCode.EMPTY_OR_DOT))
             return issues
         }
 
         val badChars = name.toSet().intersect(FORBIDDEN_CHARS).sorted()
         if (badChars.isNotEmpty()) {
-            issues.add(Issue(IssueCode.FORBIDDEN_CHARS, "Forbidden characters: ${badChars.joinToString(" ")}"))
+            issues.add(Issue(IssueCode.FORBIDDEN_CHARS, badChars.joinToString(" ")))
         }
 
         val ctrl = name.toSet().intersect(CONTROL_CHARS).sorted()
         if (ctrl.isNotEmpty()) {
             val codes = ctrl.joinToString(", ") { "0x%02x".format(it.code) }
-            issues.add(Issue(IssueCode.CONTROL_CHARS, "Control characters (codes): $codes"))
+            issues.add(Issue(IssueCode.CONTROL_CHARS, codes))
         }
 
         if (name.last() == ' ' || name.last() == '.') {
-            issues.add(Issue(IssueCode.TRAILING_SPACE_OR_DOT, "Name ends with a space or a dot (invalid on Windows)"))
+            issues.add(Issue(IssueCode.TRAILING_SPACE_OR_DOT))
         }
         if (name.first() == ' ') {
-            issues.add(Issue(IssueCode.LEADING_SPACE, "Name starts with a space"))
+            issues.add(Issue(IssueCode.LEADING_SPACE))
         }
 
         val base = name.substringBefore(".").trimEnd('.', ' ').uppercase()
         if (base in RESERVED_BASENAMES) {
-            issues.add(Issue(IssueCode.RESERVED_NAME, "Reserved Windows device name: $base"))
+            issues.add(Issue(IssueCode.RESERVED_NAME, base))
         }
 
         if (!allowNfd && !Normalizer.isNormalized(name, Normalizer.Form.NFC)) {
-            issues.add(
-                Issue(
-                    IssueCode.NOT_NFC,
-                    "Name is not NFC-normalized (common on macOS, causes duplicates on Windows/in git)"
-                )
-            )
+            issues.add(Issue(IssueCode.NOT_NFC))
         }
 
         val byteLen = name.toByteArray(Charsets.UTF_8).size
         if (byteLen > MAX_COMPONENT_BYTES) {
-            issues.add(
-                Issue(
-                    IssueCode.COMPONENT_TOO_LONG,
-                    "Component is $byteLen UTF-8 bytes (limit $MAX_COMPONENT_BYTES)"
-                )
-            )
+            issues.add(Issue(IssueCode.COMPONENT_TOO_LONG, "$byteLen UTF-8 bytes"))
         }
         return issues
     }
