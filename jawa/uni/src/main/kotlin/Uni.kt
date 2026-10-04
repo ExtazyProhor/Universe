@@ -2,6 +2,7 @@ package ru.prohor.universe.uni.cli
 
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.subcommands
+import com.github.ajalt.clikt.core.terminal
 import ru.prohor.universe.uni.cli.command.UniCommand
 import ru.prohor.universe.uni.cli.command.code.Code
 import ru.prohor.universe.uni.cli.command.crypto.Crypto
@@ -14,6 +15,8 @@ import ru.prohor.universe.uni.cli.command.vcs.Vcs
 import ru.prohor.universe.uni.cli.command.video.Video
 
 class Uni : UniCommand() {
+    override val invokeWithoutSubcommand = true
+
     init {
         subcommands(
             StringCommand(),
@@ -31,5 +34,14 @@ class Uni : UniCommand() {
     override fun help(context: Context) =
         "a complex cli utility with a set of various useful functions and tools for the universe"
 
-    override fun run() = Unit
+    override fun helpEpilog(context: Context) = "Run `uni` without arguments to browse commands interactively."
+
+    override fun run() {
+        if (currentContext.invokedSubcommand != null) return
+        if (!terminal.terminalInfo.interactive) {
+            echoFormattedHelp()
+            return
+        }
+        InteractiveMenu(this).run()
+    }
 }
