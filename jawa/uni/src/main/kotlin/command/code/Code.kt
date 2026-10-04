@@ -8,6 +8,7 @@ class Code : UniCommand() {
     init {
         subcommands(
             ChangeKotlinPackage(),
+            AvailableColors(),
         )
     }
 
