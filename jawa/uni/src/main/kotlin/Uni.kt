@@ -7,6 +7,7 @@ import ru.prohor.universe.uni.cli.command.code.Code
 import ru.prohor.universe.uni.cli.command.crypto.Crypto
 import ru.prohor.universe.uni.cli.command.file.FileCommand
 import ru.prohor.universe.uni.cli.command.files.Files
+import ru.prohor.universe.uni.cli.command.linter.LinterCommand
 import ru.prohor.universe.uni.cli.command.music.Music
 import ru.prohor.universe.uni.cli.command.string.StringCommand
 import ru.prohor.universe.uni.cli.command.vcs.Vcs
@@ -19,6 +20,7 @@ class Uni : UniCommand() {
             Crypto(),
             Files(),
             FileCommand(),
+            LinterCommand(),
             Music(),
             Video(),
             Vcs(),
