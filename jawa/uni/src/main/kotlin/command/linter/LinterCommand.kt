@@ -14,7 +14,7 @@ class LinterCommand : UniCommand() {
         )
     }
 
-    override fun help(context: Context) = "Lint file and folder names for cross-platform (macOS/Windows) portability"
+    override fun help(context: Context) = "lint file and folder names for macOS and Windows portability"
 
     override fun run() = Unit
 }
