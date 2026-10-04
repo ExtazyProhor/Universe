@@ -9,8 +9,11 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.path
-import com.github.ajalt.mordant.rendering.TextColors.red
-import com.github.ajalt.mordant.rendering.TextColors.green
+import com.github.ajalt.mordant.rendering.TextColors.black
+import com.github.ajalt.mordant.rendering.TextColors.brightGreen
+import com.github.ajalt.mordant.rendering.TextColors.brightRed
+import com.github.ajalt.mordant.rendering.TextColors.cyan
+import com.github.ajalt.mordant.rendering.TextColors.yellow
 import ru.prohor.universe.uni.cli.command.UniCommand
 import ru.prohor.universe.uni.cli.helper.fslinter.DiffHighlighter
 import ru.prohor.universe.uni.cli.helper.fslinter.DiffOp
@@ -54,19 +57,19 @@ class FixCommand : UniCommand(name = "fix") {
             return
         }
 
-        echo("Fix plan (${mode.name.lowercase()}), ${plan.size} entries:\n")
+        echo(yellow("Fix plan (${mode.name.lowercase()}), ${plan.size} entries:\n"))
         for (item in plan) {
             val oldName = item.entry.path.fileName.toString()
             val (oldParts, newParts) = DiffHighlighter.diff(oldName, item.newName)
             val oldRendered = renderOld(oldParts)
             val newRendered = renderNew(newParts)
             val parentPrefix = item.entry.rel.parent?.let { "$it/" } ?: ""
-            echo("  $parentPrefix$oldRendered")
-            echo("    -> $parentPrefix$newRendered\n")
+            echo("  ${cyan("old:")} $parentPrefix$oldRendered")
+            echo("  ${cyan("new:")} $parentPrefix$newRendered\n")
         }
 
         if (!apply) {
-            echo("This is a dry run. Pass --apply to actually rename")
+            echo(yellow("This is a dry run. Pass --apply to actually rename"))
             return
         }
 
@@ -94,10 +97,10 @@ class FixCommand : UniCommand(name = "fix") {
     }
 
     private fun renderOld(parts: List<DiffPart>): String = parts.joinToString("") {
-        if (it.op == DiffOp.REMOVED) red(it.text) else it.text
+        if (it.op == DiffOp.REMOVED) (black on brightRed)(it.text) else it.text
     }
 
     private fun renderNew(parts: List<DiffPart>): String = parts.joinToString("") {
-        if (it.op == DiffOp.ADDED) green(it.text) else it.text
+        if (it.op == DiffOp.ADDED) (black on brightGreen)(it.text) else it.text
     }
 }

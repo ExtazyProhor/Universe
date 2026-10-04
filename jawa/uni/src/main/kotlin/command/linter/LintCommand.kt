@@ -24,11 +24,11 @@ class LintCommand : UniCommand(name = "lint") {
         .path(mustExist = true, canBeFile = false, canBeDir = true, mustBeReadable = true)
         .default(Path("."))
     private val maxPerGroup by option(
-        "-g", "--max-per-group",
+        "-m", "--max-per-group",
         help = "maximum number of examples printed per issue group (default: 10)"
     ).int().default(10)
     private val pathPrefixLength by option(
-        "--path-prefix-length",
+        "-p", "--path-prefix-length",
         help = "length of the future destination folder path, added when checking the " +
                 "260-character Windows path limit (default: 0)"
     ).int().default(0)
@@ -58,7 +58,6 @@ class LintCommand : UniCommand(name = "lint") {
 
         echo("Checked ${entries.size} entries. Found $totalIssues problem(s)\n")
 
-        // TODO мб покрасить в красный
         for ((code, items) in problems) {
             echo("[$code] ${items.size}")
             for ((e, issue) in items.take(maxPerGroup)) {

@@ -1,5 +1,6 @@
 package ru.prohor.universe.uni.cli.command
 
+import ru.prohor.universe.uni.cli.util.errorEcho
 import ru.prohor.universe.uni.cli.util.runCommandStreaming
 
 abstract class AliasStreaming(name: String? = null) : UniCommand(name) {
@@ -12,7 +13,7 @@ abstract class AliasStreaming(name: String? = null) : UniCommand(name) {
         runCommandStreaming(
             cmd = fullCommand,
             onLine = { echo(it) },
-            onErrorLine = { echo(it, err = true) },
+            onErrorLine = { errorEcho(it) },
         )
     }
 }
