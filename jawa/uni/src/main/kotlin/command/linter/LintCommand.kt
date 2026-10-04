@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.default
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
@@ -32,6 +33,7 @@ class LintCommand : UniCommand(name = "lint") {
         help = "length of the future destination folder path, added when checking the " +
                 "260-character Windows path limit (default: 0)"
     ).int().default(0)
+    private val allowNfd by option("--nfd", "--allow-nfd", help = "allow NFD names without reporting NOT_NFC").flag()
 
     override fun help(context: Context) = "scan a directory tree and report file/folder naming problems"
 
@@ -42,7 +44,7 @@ class LintCommand : UniCommand(name = "lint") {
 
         val problems = linkedMapOf<IssueCode, MutableList<Pair<FileSystemEntry, Issue>>>()
         for (e in entries) {
-            for (issue in NameRules.checkName(e.path.fileName.toString())) {
+            for (issue in NameRules.checkName(e.path.fileName.toString(), allowNfd = allowNfd)) {
                 problems.getOrPut(issue.code) { mutableListOf() }.add(e to issue)
             }
         }

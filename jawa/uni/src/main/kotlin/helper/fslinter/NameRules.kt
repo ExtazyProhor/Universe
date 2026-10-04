@@ -21,7 +21,7 @@ object NameRules {
     const val WARN_TOTAL_PATH_CHARS = 260
 
     /** Pure check of one name. Does not touch the filesystem. */
-    fun checkName(name: String): List<Issue> {
+    fun checkName(name: String, allowNfd: Boolean = false): List<Issue> {
         val issues = mutableListOf<Issue>()
 
         if (name.isEmpty() || name == "." || name == "..") {
@@ -52,8 +52,7 @@ object NameRules {
             issues.add(Issue(IssueCode.RESERVED_NAME, "Reserved Windows device name: $base"))
         }
 
-        val nfc = Normalizer.normalize(name, Normalizer.Form.NFC)
-        if (nfc != name) {
+        if (!allowNfd && !Normalizer.isNormalized(name, Normalizer.Form.NFC)) {
             issues.add(
                 Issue(
                     IssueCode.NOT_NFC,

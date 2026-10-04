@@ -9,12 +9,12 @@ data class FixPlanItem(val entry: FileSystemEntry, val newName: String)
  *  existing or another newly-renamed sibling is resolved with a numeric
  *  suffix, " (2)", " (3)", and so on. */
 object FixPlanner {
-    fun plan(entries: List<FileSystemEntry>, mode: FixMode): List<FixPlanItem> {
+    fun plan(entries: List<FileSystemEntry>, mode: FixMode, allowNfd: Boolean = false): List<FixPlanItem> {
         val rawPlan = entries.mapNotNull { e ->
             val name = e.path.fileName.toString()
-            val issues = NameRules.checkName(name)
+            val issues = NameRules.checkName(name, allowNfd)
             if (issues.isEmpty()) return@mapNotNull null
-            val newName = NameFixers.fix(name, mode)
+            val newName = NameFixers.fix(name, mode, preserveNormalization = allowNfd)
             if (newName == name) null else FixPlanItem(e, newName)
         }
 

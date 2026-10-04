@@ -43,6 +43,10 @@ class FixCommand : UniCommand(name = "fix") {
         "-a", "--apply",
         help = "actually rename on disk. Without this flag, only the plan is printed"
     ).flag()
+    private val allowNfd by option(
+        "--nfd", "--allow-nfd",
+        help = "preserve NFD names instead of converting them to NFC"
+    ).flag()
 
     override fun help(context: Context) = "rename files and folders whose names fail the `lint` checks"
 
@@ -50,7 +54,7 @@ class FixCommand : UniCommand(name = "fix") {
         val entries = Walker.walk(directory) { path, exception ->
             errorEcho("! cannot read $path: ${exception.message}")
         }
-        val plan = FixPlanner.plan(entries, mode)
+        val plan = FixPlanner.plan(entries, mode, allowNfd = allowNfd)
 
         if (plan.isEmpty()) {
             echo("Nothing to fix")

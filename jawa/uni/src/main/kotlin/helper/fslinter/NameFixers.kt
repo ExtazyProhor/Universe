@@ -4,7 +4,8 @@ import java.text.Normalizer
 
 enum class FixMode { SMART, UNDERSCORE }
 
-/** Turns an invalid name into a valid one. Pure string transformation, no
+/** Turns an invalid name into a valid one, optionally preserving its Unicode
+ *  normalization form. Pure string transformation, no
  *  filesystem access and no knowledge of sibling names (collision handling
  *  across siblings is [FixPlanner]'s job)
  */
@@ -14,18 +15,19 @@ object NameFixers {
         '?' to "", '*' to "", '<' to "(", '>' to ")", '"' to "'",
     )
 
-    fun fix(name: String, mode: FixMode): String = when (mode) {
-        FixMode.SMART -> smartFix(name)
-        FixMode.UNDERSCORE -> underscoreFix(name)
+    fun fix(name: String, mode: FixMode, preserveNormalization: Boolean = false): String = when (mode) {
+        FixMode.SMART -> smartFix(name, preserveNormalization)
+        FixMode.UNDERSCORE -> underscoreFix(name, preserveNormalization)
     }
 
-    private fun smartFix(name: String): String {
+    private fun smartFix(name: String, preserveNormalization: Boolean): String {
         val sb = StringBuilder()
         for (ch in name) {
             if (ch in NameRules.CONTROL_CHARS) continue
             sb.append(SMART_REPLACEMENTS[ch] ?: ch.toString())
         }
-        var fixed = Normalizer.normalize(sb.toString(), Normalizer.Form.NFC)
+        var fixed = sb.toString()
+        if (!preserveNormalization) fixed = Normalizer.normalize(fixed, Normalizer.Form.NFC)
         fixed = Regex(" {2,}").replace(fixed, " ")
         fixed = fixed.trim(' ', '.')
         fixed = guardReserved(fixed)
@@ -33,7 +35,7 @@ object NameFixers {
         return fixed
     }
 
-    private fun underscoreFix(name: String): String {
+    private fun underscoreFix(name: String, preserveNormalization: Boolean): String {
         val sb = StringBuilder()
         for (ch in name) {
             if (ch in NameRules.FORBIDDEN_CHARS || ch in NameRules.CONTROL_CHARS) {
@@ -42,7 +44,9 @@ object NameFixers {
                 sb.append(ch)
             }
         }
-        var fixed = Normalizer.normalize(sb.toString(), Normalizer.Form.NFC).trim(' ', '.')
+        var fixed = sb.toString()
+        if (!preserveNormalization) fixed = Normalizer.normalize(fixed, Normalizer.Form.NFC)
+        fixed = fixed.trim(' ', '.')
         fixed = guardReserved(fixed)
         if (fixed.isEmpty()) fixed = "_"
         return fixed

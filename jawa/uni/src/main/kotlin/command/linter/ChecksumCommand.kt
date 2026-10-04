@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.default
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
@@ -23,9 +24,13 @@ class ChecksumCommand : UniCommand(name = "checksum") {
         .default(Path("."))
     private val maxDepth by option("-d", "--depth", "-L", help = "maximum nesting depth to print").int()
         .default(Int.MAX_VALUE)
+    private val allowNfd by option(
+        "--nfd", "--allow-nfd",
+        help = "hash and display original NFD names without NFC normalization"
+    ).flag()
 
     override fun run() {
-        val result = Checksum.build(directory)
+        val result = Checksum.build(directory, normalizeNames = !allowNfd)
         val root = ChecksumNode(
             name = "${directory.toAbsolutePath().normalize()}/",
             hash = result.rootHash,
