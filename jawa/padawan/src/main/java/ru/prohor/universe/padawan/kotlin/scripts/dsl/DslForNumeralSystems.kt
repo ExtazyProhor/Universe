@@ -1,5 +1,6 @@
-package ru.prohor.universe.padawan.kotlin.scripts
+package ru.prohor.universe.padawan.kotlin.scripts.dsl
 
+// нужно чтобы был в отдельном пакете чтобы не перебивать kotlin "to" функцию
 fun main() {
     5 to 2 p p
 }
