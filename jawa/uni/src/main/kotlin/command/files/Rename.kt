@@ -8,6 +8,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import ru.prohor.universe.uni.cli.command.UniCommand
 import ru.prohor.universe.uni.cli.util.isCommonFile
 import java.io.File
+import java.text.Normalizer
 
 class Rename : UniCommand() {
     private val search by argument(help = "regexp to search for files")
@@ -20,20 +21,21 @@ class Rename : UniCommand() {
     override fun help(context: Context) = "renames all files in the specified directory using the passed regexp"
 
     override fun run() {
-        val regex = Regex(search)
+        val regex = Regex(Normalizer.normalize(search, Normalizer.Form.NFC))
         val root = File(dir)
 
         val filter: (File) -> Boolean = { isCommonFile(it) || (if (includeFolders) it.isDirectory else false) }
         val files = if (recursive) {
-            root.walkTopDown().filter { filter(it) }
+            root.walkTopDown().filter { it != root && filter(it) }
         } else {
             root.listFiles()?.asSequence()?.filter { filter(it) } ?: emptySequence()
         }
 
         files.forEach { file ->
-            val newName = file.name.replace(regex, replace)
+            val normalizedName = Normalizer.normalize(file.name, Normalizer.Form.NFC)
+            val newName = normalizedName.replace(regex, replace)
 
-            if (file.name != newName) {
+            if (normalizedName != newName) {
                 val newFile = File(file.parentFile, newName)
 
                 if (dryRun) {
