@@ -1,26 +1,56 @@
 package ru.prohor.universe.padawan.kotlin.scripts
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
+import kotlin.io.path.Path
+import kotlin.io.path.readText
 
 /**
  * Время выплаты - до аванса за текущий месяц или после
  */
-private enum class PayoutTime { BEFORE, AFTER, TOGETHER }
+enum class PayoutTime { BEFORE, AFTER, TOGETHER }
 
 /**
  * Информация об одной выплате - отпускном или премии
  */
-private data class Payout(
+data class Payout(
     val gross: Double,
     val payoutTime: PayoutTime = PayoutTime.TOGETHER
 )
 
 /**
+ * Данные, которые надо сравнивать с результатами
+ */
+data class ExpectedResults(
+    // Оклад за отработанное время до удержаний
+    val salaryGross: String,
+    // Всего начислено
+    val accrued: String,
+    // Всего удержано
+    val deductions: String,
+    // НДФЛ в составе удержаний
+    val tax: String,
+    // Всего доходов в натуральной форме
+    val nonCash: String,
+    // Общая расчетная сумма к перечислению в банк
+    val totalToBank: String,
+    // Отдельные выплаты до окончательного расчета (только суммы в виде строк)
+    val separatePayments: List<String>,
+    // Окончательный платеж после отдельных выплат
+    val finalSalaryPayment: String,
+    // Проверять ли порядок и сумму отдельных выплат
+    val separatePaymentsStrict: Boolean = true
+)
+
+/**
  * Информация об одном расчетном листе
  */
-private data class Payslip(
+data class Payslip(
+    // Ожидаемые результаты
+    val expectedResults: ExpectedResults,
     // Год
     val year: Int,
     // Месяц
@@ -48,16 +78,57 @@ private data class Payslip(
     // Перерасход за питание
     val mealOverspend: Double = 0.0,
     // Суточные сверх нормы
-    val excessDailyAllowance: Double = 0.0,
-    // Проверять ли строго порядок и сумму отдельных выплат
-    val strict: Boolean = true
+    val excessDailyAllowance: Double = 0.0
+)
+
+/**
+ * Денежные значения в результатах записаны как "xxxx.xx":
+ * два знака после точки, без разделителей тысяч и символа валюты
+ */
+data class PaymentResult(
+    // Название отдельной выплаты
+    val name: String,
+    // Сумма к перечислению
+    val amount: String
+)
+
+/**
+ * Результат расчета. Все денежные поля имеют тот же формат, что и [PaymentResult.amount]
+ */
+data class CalculationResult(
+    // Отработано дней
+    val workedDays: Int,
+    // Рабочих дней по производственному календарю
+    val workingDays: Int,
+    // Оклад за отработанное время до удержаний
+    val salaryGross: String,
+    // Всего начислено
+    val accrued: String,
+    // Всего удержано
+    val deductions: String,
+    // НДФЛ в составе удержаний
+    val tax: String,
+    // Всего доходов в натуральной форме
+    val nonCash: String,
+    // Общий облагаемый доход с начала года
+    val taxableIncomeToDate: String,
+    // Общая расчетная сумма к перечислению в банк
+    val totalToBank: String,
+    // Отдельные выплаты до окончательного расчета
+    val separatePayments: List<PaymentResult>,
+    // Окончательный платеж после отдельных выплат
+    val finalSalaryPayment: String
 )
 
 fun main() {
-
+    val mapper = jacksonObjectMapper()
+    val json = Path("...").readText()
+    val payslip = mapper.readValue<Payslip>(json)
+    val result = calculate(payslip)
+    printResult(result)
 }
 
-private fun calculate(payslip: Payslip) {
+fun calculate(payslip: Payslip): CalculationResult {
     val workingDays = workingDaysCountMap[payslip.year]?.get(payslip.month)
         ?: throw IllegalArgumentException("Illegal: ${payslip.year}-${payslip.month}")
     require(workingDays > 0 && payslip.workedDays in 0..workingDays) { "Проверьте рабочие и отработанные дни" }
@@ -79,16 +150,6 @@ private fun calculate(payslip: Payslip) {
     val tax = taxOn(currentTaxable, rate) - taxOn(priorTaxable, rate)
     val deductions = tax + rub(payslip.mealOverspend)
     val totalToBank = accrued - deductions
-
-    println("=== расчет ===")
-    println("Отработано дней:            ${payslip.workedDays}/$workingDays")
-    println("Оклад за отработанные дни:  ${money(salaryGross)}")
-    println("Всего начислено:            ${money(accrued)}")
-    println("Всего удержано:             ${money(deductions)}")
-    println("  в том числе НДФЛ:         ${money(tax)}")
-    println("Всего натуральных доходов:  ${money(nonCash)}")
-    println("Общий облагаемый доход:     ${money(currentTaxable)}")
-    println("Всего выплат (расчет):      ${money(totalToBank)}")
 
     var taxableAtPayment = priorTaxable
     var withheldAtPayment = taxOn(priorTaxable, rate)
@@ -122,12 +183,36 @@ private fun calculate(payslip: Payslip) {
 
     val alreadyPaid = separatePayments.fold(BigDecimal.ZERO) { total, payment -> total + payment.second }
     val finalSalaryPayment = totalToBank - alreadyPaid
+    require(finalSalaryPayment.signum() > 0) { "Проверьте параметры отдельных выплат: их сумма больше общего итога" }
+
+    return CalculationResult(
+        workedDays = payslip.workedDays,
+        workingDays = workingDays,
+        salaryGross = amountString(salaryGross),
+        accrued = amountString(accrued),
+        deductions = amountString(deductions),
+        tax = amountString(tax),
+        nonCash = amountString(nonCash),
+        taxableIncomeToDate = amountString(currentTaxable),
+        totalToBank = amountString(totalToBank),
+        separatePayments = separatePayments.map { (name, amount) -> PaymentResult(name, amountString(amount)) },
+        finalSalaryPayment = amountString(finalSalaryPayment)
+    )
+}
+
+fun printResult(result: CalculationResult) {
+    println("=== расчет ===")
+    println("Отработано дней:            ${result.workedDays}/${result.workingDays}")
+    println("Оклад за отработанные дни:  ${money(result.salaryGross)}")
+    println("Всего начислено:            ${money(result.accrued)}")
+    println("Всего удержано:             ${money(result.deductions)}")
+    println("  в том числе НДФЛ:         ${money(result.tax)}")
+    println("Всего натуральных доходов:  ${money(result.nonCash)}")
+    println("Общий облагаемый доход:     ${money(result.taxableIncomeToDate)}")
+    println("Всего выплат (расчет):      ${money(result.totalToBank)}")
     println("\n=== Расчетное распределение платежей ===")
-    separatePayments.forEach { (name, amount) -> println("$name: ${money(amount)}") }
-    println("Окончательный платеж: ${money(finalSalaryPayment)}")
-    if (finalSalaryPayment.signum() < 0) {
-        println("Проверьте параметры отдельных выплат: их сумма больше общего итога.")
-    }
+    result.separatePayments.forEach { payment -> println("${payment.name}: ${money(payment.amount)}") }
+    println("Окончательный платеж: ${money(result.finalSalaryPayment)}")
 }
 
 val workingDaysCountMap = mapOf(
@@ -148,5 +233,9 @@ private fun taxOn(taxableIncome: BigDecimal, rate: BigDecimal): BigDecimal {
 private fun sum(vararg amounts: BigDecimal) = amounts.fold(BigDecimal.ZERO) { total, amount -> total + amount }
 
 private fun rub(amount: Double) = BigDecimal.valueOf(amount).setScale(2, RoundingMode.UNNECESSARY)
+
+private fun amountString(amount: BigDecimal) = amount.setScale(2, RoundingMode.UNNECESSARY).toPlainString()
+
+private fun money(amount: String) = money(BigDecimal(amount))
 
 private fun money(amount: BigDecimal) = String.format(Locale.forLanguageTag("ru-RU"), "%,.2f ₽", amount)
