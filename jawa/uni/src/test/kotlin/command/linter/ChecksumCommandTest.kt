@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import ru.prohor.universe.uni.cli.helper.fslinter.Checksum
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -74,5 +75,49 @@ class ChecksumCommandTest {
             ),
             lines,
         )
+    }
+
+    @Test
+    fun `duplicates groups files by content with relative paths`(@TempDir dir: Path) {
+        val nested = Files.createDirectory(dir.resolve("nested"))
+        val first = Files.writeString(dir.resolve("a.txt"), "same")
+        Files.writeString(nested.resolve("b.txt"), "same")
+        Files.writeString(dir.resolve("unique.txt"), "different")
+
+        val result = ChecksumCommand().test("$dir --duplicates -L 0")
+
+        assertEquals(0, result.statusCode)
+        assertEquals("${Checksum.hashFile(first)}\n  a.txt\n  nested/b.txt\n", result.output)
+    }
+
+    @Test
+    fun `duplicates prints every group and omits files without a match`(@TempDir dir: Path) {
+        val first = Files.writeString(dir.resolve("a.txt"), "first")
+        Files.writeString(dir.resolve("b.txt"), "first")
+        val second = Files.writeString(dir.resolve("c.txt"), "second")
+        Files.writeString(dir.resolve("d.txt"), "second")
+        Files.writeString(dir.resolve("unique.txt"), "unique")
+
+        val result = ChecksumCommand().test("$dir --duplicates")
+        val expected = mapOf(
+            Checksum.hashFile(first) to listOf("a.txt", "b.txt"),
+            Checksum.hashFile(second) to listOf("c.txt", "d.txt"),
+        ).toSortedMap().entries.joinToString("\n") { (hash, paths) ->
+            "$hash\n${paths.joinToString("") { "  $it\n" }}"
+        }
+
+        assertEquals(0, result.statusCode)
+        assertEquals(expected, result.output)
+    }
+
+    @Test
+    fun `duplicates reports when all files are unique`(@TempDir dir: Path) {
+        Files.writeString(dir.resolve("a.txt"), "first")
+        Files.writeString(dir.resolve("b.txt"), "second")
+
+        val result = ChecksumCommand().test("$dir --duplicates")
+
+        assertEquals(0, result.statusCode)
+        assertEquals("No duplicates found\n", result.output)
     }
 }
