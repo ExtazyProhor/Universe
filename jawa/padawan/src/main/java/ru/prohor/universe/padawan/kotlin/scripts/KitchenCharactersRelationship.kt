@@ -102,7 +102,7 @@ fun main() {
         eleonora kiss michael,
         pavel kiss sofia,
         borya sleepsWith valentina,
-        petr kiss dasha,
+        petr sleepsWith dasha,
     )
 }
 

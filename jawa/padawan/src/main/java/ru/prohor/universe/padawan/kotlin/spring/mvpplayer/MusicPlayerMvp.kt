@@ -33,6 +33,7 @@ private val COLLECTION_FILE = FileSystemUtils.userHome()
 
 private val LIBRARY_DIR = FileSystemUtils.downloads()
     .resolve("export")
+    .resolve("large")
     .resolve("features")
     .resolve("music-player")
     .asString()
