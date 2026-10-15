@@ -44,8 +44,7 @@ public class HolocronPropertiesResolver implements BeanFactoryPostProcessor {
     }
 
     private String processSecrets(String value) {
-        if (value == null)
-            return null;
+        if (value == null) return null;
 
         Matcher matcher = HOLOCRON_PATTERN.matcher(value);
         StringBuilder sb = new StringBuilder();
