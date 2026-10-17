@@ -32,9 +32,12 @@ class ChecksumCommand : UniCommand(name = "checksum") {
     private val duplicates by option(
         "-d", "--duplicates", help = "print groups of files with identical contents and paths relative to directory"
     ).flag()
+    private val ignoreContents by option(
+        "-i", "--ignore-contents", help = "ignores file contents, which makes the calculation faster"
+    ).flag()
 
     override fun run() {
-        val result = Checksum.build(directory, normalizeNames = !allowNfd)
+        val result = Checksum.build(directory, normalizeNames = !allowNfd, ignoreContents = ignoreContents)
         if (duplicates) {
             printDuplicates(result.tree)
             return

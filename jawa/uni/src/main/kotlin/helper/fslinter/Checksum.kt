@@ -29,13 +29,18 @@ object Checksum {
         return Files.newInputStream(path).use { input -> DigestUtils.sha256Hex(input) }
     }
 
-    fun build(root: Path, normalizeNames: Boolean = true): ChecksumResult {
+    fun build(root: Path, normalizeNames: Boolean = true, ignoreContents: Boolean = false): ChecksumResult {
         val absRoot = root.toAbsolutePath().normalize()
-        val (tree, hash) = buildDir(absRoot, absRoot, normalizeNames)
+        val (tree, hash) = buildDir(absRoot, absRoot, normalizeNames, ignoreContents)
         return ChecksumResult(tree, hash)
     }
 
-    private fun buildDir(dir: Path, root: Path, normalizeNames: Boolean): Pair<List<ChecksumNode>, String> {
+    private fun buildDir(
+        dir: Path,
+        root: Path,
+        normalizeNames: Boolean,
+        ignoreContents: Boolean
+    ): Pair<List<ChecksumNode>, String> {
         val children = try {
             Files.newDirectoryStream(dir).use { stream ->
                 stream.sortedBy { it.fileName.toString().lowercase() }
@@ -53,10 +58,10 @@ object Checksum {
             val displayName = if (normalizeNames) Normalizer.normalize(name, Normalizer.Form.NFC) else name
             val rel = root.relativize(child).toString().replace('\\', '/')
             if (isDir) {
-                val (subNodes, subHash) = buildDir(child, root, normalizeNames)
+                val (subNodes, subHash) = buildDir(child, root, normalizeNames, ignoreContents)
                 nodes.add(ChecksumNode(displayName, subHash, true, rel, subNodes))
             } else {
-                val h = hashFile(child)
+                val h = if (ignoreContents) "_" else hashFile(child)
                 nodes.add(ChecksumNode(displayName, h, false, rel, null))
             }
         }
