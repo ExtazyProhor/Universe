@@ -27,14 +27,12 @@ import java.io.File
 import java.net.URI
 
 private val COLLECTION_FILE = FileSystemUtils.userHome()
-    .resolve("my")
+    .resolve("universe-workspace")
+    .resolve("padawan")
     .resolve("music-collection.json")
     .asString()
 
 private val LIBRARY_DIR = FileSystemUtils.downloads()
-    .resolve("export")
-    .resolve("large")
-    .resolve("features")
     .resolve("music-player")
     .asString()
 private const val PORT = 8080
