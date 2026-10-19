@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.context.event.EventListener
 import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.Resource
@@ -22,9 +23,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import ru.prohor.universe.jocasta.core.utils.FileSystemUtils
 import ru.prohor.universe.jocasta.morphia.impl.MongoFileRepository
 import ru.prohor.universe.jocasta.morphia.jackson.JacksonMorphiaConfiguration
-import java.awt.Desktop
+import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration
 import java.io.File
-import java.net.URI
 
 private val COLLECTION_FILE = FileSystemUtils.userHome()
     .resolve("universe-workspace")
@@ -38,6 +38,7 @@ private val LIBRARY_DIR = FileSystemUtils.downloads()
 private const val PORT = 8080
 
 @SpringBootApplication
+@Import(JocastaAutoConfiguration::class)
 class MusicPlayerMvp
 
 fun main(vararg args: String) {
@@ -140,9 +141,6 @@ class BrowserLauncher {
     @EventListener(ApplicationReadyEvent::class)
     fun open() {
         println("Плеер: http://127.0.0.1:$PORT  (папка: $LIBRARY_DIR)")
-        runCatching {
-            if (Desktop.isDesktopSupported()) Desktop.getDesktop().browse(URI("http://127.0.0.1:$PORT"))
-        }
     }
 }
 
