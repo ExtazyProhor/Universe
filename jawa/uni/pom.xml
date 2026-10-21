@@ -27,7 +27,7 @@
             <artifactId>clikt-jvm</artifactId>
         </dependency>
         <dependency>
-            <groupId>tools.jackson.module</groupId>
+            <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
         <dependency>

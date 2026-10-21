@@ -14,7 +14,7 @@ import kotlin.io.path.writeText
 object PadawanKt {
     object Jackson {
         val mapper: ObjectMapper = JacksonConfiguration().objectMapper(
-            listOf(JacksonKotlinConfiguration().kotlinModule())
+            listOf(JacksonKotlinConfiguration().createKotlinModule())
         ).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         val writer: ObjectWriter = mapper.writer(PrettyJsonPrinter())
 

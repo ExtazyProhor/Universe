@@ -14,5 +14,6 @@
     <name>kenobi-plugins</name>
     <modules>
         <module>kenobi-youtube-plugin</module>
+        <module>kenobi-english-plugin</module>
     </modules>
 </project>
