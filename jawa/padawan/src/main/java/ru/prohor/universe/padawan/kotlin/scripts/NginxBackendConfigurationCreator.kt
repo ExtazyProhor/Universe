@@ -9,7 +9,7 @@ private val template = $$"""
     server {
         server_name %s;
 
-        listen [::]:443 ssl;
+        listen [::]:443 ssl ipv6only=on;
         listen 443 ssl;
 
         ssl_certificate /etc/letsencrypt/live/%s/fullchain.pem;
@@ -19,6 +19,7 @@ private val template = $$"""
 
         location / {
             proxy_pass http://127.0.0.1:%s;
+            proxy_http_version 1.1;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -27,12 +28,16 @@ private val template = $$"""
     }
 
     server {
+        if ($host = kenobi.universe-apps.ru) {
+            return 301 https://$host$request_uri;
+        }
+
         server_name %s;
 
-         listen 80;
-         listen [::]:80;
+        listen 80;
+        listen [::]:80;
 
-        return 301 https://$host$request_uri;
+        return 404;
     }
 """.trimIndent()
 
