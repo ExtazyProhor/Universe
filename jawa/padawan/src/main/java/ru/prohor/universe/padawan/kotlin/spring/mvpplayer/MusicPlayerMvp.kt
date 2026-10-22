@@ -56,6 +56,7 @@ data class Track(
 
 data class Queue(
     val id: ObjectId,
+    // аn empty list means library order; only shuffled order needs to be persisted
     val tracks: List<String>,
     val currentTrackId: String
 )
@@ -72,6 +73,7 @@ private val QUEUE_ID = ObjectId("000000000000000000000000")
 data class QueueResponse(
     val tracks: List<Track>,
     val currentTrackId: String,
+    val shuffled: Boolean,
 )
 
 data class CurrentTrackRequest(val trackId: String)
@@ -81,7 +83,7 @@ class QueueController(private val library: TrackLibrary) {
     @GetMapping("/api/queue")
     fun get(): QueueResponse {
         val saved = repository.findAll().firstOrNull { it.id == QUEUE_ID }
-        val queue = saved ?: shuffledQueue().also { repository.save(it) }
+        val queue = saved ?: orderedQueue().also { repository.save(it) }
         return queue.toResponse()
     }
 
@@ -92,9 +94,16 @@ class QueueController(private val library: TrackLibrary) {
         return queue.toResponse()
     }
 
+    @PostMapping("/api/queue/ordered")
+    fun ordered(): QueueResponse {
+        val queue = orderedQueue()
+        repository.save(queue)
+        return queue.toResponse()
+    }
+
     @PostMapping("/api/queue/current")
     fun setCurrent(@RequestBody body: CurrentTrackRequest): QueueResponse {
-        val saved = repository.findAll().firstOrNull { it.id == QUEUE_ID } ?: shuffledQueue()
+        val saved = repository.findAll().firstOrNull { it.id == QUEUE_ID } ?: orderedQueue()
         val updated = saved.copy(currentTrackId = body.trackId)
         repository.save(updated)
         return updated.toResponse()
@@ -102,12 +111,19 @@ class QueueController(private val library: TrackLibrary) {
 
     private fun shuffledQueue(): Queue {
         val order = library.tracks.map { it.track }.shuffled()
-        return Queue(id = QUEUE_ID, tracks = order, currentTrackId = order.first())
+        return Queue(id = QUEUE_ID, tracks = order, currentTrackId = order.firstOrNull().orEmpty())
     }
 
+    private fun orderedQueue() = Queue(
+        id = QUEUE_ID,
+        tracks = emptyList(),
+        currentTrackId = library.tracks.firstOrNull()?.track.orEmpty(),
+    )
+
     private fun Queue.toResponse() = QueueResponse(
-        tracks = tracks.mapNotNull { library.byTrackId(it) },
+        tracks = if (tracks.isEmpty()) library.tracks else tracks.mapNotNull { library.byTrackId(it) },
         currentTrackId = currentTrackId,
+        shuffled = tracks.isNotEmpty(),
     )
 }
 
@@ -167,5 +183,5 @@ private fun loadTracks(mapper: ObjectMapper): List<Track> {
             cover = n.path("cover").path("file").textOrNull(),
             duration = n.path("duration").takeIf { it.isNumber }?.asDouble(),
         )
-    }
+    }.reversed()
 }
