@@ -34,7 +34,11 @@ data class Track(
     val cover: Cover?,
     val meta: RawMetadata,
     val lyrics: Lyrics
-)
+) {
+    companion object {
+        val EMPTY = Track("", listOf(), "", .0, null, RawMetadata("", "", "", "", "", "", "", ""), Lyrics("", ""))
+    }
+}
 
 data class RawMetadataV2(
     val format: RawMetadataFormatV2

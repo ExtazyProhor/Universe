@@ -20,7 +20,7 @@ import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration;
         JacksonJocastaCoreConfiguration.class,
 })
 public class BobaFettMain {
-    static void main(String[] args) {
+    public static void main(String[] args) {
         SpringApplication.run(BobaFettMain.class, args);
     }
 }

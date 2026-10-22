@@ -8,31 +8,45 @@ import ru.prohor.universe.padawan.PadawanKt
 import ru.prohor.universe.padawan.TestFile
 import java.io.File
 
-val newTracks = FileSystemUtils.userHome().asFile().resolve("Downloads/new-tracks")
-val processedCovers = FileSystemUtils.userHome().asFile().resolve("Downloads/processed-covers")
-val music = FileSystemUtils.userHome().asFile().resolve("Downloads/music")
-val cover = FileSystemUtils.userHome().asFile().resolve("Downloads/cover")
+val music = FileSystemUtils.downloads().resolve("mus/test/music").asFile()
+val cover = FileSystemUtils.downloads().resolve("mus/test/cover").asFile()
+
+/**
+ * track names to mp3 file names
+ */
+val replacements: Map<String, String> = mapOf()
 
 fun main() {
     addNewTracks()
 }
 
 fun addNewTracks() {
+    cover.mkdirs()
+    val renames = mutableMapOf<File, File>()
+    val errors = mutableListOf<String>()
+    val unusedTracks = music.list()?.toMutableSet() ?: mutableSetOf()
+
     val tracks = Padawan.readLines(TestFile.TXT).reversed().map {
-        val file = newTracks.resolve("$it.mp3")
+        val fileName = "$it.mp3"
+        val file = music.resolve(replacements[fileName] ?: fileName)
         if (!file.exists()) {
-            throw IllegalStateException("$it")
+            errors.add("file not found: $it.mp3")
+            return@map Track.EMPTY
+        }
+        unusedTracks.remove(file.name)
+        if (it.substringAfterLast(" - ") != it.substringAfter(" - ")) {
+            errors.add("There are multiple substrings ' - ' in name: '$it'")
+            return@map Track.EMPTY
         }
         val title = it.substringAfter(" - ")
-        val authors = it.substringBeforeLast(" - ").split(", ").flatMap { it.split(" feat. ") }
+        val authors = it.substringBefore(" - ").split(", ").flatMap { part -> part.split(" feat. ") }
         val duration = Ffmpeg.getDuration(file)
         val meta = Ffmpeg.extractMetadata(file).map()
         val id = ObjectId()
-        val renamed = newTracks.resolve("$id.mp3")
-        file.renameTo(renamed)
+        val renamed = music.resolve("$id.mp3")
+        renames[file] = renamed
 
-        val cover = getCover(renamed, processedCovers)
-        Ffmpeg.clearMeta(renamed)
+        val cover = getCover(file, "$id", cover)
 
         Track(
             name = title,
@@ -44,11 +58,24 @@ fun addNewTracks() {
             lyrics = Lyrics(null, null) // TODO python
         )
     }
+    if (unusedTracks.isNotEmpty()) {
+        System.err.println("==============")
+        unusedTracks.forEach { System.err.println("unused file: $it") }
+        System.err.println("==============")
+    }
+    if (errors.isNotEmpty()) {
+        errors.forEach { System.err.println(it) }
+        throw RuntimeException()
+    }
+    renames.forEach { (file, renamed) ->
+        file.renameTo(renamed)
+        Ffmpeg.clearMeta(renamed)
+    }
     PadawanKt.Jackson.writeList(tracks, TestFile.JSON)
 }
 
-fun getCover(input: File, outputDir: File): Cover? {
-    val output = outputDir.resolve(input.name.removeSuffix(".mp3") + ".jpg")
+fun getCover(input: File, id: String, outputDir: File): Cover? {
+    val output = outputDir.resolve("$id.jpg")
     if (!Ffmpeg.extractCover(input, output)) return null
     val (x, y) = Ffmpeg.getImageSize(output) ?: Pair(null, null)
     if (x == null || y == null) return null

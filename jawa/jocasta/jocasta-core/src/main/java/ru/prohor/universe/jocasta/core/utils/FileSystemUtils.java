@@ -1,5 +1,7 @@
 package ru.prohor.universe.jocasta.core.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,14 +28,17 @@ public final class FileSystemUtils {
             this.path = path;
         }
 
+        @NotNull
         public String asString() {
             return path;
         }
 
+        @NotNull
         public Path asPath() {
             return Paths.get(path);
         }
 
+        @NotNull
         public File asFile() {
             return new File(path);
         }
