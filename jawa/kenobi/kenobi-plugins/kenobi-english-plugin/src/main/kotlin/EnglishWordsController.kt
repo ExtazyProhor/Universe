@@ -1,65 +1,83 @@
 package ru.prohor.universe.kenobi.plugin.english
 
-import org.bson.types.ObjectId
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import ru.prohor.universe.jocasta.core.features.fieldref.FR
+import ru.prohor.universe.jocasta.core.features.fieldref.KFR
 import ru.prohor.universe.jocasta.morphia.MongoRepository
 import ru.prohor.universe.jocasta.morphia.filter.MongoFilters
 import ru.prohor.universe.jocasta.tgbots.api.FeedbackExecutor
+import ru.prohor.universe.kenobi.core.KenobiUser
 import ru.prohor.universe.kenobi.plugin.english.model.Word
 import ru.prohor.universe.kenobi.plugin.english.model.WordsSet
 
 @RestController
-@RequestMapping("/api/english/save-words")
+@RequestMapping("/api/english")
 class EnglishWordsController(
     private val feedbackExecutor: FeedbackExecutor,
     private val wordsRepository: MongoRepository<WordsSet>,
-    @param:Value($$"${universe.kenobi.plugins.english.preset-1.upload-token}")
-    private val uploadTokenPreset1: String,
-    @param:Value($$"${universe.kenobi.plugins.english.preset-1.chat-id}")
-    private val chatIdPreset1: Long,
+    private val usersRepository: MongoRepository<KenobiUser>,
 ) {
-    @PostMapping("/preset/1", consumes = [MediaType.TEXT_PLAIN_VALUE])
-    fun saveWordsPreset1(
+    @PostMapping("/save-words/preset/{preset}", consumes = [MediaType.TEXT_PLAIN_VALUE])
+    fun saveWords(
+        @PathVariable("preset") preset: Int,
         @RequestHeader("X-Upload-Token") token: String,
         @RequestBody body: String,
     ): ResponseEntity<String> {
-        if (token != uploadTokenPreset1) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-        }
+
+        val user = findByToken(token) ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+        val chatId = user.telegramChatId ?: return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("The user with the specified API token lacks a chatId")
+
+        val words = parseWords(chatId, preset, body)
+        val updatedWordSet = wordsRepository.findById(user.id).orElseNull()?.copy(words = words)
+            ?: WordsSet(user.id, words)
+
+        wordsRepository.save(updatedWordSet)
+        feedbackExecutor.sendMessage(chatId, "Words file updated: now you have ${words.size} words")
+
+        return ResponseEntity.ok().build()
+    }
+
+    private fun parseWords(chatId: Long, preset: Int, body: String): List<Word> {
+        if (preset != 1) return emptyList()
 
         val lines = body.split("\n")
-        val words = lines.drop(lines.indexOfFirst { it == "---" } + 1)
+        val illegalLines = mutableListOf<String>()
+        val words = lines.asSequence().drop(lines.indexOfFirst { it == "---" } + 1)
             .filter { it.isNotBlank() }
-            .onEach {
-                if (!it.contains(" - ")) {
-                    return ResponseEntity.badRequest().body("Illegal format of line: '$it'")
-                }
+            .filter { !it.startsWith("#") }
+            .filter {
+                val valid = it.contains(" - ")
+                if (!valid) illegalLines.add(it)
+                valid
             }
             .map {
                 Word(
                     englishForm = it.substringBefore(" - "),
                     translates = it.substringAfter(" - ").split(", ")
                 )
-            }
+            }.toList()
 
-        val updatedWordSet = findByChatId(chatIdPreset1).copy(words = words)
-        wordsRepository.save(updatedWordSet)
-        feedbackExecutor.sendMessage(chatIdPreset1, "Words file updated: now you have ${words.size} words")
-
-        return ResponseEntity.ok().build()
+        val moreMessage = if (illegalLines.size > 10) {
+            "\n\nand ${illegalLines.size - 10} more lines"
+        } else {
+            ""
+        }
+        feedbackExecutor.sendMessage(
+            chatId,
+            "Illegal format of some lines:\n\n" + illegalLines.take(10).joinToString("\n") + moreMessage
+        )
+        return words
     }
 
-    private fun findByChatId(chatId: Long): WordsSet {
-        return wordsRepository.findOne(MongoFilters.eq(FR.wrap(WordsSet::chatId), chatId))
-            .orElseNull() ?: WordsSet(ObjectId(), chatId, emptyList())
+    private fun findByToken(token: String): KenobiUser? {
+        return usersRepository.findOne(MongoFilters.eq(KFR.wrapO(KenobiUser::apiToken), token)).orElseNull()
     }
 }

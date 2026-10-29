@@ -4,7 +4,6 @@ import org.bson.types.ObjectId
 
 data class WordsSet(
     val id: ObjectId,
-    val chatId: Long,
     val words: List<Word>,
 )
 
