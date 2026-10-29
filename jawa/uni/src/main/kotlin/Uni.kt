@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.core.terminal
 import ru.prohor.universe.uni.cli.command.UniCommand
+import ru.prohor.universe.uni.cli.command.ai.AI
 import ru.prohor.universe.uni.cli.command.code.Code
 import ru.prohor.universe.uni.cli.command.crypto.Crypto
 import ru.prohor.universe.uni.cli.command.file.FileCommand
@@ -19,6 +20,7 @@ class Uni : UniCommand() {
 
     init {
         subcommands(
+            AI(),
             StringCommand(),
             Crypto(),
             Files(),

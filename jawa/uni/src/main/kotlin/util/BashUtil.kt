@@ -1,5 +1,6 @@
 package ru.prohor.universe.uni.cli.util
 
+import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.mordant.rendering.TextColors.red
 import com.github.ajalt.mordant.rendering.TextColors.yellow
 import ru.prohor.universe.uni.cli.command.UniCommand
@@ -12,6 +13,10 @@ data class CmdResult(
 )
 
 fun UniCommand.errorEcho(message: String) = echo(message = red(message), err = true)
+
+fun UniCommand.errorEchoWithExit(message: String): Nothing {
+    throw PrintMessage(message = red(message), statusCode = -1, printError = true)
+}
 
 fun UniCommand.debug(isDebug: Boolean, message: String) {
     if (isDebug) echo(yellow("--- $message"))
