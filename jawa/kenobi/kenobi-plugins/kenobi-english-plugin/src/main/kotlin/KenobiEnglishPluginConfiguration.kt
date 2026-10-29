@@ -12,6 +12,7 @@ import ru.prohor.universe.jocasta.morphia.MongoRepository
 import ru.prohor.universe.jocasta.morphia.impl.MongoFileRepository
 import ru.prohor.universe.jocasta.morphia.jackson.JacksonMorphiaConfiguration
 import ru.prohor.universe.kenobi.plugin.english.model.WordsSet
+import ru.prohor.universe.kenobi.plugin.english.translation.WordTranslation
 
 @Configuration
 @ComponentScan
@@ -30,6 +31,19 @@ class KenobiEnglishPluginConfiguration {
             WordsSet::id,
             WordsSet::class.java,
             wordsFile,
+            objectMapper
+        )
+    }
+
+    @Bean
+    fun translationsCollection(
+        @Value($$"${universe.kenobi.plugins.english.collection-file.translations}") translationsFile: String,
+        objectMapper: ObjectMapper
+    ): MongoRepository<WordTranslation> {
+        return MongoFileRepository(
+            WordTranslation::id,
+            WordTranslation::class.java,
+            translationsFile,
             objectMapper
         )
     }

@@ -224,6 +224,13 @@
                 <version>4.36.2</version>
             </dependency>
 
+            <!-- Source: https://mvnrepository.com/artifact/com.google.genai/google-genai -->
+            <dependency>
+                <groupId>com.google.genai</groupId>
+                <artifactId>google-genai</artifactId>
+                <version>1.79.0</version>
+            </dependency>
+
             <!-- https://mvnrepository.com/artifact/org.skyscreamer/jsonassert -->
             <dependency>
                 <groupId>org.skyscreamer</groupId>
