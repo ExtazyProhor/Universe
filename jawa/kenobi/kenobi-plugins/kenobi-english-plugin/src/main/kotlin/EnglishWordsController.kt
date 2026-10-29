@@ -65,15 +65,17 @@ class EnglishWordsController(
                 )
             }.toList()
 
-        val moreMessage = if (illegalLines.size > 10) {
-            "\n\nand ${illegalLines.size - 10} more lines"
-        } else {
-            ""
+        if (illegalLines.isNotEmpty()) {
+            val moreMessage = if (illegalLines.size > 10) {
+                "\n\nand ${illegalLines.size - 10} more lines"
+            } else {
+                ""
+            }
+            feedbackExecutor.sendMessage(
+                chatId,
+                "Illegal format of some lines:\n\n" + illegalLines.take(10).joinToString("\n") + moreMessage
+            )
         }
-        feedbackExecutor.sendMessage(
-            chatId,
-            "Illegal format of some lines:\n\n" + illegalLines.take(10).joinToString("\n") + moreMessage
-        )
         return words
     }
 

@@ -74,6 +74,7 @@ class AiTranslationService(
             mapper.readValue<TranslationResponse>(json)
         } catch (e: Exception) {
             // TODO log with json
+            println(json)
             e.printStackTrace()
             return null
         }
