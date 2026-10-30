@@ -36,6 +36,7 @@ class EnglishWordsController(
             .body("The user with the specified API token lacks a chatId")
 
         val words = parseWords(chatId, preset, body)
+        // TODO mongo transaction
         val updatedWordSet = wordsRepository.findById(user.id).orElseNull()?.copy(words = words)
             ?: WordsSet(user.id, words)
 
@@ -63,7 +64,10 @@ class EnglishWordsController(
                     englishForm = it.substringBefore(" - "),
                     translates = it.substringAfter(" - ").split(", ")
                 )
-            }.toList()
+            }
+            .filter { it.englishForm.isNotBlank() && it.translates.isNotEmpty() }
+            .distinctBy { it.englishForm }
+            .toList()
 
         if (illegalLines.isNotEmpty()) {
             val moreMessage = if (illegalLines.size > 10) {

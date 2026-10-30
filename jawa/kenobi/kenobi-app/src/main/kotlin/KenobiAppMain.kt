@@ -1,5 +1,6 @@
 package ru.prohor.universe.kenobi.app
 
+import ru.prohor.universe.scarif.jwt.ScarifJwtConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
@@ -16,6 +17,7 @@ import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration
 @ComponentScan
 @Import(
     JocastaAutoConfiguration::class,
+    ScarifJwtConfiguration::class,
     HolocronConfiguration::class,
     JacksonMorphiaConfiguration::class,
     JacksonJocastaCoreConfiguration::class,
