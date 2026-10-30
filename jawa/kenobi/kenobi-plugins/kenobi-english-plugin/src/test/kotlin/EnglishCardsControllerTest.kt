@@ -58,10 +58,10 @@ class EnglishCardsControllerTest {
             assertThrows(ResponseStatusException::class.java) { controller.start(Opt.empty()) }.statusCode.value()
         )
         val response = controller.start(user)
-        assertEquals(20, response.body!!.cards.size)
+        assertEquals(10, response.body!!.cards.size)
         assertTrue(response.body!!.cards.all { it.englishForm.startsWith("word ") })
         assertEquals("no-store", response.headers.cacheControl)
-        verify(translations, times(20)).getTranslation(anyString())
+        verify(translations, times(10)).getTranslation(anyString())
     }
 
     @Test
@@ -83,12 +83,12 @@ class EnglishCardsControllerTest {
     }
 
     @Test
-    fun `due backlog includes new words and is capped at twenty`() {
+    fun `due backlog includes new words and is capped at ten`() {
         val reviews = words.take(25).associate { it.englishForm to WordReview(3, 10, 0, 2) }
         repository.save(WordsSet(userId, words, reviews))
         val (batch, selected) = service.start(userId, 100)
-        assertEquals(20, selected.size)
-        assertEquals(3, selected.count { it.englishForm !in reviews })
+        assertEquals(10, selected.size)
+        assertEquals(2, selected.count { it.englishForm !in reviews })
         assertEquals(batch, service.start(userId, 100).first)
         assertEquals(reviews, repository.ensuredFindById(userId).reviews)
     }

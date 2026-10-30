@@ -88,8 +88,8 @@ class EnglishTrainingService(
     }
 
     companion object {
-        private const val WORDS_COUNT = 20
-        private const val FRESH_WORDS_COUNT = 3
+        private const val WORDS_COUNT = 10
+        private const val FRESH_WORDS_COUNT = 2
         private const val DUE_WORDS_COUNT = WORDS_COUNT - FRESH_WORDS_COUNT
 
         private val REPEAT_DAYS_PERIODS = listOf(1L, 3L, 7L, 14L, 30L, 90L, 180L, 365L)
