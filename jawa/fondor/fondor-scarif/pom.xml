@@ -34,7 +34,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.prohor.universe.chopper.app.ChopperKt</mainClass>
+                    <mainClass>ru.prohor.universe.fondor.scarif.FondorScarifMainKt</mainClass>
                 </configuration>
             </plugin>
         </plugins>

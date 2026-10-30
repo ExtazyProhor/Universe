@@ -15,5 +15,6 @@
     <modules>
         <module>fondor-scarif</module>
         <module>fondor-core</module>
+        <module>fondor-kenobi</module>
     </modules>
 </project>
