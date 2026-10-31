@@ -6,24 +6,19 @@ import com.google.genai.Client
 import com.google.genai.errors.ClientException
 import com.google.genai.types.Content
 import com.google.genai.types.GenerateContentConfig
-import com.google.genai.types.GenerateContentResponseUsageMetadata
 import com.google.genai.types.Part
 import com.google.genai.types.Schema
 import com.google.genai.types.ThinkingConfig
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import ru.prohor.universe.jocasta.core.collections.common.toNullable
 
 @Service
 class AiTranslationService(
     @param:Value($$"${universe.kenobi.plugins.english.ai.api-key}")
     private val apiKey: String,
-    @param:Value($$"${universe.kenobi.plugins.english.ai.model}")
-    private val model: String,
-    @param:Value($$"${universe.kenobi.plugins.english.ai.thinking-level}")
-    private val thinkingLevel: String,
     private val inputDataForTranslationRequestLoader: InputDataForTranslationRequestLoader,
+    private val aiRequestInfoService: AIRequestInfoService,
     private val mapper: ObjectMapper
 ) {
     private val client = Client.builder().apiKey(apiKey).build()
@@ -34,7 +29,7 @@ class AiTranslationService(
     private val config: GenerateContentConfig by lazy {
         GenerateContentConfig
             .builder()
-            .thinkingConfig(ThinkingConfig.builder().thinkingLevel(thinkingLevel).build())
+            .thinkingConfig(ThinkingConfig.builder().thinkingLevel(aiRequestInfoService.thinkingLevel).build())
             .responseMimeType("application/json")
             .responseSchema(Schema.fromJson(inputDataForTranslationRequestLoader.responseSchema))
             .systemInstruction(Content.fromParts(Part.fromText(inputDataForTranslationRequestLoader.systemPrompt)))
@@ -54,7 +49,7 @@ class AiTranslationService(
         }
 
         val response = try {
-            client.models.generateContent(model, createContent(sources), config)
+            client.models.generateContent(aiRequestInfoService.model, createContent(sources), config)
         } catch (e: ClientException) {
             if (e.code() == HTTP_TOO_MANY_REQUESTS) {
                 retryBlockedUntilMillis = System.currentTimeMillis() + DEFAULT_RETRY_DELAY_SECONDS * 1_000
@@ -107,7 +102,7 @@ class AiTranslationService(
             return emptyList()
         }
 
-        val usageMetadata = response.usageMetadata().toNullable()
+        val aiRequestInfoId = aiRequestInfoService.createAndSaveAIRequestInfo(response.usageMetadata())
         return translations.map { translation ->
             WordTranslation(
                 id = ObjectId(),
@@ -119,20 +114,10 @@ class AiTranslationService(
                         exampleTranslation = it.exampleTranslation
                     )
                 },
-                aiRequestInfo = createAIRequestInfo(usageMetadata)
+                aiRequestInfoId = aiRequestInfoId
             )
         }
     }
-
-    private fun createAIRequestInfo(usageMetadata: GenerateContentResponseUsageMetadata?) = AIRequestInfo(
-        model = model,
-        thinkingLevel = thinkingLevel,
-        promptTokenCount = usageMetadata?.promptTokenCount()?.toNullable(),
-        outputTokenCount = usageMetadata?.candidatesTokenCount()?.toNullable(),
-        thoughtsTokenCount = usageMetadata?.thoughtsTokenCount()?.toNullable(),
-        toolUsePromptTokenCount = usageMetadata?.toolUsePromptTokenCount()?.toNullable(),
-        totalTokenCount = usageMetadata?.totalTokenCount()?.toNullable()
-    )
 
     private fun createContent(sources: List<String>): Content = Content.builder()
         .role("user")

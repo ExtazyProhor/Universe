@@ -15,7 +15,6 @@ import ru.prohor.universe.jocasta.morphia.impl.MongoInMemoryRepository
 import ru.prohor.universe.kenobi.plugin.english.model.Word
 import ru.prohor.universe.kenobi.plugin.english.model.WordReview
 import ru.prohor.universe.kenobi.plugin.english.model.WordsSet
-import ru.prohor.universe.kenobi.plugin.english.translation.AIRequestInfo
 import ru.prohor.universe.kenobi.plugin.english.translation.TranslationService
 import ru.prohor.universe.kenobi.plugin.english.translation.WordTranslation
 import ru.prohor.universe.kenobi.plugin.english.translation.WordTranslationItem
@@ -68,7 +67,7 @@ class EnglishCardsControllerTest {
         val groups = listOf(WordTranslationItem(listOf("смысл"), "An example.", "Пример."))
         val word1Translation = WordTranslation(
             ObjectId(), "word 1", groups,
-            AIRequestInfo("model", "low", null, null, null, null, null)
+            ObjectId()
         )
         `when`(translations.getTranslations(listOf("word 1", "word 2")))
             .thenReturn(mapOf("word 1" to word1Translation))
