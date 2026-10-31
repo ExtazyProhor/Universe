@@ -27,6 +27,10 @@ class AiTranslationService(
     private val mapper: ObjectMapper
 ) {
     private val client = Client.builder().apiKey(apiKey).build()
+
+    @Volatile
+    private var retryBlockedUntilMillis = 0L
+
     private val config: GenerateContentConfig by lazy {
         GenerateContentConfig
             .builder()
@@ -38,36 +42,35 @@ class AiTranslationService(
     }
 
     fun translate(sources: List<String>): List<WordTranslation> {
-        val requestedSources = sources.filter(String::isNotBlank)
-            .filter { it.length > MAX_SOURCE_LENGTH }
-            .distinct()
-        if (sources.size != requestedSources.size) {
-            val skipped = sources.toMutableList()
-            requestedSources.forEach {
-                skipped.remove(it)
-            }
+        if (System.currentTimeMillis() < retryBlockedUntilMillis) {
             // TODO log
-            println("Illegal format of sources / duplicates: ${skipped.joinToString { "'$it'" }}")
+            println("AI translation temporarily disabled after rate limit until $retryBlockedUntilMillis")
+            return emptyList()
         }
-        if (requestedSources.isEmpty()) {
+        if (sources.any { it.isBlank() || it.length > MAX_SOURCE_LENGTH } || sources.size != sources.distinct().size) {
             // TODO log
-            println("Cannot translate an empty source batch")
+            println("Illegal translation batch: $sources")
             return emptyList()
         }
 
         val response = try {
-            client.models.generateContent(model, createContent(requestedSources), config)
+            client.models.generateContent(model, createContent(sources), config)
         } catch (e: ClientException) {
-            // TODO log
-            println("AI API error. Code: ${e.code()}, Message: ${e.message}")
-            e.printStackTrace()
+            if (e.code() == HTTP_TOO_MANY_REQUESTS) {
+                retryBlockedUntilMillis = System.currentTimeMillis() + DEFAULT_RETRY_DELAY_SECONDS * 1_000
+                // TODO log
+                println("AI API rate limit exceeded; requests disabled for $DEFAULT_RETRY_DELAY_SECONDS seconds")
+            } else {
+                println("AI API error. Code: ${e.code()}, Message: ${e.message}")
+                e.printStackTrace()
+            }
             return emptyList()
         } catch (e: Exception) {
             // TODO log
             println("Unexpected error during translation: ${e.message}")
             e.printStackTrace()
-            null
-        } ?: return emptyList()
+            return emptyList()
+        }
 
         val json = response.text()
         if (json.isNullOrBlank()) {
@@ -87,8 +90,8 @@ class AiTranslationService(
 
         val responseSources = translations.map { it.source }
         if (
-            translations.size != requestedSources.size ||
-            responseSources.toSet() != requestedSources.toSet() ||
+            translations.size != sources.size ||
+            responseSources.toSet() != sources.toSet() ||
             translations.any {
                 it.translations.isEmpty() || it.translations.any { item ->
                     item.translation.isEmpty() || item.translation.any { word ->
@@ -99,7 +102,7 @@ class AiTranslationService(
         ) {
             // TODO log warn
             println(
-                "Invalid translation batch response. Expected sources: $requestedSources, received: $responseSources"
+                "Invalid translation batch response. Expected sources: $sources, received: $responseSources"
             )
             return emptyList()
         }
@@ -138,5 +141,7 @@ class AiTranslationService(
 
     private companion object {
         const val MAX_SOURCE_LENGTH = 80
+        const val DEFAULT_RETRY_DELAY_SECONDS = 30L
+        const val HTTP_TOO_MANY_REQUESTS = 429
     }
 }

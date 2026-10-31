@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.any
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
@@ -60,23 +59,21 @@ class EnglishCardsControllerTest {
         assertEquals(10, response.body!!.cards.size)
         assertTrue(response.body!!.cards.all { it.englishForm.startsWith("word ") })
         assertEquals("no-store", response.headers.cacheControl)
-        verify(translations).getTranslations(any())
+        verify(translations).getTranslations(response.body!!.cards.map { it.englishForm })
     }
 
     @Test
     fun `enriched meanings are exposed without AI request metadata and null falls back`() {
         repository.save(WordsSet(userId, words.take(2)))
         val groups = listOf(WordTranslationItem(listOf("смысл"), "An example.", "Пример."))
-        `when`(translations.getTranslations(any())).thenReturn(
-            mapOf(
-                "word 1" to WordTranslation(
-                    ObjectId(),
-                    "word 1",
-                    groups,
-                    AIRequestInfo("model", "low", null, null, null, null, null)
-                )
-            )
+        val word1Translation = WordTranslation(
+            ObjectId(), "word 1", groups,
+            AIRequestInfo("model", "low", null, null, null, null, null)
         )
+        `when`(translations.getTranslations(listOf("word 1", "word 2")))
+            .thenReturn(mapOf("word 1" to word1Translation))
+        `when`(translations.getTranslations(listOf("word 2", "word 1")))
+            .thenReturn(mapOf("word 1" to word1Translation))
         val cards = controller.start(user).body!!.cards.associateBy { it.englishForm }
         assertEquals(groups, cards.getValue("word 1").translations)
         assertEquals(emptyList<WordTranslationItem>(), cards.getValue("word 2").translations)
