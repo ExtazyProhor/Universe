@@ -9,6 +9,8 @@ import ru.prohor.universe.kenobi.plugin.english.model.TrainingBatch
 import ru.prohor.universe.kenobi.plugin.english.model.Word
 import ru.prohor.universe.kenobi.plugin.english.model.WordReview
 import ru.prohor.universe.kenobi.plugin.english.model.WordsSet
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 
 @Service
 class EnglishTrainingService(
@@ -80,7 +82,7 @@ class EnglishTrainingService(
             val next = if (!result.difficult && !due) {
                 old.nextReviewAt
             } else {
-                now + REPEAT_DAYS_PERIODS[stage.coerceIn(1, STAGES) - 1] * MILLIS_IN_DAY
+                now + REPEAT_DAYS_PERIODS[stage.coerceIn(1, STAGES) - 1].inWholeMilliseconds
             }
             reviews[result.englishForm] = WordReview(stage, next, now, (old?.trainingCount ?: 0) + 1)
         }
@@ -92,8 +94,17 @@ class EnglishTrainingService(
         private const val FRESH_WORDS_COUNT = 2
         private const val DUE_WORDS_COUNT = WORDS_COUNT - FRESH_WORDS_COUNT
 
-        private val REPEAT_DAYS_PERIODS = listOf(1L, 3L, 7L, 14L, 30L, 90L, 180L, 365L)
+        private val REPEAT_DAYS_PERIODS = listOf(
+            5.hours,
+            1.days,
+            3.days,
+            7.days,
+            14.days,
+            30.days,
+            90.days,
+            180.days,
+            365.days,
+        )
         private val STAGES = REPEAT_DAYS_PERIODS.size
-        private const val MILLIS_IN_DAY = 24L * 60 * 60 * 1000
     }
 }
