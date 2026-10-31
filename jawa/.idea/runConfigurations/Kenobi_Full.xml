@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Kenobi Full" type="CompoundRunConfigurationType">
+    <toRun name="Fondor Kenobi" type="Application" />
+    <toRun name="Fondor Scarif" type="Application" />
+    <toRun name="Kenobi" type="Application" />
+    <toRun name="Scarif" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>
