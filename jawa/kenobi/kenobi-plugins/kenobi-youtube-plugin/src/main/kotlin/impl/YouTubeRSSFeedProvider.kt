@@ -11,6 +11,7 @@ import ru.prohor.universe.kenobi.plugin.youtube.model.VideoInfo
 import java.io.ByteArrayInputStream
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
 
 @Service
 class YouTubeRSSFeedProvider : LatestChannelVideosProvider {
@@ -26,8 +27,9 @@ class YouTubeRSSFeedProvider : LatestChannelVideosProvider {
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 // TODO log
-                System.err.println("code: ${response.code}")
-                System.err.println("error: ${response.message}")
+                System.err.println(
+                    "${LocalDateTime.now()} failed to get RSS. ChannelId: '$channelId', code: ${response.code}"
+                )
                 return emptyList()
             }
             val bytes = response.body?.bytes() ?: error("empty body")
