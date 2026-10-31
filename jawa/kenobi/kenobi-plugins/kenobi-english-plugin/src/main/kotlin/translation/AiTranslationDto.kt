@@ -8,7 +8,7 @@ data class TranslationResponse(
 )
 
 data class TranslationResponseItem(
-    val translation: String,
+    val translation: List<String>,
     val example: String,
     @field:JsonProperty("example-translation")
     val exampleTranslation: String

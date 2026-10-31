@@ -10,7 +10,7 @@ data class WordTranslation(
 )
 
 data class WordTranslationItem(
-    val translation: String,
+    val translation: List<String>,
     val example: String,
     val exampleTranslation: String
 )

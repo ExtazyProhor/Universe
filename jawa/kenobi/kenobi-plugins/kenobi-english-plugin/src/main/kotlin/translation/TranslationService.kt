@@ -11,17 +11,21 @@ class TranslationService(
     private val translationsRepository: MongoRepository<WordTranslation>
 ) {
     // TODO mongo transaction
-    fun getTranslation(source: String): WordTranslation? {
-        return findBySource(source) ?: translateAndSaveNewSource(source)
+    fun getTranslations(sources: List<String>): Map<String, WordTranslation> {
+        val uniqueSources = sources.filter(String::isNotBlank).distinct()
+        if (uniqueSources.isEmpty()) return emptyMap()
+
+        val translations = findAllBySources(uniqueSources)
+        val missing = uniqueSources.filterNot(translations::containsKey)
+        if (missing.isEmpty()) return translations
+
+        val translated = aiTranslationService.translate(missing)
+        translationsRepository.save(translated)
+        return translations + translated.associateBy { it.source }
     }
 
-    private fun translateAndSaveNewSource(source: String): WordTranslation? {
-        val translation = aiTranslationService.translate(source) ?: return null
-        translationsRepository.save(translation)
-        return translation
-    }
-
-    private fun findBySource(source: String): WordTranslation? {
-        return translationsRepository.findOne(MongoFilters.eq(KFR.wrap(WordTranslation::source), source)).orElseNull()
+    private fun findAllBySources(sources: List<String>): Map<String, WordTranslation> {
+        return translationsRepository.find(MongoFilters.`in`(KFR.wrap(WordTranslation::source), sources))
+            .associateBy { it.source }
     }
 }

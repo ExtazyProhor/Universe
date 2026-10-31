@@ -1,21 +1,24 @@
 {
-  "type": "object",
-  "properties": {
-    "source": { "type": "string" },
-    "translations": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "translation": { "type": "string" },
-          "example": { "type": "string" },
-          "example-translation": { "type": "string" }
-        },
-        "required": ["translation", "example", "example-translation"],
-        "propertyOrdering": ["translation", "example", "example-translation"]
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "source": { "type": "string" },
+      "translations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "translation": { "type": "array", "items": { "type": "string" } },
+            "example": { "type": "string" },
+            "example-translation": { "type": "string" }
+          },
+          "required": ["translation", "example", "example-translation"],
+          "propertyOrdering": ["translation", "example", "example-translation"]
+        }
       }
-    }
-  },
-  "required": ["source", "translations"],
-  "propertyOrdering": ["source", "translations"]
+    },
+    "required": ["source", "translations"],
+    "propertyOrdering": ["source", "translations"]
+  }
 }

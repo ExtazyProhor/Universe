@@ -27,11 +27,12 @@ class EnglishCardsController(
         user: Opt<AuthorizedUser>,
     ): ResponseEntity<TrainingResponse> {
         val (batch, words) = trainingService.start(userId(user))
+        val translations = translationService.getTranslations(words.map { it.englishForm })
         val cards = words.map { word ->
             TrainingCard(
                 englishForm = word.englishForm,
                 translates = word.translates,
-                translations = translationService.getTranslation(word.englishForm)?.translations ?: emptyList()
+                translations = translations[word.englishForm]?.translations ?: emptyList()
             )
         }
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(TrainingResponse(batch?.id, cards))

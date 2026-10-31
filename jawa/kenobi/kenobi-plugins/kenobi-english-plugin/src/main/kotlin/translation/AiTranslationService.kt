@@ -37,75 +37,88 @@ class AiTranslationService(
             .build()
     }
 
-    fun translate(source: String): WordTranslation? {
-        if (source.isBlank()) {
+    fun translate(sources: List<String>): List<WordTranslation> {
+        val requestedSources = sources.filter(String::isNotBlank)
+            .filter { it.length > MAX_SOURCE_LENGTH }
+            .distinct()
+        if (sources.size != requestedSources.size) {
+            val skipped = sources.toMutableList()
+            requestedSources.forEach {
+                skipped.remove(it)
+            }
             // TODO log
-            println("Cannot translate blank source")
-            return null
+            println("Illegal format of sources / duplicates: ${skipped.joinToString { "'$it'" }}")
         }
-
-        if (source.length > MAX_SOURCE_LENGTH) {
-            println("Source exceeds maximum length of $MAX_SOURCE_LENGTH characters")
-            return null
+        if (requestedSources.isEmpty()) {
+            // TODO log
+            println("Cannot translate an empty source batch")
+            return emptyList()
         }
 
         val response = try {
-            client.models.generateContent(model, createContent(source), config)
+            client.models.generateContent(model, createContent(requestedSources), config)
         } catch (e: ClientException) {
             // TODO log
             println("AI API error. Code: ${e.code()}, Message: ${e.message}")
             e.printStackTrace()
-            null
+            return emptyList()
         } catch (e: Exception) {
             // TODO log
             println("Unexpected error during translation: ${e.message}")
             e.printStackTrace()
             null
-        } ?: return null
+        } ?: return emptyList()
 
         val json = response.text()
         if (json.isNullOrBlank()) {
             // TODO log warn
             println("Null response from translation AI")
-            return null
+            return emptyList()
         }
 
-        val translation = try {
-            mapper.readValue<TranslationResponse>(json)
+        val translations = try {
+            mapper.readValue<List<TranslationResponse>>(json)
         } catch (e: Exception) {
             // TODO log with json
             println(json)
             e.printStackTrace()
-            return null
+            return emptyList()
         }
 
-        if (translation.translations.isEmpty()) {
+        val responseSources = translations.map { it.source }
+        if (
+            translations.size != requestedSources.size ||
+            responseSources.toSet() != requestedSources.toSet() ||
+            translations.any {
+                it.translations.isEmpty() || it.translations.any { item ->
+                    item.translation.isEmpty() || item.translation.any { word ->
+                        word.isBlank()
+                    }
+                }
+            }
+        ) {
             // TODO log warn
-            println("Empty translations from translation AI")
-            return null
+            println(
+                "Invalid translation batch response. Expected sources: $requestedSources, received: $responseSources"
+            )
+            return emptyList()
         }
 
-        if (source != translation.source) {
-            // TODO log warn with both strings
-            println("Translation source mismatch. Expected: '$source', received: '${translation.source}'")
-        }
         val usageMetadata = response.usageMetadata().toNullable()
-        return WordTranslation(
-            id = ObjectId(),
-            source = source,
-            translations = translation.translations.map {
-                WordTranslationItem(
-                    translation = it.translation.split(",")
-                        .map(String::trim)
-                        .filter(String::isNotEmpty)
-                        .distinct()
-                        .joinToString(),
-                    example = it.example,
-                    exampleTranslation = it.exampleTranslation
-                )
-            },
-            aiRequestInfo = createAIRequestInfo(usageMetadata)
-        )
+        return translations.map { translation ->
+            WordTranslation(
+                id = ObjectId(),
+                source = translation.source,
+                translations = translation.translations.map {
+                    WordTranslationItem(
+                        translation = it.translation.map(String::trim).distinct(),
+                        example = it.example,
+                        exampleTranslation = it.exampleTranslation
+                    )
+                },
+                aiRequestInfo = createAIRequestInfo(usageMetadata)
+            )
+        }
     }
 
     private fun createAIRequestInfo(usageMetadata: GenerateContentResponseUsageMetadata?) = AIRequestInfo(
@@ -118,9 +131,9 @@ class AiTranslationService(
         totalTokenCount = usageMetadata?.totalTokenCount()?.toNullable()
     )
 
-    private fun createContent(source: String): Content = Content.builder()
+    private fun createContent(sources: List<String>): Content = Content.builder()
         .role("user")
-        .parts(Part.fromText(source))
+        .parts(Part.fromText(mapper.writeValueAsString(sources)))
         .build()
 
     private companion object {
