@@ -11,12 +11,14 @@ import ru.prohor.universe.jocasta.core.jackson.JacksonKotlinConfiguration
 import ru.prohor.universe.jocasta.morphia.jackson.JacksonMorphiaConfiguration
 import ru.prohor.universe.jocasta.spring.configuration.HolocronConfiguration
 import ru.prohor.universe.jocasta.spring.configuration.JocastaAutoConfiguration
+import ru.prohor.universe.jocasta.springweb.configuration.GlobalExceptionControllerConfiguration
 
 @EnableScheduling
 @Configuration
 @ComponentScan
 @Import(
     JocastaAutoConfiguration::class,
+    GlobalExceptionControllerConfiguration::class,
     ScarifJwtConfiguration::class,
     HolocronConfiguration::class,
     JacksonMorphiaConfiguration::class,

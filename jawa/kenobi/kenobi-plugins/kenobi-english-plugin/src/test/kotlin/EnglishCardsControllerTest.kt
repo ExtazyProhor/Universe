@@ -29,6 +29,7 @@ class EnglishCardsControllerTest {
     private val userId = ObjectId()
     private val user = Opt.of(AuthorizedUser(1, UUID.randomUUID(), userId.toHexString()))
     private val words = (1..40).map { Word("word $it", listOf("перевод $it")) }
+    private val hours5 = 18_000_000L
     private val day = 86_400_000L
 
     @Test
@@ -106,7 +107,7 @@ class EnglishCardsControllerTest {
         val firstId = finish(100)
         val first = repository.ensuredFindById(userId).reviews.getValue("word 1")
         assertEquals(1, first.stage)
-        assertEquals(100 + day, first.nextReviewAt)
+        assertEquals(100 + hours5, first.nextReviewAt)
         service.complete(userId, CompleteTrainingRequest(firstId, emptyList()), 200)
         assertEquals(first, repository.ensuredFindById(userId).reviews.getValue("word 1"))
         finish(200)
@@ -114,12 +115,12 @@ class EnglishCardsControllerTest {
         finish(first.nextReviewAt)
         val second = repository.ensuredFindById(userId).reviews.getValue("word 1")
         assertEquals(2, second.stage)
-        assertEquals(first.nextReviewAt + 3 * day, second.nextReviewAt)
+        assertEquals(first.nextReviewAt + 1 * day, second.nextReviewAt)
         assertEquals(3, second.trainingCount)
         finish(second.nextReviewAt, true)
         val reset = repository.ensuredFindById(userId).reviews.getValue("word 1")
         assertEquals(1, reset.stage)
-        assertEquals(second.nextReviewAt + day, reset.nextReviewAt)
+        assertEquals(second.nextReviewAt + hours5, reset.nextReviewAt)
     }
 
     @Test
