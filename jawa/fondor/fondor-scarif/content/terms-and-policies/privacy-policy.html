@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scarif — Политика конфиденциальности / Privacy Policy</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="legal-page-body">
+<main class="legal-page">
+    <header class="legal-header">
+        <a href="/" class="legal-brand"><img src="/icon/scarif_icon_big.svg" alt=""><span>Scarif</span></a>
+        <a href="/">Вернуться к входу / Back to sign in</a>
+    </header>
+    <article class="legal-card">
+        <div class="legal-toolbar">
+            <div class="legal-tabs" role="tablist">
+                <button type="button" class="legal-tab active" data-language="ru" aria-selected="true">Русский</button>
+                <button type="button" class="legal-tab" data-language="en" aria-selected="false">English</button>
+            </div>
+        </div>
+        <section class="legal-content" data-content-language="ru" lang="ru">
+            <h1>Политика конфиденциальности</h1>
+            <p class="legal-date">Дата вступления в силу: 2 ноября 2026 г.</p>
+            <p>Настоящая политика описывает, как физическое лицо «Т. Прохоров» (оператор) обрабатывает данные пользователей сервиса аутентификации Scarif. Scarif предоставляет единый вход в сервисы Universe — группу сервисов, принадлежащих и управляемых оператором.</p>
+            <h2>Какие данные Google получает приложение</h2>
+            <p>Для входа Scarif запрашивает только стандартные OAuth-области <code>openid email profile</code>. После подтверждения Google приложение получает и может хранить следующие данные Google-профиля: уникальный идентификатор Google (subject), адрес электронной почты, имя, фамилию, отображаемое имя, фотографию профиля и locale/язык.</p>
+            <h2>Как используются данные Google</h2>
+            <p>Эти данные используются только для проверки личности пользователя через Google, создания и обновления аккаунта Scarif, отображения профиля, предоставления единого входа в сервисы Universe, управления сессиями и защиты аккаунта. Данные Google не используются для рекламы, продажи данных, кредитного скоринга или профилирования.</p>
+            <h2>Хранение и передача</h2>
+            <p>Данные хранятся на сервере в Нидерландах. Сгенерированные Scarif идентификаторы пользователя и сессии могут передаваться сервисам Universe для единого входа. Email и данные профиля могут передаваться соответствующему сервису Universe только для предоставления запрошенной пользователем функции профиля или аккаунта. Данные не передаются третьим лицам для независимой рекламы.</p>
+            <h2>Другие данные</h2>
+            <p>Scarif также обрабатывает внутренние идентификаторы, дату создания аккаунта, IP-адрес, User-Agent, идентификатор сессии, дату создания, срок действия и статус сессии. Эти сведения нужны для безопасности и управления входами. Данные сессий удаляются в течение шести месяцев после истечения сессии; остальные данные удаляются по запросу пользователя, если их хранение не требуется по закону.</p>
+            <h2>Cookies</h2>
+            <p>Используется одна строго необходимая HttpOnly-cookie <code>scarif_refresh_token</code> для поддержания авторизации. Она действует до 90 дней или до завершения сессии. Аналитические и рекламные cookies не используются.</p>
+            <h2>Права и контакт</h2>
+            <p>Пользователь может запросить доступ, исправление, удаление или ограничение обработки данных, написав на <a href="mailto:prohor@gmail.com">prohor@gmail.com</a>. Удаление аккаунта сейчас выполняется вручную по запросу. Оператор может попросить подтвердить личность.</p>
+        </section>
+        <section class="legal-content hidden" data-content-language="en" lang="en">
+            <h1>Privacy Policy</h1>
+            <p class="legal-date">Effective date: November 2, 2026</p>
+            <p>This policy explains how the individual “T. Prokhorov” (the Operator) processes users’ data in the Scarif authentication service. Scarif provides single sign-on for Universe services, a group of services owned and operated by the Operator.</p>
+            <h2>Google data accessed by the application</h2>
+            <p>For sign-in, Scarif requests only the standard OAuth scopes <code>openid email profile</code>. After the user authorizes Google, the application receives and may store the following Google profile data: the Google subject identifier, email address, first name, last name, display name, profile picture, and locale/language.</p>
+            <h2>How Google data is used</h2>
+            <p>This data is used only to verify the user through Google, create and update the Scarif account, display the profile, provide single sign-on to Universe services, manage sessions, and protect the account. Google data is not used for advertising, sale of data, credit scoring, or profiling.</p>
+            <h2>Storage and sharing</h2>
+            <p>Data is stored on a server in the Netherlands. Scarif-generated user and session identifiers may be shared with Universe services to provide single sign-on. Email and profile data may be shared with the relevant Universe service only to provide a profile or account feature requested by the user. Data is not shared with third parties for independent advertising.</p>
+            <h2>Other data</h2>
+            <p>Scarif also processes internal identifiers, account creation date, IP address, User-Agent, session identifier, creation date, expiry date, and session status. These details are needed for security and session management. Session data is deleted within six months after a session expires; other data is deleted at the user’s request unless retention is required by law.</p>
+            <h2>Cookies</h2>
+            <p>Scarif uses one strictly necessary HttpOnly cookie, <code>scarif_refresh_token</code>, to maintain authentication. It lasts up to 90 days or until the session is closed. No analytics or advertising cookies are used.</p>
+            <h2>Rights and contact</h2>
+            <p>Users may request access, correction, deletion, or restriction of processing by contacting <a href="mailto:prohor@gmail.com">prohor@gmail.com</a>. Account deletion is currently handled manually on request. The Operator may request identity verification.</p>
+        </section>
+    </article>
+</main>
+<script>
+    document.querySelectorAll('.legal-tab').forEach(tab => tab.addEventListener('click', () => {
+        const language = tab.dataset.language;
+        document.querySelectorAll('.legal-tab').forEach(item => {
+            const selected = item === tab;
+            item.classList.toggle('active', selected);
+            item.setAttribute('aria-selected', String(selected));
+        });
+        document.querySelectorAll('.legal-content').forEach(content => {
+            content.classList.toggle('hidden', content.dataset.contentLanguage !== language);
+        });
+    }));
+</script>
+</body>
+</html>
