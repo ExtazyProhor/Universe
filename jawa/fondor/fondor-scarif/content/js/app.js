@@ -2,11 +2,12 @@ import {initAuth, universeFetch, SCARIF_API_URL} from './api.js';
 import {renderLogin} from './views/login.js';
 import {renderProfile} from './views/profile.js';
 import {escapeHtml} from "./utils.js";
+import {renderLegalPage} from './views/legal.js';
 
 const app = document.querySelector('#app');
 
 function normalizeUrl() {
-    if (window.location.pathname !== '/') {
+    if (window.location.pathname !== '/' && !window.location.pathname.startsWith('/terms-and-policies/')) {
         history.replaceState({}, '', '/');
     }
 }
@@ -39,6 +40,10 @@ function handleFatalError(error) {
 }
 
 async function start() {
+    if (window.location.pathname.startsWith('/terms-and-policies/')) {
+        renderLegalPage(app, window.location.pathname);
+        return;
+    }
     normalizeUrl();
     const authenticated = await initAuth();
 
