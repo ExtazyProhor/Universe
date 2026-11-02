@@ -67,6 +67,7 @@ public class GoogleOAuthService {
                 .queryParam("redirect_uri", googleOAuthProperties.redirectUrl())
                 .queryParam("response_type", "code")
                 .queryParam("scope", "openid email profile")
+                .queryParam("prompt", "select_account")
                 .build()
                 .toUri();
         this.frontendHost = frontendHost;
