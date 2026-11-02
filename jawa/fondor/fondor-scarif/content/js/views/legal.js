@@ -62,5 +62,43 @@ export function renderLegalPage(container, path) {
     const page = pages[path] || pages['/terms-and-policies/privacy-policy'];
     document.title = `Scarif - ${page.ruTitle}`;
     document.body.classList.remove('login-page', 'profile-page');
-    container.innerHTML = `<main class="legal-page"><header class="legal-header"><a href="/" class="legal-brand">Scarif</a><a href="/">Вернуться к входу / Back to sign in</a></header><article class="legal-card"><section lang="ru"><h2 class="legal-language">Русская версия</h2>${page.ru}</section><hr><section lang="en"><h2 class="legal-language">English version</h2>${page.en}</section></article><footer class="legal-footer"><a href="/terms-and-policies/privacy-policy">Privacy / Конфиденциальность</a> · <a href="/terms-and-policies/user-agreement">Terms / Соглашение</a> · <a href="/terms-and-policies/cookie-policy">Cookies / Cookie Policy</a></footer></main>`;
+    document.body.classList.add('legal-page-body');
+    container.innerHTML = `
+<main class="legal-page">
+    <header class="legal-header">
+        <a href="/" class="legal-brand">Scarif</a><a href="/">Вернуться к входу / Back to sign in</a>
+    </header>
+    <article class="legal-card">
+        <div class="legal-toolbar">
+            <span>Язык / Language</span>
+            <div class="legal-tabs" role="tablist">
+                <button type="button" class="legal-tab active" data-language="ru" role="tab" aria-selected="true">
+                    Русский
+                </button>
+                <button type="button" class="legal-tab" data-language="en" role="tab" aria-selected="false">
+                    English
+                </button>
+            </div>
+        </div>
+        <section class="legal-content" data-content-language="ru" lang="ru">${page.ru}</section>
+        <section class="legal-content hidden" data-content-language="en" lang="en">${page.en}</section>
+    </article>
+    <footer class="legal-footer">
+        <a href="/terms-and-policies/privacy-policy">Privacy / Конфиденциальность</a> ·
+        <a href="/terms-and-policies/user-agreement">Terms / Соглашение</a> ·
+        <a href="/terms-and-policies/cookie-policy">Cookies / Cookie Policy</a>
+    </footer>
+</main>`;
+    container.querySelectorAll('.legal-tab').forEach(tab => tab.addEventListener('click', () => {
+        const language = tab.dataset.language;
+        container.querySelectorAll('.legal-tab').forEach(item => {
+            const selected = item === tab;
+            item.classList.toggle('active', selected);
+            item.setAttribute('aria-selected', String(selected));
+        });
+        container.querySelectorAll('.legal-content').forEach(content => {
+            content.classList.toggle('hidden', content.dataset.contentLanguage !== language);
+        });
+        document.title = `Scarif - ${language === 'ru' ? page.ruTitle : page.enTitle}`;
+    }));
 }

@@ -5,6 +5,11 @@ import {escapeHtml} from "./utils.js";
 import {renderLegalPage} from './views/legal.js';
 
 const app = document.querySelector('#app');
+const LEGAL_PATHS = new Set([
+    '/terms-and-policies/privacy-policy',
+    '/terms-and-policies/user-agreement',
+    '/terms-and-policies/cookie-policy'
+]);
 
 function normalizeUrl() {
     if (window.location.pathname !== '/' && !window.location.pathname.startsWith('/terms-and-policies/')) {
@@ -36,11 +41,16 @@ async function showApplication() {
 
 function handleFatalError(error) {
     console.error('Application error:', error);
+    document.body.classList.add('login-page');
+    document.body.classList.remove('profile-page', 'legal-page-body');
     renderError(app, 'Не удалось загрузить данные. Проверьте соединение и попробуйте снова');
 }
 
 async function start() {
     if (window.location.pathname.startsWith('/terms-and-policies/')) {
+        if (!LEGAL_PATHS.has(window.location.pathname)) {
+            history.replaceState({}, '', '/terms-and-policies/privacy-policy');
+        }
         renderLegalPage(app, window.location.pathname);
         return;
     }

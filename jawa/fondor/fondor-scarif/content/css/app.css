@@ -53,6 +53,14 @@ body.profile-page::before {
     url('/images/at-at.jpg');
 }
 
+body.legal-page-body::before {
+    background-image: linear-gradient(
+            rgba(0, 0, 0, 0.68),
+            rgba(0, 0, 0, 0.58)
+    ),
+    url('/images/star-destroyer.jpg');
+}
+
 button,
 a {
     font: inherit;
@@ -682,8 +690,7 @@ button:disabled {
 .legal-page {
     min-height: 100vh;
     padding: 32px 20px 56px;
-    color: #e9eef7;
-    background: #0d1422;
+    color: var(--text);
 }
 
 .legal-header, .legal-footer, .legal-card {
@@ -699,7 +706,7 @@ button:disabled {
 }
 
 .legal-header a, .legal-footer a, .legal-card a {
-    color: #9cc8ff;
+    color: var(--orange);
 }
 
 .legal-brand {
@@ -711,9 +718,12 @@ button:disabled {
 
 .legal-card {
     padding: 36px 44px;
-    border: 1px solid #2b3b55;
+    border: 1px solid var(--border);
     border-radius: 18px;
-    background: #141e30;
+    background: rgba(22, 32, 23, 0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0, 0, 0, 0.15);
     line-height: 1.65;
 }
 
@@ -731,20 +741,49 @@ button:disabled {
     margin: 8px 0;
 }
 
-.legal-date, .legal-language {
-    color: #aab7ca;
-}
-
-.legal-language {
-    font-size: .95rem;
-    text-transform: uppercase;
-    letter-spacing: .04em;
+.legal-date {
+    color: var(--text-muted);
 }
 
 .legal-card hr {
     margin: 42px 0;
     border: 0;
-    border-top: 1px solid #2b3b55;
+    border-top: 1px solid var(--border);
+}
+
+.legal-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+    color: var(--text-muted);
+}
+
+.legal-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, .18);
+}
+
+.legal-tab {
+    padding: 7px 13px;
+    color: var(--text-muted);
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+}
+
+.legal-tab.active {
+    color: #1a1710;
+    background: var(--orange);
+}
+
+.legal-content.hidden {
+    display: none;
 }
 
 .legal-footer {
@@ -759,6 +798,11 @@ button:disabled {
     }
 
     .legal-header {
+        flex-direction: column;
+    }
+
+    .legal-toolbar {
+        align-items: flex-start;
         flex-direction: column;
     }
 }
