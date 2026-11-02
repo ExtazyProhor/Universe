@@ -66,11 +66,14 @@ export function renderLegalPage(container, path) {
     container.innerHTML = `
 <main class="legal-page">
     <header class="legal-header">
-        <a href="/" class="legal-brand">Scarif</a><a href="/">Вернуться к входу / Back to sign in</a>
+        <a href="/" class="legal-brand">
+            <img src="/icon/scarif_icon_big.svg" alt="">
+            <span>Scarif</span>
+        </a>
+        <a href="/">Вернуться к входу / Back to sign in</a>
     </header>
     <article class="legal-card">
         <div class="legal-toolbar">
-            <span>Язык / Language</span>
             <div class="legal-tabs" role="tablist">
                 <button type="button" class="legal-tab active" data-language="ru" role="tab" aria-selected="true">
                     Русский
