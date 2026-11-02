@@ -51,6 +51,7 @@ fun main() {
     val zuev = Character("Зуев")
     val lev = Character("Лев Глебович")
     val ksusha = Character("Ксюша")
+    val black = Character("Черная вдова")
 
     val relations = listOf(
         maxim sleepsWith vika,
@@ -112,6 +113,8 @@ fun main() {
         zuev sleepsWith eleonora,
         lev marriedWith kristina,
         zuenok sleepsWith ksusha,
+        zuenok sleepsWith black,
+        pavel sleepsWith black,
     )
 }
 
