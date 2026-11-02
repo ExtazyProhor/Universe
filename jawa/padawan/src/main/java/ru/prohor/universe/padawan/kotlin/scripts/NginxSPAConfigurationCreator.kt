@@ -27,8 +27,8 @@ private val template = $$"""
     server {
         server_name %s;
 
-         listen 80;
-         listen [::]:80;
+        listen 80;
+        listen [::]:80;
 
         return 301 https://$host$request_uri;
     }

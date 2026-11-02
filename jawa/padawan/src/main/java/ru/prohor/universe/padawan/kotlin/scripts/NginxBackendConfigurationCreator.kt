@@ -9,7 +9,7 @@ private val template = $$"""
     server {
         server_name %s;
 
-        listen [::]:443 ssl ipv6only=on;
+        listen [::]:443 ssl;
         listen 443 ssl;
 
         ssl_certificate /etc/letsencrypt/live/%s/fullchain.pem;
@@ -28,19 +28,15 @@ private val template = $$"""
     }
 
     server {
-        if ($host = kenobi.universe-apps.ru) {
-            return 301 https://$host$request_uri;
-        }
-
         server_name %s;
 
         listen 80;
         listen [::]:80;
 
-        return 404;
+        return 301 https://$host$request_uri;
     }
 """.trimIndent()
 
 private fun generate(domain: String, port: String): String {
-    return template.format(domain, domain, domain, port, domain)
+    return template.format(domain, domain, domain, port, domain, domain)
 }
