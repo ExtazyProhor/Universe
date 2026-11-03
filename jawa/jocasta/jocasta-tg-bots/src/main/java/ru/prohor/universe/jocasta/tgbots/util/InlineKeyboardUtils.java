@@ -53,4 +53,10 @@ public class InlineKeyboardUtils {
                 .keyboard(keyboard)
                 .build();
     }
+
+    public static InlineKeyboardMarkup getColumnInlineKeyboard(List<InlineKeyboardButton> buttons) {
+        return InlineKeyboardMarkup.builder()
+                .keyboard(buttons.stream().map(InlineKeyboardRow::new).toList())
+                .build();
+    }
 }
