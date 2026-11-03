@@ -2,6 +2,35 @@ package ru.prohor.universe.jocasta.core.string
 
 import kotlin.apply
 
+/**
+ * A small builder for Telegram MarkdownV2 messages.
+ *
+ * Text added through this builder is escaped automatically. Use structural
+ * methods such as [bold], [italic], and [link] instead of assembling Markdown
+ * syntax by hand.
+ *
+ * Examples:
+ *
+ * ```kotlin
+ * val message = MarkdownV2()
+ *     .bold("Some header")
+ *     .newline(2)
+ *     .text("Some link: ")
+ *     .link("Link text", "https://example.com")
+ *     .toString()
+ * ```
+ *
+ * Special characters in regular text are escaped automatically:
+ *
+ * ```kotlin
+ * val message = MarkdownV2()
+ *     .text("Price: 10.00 USD (today only)")
+ *     .toMarkdown()
+ * ```
+ *
+ * Use [codeInline] or [codeBlock] for code, and [toRaw] when plain unformatted
+ * text is required instead of MarkdownV2 markup.
+ */
 class MarkdownV2 private constructor(private val nodes: MutableList<Node>) {
     constructor() : this(mutableListOf())
 
@@ -136,6 +165,7 @@ private class LinkNode(
         val textMarkdown = children.joinToString("") { it.markdown() }
         return "[$textMarkdown](${url.escape()})"
     }
+
     override fun raw(): String = "${super.raw()} ($url)"
 }
 

@@ -1,5 +1,6 @@
 package ru.prohor.universe.jocasta.tgbots.api;
 
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -7,6 +8,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import ru.prohor.universe.jocasta.core.string.MarkdownV2;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -26,6 +28,15 @@ public interface FeedbackExecutor {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
                 .text(text)
+                .build();
+        sendMessage(sendMessage);
+    }
+
+    default void sendMarkdownV2Message(Long chatId, MarkdownV2 text) {
+        SendMessage sendMessage = SendMessage.builder()
+                .chatId(chatId)
+                .text(text.toMarkdown())
+                .parseMode(ParseMode.MARKDOWNV2)
                 .build();
         sendMessage(sendMessage);
     }

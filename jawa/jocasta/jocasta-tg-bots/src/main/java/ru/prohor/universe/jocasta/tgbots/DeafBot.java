@@ -123,6 +123,7 @@ public abstract class DeafBot extends DefaultLongPollingUpdateConsumer {
             } else if (code == 400) {
                 if (response != null && response.contains("message is not modified")) {
                     // TODO log info / debug
+                    e.printStackTrace();
                     return;
                 }
                 if (response.contains("chat not found")) {
@@ -130,8 +131,10 @@ public abstract class DeafBot extends DefaultLongPollingUpdateConsumer {
                     return;
                 }
                 // TODO log warn
+                e.printStackTrace();
             } else if (code == 429) {
                 // TODO log too many requests
+                e.printStackTrace();
             } else {
                 onSendingException(e, numericChatId);
             }

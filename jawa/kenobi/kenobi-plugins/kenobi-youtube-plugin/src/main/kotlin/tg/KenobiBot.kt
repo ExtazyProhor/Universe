@@ -10,6 +10,7 @@ class KenobiBot(botAuth: BotAuth) : DeafBot(botAuth) {
     }
 
     override fun onForbidden(response: String?, chatId: Long) {
+        println("forbidden with response: $response")
         // TODO
     }
 
