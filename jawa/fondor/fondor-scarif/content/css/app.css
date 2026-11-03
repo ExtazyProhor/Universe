@@ -127,6 +127,19 @@ button {
     justify-content: center;
 }
 
+.initial-loading {
+    color: var(--text-muted);
+}
+
+.loading-message {
+    padding: 18px 24px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(22, 32, 23, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
 .glass-card,
 .auth-card,
 .sessions-section {
