@@ -37,11 +37,13 @@ public interface MongoRepository<T> {
     }
 
     default List<T> ensuredFindAllByIds(List<ObjectId> ids) {
-        if (new HashSet<>(ids).size() != ids.size())
+        if (new HashSet<>(ids).size() != ids.size()) {
             throw new MongoDatabaseException("list of ids has duplicates: " + ids);
+        }
         List<T> entities = findAllByIds(ids);
-        if (entities.size() != ids.size())
+        if (entities.size() != ids.size()) {
             throw new MongoDatabaseException("ensured method was called with absent value or values");
+        }
         return entities;
     }
 
@@ -126,6 +128,10 @@ public interface MongoRepository<T> {
     Class<T> type();
 
     <E> E withTransaction(MonoFunction<MongoRepository<T>, E> transaction);
+
+    default <E> E withTransactionResult(MonoFunction<MongoRepository<T>, E> transaction) {
+        return withTransaction(transaction);
+    }
 
     void withTransaction(MonoConsumer<MongoRepository<T>> transaction);
 }

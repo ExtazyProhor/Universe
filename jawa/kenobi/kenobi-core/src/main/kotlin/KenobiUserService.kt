@@ -9,10 +9,11 @@ class KenobiUserService {
     private val passwordGenerator = PasswordGenerator()
 
     fun createUser(
+        id: ObjectId = ObjectId(),
         telegramChatId: Long? = null,
     ): KenobiUser {
         return KenobiUser(
-            id = ObjectId(),
+            id = id,
             telegramChatId = telegramChatId,
             apiToken = passwordGenerator.generate(
                 length = 32,
